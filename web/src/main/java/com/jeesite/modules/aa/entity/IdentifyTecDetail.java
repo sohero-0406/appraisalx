@@ -38,6 +38,7 @@ public class IdentifyTecDetail extends PreEntity<IdentifyTecDetail> {
 	//非数据库字段
 	private String typeName;	//检查项名称
 	private String checkRes;	//有缺陷/正常
+	private String stuOrTec;  //判断是否为老师答案/学生答案
 	
 	public IdentifyTecDetail() {
 		this(null);
@@ -106,5 +107,13 @@ public class IdentifyTecDetail extends PreEntity<IdentifyTecDetail> {
 
 	public void setCheckRes(String checkRes) {
 		this.checkRes = checkRes;
+	}
+
+	public String getStuOrTec() {
+		return stuOrTec;
+	}
+
+	public void setStuOrTec(String stuOrTec) {
+		this.stuOrTec = stuOrTec;
 	}
 }

@@ -11,6 +11,9 @@ import com.jeesite.common.mybatis.annotation.Column;
 import com.jeesite.common.mybatis.annotation.Table;
 import com.jeesite.common.mybatis.mapper.query.QueryType;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * 技术状况项目表Entity
  * @author lvchangwei
@@ -30,6 +33,9 @@ public class TechnologyInfo extends PreEntity<TechnologyInfo> {
 	private String name;		// 项目名称
 	private String type;		// 所属分类
 	private Integer sort;		// 排序
+
+	//非数据库字段
+	private List<IdentifyTecDetail> itemList;
 	
 	public TechnologyInfo() {
 		this(null);
@@ -64,5 +70,12 @@ public class TechnologyInfo extends PreEntity<TechnologyInfo> {
 	public void setSort(Integer sort) {
 		this.sort = sort;
 	}
-	
+
+	public List<IdentifyTecDetail> getItemList() {
+		return itemList;
+	}
+
+	public void setItemList(List<IdentifyTecDetail> itemList) {
+		this.itemList = itemList;
+	}
 }

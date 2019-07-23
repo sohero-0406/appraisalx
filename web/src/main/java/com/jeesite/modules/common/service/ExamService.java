@@ -18,7 +18,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
 /**
  * common_examService
  * @author lvchangwei
@@ -135,6 +134,11 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 		}
     	return remainTime;
     }
+	@Transactional(readOnly=false)
+	public Exam getByEntity(Exam exam) {
+		return dao.getByEntity(exam);
+	}
+
 
     public void demo() throws ParseException {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

@@ -11,5 +11,21 @@
 		</where>
 		ORDER BY ${sqlMap.order.toSql()}
 	</select> -->
-	
+
+	<select id="getVehicleInstallName" resultType="java.util.Map">
+		select
+		vehicleInstallInfo.project,
+		(select data.dict_label from js_sys_dict_data data where dict_type = 'aa_vehicle_install_type' and data.dict_value = vehicleInstallInfo.project) as name
+		from aa_vehicle_install_info vehicleInstallInfo
+		where 1=1
+		<if test="examUserId != null and examUserId != ''">
+			and vehicleInstallInfo.exam_user_id = #{examUserId}
+		</if>
+		<if test="paperId != null and paperId != ''">
+			and vehicleInstallInfo.paper_id = #{paperId}
+		</if>
+		order by vehicleInstallInfo.project
+	</select>
+
+
 </mapper>

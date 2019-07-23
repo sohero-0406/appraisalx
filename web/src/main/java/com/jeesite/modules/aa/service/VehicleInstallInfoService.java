@@ -5,6 +5,7 @@ package com.jeesite.modules.aa.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.jeesite.modules.aa.vo.VehicleInstallVO;
 import com.jeesite.modules.common.entity.CommonResult;
@@ -157,6 +158,24 @@ public class VehicleInstallInfoService extends CrudService<VehicleInstallInfoDao
 	@Transactional(readOnly=false)
 	public void delete(VehicleInstallInfo vehicleInstallInfo) {
 		super.delete(vehicleInstallInfo);
+	}
+
+	/**
+	 * 依据 考生id 或者试卷id 获取车辆加装信息
+	 */
+	@Transactional(readOnly=false)
+	public String getVehicleInstallName(String examUserId,String paperId) {
+		List<Map<String,String>> nameList =  dao.getVehicleInstallName(examUserId,paperId);
+		StringBuilder projectName = new StringBuilder();
+		int len = nameList.size();
+		for(int i=0;i<len;i++){
+			if(i==(len-1)){
+				projectName.append(nameList.get(i).get("name"));
+			}else{
+				projectName.append(nameList.get(i).get("name")+"、");
+			}
+		}
+		return projectName.toString();
 	}
 	
 }
