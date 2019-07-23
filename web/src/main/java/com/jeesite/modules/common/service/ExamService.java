@@ -3,21 +3,21 @@
  */
 package com.jeesite.modules.common.service;
 
-import java.util.List;
-
-import com.jeesite.modules.aa.entity.ExamDetail;
+import com.jeesite.common.entity.Page;
+import com.jeesite.common.service.CrudService;
 import com.jeesite.modules.aa.service.ExamDetailService;
-import com.jeesite.modules.aa.service.ExamScoreClassifyService;
 import com.jeesite.modules.aa.service.ExamScoreDetailService;
 import com.jeesite.modules.aa.vo.ExamVO;
+import com.jeesite.modules.common.dao.ExamDao;
+import com.jeesite.modules.common.entity.Exam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jeesite.common.entity.Page;
-import com.jeesite.common.service.CrudService;
-import com.jeesite.modules.common.entity.Exam;
-import com.jeesite.modules.common.dao.ExamDao;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 /**
  * common_examService
@@ -28,7 +28,8 @@ import com.jeesite.modules.common.dao.ExamDao;
 @Transactional(readOnly=true)
 public class ExamService extends CrudService<ExamDao, Exam> {
 
-
+	@Autowired
+	private ExamDao examDao;
 	@Autowired
 	private ExamScoreDetailService examScoreDetailService;
 	@Autowired
@@ -47,7 +48,6 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 	/**
 	 * 查询分页数据
 	 * @param exam 查询条件
-	 * @param exam.page 分页对象
 	 * @return
 	 */
 	@Override
@@ -109,6 +109,35 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 
 	}
 
+	/**
+	 * 考试计时
+	 */
+    public long examTiming(String paperId) {
+		Exam exam = examDao.examTiming(paperId);
+		long remainTime = -123456;
+		if(exam != null){
+			try {
+				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				Date nowTime = df.parse(df.format(new Date()));
+				Date endTime = exam.getEndTime();
+				Date startTime = exam.getStartTime();
+				if("1".equals(exam.getExamType())){
+					//倒计时
+					remainTime = endTime.getTime() - nowTime.getTime();
+				}else {
+					//正计时
+					remainTime = nowTime.getTime() - startTime.getTime();
+				}
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
 
+		}
+    	return remainTime;
+    }
 
+    public void demo() throws ParseException {
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date nowTime = df.parse(df.format(new Date()).toString());
+	}
 }

@@ -46,14 +46,12 @@ public class HomePageService {
             //排序规则为空，默认降序
             homePageVO.setSort("2");
         }
-
         ExamUser examUser = UserUtils.getExamUser();
         HomePageVO result = new HomePageVO();
         CarInfo carInfo = new CarInfo();
         carInfo.setExamUserId(examUser.getExamId());
         homePageVO.setCarInfo(carInfo);
         carInfo = carInfoService.findCarInfoBySortStu(homePageVO);
-
         if(carInfo != null){
             carInfo.setMileage(Double.parseDouble(carInfo.getMileage())/10000+"万公里");
             if (StringUtils.isNotBlank(carInfo.getPurchaseDate())) {

@@ -3,13 +3,13 @@
  */
 package com.jeesite.modules.common.web;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.jeesite.common.idgen.IdWorker;
-import com.jeesite.modules.aa.entity.ExamDetail;
+import com.jeesite.common.config.Global;
+import com.jeesite.common.entity.Page;
+import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.aa.vo.ExamVO;
 import com.jeesite.modules.common.entity.CommonResult;
+import com.jeesite.modules.common.entity.Exam;
+import com.jeesite.modules.common.service.ExamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,12 +19,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.jeesite.common.config.Global;
-import com.jeesite.common.entity.Page;
-import com.jeesite.common.web.BaseController;
-import com.jeesite.modules.common.entity.Exam;
-import com.jeesite.modules.common.service.ExamService;
-
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -120,6 +116,16 @@ public class ExamController extends BaseController {
         return comRes;
     }
 
+    /**
+     * 考试计时
+     */
+    @RequestMapping(value = "examTiming")
+    @ResponseBody
+    public CommonResult examTiming(String paperId,int examTime) {
+        CommonResult comRes = new CommonResult();
+        long remainTime = examService.examTiming(paperId);
+        return comRes;
+    }
 
 
 }

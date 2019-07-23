@@ -17,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,6 +32,8 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class AppraisalReportService extends CrudService<AppraisalReportDao, AppraisalReport> {
 
+    @Autowired
+    private AppraisalReportDao appraisalReportDao;
     @Autowired
     private DelegateUserService delegateUserService;
     @Autowired
@@ -117,6 +121,9 @@ public class AppraisalReportService extends CrudService<AppraisalReportDao, Appr
         return dao.getByEntity(appraisalReport);
     }
 
+    /**
+     * 查询一份鉴定评估报告
+     */
     public AppraisalReportVO findAppraisalReport(ExamUser examUser) {
 
         AppraisalReportVO appraisalReportVO = new AppraisalReportVO();
@@ -284,4 +291,23 @@ public class AppraisalReportService extends CrudService<AppraisalReportDao, Appr
         return appraisalReportVO;
     }
 
+    /**
+     * 查询最大鉴定评估报告编号
+     */
+    public String findAppraisalNumMAX(){
+        return appraisalReportDao.findAppraisalNumMAX();
+    }
+
+    /**
+     * 生成鉴定评估报告编号
+     */
+    @Transactional(readOnly = false)
+    public void createAppraisalReportNum() {
+        AppraisalReport appraisalReport = new AppraisalReport();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy");
+        appraisalReport.setAppraisalDate(df.format(new Date()));
+        Integer appraisalNum = Integer.parseInt(findAppraisalNumMAX()) + 1;
+        appraisalReport.setAppraisalNum(String.format("%08d", appraisalNum));
+        this.insert(appraisalReport);
+    }
 }

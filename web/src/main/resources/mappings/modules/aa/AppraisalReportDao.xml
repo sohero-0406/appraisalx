@@ -11,5 +11,10 @@
 		</where>
 		ORDER BY ${sqlMap.order.toSql()}
 	</select> -->
+
+	<!-- 查询最大鉴定评估报告编号 -->
+	<select id="findAppraisalNumMAX" resultType="String">
+		SELECT MAX(appraisal_num) FROM aa_appraisal_report
+	</select>
 	
 </mapper>

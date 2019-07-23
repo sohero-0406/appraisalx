@@ -94,7 +94,7 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
     }
 
     /**
-     * 保存车辆基本信息和委托方基本系你想
+     * 保存车辆基本信息和委托方基本信息
      *
      * @param baseInfoVO
      * @param examUser

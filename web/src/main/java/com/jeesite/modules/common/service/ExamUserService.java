@@ -29,6 +29,8 @@ import java.util.Map;
 public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 
 	@Autowired
+	private ExamUserDao examUserDao;
+	@Autowired
 	private ExamScoreDetailService examScoreDetailService;
 
 	@Autowired
@@ -552,9 +554,5 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		//盖章
 		return delegateCount;
 	}
-
-	//获取考试成绩列表
-
-
 
 }

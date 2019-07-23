@@ -14,5 +14,7 @@ import com.jeesite.modules.aa.entity.DelegateUser;
  */
 @MyBatisDao
 public interface DelegateUserDao extends CrudDao<DelegateUser> {
-	
+
+    String findEntrustNumMAX();
+
 }

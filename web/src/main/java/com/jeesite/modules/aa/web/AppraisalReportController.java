@@ -99,7 +99,6 @@ public class AppraisalReportController extends BaseController {
 	@ResponseBody
 	public CommonResult findAppraisalReport() {
 		ExamUser examUser = UserUtils.getExamUser();
-		examUser.setExamId("2000");
 		CommonResult comRes = new CommonResult();
 		comRes.setData(appraisalReportService.findAppraisalReport(examUser));
 		return comRes;
@@ -112,6 +111,16 @@ public class AppraisalReportController extends BaseController {
 	@ResponseBody
 	public CommonResult saveAppraisalReport(AppraisalReport appraisalReport) {
 		appraisalReportService.save(appraisalReport);
+		return new CommonResult();
+	}
+
+	/**
+	 * 生成鉴定评估报告编号
+	 */
+	@RequestMapping(value = "createAppraisalReportNum")
+	@ResponseBody
+	public CommonResult createAppraisalReportNum() {
+		appraisalReportService.createAppraisalReportNum();
 		return new CommonResult();
 	}
 	

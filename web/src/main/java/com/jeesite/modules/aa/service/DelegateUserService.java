@@ -3,15 +3,16 @@
  */
 package com.jeesite.modules.aa.service;
 
-import java.util.List;
-
+import com.jeesite.common.entity.Page;
+import com.jeesite.common.service.CrudService;
+import com.jeesite.modules.aa.dao.DelegateUserDao;
+import com.jeesite.modules.aa.entity.DelegateUser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jeesite.common.entity.Page;
-import com.jeesite.common.service.CrudService;
-import com.jeesite.modules.aa.entity.DelegateUser;
-import com.jeesite.modules.aa.dao.DelegateUserDao;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * 委托方信息Service
@@ -21,6 +22,9 @@ import com.jeesite.modules.aa.dao.DelegateUserDao;
 @Service
 @Transactional(readOnly=true)
 public class DelegateUserService extends CrudService<DelegateUserDao, DelegateUser> {
+
+	@Autowired
+	private DelegateUserDao delegateUserDao;
 	
 	/**
 	 * 获取单条数据
@@ -35,7 +39,6 @@ public class DelegateUserService extends CrudService<DelegateUserDao, DelegateUs
 	/**
 	 * 查询分页数据
 	 * @param delegateUser 查询条件
-	 * @param delegateUser.page 分页对象
 	 * @return
 	 */
 	@Override
@@ -77,4 +80,24 @@ public class DelegateUserService extends CrudService<DelegateUserDao, DelegateUs
 	public DelegateUser getByEntity(DelegateUser delegateUser) {
 		return dao.getByEntity(delegateUser);
 	}
+
+	/**
+	 * 查询最大委托书编号
+	 */
+	public String findEntrustNumMAX(){
+		return delegateUserDao.findEntrustNumMAX();
+	}
+
+	/**
+	 * 生成委托书编号
+	 */
+	@Transactional(readOnly=false)
+    public void createDelegateLetterNum() {
+    	DelegateUser delegateUser = new DelegateUser();
+		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+		delegateUser.setEntrustDay(df.format(new Date()));
+		Integer entrustNum = Integer.parseInt(findEntrustNumMAX()) + 1;
+		delegateUser.setEntrustNum(String.format("%08d", entrustNum));
+		this.insert(delegateUser);
+    }
 }

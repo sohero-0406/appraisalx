@@ -14,5 +14,7 @@ import com.jeesite.modules.aa.entity.AppraisalReport;
  */
 @MyBatisDao
 public interface AppraisalReportDao extends CrudDao<AppraisalReport> {
-	
+
+    String findAppraisalNumMAX();
+
 }

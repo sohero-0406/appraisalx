@@ -11,5 +11,10 @@
 		</where>
 		ORDER BY ${sqlMap.order.toSql()}
 	</select> -->
+
+	<!-- 查询最大委托书编号 -->
+	<select id="findEntrustNumMAX" resultType="String">
+		SELECT MAX(entrust_num) FROM aa_delegate_user
+	</select>
 	
 </mapper>
