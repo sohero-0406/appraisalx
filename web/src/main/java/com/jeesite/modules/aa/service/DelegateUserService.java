@@ -7,6 +7,7 @@ import com.jeesite.common.entity.Page;
 import com.jeesite.common.service.CrudService;
 import com.jeesite.modules.aa.dao.DelegateUserDao;
 import com.jeesite.modules.aa.entity.DelegateUser;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -84,20 +85,24 @@ public class DelegateUserService extends CrudService<DelegateUserDao, DelegateUs
 	/**
 	 * 查询最大委托书编号
 	 */
-	public String findEntrustNumMAX(){
-		return delegateUserDao.findEntrustNumMAX();
+	public String findEntrustNumMAX(DelegateUser delegateUser){
+		return delegateUserDao.findEntrustNumMAX(delegateUser);
 	}
 
 	/**
 	 * 生成委托书编号
 	 */
 	@Transactional(readOnly=false)
-    public void createDelegateLetterNum() {
-    	DelegateUser delegateUser = new DelegateUser();
+    public DelegateUser createDelegateLetterNum(DelegateUser delegateUser) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
 		delegateUser.setEntrustDay(df.format(new Date()));
-		Integer entrustNum = Integer.parseInt(findEntrustNumMAX()) + 1;
+		Integer entrustNum;
+		if(StringUtils.isNotBlank(findEntrustNumMAX(delegateUser))){
+			entrustNum = Integer.parseInt(findEntrustNumMAX(delegateUser)) + 1;
+		}else{
+			entrustNum = 1;
+		}
 		delegateUser.setEntrustNum(String.format("%08d", entrustNum));
-		this.insert(delegateUser);
+		return delegateUser;
     }
 }

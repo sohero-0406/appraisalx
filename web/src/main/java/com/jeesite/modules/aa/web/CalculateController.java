@@ -115,7 +115,8 @@ public class CalculateController extends BaseController {
 	@RequestMapping(value = "createAppraisalReportNum")
 	@ResponseBody
 	public CommonResult createAppraisalReportNum() {
-		appraisalReportService.createAppraisalReportNum();
+		ExamUser examUser = UserUtils.getExamUser();
+		appraisalReportService.createAppraisalReportNum(examUser);
 		return new CommonResult();
 	}
 }

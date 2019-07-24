@@ -109,7 +109,7 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
             DelegateUser user = delegateUserService.getByEntity(delegateUser);
             if (null == user) {
                 //生成委托书编号
-                delegateUserService.createDelegateLetterNum();
+                delegateUser = delegateUserService.createDelegateLetterNum(delegateUser);
                 delegateUserService.save(delegateUser);
             }
         } else {
@@ -190,4 +190,5 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
         hs.put("sort",homePageVO.getSort());
         return carInfoDao.findCarInfoBySortStu(hs);
     }
+
 }

@@ -14,7 +14,7 @@
 
 	<!-- 查询最大委托书编号 -->
 	<select id="findEntrustNumMAX" resultType="String">
-		SELECT MAX(entrust_num) FROM aa_delegate_user
+		SELECT MAX(entrust_num) FROM aa_delegate_user WHERE exam_user_id = #{examUserId} AND entrust_day = #{entrustDay}
 	</select>
 	
 </mapper>

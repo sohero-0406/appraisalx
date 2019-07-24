@@ -294,20 +294,28 @@ public class AppraisalReportService extends CrudService<AppraisalReportDao, Appr
     /**
      * 查询最大鉴定评估报告编号
      */
-    public String findAppraisalNumMAX(){
-        return appraisalReportDao.findAppraisalNumMAX();
+    public String findAppraisalNumMAX(AppraisalReport appraisalReport){
+        return appraisalReportDao.findAppraisalNumMAX(appraisalReport);
     }
 
     /**
      * 生成鉴定评估报告编号
      */
     @Transactional(readOnly = false)
-    public void createAppraisalReportNum() {
+    public AppraisalReport createAppraisalReportNum(ExamUser examUser) {
         AppraisalReport appraisalReport = new AppraisalReport();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy");
+        appraisalReport.setExamUserId(examUser.getExamId());
+        appraisalReport.setPaperId(examUser.getPaperId());
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
         appraisalReport.setAppraisalDate(df.format(new Date()));
-        Integer appraisalNum = Integer.parseInt(findAppraisalNumMAX()) + 1;
+        Integer appraisalNum;
+        if(StringUtils.isNotBlank(findAppraisalNumMAX(appraisalReport))){
+            appraisalNum = Integer.parseInt(findAppraisalNumMAX(appraisalReport)) + 1;
+        }else{
+            appraisalNum = 1;
+        }
         appraisalReport.setAppraisalNum(String.format("%08d", appraisalNum));
         this.insert(appraisalReport);
+        return appraisalReport;
     }
 }

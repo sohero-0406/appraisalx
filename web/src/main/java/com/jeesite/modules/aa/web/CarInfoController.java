@@ -3,9 +3,6 @@
  */
 package com.jeesite.modules.aa.web;
 
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SimplePropertyPreFilter;
-import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.jeesite.common.config.Global;
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.web.BaseController;
@@ -15,7 +12,6 @@ import com.jeesite.modules.aa.vo.BaseInfoVO;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.utils.UserUtils;
-import com.jeesite.modules.sys.entity.DictData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
