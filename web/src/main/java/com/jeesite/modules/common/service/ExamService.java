@@ -25,8 +25,6 @@ import java.util.List;
 public class ExamService extends CrudService<ExamDao, Exam> {
 
 	@Autowired
-	private ExamDao examDao;
-	@Autowired
 	private ExamScoreDetailService examScoreDetailService;
 	@Autowired
 	private ExamDetailService examDetailService;
@@ -104,20 +102,6 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 		examDetailService.saveExamInfoDetail(examId,examVO.getExamDetail());
 
 	}
-
-	/**
-	 * 考试计时
-	 */
-    public Exam examTiming(Exam exam) {
-		exam = examDao.getByEntity(exam);
-		if(exam != null){
-			if("1".equals(exam.getExamType())){
-				//倒计时
-				exam.setStartTime(null);
-			}
-		}
-    	return exam;
-    }
 
 	@Transactional(readOnly=false)
 	public Exam getByEntity(Exam exam) {

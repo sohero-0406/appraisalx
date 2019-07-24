@@ -9,6 +9,7 @@ import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.service.ExamUserService;
+import com.jeesite.modules.common.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -100,6 +101,23 @@ public class ExamUserController extends BaseController {
 
 		comRes.setData(examUserService.gradePapers());
 		return comRes;
+	}
+
+	/**
+	 * 考试计时
+	 */
+	@RequestMapping(value = "examTiming")
+	@ResponseBody
+	public CommonResult examTiming() {
+		ExamUser examUser = UserUtils.getExamUser();
+
+		/**
+		 * 记得删除！！！！
+		 */
+		examUser.setId("2000");
+		examUser.setExamId("1151435216635924480");
+
+		return examUserService.examTiming(examUser);
 	}
 
 }

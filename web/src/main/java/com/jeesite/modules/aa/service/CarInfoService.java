@@ -111,8 +111,9 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
         if (null == user) {
             //生成委托书编号
             delegateUserService.createDelegateLetterNum(delegateUser);
+        }else {
+            delegateUserService.save(delegateUser);
         }
-        delegateUserService.save(delegateUser);
 
         CarInfo carInfo = baseInfoVO.getCarInfo();
         if (null == carInfo) {

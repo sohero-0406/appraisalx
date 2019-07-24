@@ -103,5 +103,6 @@ public class DelegateUserService extends CrudService<DelegateUserDao, DelegateUs
 			entrustNum = 1;
 		}
 		delegateUser.setEntrustNum(String.format("%08d", entrustNum));
+		this.save(delegateUser);
     }
 }

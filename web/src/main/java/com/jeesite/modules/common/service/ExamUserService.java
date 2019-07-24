@@ -7,7 +7,9 @@ import com.jeesite.common.entity.Page;
 import com.jeesite.common.service.CrudService;
 import com.jeesite.modules.aa.entity.*;
 import com.jeesite.modules.aa.service.*;
+import com.jeesite.modules.common.dao.ExamDao;
 import com.jeesite.modules.common.dao.ExamUserDao;
+import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.Exam;
 import com.jeesite.modules.common.entity.ExamUser;
 import org.apache.commons.lang3.StringUtils;
@@ -16,9 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * common_exam_userService
@@ -30,7 +32,9 @@ import java.util.Map;
 public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 
 	@Autowired
-	private ExamScoreDetailService examScoreDetailService;
+	private ExamUserDao examUserDao;
+	@Autowired
+	private ExamDao examDao;
 
 	@Autowired
 	private ExamScoreClassifyService examScoreClassifyService;
@@ -986,6 +990,60 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}
 		//盖章
 		return delegateCount;
+	}
+
+	/**
+	 * 考试计时
+	 */
+	public CommonResult examTiming(ExamUser examUser) {
+		CommonResult comRes = new CommonResult();
+		examUser = examUserDao.getExamingUser(examUser);
+		if(examUser == null){
+			comRes.setCode("1011");
+			comRes.setMsg("未在考试中！");
+			return comRes;
+		}
+		Exam exam = new Exam();
+		exam.setId(examUser.getExamId());
+		exam = examDao.getByEntity(exam);
+		if(exam != null){
+			if("1".equals(exam.getExamType())){
+				//倒计时
+				BigDecimal duration = new BigDecimal(exam.getDuration());
+				duration = duration.multiply(new BigDecimal("60000"));
+				BigDecimal startTime = new BigDecimal(examUser.getStartTime().getTime());
+				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				BigDecimal nowTime = null;
+				try {
+					nowTime = new BigDecimal(df.parse(df.format(new Date())).getTime());
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				BigDecimal spentTime = nowTime.subtract(startTime);
+				BigDecimal surplusTime = duration.subtract(spentTime);
+				if(surplusTime.compareTo(new BigDecimal("0")) >= 0){
+					df = new SimpleDateFormat("HH:mm:ss");
+					df.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
+					comRes.setData(df.format(new Date(surplusTime.longValue())));
+				}else {
+					comRes.setData("--:--:--");
+					comRes.setCode("1011");
+					comRes.setMsg("未在考试中！");
+					return comRes;
+				}
+			}else {
+				//正计时
+				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				comRes.setData(df.format(new Date()));
+			}
+			comRes.setCode("1012");
+			comRes.setMsg("考试中！");
+			return comRes;
+		}else{
+			comRes.setCode("1010");
+			comRes.setMsg("请求失败");
+			return comRes;
+		}
 	}
 
 }

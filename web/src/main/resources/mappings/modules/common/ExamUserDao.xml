@@ -12,4 +12,10 @@
 		ORDER BY ${sqlMap.order.toSql()}
 	</select> -->
 
+	<!-- 查询正在考试中的考试 -->
+	<select id="getExamingUser" resultType="ExamUser">
+		SELECT * FROM common_exam_user
+		WHERE id = #{id} AND exam_id = #{examId} AND state = 3
+	</select>
+
 </mapper>

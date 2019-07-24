@@ -14,7 +14,8 @@
 
 	<!-- 查询最大鉴定评估报告编号 -->
 	<select id="findAppraisalNumMAX" resultType="String">
-		SELECT MAX(appraisal_num) FROM aa_appraisal_report WHERE exam_user_id = #{examUserId} AND appraisal_date = #{appraisalDate}
+		SELECT MAX(appraisal_num) FROM aa_appraisal_report
+		WHERE appraisal_date = #{appraisalDate}
 	</select>
 	
 </mapper>
