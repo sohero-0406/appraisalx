@@ -23,6 +23,4 @@ public interface ExamDao extends CrudDao<Exam> {
      */
     public List<Exam> getExamInfo();
 
-    Exam examTiming(String paperId);
-
 }

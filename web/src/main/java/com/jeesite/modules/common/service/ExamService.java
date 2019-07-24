@@ -14,9 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 /**
  * common_examService
@@ -111,37 +108,20 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 	/**
 	 * 考试计时
 	 */
-    public long examTiming(String paperId) {
-		Exam exam = examDao.examTiming(paperId);
-		long remainTime = -123456;
+    public Exam examTiming(Exam exam) {
+		exam = examDao.getByEntity(exam);
 		if(exam != null){
-			try {
-				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				Date nowTime = df.parse(df.format(new Date()));
-				Date endTime = exam.getEndTime();
-				Date startTime = exam.getStartTime();
-				if("1".equals(exam.getExamType())){
-					//倒计时
-					remainTime = endTime.getTime() - nowTime.getTime();
-				}else {
-					//正计时
-					remainTime = nowTime.getTime() - startTime.getTime();
-				}
-			} catch (ParseException e) {
-				e.printStackTrace();
+			if("1".equals(exam.getExamType())){
+				//倒计时
+				exam.setStartTime(null);
 			}
-
 		}
-    	return remainTime;
+    	return exam;
     }
+
 	@Transactional(readOnly=false)
 	public Exam getByEntity(Exam exam) {
 		return dao.getByEntity(exam);
 	}
 
-
-    public void demo() throws ParseException {
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date nowTime = df.parse(df.format(new Date()).toString());
-	}
 }

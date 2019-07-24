@@ -8,6 +8,8 @@ import com.jeesite.common.mybatis.annotation.Column;
 import com.jeesite.common.mybatis.annotation.Table;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.Date;
+
 
 /**
  * common_exam_userEntity
@@ -34,13 +36,13 @@ public class ExamUser extends PreEntity<ExamUser> {
 	private String examId;		// 考试id
 	private String userNum;		// 用户名
 	private String password;		// 密码
-
-	private String paperId;		//试卷id
-	private String score;		// 密码
-
-	private String startTime;		//考试开始时间
-	private String endTime;		//考试结束时间
+	private Date startTime;		//考试开始时间
+	private Date endTime;		//考试结束时间
 	private Integer state;		//考试状态
+
+	//非数据库字段
+	private String paperId;		//试卷id
+	private String score;		// 分数
 
 	public ExamUser() {
 		this(null);
@@ -86,36 +88,19 @@ public class ExamUser extends PreEntity<ExamUser> {
 		this.password = password;
 	}
 
-	@Length(min=0, max=10, message="分数长度不能超过 10 个字符")
-	public String getScore() {
-		return score;
-	}
-
-	public void setScore(String score) {
-		this.score = score;
-	}
-
-	public String getPaperId() {
-		return paperId;
-	}
-
-	public void setPaperId(String paperId) {
-		this.paperId = paperId;
-	}
-
-	public String getStartTime() {
+	public Date getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(String startTime) {
+	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
 	}
 
-	public String getEndTime() {
+	public Date getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(String endTime) {
+	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
 
@@ -126,4 +111,22 @@ public class ExamUser extends PreEntity<ExamUser> {
 	public void setState(Integer state) {
 		this.state = state;
 	}
+
+	public String getPaperId() {
+		return paperId;
+	}
+
+	public void setPaperId(String paperId) {
+		this.paperId = paperId;
+	}
+
+	public String getScore() {
+		return score;
+	}
+
+	public void setScore(String score) {
+		this.score = score;
+	}
+
+
 }

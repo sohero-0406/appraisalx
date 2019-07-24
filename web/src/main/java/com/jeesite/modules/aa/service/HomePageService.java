@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,7 +55,8 @@ public class HomePageService {
         homePageVO.setCarInfo(carInfo);
         carInfo = carInfoService.findCarInfoBySortStu(homePageVO);
         if(carInfo != null){
-            carInfo.setMileage(Double.parseDouble(carInfo.getMileage())/10000+"万公里");
+            BigDecimal mileage = new BigDecimal(carInfo.getMileage());
+            carInfo.setMileage(mileage.divide(new BigDecimal("10000"),1,BigDecimal.ROUND_HALF_UP)+"万公里");
             if (StringUtils.isNotBlank(carInfo.getPurchaseDate())) {
                 String[] purchaseDate = carInfo.getPurchaseDate().substring(0, 10).split("-");
                 carInfo.setPurchaseDate(purchaseDate[0] + "年" + purchaseDate[1] + "月");
@@ -62,6 +65,7 @@ public class HomePageService {
 
             PictureUser pictureUser = new PictureUser();
             pictureUser.setExamUserId(examUser.getExamId());
+            pictureUser.setPictureTypeId("1143439344920567808");
             pictureUser = pictureUserService.getByEntity(pictureUser);
             homePageVO.setPictureUser(pictureUser);
             result.setPictureUser(pictureUser);
@@ -96,7 +100,8 @@ public class HomePageService {
         if(carInfoList != null){
             for(CarInfo carInfo: carInfoList){
                 HomePageVO temp = new HomePageVO();
-                carInfo.setMileage(Double.parseDouble(carInfo.getMileage())/10000+"万公里");
+                BigDecimal mileage = new BigDecimal(carInfo.getMileage());
+                carInfo.setMileage(mileage.divide(new BigDecimal("10000"),1,BigDecimal.ROUND_HALF_UP)+"万公里");
                 if (StringUtils.isNotBlank(carInfo.getPurchaseDate())) {
                     String[] purchaseDate = carInfo.getPurchaseDate().substring(0, 10).split("-");
                     carInfo.setPurchaseDate(purchaseDate[0] + "年" + purchaseDate[1] + "月");
@@ -105,6 +110,7 @@ public class HomePageService {
 
                 PictureUser pictureUser = new PictureUser();
                 pictureUser.setPaperId(carInfo.getPaperId());
+                pictureUser.setPictureTypeId("1143439344920567808");
                 pictureUser = pictureUserService.getByEntity(pictureUser);
                 temp.setPictureUser(pictureUser);
 
@@ -133,7 +139,11 @@ public class HomePageService {
         if(StringUtils.isNotBlank(examUser.getExamId())){
             //学生
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            examUser.setStartTime(df.format(new Date()));
+            try {
+                examUser.setStartTime(df.parse(df.format(new Date())));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             examUser.setExamId(examUser.getExamId());
             examUser.setState(3);
             examUserService.insert(examUser);

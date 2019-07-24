@@ -3,12 +3,13 @@
  */
 package com.jeesite.modules.aa.service;
 
-import java.math.BigDecimal;
-import java.util.List;
-
+import com.jeesite.common.entity.Page;
 import com.jeesite.common.lang.StringUtils;
+import com.jeesite.common.service.CrudService;
 import com.jeesite.common.utils.MathUtils;
+import com.jeesite.modules.aa.dao.CalculateReplaceCostDao;
 import com.jeesite.modules.aa.entity.Calculate;
+import com.jeesite.modules.aa.entity.CalculateReplaceCost;
 import com.jeesite.modules.aa.entity.Tax;
 import com.jeesite.modules.aa.entity.VehicleGradeAssess;
 import com.jeesite.modules.common.entity.Exam;
@@ -18,10 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jeesite.common.entity.Page;
-import com.jeesite.common.service.CrudService;
-import com.jeesite.modules.aa.entity.CalculateReplaceCost;
-import com.jeesite.modules.aa.dao.CalculateReplaceCostDao;
+import java.math.BigDecimal;
 
 /**
  * 重置成本法Service
@@ -60,7 +58,6 @@ public class CalculateReplaceCostService extends CrudService<CalculateReplaceCos
      * 查询分页数据
      *
      * @param calculateReplaceCost      查询条件
-     * @param calculateReplaceCost.page 分页对象
      * @return
      */
     @Override

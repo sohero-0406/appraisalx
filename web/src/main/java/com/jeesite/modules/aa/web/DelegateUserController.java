@@ -8,7 +8,6 @@ import com.jeesite.common.entity.Page;
 import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.aa.entity.DelegateUser;
 import com.jeesite.modules.aa.service.DelegateUserService;
-import com.jeesite.modules.common.entity.CommonResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -88,16 +87,6 @@ public class DelegateUserController extends BaseController {
 	public String delete(DelegateUser delegateUser) {
 		delegateUserService.delete(delegateUser);
 		return renderResult(Global.TRUE, text("删除委托方信息成功！"));
-	}
-
-	/**
-	 * 生成委托书编号
-	 */
-	@RequestMapping(value = "createDelegateLetterNum")
-	@ResponseBody
-	public CommonResult createDelegateLetterNum() {
-		delegateUserService.createDelegateLetterNum();
-		return new CommonResult();
 	}
 
 }

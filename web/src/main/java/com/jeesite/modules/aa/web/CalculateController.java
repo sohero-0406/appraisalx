@@ -3,14 +3,14 @@
  */
 package com.jeesite.modules.aa.web;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.jeesite.modules.aa.entity.*;
-import com.jeesite.modules.aa.service.*;
+import com.jeesite.common.config.Global;
+import com.jeesite.common.entity.Page;
+import com.jeesite.common.web.BaseController;
+import com.jeesite.modules.aa.entity.Calculate;
+import com.jeesite.modules.aa.service.AppraisalReportService;
+import com.jeesite.modules.aa.service.CalculateService;
 import com.jeesite.modules.aa.vo.CalculateVO;
 import com.jeesite.modules.common.entity.CommonResult;
-import com.jeesite.modules.common.entity.Exam;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +22,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.jeesite.common.config.Global;
-import com.jeesite.common.entity.Page;
-import com.jeesite.common.web.BaseController;
-
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 计算车辆价值Controller
@@ -38,6 +35,8 @@ import java.util.List;
 public class CalculateController extends BaseController {
 	@Autowired
 	private CalculateService calculateService;
+	@Autowired
+	private AppraisalReportService appraisalReportService;
 
 	/**
 	 * 获取数据
@@ -108,5 +107,15 @@ public class CalculateController extends BaseController {
 		CalculateVO calculateVO = calculateService.getCalculate(examUser);
 		comRes.setData(calculateVO);
 		return comRes;
+	}
+
+	/**
+	 * 生成鉴定评估报告编号
+	 */
+	@RequestMapping(value = "createAppraisalReportNum")
+	@ResponseBody
+	public CommonResult createAppraisalReportNum() {
+		appraisalReportService.createAppraisalReportNum();
+		return new CommonResult();
 	}
 }

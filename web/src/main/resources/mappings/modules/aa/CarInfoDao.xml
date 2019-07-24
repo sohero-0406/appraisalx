@@ -20,10 +20,7 @@
 			and (license_plate_num like CONCAT('%',#{queryCriteria},'%') or vin_code like CONCAT('%',#{queryCriteria},'%'))
 		</if>
 		<if test="sort != null and sort != ''">
-			<if test="sort == 1">
-				ORDER BY create_date asc
-			</if>
-			<if test="sort == 2">
+			<if test="sort == '2'">
 				ORDER BY create_date desc
 			</if>
 		</if>

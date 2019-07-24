@@ -110,18 +110,11 @@ public class AppraisalReportController extends BaseController {
 	@RequestMapping(value = "saveAppraisalReport")
 	@ResponseBody
 	public CommonResult saveAppraisalReport(AppraisalReport appraisalReport) {
+		ExamUser examUser = UserUtils.getExamUser();
+		appraisalReport.setExamUserId(examUser.getExamId());
+		appraisalReport.setPaperId(examUser.getPaperId());
 		appraisalReportService.save(appraisalReport);
 		return new CommonResult();
 	}
 
-	/**
-	 * 生成鉴定评估报告编号
-	 */
-	@RequestMapping(value = "createAppraisalReportNum")
-	@ResponseBody
-	public CommonResult createAppraisalReportNum() {
-		appraisalReportService.createAppraisalReportNum();
-		return new CommonResult();
-	}
-	
 }

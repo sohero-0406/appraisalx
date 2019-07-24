@@ -27,8 +27,4 @@
 
 	</select>
 
-	<select id="examTiming" resultType="Exam">
-		SELECT * FROM common_exam WHERE paper_id = #{paperId} AND state = 3
-	</select>
-
 </mapper>

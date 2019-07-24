@@ -9,7 +9,9 @@ import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.aa.vo.ExamVO;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.Exam;
+import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.service.ExamService;
+import com.jeesite.modules.common.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -121,9 +123,12 @@ public class ExamController extends BaseController {
      */
     @RequestMapping(value = "examTiming")
     @ResponseBody
-    public CommonResult examTiming(String paperId,int examTime) {
+    public CommonResult examTiming() {
         CommonResult comRes = new CommonResult();
-        long remainTime = examService.examTiming(paperId);
+        ExamUser examUser = UserUtils.getExamUser();
+        Exam exam = new Exam();
+        exam.setPaperId(examUser.getPaperId());
+        comRes.setData(examService.examTiming(exam));
         return comRes;
     }
 

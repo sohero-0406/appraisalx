@@ -3,11 +3,12 @@
  */
 package com.jeesite.modules.aa.web;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.jeesite.common.config.Global;
+import com.jeesite.common.entity.Page;
+import com.jeesite.common.web.BaseController;
+import com.jeesite.modules.aa.entity.Reference;
+import com.jeesite.modules.aa.service.ReferenceService;
 import com.jeesite.modules.common.entity.CommonResult;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,13 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.jeesite.common.config.Global;
-import com.jeesite.common.entity.Page;
-import com.jeesite.common.web.BaseController;
-import com.jeesite.modules.aa.entity.Reference;
-import com.jeesite.modules.aa.service.ReferenceService;
-
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 参照物表Controller
@@ -124,9 +120,9 @@ public class ReferenceController extends BaseController {
 	/**
 	 * 查询单个参照物
 	 */
-	@RequestMapping(value = "findReferenceList")
+	@RequestMapping(value = "findReference")
 	@ResponseBody
-	public CommonResult findReferenceList(@Validated Reference reference) {
+	public CommonResult findReference(@Validated Reference reference) {
 		CommonResult comRes = new CommonResult();
 		comRes.setData(referenceService.get(reference));
 		return comRes;
@@ -135,9 +131,9 @@ public class ReferenceController extends BaseController {
 	/**
 	 * 查询参照物列表
 	 */
-	@RequestMapping(value = "findReference")
+	@RequestMapping(value = "findReferenceList")
 	@ResponseBody
-	public CommonResult findReference() {
+	public CommonResult findReferenceList() {
 		CommonResult comRes = new CommonResult();
 		comRes.setData(referenceService.findList(new Reference()));
 		return comRes;
