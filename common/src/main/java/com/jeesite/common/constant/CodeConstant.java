@@ -24,9 +24,11 @@ public class CodeConstant {
     //请求失败
     public static final String REQUEST_FAILED = "1010";
 
-    //未在考试中
-    public static final String NOT_EXAMING = "1011";
-    //考试中
-    public static final String EXAMING = "1012";
+    //考试未开始
+    public static final String EXAM_NOT_BEGIN = "1011";
+    //未统计
+    public static final String NO_STATISTICS = "1012";
+    //已出分
+    public static final String HAVE_ACHIEVEMENTS = "1013";
 
 }

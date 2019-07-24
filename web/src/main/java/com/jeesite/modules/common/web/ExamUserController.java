@@ -110,13 +110,6 @@ public class ExamUserController extends BaseController {
 	@ResponseBody
 	public CommonResult examTiming() {
 		ExamUser examUser = UserUtils.getExamUser();
-
-		/**
-		 * 记得删除！！！！
-		 */
-		examUser.setId("2000");
-		examUser.setExamId("1151435216635924480");
-
 		return examUserService.examTiming(examUser);
 	}
 

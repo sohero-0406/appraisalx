@@ -12,10 +12,11 @@ public class AppraisalJobTableVO {
     private List<VehicleDocumentInfo> vehicleDocumentInfoList;        //车辆单证信息
     private VehicleInfo vehicleInfo;        //车辆配置全表
     private List<CheckBodySkeleton> checkBodySkeletonList;        //检查车体骨架
-//    private ListIdentifyTec
-    private IdentifyTecDetail identifyTecDetail;        //鉴定技术状况详情
+    private List<IdentifyTec> identifyTecList;      //鉴定技术状况
+    private List<IdentifyTecDetail> identifyTecDetailList;        //鉴定技术状况详情
     private VehicleGradeAssess vehicleGradeAssess;      //车辆等级评定
     private DelegateLetter delegateLetter;      //委托书信息
+    private String niankuanxinghao;     //年款型号
 
     public CarInfo getCarInfo() {
         return carInfo;
@@ -57,12 +58,20 @@ public class AppraisalJobTableVO {
         this.checkBodySkeletonList = checkBodySkeletonList;
     }
 
-    public IdentifyTecDetail getIdentifyTecDetail() {
-        return identifyTecDetail;
+    public List<IdentifyTec> getIdentifyTecList() {
+        return identifyTecList;
     }
 
-    public void setIdentifyTecDetail(IdentifyTecDetail identifyTecDetail) {
-        this.identifyTecDetail = identifyTecDetail;
+    public void setIdentifyTecList(List<IdentifyTec> identifyTecList) {
+        this.identifyTecList = identifyTecList;
+    }
+
+    public List<IdentifyTecDetail> getIdentifyTecDetailList() {
+        return identifyTecDetailList;
+    }
+
+    public void setIdentifyTecDetailList(List<IdentifyTecDetail> identifyTecDetailList) {
+        this.identifyTecDetailList = identifyTecDetailList;
     }
 
     public VehicleGradeAssess getVehicleGradeAssess() {
@@ -79,5 +88,13 @@ public class AppraisalJobTableVO {
 
     public void setDelegateLetter(DelegateLetter delegateLetter) {
         this.delegateLetter = delegateLetter;
+    }
+
+    public String getNiankuanxinghao() {
+        return niankuanxinghao;
+    }
+
+    public void setNiankuanxinghao(String niankuanxinghao) {
+        this.niankuanxinghao = niankuanxinghao;
     }
 }

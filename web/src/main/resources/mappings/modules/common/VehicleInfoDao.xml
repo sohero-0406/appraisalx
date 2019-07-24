@@ -17,9 +17,16 @@
 		where chexi_id=#{chexiId}
 	</select>
 
-	<!-- 查询车型 -->
+	<!-- 查询车型(返回车型) -->
 	<select id="getCarModel" resultType="VehicleInfo">
-		SELECT id,chexingmingcheng FROM common_vehicle_info where chexing_id = #{chexingId}
+		SELECT id,chexingmingcheng FROM common_vehicle_info
+		WHERE chexing_id = #{chexingId}
+	</select>
+
+	<!-- 查询车型(返回整条记录) -->
+	<select id="getVehicleInfo" resultType="VehicleInfo">
+		SELECT * FROM common_vehicle_info
+		WHERE chexing_id = #{chexingId}
 	</select>
 
 </mapper>

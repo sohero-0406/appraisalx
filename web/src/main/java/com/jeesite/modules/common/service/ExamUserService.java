@@ -3,11 +3,11 @@
  */
 package com.jeesite.modules.common.service;
 
+import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.service.CrudService;
 import com.jeesite.modules.aa.entity.*;
 import com.jeesite.modules.aa.service.*;
-import com.jeesite.modules.common.dao.ExamDao;
 import com.jeesite.modules.common.dao.ExamUserDao;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.Exam;
@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -34,7 +33,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 	@Autowired
 	private ExamUserDao examUserDao;
 	@Autowired
-	private ExamDao examDao;
+	private ExamService examService;
 
 	@Autowired
 	private ExamScoreClassifyService examScoreClassifyService;
@@ -995,55 +994,69 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 	/**
 	 * 考试计时
 	 */
+	@Transactional(readOnly = false)
 	public CommonResult examTiming(ExamUser examUser) {
-		CommonResult comRes = new CommonResult();
-		examUser = examUserDao.getExamingUser(examUser);
-		if(examUser == null){
-			comRes.setCode("1011");
-			comRes.setMsg("未在考试中！");
-			return comRes;
-		}
-		Exam exam = new Exam();
-		exam.setId(examUser.getExamId());
-		exam = examDao.getByEntity(exam);
-		if(exam != null){
-			if("1".equals(exam.getExamType())){
-				//倒计时
-				BigDecimal duration = new BigDecimal(exam.getDuration());
-				duration = duration.multiply(new BigDecimal("60000"));
-				BigDecimal startTime = new BigDecimal(examUser.getStartTime().getTime());
-				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				BigDecimal nowTime = null;
-				try {
-					nowTime = new BigDecimal(df.parse(df.format(new Date())).getTime());
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
-				BigDecimal spentTime = nowTime.subtract(startTime);
-				BigDecimal surplusTime = duration.subtract(spentTime);
-				if(surplusTime.compareTo(new BigDecimal("0")) >= 0){
-					df = new SimpleDateFormat("HH:mm:ss");
-					df.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
-					comRes.setData(df.format(new Date(surplusTime.longValue())));
-				}else {
-					comRes.setData("--:--:--");
-					comRes.setCode("1011");
-					comRes.setMsg("未在考试中！");
-					return comRes;
-				}
-			}else {
-				//正计时
-				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				comRes.setData(df.format(new Date()));
-			}
-			comRes.setCode("1012");
-			comRes.setMsg("考试中！");
-			return comRes;
-		}else{
-			comRes.setCode("1010");
-			comRes.setMsg("请求失败");
-			return comRes;
-		}
+        CommonResult comRes = new CommonResult();
+        examUser = this.get(examUser);
+        if (examUser == null) {
+            comRes.setCode(CodeConstant.REQUEST_FAILED);
+            comRes.setMsg("未查询到考生信息！");
+            return comRes;
+        }
+        Exam exam = new Exam();
+        exam.setId(examUser.getExamId());
+        exam = examService.getByEntity(exam);
+        if (exam == null) {
+            comRes.setCode(CodeConstant.REQUEST_FAILED);
+            comRes.setMsg("未查询到考试信息！");
+            return comRes;
+        }
+
+        //判断考生考试状态
+        if (examUser.getState() == 3) {
+            //考试中
+            if ("1".equals(exam.getExamType())) {
+                //倒计时
+                BigDecimal duration = new BigDecimal(exam.getDuration());       //考试总时长
+                duration = duration.multiply(new BigDecimal("60000"));      //换算毫秒值
+                BigDecimal startTime = new BigDecimal(examUser.getStartTime().getTime());       //考试开始时间
+                BigDecimal nowTime = new BigDecimal(new Date().getTime());      //当前时间
+                BigDecimal spentTime = nowTime.subtract(startTime);     //考生考试已用时长（nowTime-startTime）
+                BigDecimal surplusTime = duration.subtract(spentTime);      //本场考试剩余时长(duration-spentTime)
+
+                //对剩余时长进行校验，如果剩余时长小于零，则考试结束，更改考试状态，返回状态码。
+                if (surplusTime.compareTo(new BigDecimal("0")) >= 0) {
+                    SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+                    df.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
+                    comRes.setData(df.format(new Date(surplusTime.longValue())));
+                }else {
+                    //更考试状态
+                    exam.setState("5");
+                    examService.save(exam);
+                    comRes.setData("--:--:--");
+                    comRes.setCode(CodeConstant.NO_STATISTICS);
+                    comRes.setMsg("未统计！");
+                    return comRes;
+                }
+            }else {
+                //正计时
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                comRes.setData(df.format(new Date()));
+            }
+            comRes.setCode(CodeConstant.REQUEST_SUCCESSFUL);
+            comRes.setMsg("考试中！");
+            return comRes;
+        }else if (examUser.getState() ==1) {
+            comRes.setCode(CodeConstant.EXAM_NOT_BEGIN);
+            comRes.setMsg("考试未开始！");
+        }else if (examUser.getState() == 5) {
+            comRes.setCode(CodeConstant.NO_STATISTICS);
+            comRes.setMsg("未统计！");
+        }else if (examUser.getState() == 7) {
+            comRes.setCode(CodeConstant.HAVE_ACHIEVEMENTS);
+            comRes.setMsg("已出分！");
+        }
+        return comRes;
 	}
 
 }

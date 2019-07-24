@@ -15,11 +15,4 @@ import com.jeesite.modules.common.entity.ExamUser;
 @MyBatisDao
 public interface ExamUserDao extends CrudDao<ExamUser> {
 
-    /**
-     * 查询正在考试中的考试
-     * @param examUser
-     * @return
-     */
-    ExamUser getExamingUser(ExamUser examUser);
-
 }
