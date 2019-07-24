@@ -1,4 +1,4 @@
-package com.jeesite.modules.common.utils;
+package com.jeesite.common.utils;
 
 /**
  * 将数字金额转换为大写字符工具类

@@ -112,8 +112,14 @@ public class CalculateKmService extends CrudService<CalculateKmDao, CalculateKm>
                 mileage = "0";
             }
             BigDecimal mileageBig = new BigDecimal(mileage);
+            BigDecimal salePrice = new BigDecimal(calculateKm.getSalePrice())
+                    .setScale(2, BigDecimal.ROUND_HALF_UP);
+            BigDecimal price = new BigDecimal(0);
+            String process = "估值价格=二手车价格=车辆销售价格×剩余里程每阶段分别消耗车辆价值率之和="
+                    + salePrice.toString() + "*(";
             if (mileageBig.compareTo(new BigDecimal("300000")) >= 0) {
-                calculateKm.setPrice((double) 0);
+                calculateKm.setPrice(price.doubleValue());
+                process += "0";
             } else {
                 //计算已用全部里程的几段，取上整
                 int para = mileageBig.divide(new BigDecimal("60000"), BigDecimal.ROUND_UP).intValue();
@@ -122,12 +128,14 @@ public class CalculateKmService extends CrudService<CalculateKmDao, CalculateKm>
                 }
                 //计算剩余里程分别消耗车辆价值率之和
                 valueRatio = new BigDecimal(15).subtract(valueRatio);
-                BigDecimal salePrice = new BigDecimal(calculateKm.getSalePrice());
-                BigDecimal price = salePrice.multiply(valueRatio)
-                        .divide(new BigDecimal(15),2,BigDecimal.ROUND_HALF_UP)
+                price = salePrice.multiply(valueRatio)
+                        .divide(new BigDecimal(15), 2, BigDecimal.ROUND_HALF_UP)
                         .setScale(2, BigDecimal.ROUND_HALF_UP);
                 calculateKm.setPrice(price.doubleValue());
+                process += valueRatio;
             }
+            process += "/15)=" + price.toString() + "元";
+            calculateKm.setProcess(process);
         }
         return calculateKm;
     }

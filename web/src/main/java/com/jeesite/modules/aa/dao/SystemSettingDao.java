@@ -5,14 +5,14 @@ package com.jeesite.modules.aa.dao;
 
 import com.jeesite.common.dao.CrudDao;
 import com.jeesite.common.mybatis.annotation.MyBatisDao;
-import com.jeesite.modules.aa.entity.CalculateCurrent;
+import com.jeesite.modules.aa.entity.SystemSetting;
 
 /**
- * 现行市价法DAO接口
+ * 大平台域名设置DAO接口
  * @author lvchangwei
- * @version 2019-07-22
+ * @version 2019-07-24
  */
 @MyBatisDao
-public interface CalculateCurrentDao extends CrudDao<CalculateCurrent> {
+public interface SystemSettingDao extends CrudDao<SystemSetting> {
 	
 }

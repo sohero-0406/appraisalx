@@ -9,6 +9,12 @@ import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.aa.entity.Calculate;
 import com.jeesite.modules.aa.service.AppraisalReportService;
 import com.jeesite.modules.aa.service.CalculateService;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.jeesite.common.web.http.HttpClientUtils;
+import com.jeesite.modules.aa.entity.*;
+import com.jeesite.modules.aa.service.*;
 import com.jeesite.modules.aa.vo.CalculateVO;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.ExamUser;

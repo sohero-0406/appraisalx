@@ -11,9 +11,10 @@ import java.util.stream.Stream;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.jeesite.modules.aa.entity.CheckBodySkeleton;
+import com.jeesite.modules.aa.entity.PictureUser;
 import com.jeesite.modules.aa.vo.VehicleDocumentInfoVO;
 import com.jeesite.modules.common.entity.ExamUser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +33,9 @@ import org.springframework.util.CollectionUtils;
 @Service
 @Transactional(readOnly = true)
 public class VehicleDocumentInfoService extends CrudService<VehicleDocumentInfoDao, VehicleDocumentInfo> {
+
+    @Autowired
+    private PictureUserService pictureUserService;
 
     /**
      * 获取单条数据
@@ -112,10 +116,36 @@ public class VehicleDocumentInfoService extends CrudService<VehicleDocumentInfoD
         }
     }
 
+    /**
+     * @param vehicleDocumentInfo
+     * @return
+     */
     @Transactional(readOnly = false)
     public List<VehicleDocumentInfo> findList(VehicleDocumentInfo vehicleDocumentInfo) {
         return dao.findList(vehicleDocumentInfo);
     }
 
     public VehicleDocumentInfo getByEntity(VehicleDocumentInfo vehicleDocumentInfo){ return dao.getByEntity(vehicleDocumentInfo); }
+
+    /**
+     * 车辆单证信息加载
+     *
+     * @param examUser
+     * @return
+     */
+    public VehicleDocumentInfoVO findDocument(ExamUser examUser) {
+        VehicleDocumentInfoVO vo = new VehicleDocumentInfoVO();
+        VehicleDocumentInfo info = new VehicleDocumentInfo();
+        info.setExamUserId(examUser.getId());
+        info.setPaperId(examUser.getPaperId());
+        vo.setInfoList(this.findList(info));
+
+        String[] parentTypeIds = {"1143437059610071040"};
+        String[] pictureTypeIds = {"1143432856340893696", "1143435061324763136", "1143435514869673984",
+                "1143435674886193152"};
+        List<PictureUser> pictureList = pictureUserService.findList(examUser, pictureTypeIds);
+        pictureList.addAll(pictureUserService.findChildPicture(examUser, parentTypeIds));
+        vo.setPictureList(pictureList);
+        return vo;
+    }
 }

@@ -6,17 +6,17 @@ package com.jeesite.modules.aa.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.common.collect.Lists;
+import com.jeesite.common.web.http.HttpClientUtils;
 import com.jeesite.modules.aa.vo.VehicleDocumentInfoVO;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -105,12 +105,12 @@ public class VehicleDocumentInfoController extends BaseController {
     @RequestMapping(value = "findList")
     @ResponseBody
     public CommonResult findList() {
+
+        HttpClientUtils.post("http://h15g715740.iask.in:8081/appraisal/aa/checkTradableVehicles/getDetail",null);
         ExamUser examUser = UserUtils.getExamUser();
-        VehicleDocumentInfo info = new VehicleDocumentInfo();
-        info.setExamUserId(examUser.getId());
-        List<VehicleDocumentInfo> list = vehicleDocumentInfoService.findList(info);
+        VehicleDocumentInfoVO vo = vehicleDocumentInfoService.findDocument(examUser);
         CommonResult result = new CommonResult();
-        result.setData(list);
+        result.setData(vo);
         return result;
     }
 }

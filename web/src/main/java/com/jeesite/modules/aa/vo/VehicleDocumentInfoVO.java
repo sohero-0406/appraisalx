@@ -3,43 +3,36 @@
  */
 package com.jeesite.modules.aa.vo;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.jeesite.common.entity.DataEntity;
-import com.jeesite.common.mybatis.annotation.Column;
-import com.jeesite.common.mybatis.annotation.Table;
-import com.jeesite.modules.common.entity.PreEntity;
-import org.hibernate.validator.constraints.Length;
+import com.jeesite.modules.aa.entity.PictureUser;
+import com.jeesite.modules.aa.entity.VehicleDocumentInfo;
 
-import java.util.Date;
+import java.util.List;
 
 public class VehicleDocumentInfoVO {
 
+    /**
+     * 车辆单证信息
+     */
+    private List<VehicleDocumentInfo> infoList;
 
-    private String[] project;        // 单证项目
-    private String[] state;        // 状态
-    private Date[] validity;        // 有效期
+    /**
+     * 单证图片
+     */
+    private List<PictureUser> pictureList;
 
-    public String[] getProject() {
-        return project;
+    public List<VehicleDocumentInfo> getInfoList() {
+        return infoList;
     }
 
-    public void setProject(String[] project) {
-        this.project = project;
+    public void setInfoList(List<VehicleDocumentInfo> infoList) {
+        this.infoList = infoList;
     }
 
-    public String[] getState() {
-        return state;
+    public List<PictureUser> getPictureList() {
+        return pictureList;
     }
 
-    public void setState(String[] state) {
-        this.state = state;
-    }
-
-    public Date[] getValidity() {
-        return validity;
-    }
-
-    public void setValidity(Date[] validity) {
-        this.validity = validity;
+    public void setPictureList(List<PictureUser> pictureList) {
+        this.pictureList = pictureList;
     }
 }

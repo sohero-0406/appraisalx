@@ -109,7 +109,7 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
             DelegateUser user = delegateUserService.getByEntity(delegateUser);
             if (null == user) {
                 //生成委托书编号
-                delegateUser = delegateUserService.createDelegateLetterNum(delegateUser);
+                delegateUserService.createDelegateLetterNum(delegateUser);
                 delegateUserService.save(delegateUser);
             }
         } else {

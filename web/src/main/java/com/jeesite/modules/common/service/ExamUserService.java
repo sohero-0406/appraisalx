@@ -444,6 +444,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 					(String)examNameMap.get("1151013343664201729"),"0",
 					getIsAccidentName(checkTradableVehiclesT.getIsAccident()),getIsAccidentName(checkTradableVehiclesS.getIsAccident()),"1");
 		}
+
 		return  accidentCount;
 	}
 

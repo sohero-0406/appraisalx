@@ -26,7 +26,7 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 		@Column(name="exhaust_emission_standard", attrName="exhaustEmissionStandard", label="尾气排放标准"),
 		@Column(name="sale_conditions", attrName="saleConditions", label="销售条件"),
 		@Column(name="trade_time", attrName="tradeTime", label="交易时间"),
-		@Column(name="use_year", attrName="useYear", label="已使用年限-年"),
+		@Column(name="use_year", attrName="useYear", label="使用年限-年"),
 		@Column(name="used_time", attrName="usedTime", label="已使用时间"),
 		@Column(name="appraisal_score", attrName="appraisalScore", label="技术鉴定分值"),
 		@Column(name="new_rate", attrName="newRate", label="成新率", comment="成新率(%)"),
@@ -50,7 +50,7 @@ public class Reference extends PreEntity<Reference> {
 	private String exhaustEmissionStandard;		// 尾气排放标准
 	private String saleConditions;		// 销售条件
 	private String tradeTime;		// 交易时间
-	private Integer useYear;		// 已使用年限-年
+	private Integer useYear;		// 使用年限-年
 	private String usedTime;		// 已使用时间
 	private String appraisalScore;		// 技术鉴定分值
 	private String newRate;		// 成新率(%)

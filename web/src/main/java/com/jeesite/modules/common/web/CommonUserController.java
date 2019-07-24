@@ -100,10 +100,6 @@ public class CommonUserController extends BaseController {
     /**
      * 用户登录功能
      */
-
-    /**
-     * 删除common_user
-     */
     @RequestMapping(value = "login")
     @ResponseBody
     public CommonResult login(LoginVO vo) {

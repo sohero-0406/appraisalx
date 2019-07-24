@@ -95,6 +95,7 @@ public class CalculateDepreciationService extends CrudService<CalculateDepreciat
 
     /**
      * 计算
+     *
      * @param calculateDepreciation
      * @param examUser
      * @return
@@ -131,10 +132,14 @@ public class CalculateDepreciationService extends CrudService<CalculateDepreciat
             calculateDepreciation.setUseYear(useYear);
             calculateDepreciation.setDepreciationRate(depreciation.toString());
             depreciation = depreciation.divide(new BigDecimal(100));
-            BigDecimal salePrice = new BigDecimal(calculateDepreciation.getSalePrice());
+            BigDecimal salePrice = new BigDecimal(calculateDepreciation.getSalePrice())
+                    .setScale(2, BigDecimal.ROUND_HALF_UP);
             BigDecimal price = salePrice.multiply(new BigDecimal(1).subtract(depreciation))
                     .setScale(2, BigDecimal.ROUND_HALF_UP);
             calculateDepreciation.setPrice(price.doubleValue());
+            String process = "评估价格=二手车价格=车辆销售价格×（1-年限折旧率之和）=" + salePrice.toString() + "*（1-"
+                    + depreciation + ")=" + price.toString() + "元";
+            calculateDepreciation.setProcess(process);
         }
         return calculateDepreciation;
     }

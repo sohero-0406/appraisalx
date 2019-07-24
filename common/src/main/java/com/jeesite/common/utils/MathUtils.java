@@ -19,4 +19,13 @@ public class MathUtils {
         String newNum = num.split("%")[0];
         return new BigDecimal(newNum).divide(new BigDecimal(100), 4, BigDecimal.ROUND_HALF_UP);
     }
+
+    /**
+     * 将数字添加%返回
+     * @param num
+     * @return
+     */
+    public static String addPercent(BigDecimal num) {
+        return num.multiply(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP) + "%";
+    }
 }

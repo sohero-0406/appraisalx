@@ -29,7 +29,7 @@ public class Calculate extends PreEntity<Calculate> {
 	private static final long serialVersionUID = 1L;
 	private String examUserId;		// 外键id
 	private String paperId;		// 试卷id
-	private String type;		// 算法类型
+	private String type;		// 算法类型（1-折旧率估值法 2-公里数估值法 3-重置成本法 4-现行市价法）
 	private Double beginPrice;		// 得分价格开始值
 	private Double endPrice;		// 得分价格结束值
 	

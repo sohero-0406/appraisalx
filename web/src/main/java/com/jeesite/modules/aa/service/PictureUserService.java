@@ -154,12 +154,16 @@ public class PictureUserService extends CrudService<PictureUserDao, PictureUser>
 		return comRes;
     }
 
-    public List<PictureUser> findVehiclePicture(ExamUser examUser){
-		String [] parentTypeIds = new String[]{"1143439093974253568"};//记录车辆基本信息
+	/**
+	 * 查询子项图片
+	 * @param examUser
+	 * @param parentTypeIds
+	 * @return
+	 */
+    public List<PictureUser> findChildPicture(ExamUser examUser,String[] parentTypeIds){
 		return this.pictureUserDao.findListByExamUserIdAndParentTypeId(examUser, parentTypeIds);
-
-
 	}
+
 	/**
 	 * 加载图片列表
 	 * @param examUser 考生用户

@@ -11,7 +11,7 @@ import com.jeesite.modules.aa.vo.AppraisalReportVO;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.entity.VehicleInfo;
 import com.jeesite.modules.common.service.VehicleInfoService;
-import com.jeesite.modules.common.utils.MoneyUtils;
+import com.jeesite.common.utils.MoneyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

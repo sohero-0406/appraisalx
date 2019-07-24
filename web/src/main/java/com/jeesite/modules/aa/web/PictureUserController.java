@@ -82,7 +82,8 @@ public class PictureUserController extends BaseController {
 	public CommonResult findVehiclePicture(){
 		ExamUser examUser = UserUtils.getExamUser();
 		CommonResult comRes = new CommonResult();
-		List<PictureUser> pictureUserList = pictureUserService.findVehiclePicture(examUser);
+		String [] parentTypeIds = new String[]{"1143439093974253568"};//记录车辆基本信息
+		List<PictureUser> pictureUserList = pictureUserService.findChildPicture(examUser,parentTypeIds);
 		comRes.setData(pictureUserList);
 		return comRes;
 	}

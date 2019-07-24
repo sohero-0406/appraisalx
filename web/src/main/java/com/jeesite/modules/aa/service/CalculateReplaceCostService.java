@@ -8,10 +8,7 @@ import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.service.CrudService;
 import com.jeesite.common.utils.MathUtils;
 import com.jeesite.modules.aa.dao.CalculateReplaceCostDao;
-import com.jeesite.modules.aa.entity.Calculate;
-import com.jeesite.modules.aa.entity.CalculateReplaceCost;
-import com.jeesite.modules.aa.entity.Tax;
-import com.jeesite.modules.aa.entity.VehicleGradeAssess;
+import com.jeesite.modules.aa.entity.*;
 import com.jeesite.modules.common.entity.Exam;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.service.ExamService;
@@ -20,6 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import com.jeesite.common.entity.Page;
+import com.jeesite.common.service.CrudService;
+import com.jeesite.modules.aa.dao.CalculateReplaceCostDao;
 
 /**
  * 重置成本法Service
@@ -42,6 +42,9 @@ public class CalculateReplaceCostService extends CrudService<CalculateReplaceCos
 
     @Autowired
     private TaxService taxService;
+
+    @Autowired
+    private CarInfoService carInfoService;
 
     /**
      * 获取单条数据
@@ -164,6 +167,29 @@ public class CalculateReplaceCostService extends CrudService<CalculateReplaceCos
             provideUseMonth = new BigDecimal(cost.getProvideUseYear()).multiply(new BigDecimal(12));
             tecNewRateCoefficient = MathUtils.removePercent(cost.getTecNewRateCoefficient());
         }
+        //年限成新率系数
+        BigDecimal yearNewRateCoefficient = new BigDecimal(1).subtract(tecNewRateCoefficient);
+
+        //查询已使用年限
+        CarInfo carInfo = new CarInfo();
+        carInfo.setExamUserId(examUser.getId());
+        carInfo.setPaperId(examUser.getPaperId());
+        carInfo = carInfoService.getByEntity(carInfo);
+        if (null == carInfo) {
+            return cost;
+        }
+        Integer useYear = carInfo.getUseYear();
+        Integer useMonth = carInfo.getUseMonth();
+        if (useYear == null) {
+            useYear = 0;
+        }
+        if (useMonth == null) {
+            useMonth = 0;
+        }
+
+        //已使用年限
+        BigDecimal usedLife = new BigDecimal(useYear).multiply(new BigDecimal(12)).add(new BigDecimal(useMonth));
+
         //查询系统税率
         Tax tax = taxService.getByEntity(new Tax());
         if (tax == null) {
@@ -175,9 +201,41 @@ public class CalculateReplaceCostService extends CrudService<CalculateReplaceCos
         BigDecimal vat = MathUtils.removePercent(tax.getVat());
 
         //开始计算
+        StringBuilder process = new StringBuilder();
         //车辆购置税
         BigDecimal purchaseTax = salePrice.divide(new BigDecimal(1).add(vat), 6, BigDecimal.ROUND_HALF_UP)
                 .multiply(purchase).setScale(2, BigDecimal.ROUND_HALF_UP);
+        cost.setPurchaseTax(purchaseTax.doubleValue());
+        process.append("车辆购置税=新车销售价格（含增值税）/（1+增值税率）×车辆购置税税率=" + salePrice + "/(1+" + vat
+                + ")×" + purchase + "=" + purchaseTax + "元;");
+        //更新重置成本
+        BigDecimal updateRepeatCost = salePrice.add(purchaseTax).add(licenseFee);
+        cost.setUpdateRepeatCost(updateRepeatCost.doubleValue());
+        process.append("更新重置成本=新车销售价格（含增值税）+车辆购置税+牌照费=" + salePrice + "+" + purchaseTax + "+"
+                + licenseFee + "=" + updateRepeatCost + "元;");
+        //年限成新率
+        BigDecimal yearNewRate = new BigDecimal(1)
+                .subtract(usedLife.divide(provideUseMonth, 4, BigDecimal.ROUND_HALF_UP));
+        cost.setYearNewRate(MathUtils.addPercent(yearNewRate));
+        process.append("年限成新率=（1-已使用年限/规定使用年限）×100%="
+                + MathUtils.addPercent(yearNewRate) + ";");
+        //技术成新率
+        BigDecimal tecNewRate = score.divide(new BigDecimal(100), 4, BigDecimal.ROUND_HALF_UP);
+        cost.setTecNewRate(MathUtils.addPercent(tecNewRate));
+        process.append("技术成新率=车辆技术状况分值/100×100%=" + score + "/100×100%="
+                + MathUtils.addPercent(tecNewRate) + ";");
+        //综合成新率
+        BigDecimal allNewRate = yearNewRate.multiply(yearNewRateCoefficient)
+                .add(tecNewRate.multiply(tecNewRateCoefficient)).setScale(4, BigDecimal.ROUND_HALF_UP);
+        cost.setAllNewRate(MathUtils.addPercent(allNewRate));
+        process.append("综合成新率=年限成新率×年限成新率系数+技术鉴定成新率×技术鉴定成新率系数="
+                + yearNewRate + "×" + yearNewRateCoefficient + "+" + tecNewRate + "×" + tecNewRateCoefficient + "="
+                + MathUtils.addPercent(allNewRate) + ";");
+        //评估价格
+        BigDecimal price = updateRepeatCost.multiply(allNewRate).setScale(2, BigDecimal.ROUND_HALF_UP);
+        cost.setPrice(price.doubleValue());
+        process.append("评估价格=更新重置成本×综合成新率=" + updateRepeatCost + "×" + allNewRate + "=" + price + "元;");
+        cost.setProcess(process.toString());
         return cost;
     }
 }

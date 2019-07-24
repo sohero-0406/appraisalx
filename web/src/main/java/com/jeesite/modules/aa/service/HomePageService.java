@@ -9,6 +9,7 @@ import com.jeesite.modules.aa.vo.HomePageVO;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.entity.VehicleInfo;
 import com.jeesite.modules.common.service.ExamUserService;
+import com.jeesite.modules.common.service.HttpClientService;
 import com.jeesite.modules.common.service.VehicleInfoService;
 import com.jeesite.modules.common.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,12 +40,13 @@ public class HomePageService {
     private PaperService paperService;
     @Autowired
     private ExamUserService examUserService;
+    @Autowired
+    private HttpClientService httpClientService;
 
     /**
      * 加载首页界面(学生)
      */
     public HomePageVO loadHomePageStu(HomePageVO homePageVO) {
-
         if(StringUtils.isBlank(homePageVO.getSort())){
             //排序规则为空，默认降序
             homePageVO.setSort("2");

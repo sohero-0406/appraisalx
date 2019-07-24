@@ -6,7 +6,6 @@ package com.jeesite.modules.aa.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.jeesite.modules.aa.vo.VehicleDocumentInfoVO;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.utils.UserUtils;

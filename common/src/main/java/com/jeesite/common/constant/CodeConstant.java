@@ -1,7 +1,7 @@
 package com.jeesite.common.constant;
 
 /**
- *
+ *  接口返回状态码
  */
 public class CodeConstant {
 

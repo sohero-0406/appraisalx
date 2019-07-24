@@ -17,10 +17,10 @@
 		left join aa_picture_user as pictureUser on pictureType.id=pictureUser.picture_type_id
 		<where>
 			<if test="examUser.id != null and examUser.id != ''">
-				and exam_user_id = #{examUser.id}
+				and pictureUser.exam_user_id = #{examUser.id}
 			</if>
 			<if test="examUser.paperId != null and examUser.paperId != ''">
-				and paper_id = #{examUser.paperId}
+				and pictureUser.paper_id = #{examUser.paperId}
 			</if>
 			<if test="pictureTypeIds != null and pictureTypeIds.length > 0">
 				and pictureType.id in
@@ -53,8 +53,7 @@
 		</where>
 	</select>
 	<select id="findListByExamUserIdAndParentTypeId" resultType="PictureUser">
-		select pictureUser.id as "pictureUser.id",pictureUser.url as "pictureUser.url",
-		pictureUser.picture_type_id as "pictureUser.pictureTypeId",pictureUser.name as "pictureUser.name"
+		select pictureUser.id,pictureUser.url,pictureUser.picture_type_id,pictureUser.name
 		from aa_picture_user as pictureUser
 		left join aa_picture_type as pictureType on pictureType.id=pictureUser.picture_type_id
 		<where>

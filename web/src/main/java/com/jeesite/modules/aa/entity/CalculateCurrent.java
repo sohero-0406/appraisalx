@@ -13,13 +13,13 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 
 /**
  * 现行市价法Entity
- * @author chenlitao
- * @version 2019-07-05
+ * @author lvchangwei
+ * @version 2019-07-22
  */
 @Table(name="aa_calculate_current", alias="a", columns={
 		@Column(name="id", attrName="id", label="主键，现行市价法", isPK=true),
 		@Column(name="is_compute_new_rate", attrName="isComputeNewRate", label="是否计算成新率，1", comment="是否计算成新率，1：是，0：否"),
-		@Column(name="provide_use_year", attrName="provideUseYear", label="规定使用年限"),
+		@Column(name="calculate_id", attrName="calculateId", label="外键id"),
 		@Column(name="p1_type", attrName="p1Type", label="参照物1的价格更有益的车辆0", comment="参照物1的价格更有益的车辆0：参照车辆，1是评估车辆"),
 		@Column(name="param1_id", attrName="param1Id", label="参照物1的id"),
 		@Column(name="p1_excellent_price", attrName="p1ExcellentPrice", label="参照物1的优异价格"),
@@ -36,16 +36,27 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 		@Column(name="p2_k3", attrName="p2K3", label="参照物2的k3"),
 		@Column(name="p2_k4", attrName="p2K4", label="参照物2的k4"),
 		@Column(name="p2_price", attrName="p2Price", label="参照物2的评估值"),
-		@Column(name="process", attrName="process", label="计算过程"),
 		@Column(name="price", attrName="price", label="评估价格"),
-		@Column(name="calculate_id", attrName="calculateId", label="外键id"),
+		@Column(name="p1_process", attrName="p1Process", label="参照物1的计算过程"),
+		@Column(name="p2_process", attrName="p2Process", label="参照物2的计算过程"),
+		@Column(name="configuration_type", attrName="configurationType", label="车辆配置类型"),
+		@Column(name="engine_type", attrName="engineType", label="发动机类型"),
+		@Column(name="transmission_type", attrName="transmissionType", label="变速箱类型"),
+		@Column(name="trade_time", attrName="tradeTime", label="交易时间"),
+		@Column(name="use_year", attrName="useYear", label="使用年限-年"),
+		@Column(name="new_rate", attrName="newRate", label="成新率", comment="成新率(%)"),
+		@Column(name="payment_type", attrName="paymentType", label="付款方式"),
+		@Column(name="trade_place", attrName="tradePlace", label="二手车交易地点"),
+		@Column(name="price_index", attrName="priceIndex", label="物价指数"),
+		@Column(name="process", attrName="process", label="计算过程"),
+		@Column(includeEntity=DataEntity.class),
 	}, orderBy="a.update_date DESC"
 )
 public class CalculateCurrent extends PreEntity<CalculateCurrent> {
 	
 	private static final long serialVersionUID = 1L;
 	private String isComputeNewRate;		// 是否计算成新率，1：是，0：否
-	private String provideUseYear;		// 规定使用年限
+	private String calculateId;		// 外键id
 	private String p1Type;		// 参照物1的价格更有益的车辆0：参照车辆，1是评估车辆
 	private String param1Id;		// 参照物1的id
 	private Double p1ExcellentPrice;		// 参照物1的优异价格
@@ -62,9 +73,19 @@ public class CalculateCurrent extends PreEntity<CalculateCurrent> {
 	private Double p2K3;		// 参照物2的k3
 	private Double p2K4;		// 参照物2的k4
 	private Double p2Price;		// 参照物2的评估值
-	private String process;		//计算过程
 	private Double price;		// 评估价格
-	private String calculateId;		// 外键id
+	private String p1Process;		// 参照物1的计算过程
+	private String p2Process;		// 参照物2的计算过程
+	private String configurationType;		// 车辆配置类型
+	private String engineType;		// 发动机类型
+	private String transmissionType;		// 变速箱类型
+	private String tradeTime;		// 交易时间
+	private Integer useYear;		// 使用年限-年
+	private String newRate;		// 成新率(%)
+	private String paymentType;		// 付款方式
+	private String tradePlace;		// 二手车交易地点
+	private String priceIndex;		// 物价指数
+	private String process;		// 计算过程
 	
 	public CalculateCurrent() {
 		this(null);
@@ -83,15 +104,15 @@ public class CalculateCurrent extends PreEntity<CalculateCurrent> {
 		this.isComputeNewRate = isComputeNewRate;
 	}
 	
-	@Length(min=0, max=2, message="规定使用年限长度不能超过 2 个字符")
-	public String getProvideUseYear() {
-		return provideUseYear;
+	@Length(min=0, max=64, message="外键id长度不能超过 64 个字符")
+	public String getCalculateId() {
+		return calculateId;
 	}
 
-	public void setProvideUseYear(String provideUseYear) {
-		this.provideUseYear = provideUseYear;
+	public void setCalculateId(String calculateId) {
+		this.calculateId = calculateId;
 	}
-	
+
 	@Length(min=0, max=1, message="参照物1的价格更有益的车辆0长度不能超过 1 个字符")
 	public String getP1Type() {
 		return p1Type;
@@ -223,16 +244,7 @@ public class CalculateCurrent extends PreEntity<CalculateCurrent> {
 	public void setP2Price(Double p2Price) {
 		this.p2Price = p2Price;
 	}
-
-	@Length(min=0, max=512, message="计算过程长度不能超过 512 个字符")
-	public String getProcess() {
-		return process;
-	}
-
-	public void setProcess(String process) {
-		this.process = process;
-	}
-
+	
 	public Double getPrice() {
 		return price;
 	}
@@ -241,13 +253,111 @@ public class CalculateCurrent extends PreEntity<CalculateCurrent> {
 		this.price = price;
 	}
 	
-	@Length(min=0, max=64, message="外键id长度不能超过 64 个字符")
-	public String getCalculateId() {
-		return calculateId;
+	@Length(min=0, max=2048, message="参照物1的计算过程长度不能超过 2048 个字符")
+	public String getP1Process() {
+		return p1Process;
 	}
 
-	public void setCalculateId(String calculateId) {
-		this.calculateId = calculateId;
+	public void setP1Process(String p1Process) {
+		this.p1Process = p1Process;
+	}
+	
+	@Length(min=0, max=2048, message="参照物2的计算过程长度不能超过 2048 个字符")
+	public String getP2Process() {
+		return p2Process;
+	}
+
+	public void setP2Process(String p2Process) {
+		this.p2Process = p2Process;
+	}
+	
+	@Length(min=0, max=10, message="车辆配置类型长度不能超过 10 个字符")
+	public String getConfigurationType() {
+		return configurationType;
+	}
+
+	public void setConfigurationType(String configurationType) {
+		this.configurationType = configurationType;
+	}
+	
+	@Length(min=0, max=10, message="发动机类型长度不能超过 10 个字符")
+	public String getEngineType() {
+		return engineType;
+	}
+
+	public void setEngineType(String engineType) {
+		this.engineType = engineType;
+	}
+	
+	@Length(min=0, max=10, message="变速箱类型长度不能超过 10 个字符")
+	public String getTransmissionType() {
+		return transmissionType;
+	}
+
+	public void setTransmissionType(String transmissionType) {
+		this.transmissionType = transmissionType;
+	}
+	
+	@Length(min=0, max=32, message="交易时间长度不能超过 32 个字符")
+	public String getTradeTime() {
+		return tradeTime;
+	}
+
+	public void setTradeTime(String tradeTime) {
+		this.tradeTime = tradeTime;
+	}
+	
+	public Integer getUseYear() {
+		return useYear;
+	}
+
+	public void setUseYear(Integer useYear) {
+		this.useYear = useYear;
+	}
+	
+	@Length(min=0, max=32, message="成新率长度不能超过 32 个字符")
+	public String getNewRate() {
+		return newRate;
+	}
+
+	public void setNewRate(String newRate) {
+		this.newRate = newRate;
+	}
+	
+	@Length(min=0, max=10, message="付款方式长度不能超过 10 个字符")
+	public String getPaymentType() {
+		return paymentType;
+	}
+
+	public void setPaymentType(String paymentType) {
+		this.paymentType = paymentType;
+	}
+	
+	@Length(min=0, max=128, message="二手车交易地点长度不能超过 128 个字符")
+	public String getTradePlace() {
+		return tradePlace;
+	}
+
+	public void setTradePlace(String tradePlace) {
+		this.tradePlace = tradePlace;
+	}
+	
+	@Length(min=0, max=16, message="物价指数长度不能超过 16 个字符")
+	public String getPriceIndex() {
+		return priceIndex;
+	}
+
+	public void setPriceIndex(String priceIndex) {
+		this.priceIndex = priceIndex;
+	}
+	
+	@Length(min=0, max=512, message="计算过程长度不能超过 512 个字符")
+	public String getProcess() {
+		return process;
+	}
+
+	public void setProcess(String process) {
+		this.process = process;
 	}
 	
 }

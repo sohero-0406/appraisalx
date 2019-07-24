@@ -6,6 +6,11 @@ package com.jeesite.modules.aa.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.jeesite.modules.aa.entity.CalculateReplaceCost;
+import com.jeesite.modules.common.entity.CommonResult;
+import com.jeesite.modules.common.entity.ExamUser;
+import com.jeesite.modules.common.utils.UserUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,8 +28,8 @@ import com.jeesite.modules.aa.service.CalculateCurrentService;
 
 /**
  * 现行市价法Controller
- * @author chenlitao
- * @version 2019-07-05
+ * @author lvchangwei
+ * @version 2019-07-22
  */
 @Controller
 @RequestMapping(value = "${adminPath}/aa/calculateCurrent")
@@ -89,5 +94,17 @@ public class CalculateCurrentController extends BaseController {
 		calculateCurrentService.delete(calculateCurrent);
 		return renderResult(Global.TRUE, text("删除现行市价法成功！"));
 	}
-	
+
+	/**
+	 * 计算
+	 */
+	@RequestMapping(value = "calculate")
+	@ResponseBody
+	public CommonResult calculate(CalculateCurrent calculateCurrent) {
+		ExamUser examUser = UserUtils.getExamUser();
+		calculateCurrent = calculateCurrentService.calculate(calculateCurrent, examUser);
+		CommonResult result = new CommonResult();
+		result.setData(calculateCurrent);
+		return result;
+	}
 }

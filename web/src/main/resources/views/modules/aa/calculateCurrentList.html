@@ -22,6 +22,12 @@
 					</div>
 				</div>
 				<div class="form-group">
+					<label class="control-label">${text('外键id')}：</label>
+					<div class="control-inline">
+						<#form:input path="calculateId" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
 					<label class="control-label">${text('规定使用年限')}：</label>
 					<div class="control-inline">
 						<#form:input path="provideUseYear" maxlength="2" class="form-control width-120"/>
@@ -130,9 +136,87 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="control-label">${text('外键id')}：</label>
+					<label class="control-label">${text('参照物1的计算过程')}：</label>
 					<div class="control-inline">
-						<#form:input path="calculateId" maxlength="64" class="form-control width-120"/>
+						<#form:input path="p1Process" maxlength="2048" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('参照物2的计算过程')}：</label>
+					<div class="control-inline">
+						<#form:input path="p2Process" maxlength="2048" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('车辆配置类型')}：</label>
+					<div class="control-inline">
+						<#form:input path="configurationType" maxlength="10" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('发动机类型')}：</label>
+					<div class="control-inline">
+						<#form:input path="engineType" maxlength="10" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('变速箱类型')}：</label>
+					<div class="control-inline">
+						<#form:input path="transmissionType" maxlength="10" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('交易时间')}：</label>
+					<div class="control-inline">
+						<#form:input path="tradeTime" maxlength="32" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('使用年限-年')}：</label>
+					<div class="control-inline">
+						<#form:input path="useYear" maxlength="10" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('成新率')}：</label>
+					<div class="control-inline">
+						<#form:input path="newRate" maxlength="32" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('付款方式')}：</label>
+					<div class="control-inline">
+						<#form:input path="paymentType" maxlength="10" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('二手车交易地点')}：</label>
+					<div class="control-inline">
+						<#form:input path="tradePlace" maxlength="128" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('物价指数')}：</label>
+					<div class="control-inline">
+						<#form:input path="priceIndex" maxlength="16" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('计算过程')}：</label>
+					<div class="control-inline">
+						<#form:input path="process" maxlength="512" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('状态')}：</label>
+					<div class="control-inline width-120">
+						<#form:select path="status" dictType="sys_search_status" blankOption="true" class="form-control"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('备注信息')}：</label>
+					<div class="control-inline">
+						<#form:input path="remarks" maxlength="500" class="form-control width-120"/>
 					</div>
 				</div>
 				<div class="form-group">
@@ -154,6 +238,7 @@ $('#dataGrid').dataGrid({
 		{header:'${text("是否计算成新率，1")}', name:'isComputeNewRate', index:'a.is_compute_new_rate', width:150, align:"left", frozen:true, formatter: function(val, obj, row, act){
 			return '<a href="${ctx}/aa/calculateCurrent/form?id='+row.id+'" class="btnList" data-title="${text("编辑现行市价法")}">'+(val||row.id)+'</a>';
 		}},
+		{header:'${text("外键id")}', name:'calculateId', index:'a.calculate_id', width:150, align:"left"},
 		{header:'${text("规定使用年限")}', name:'provideUseYear', index:'a.provide_use_year', width:150, align:"left"},
 		{header:'${text("参照物1的价格更有益的车辆0")}', name:'p1Type', index:'a.p1_type', width:150, align:"left"},
 		{header:'${text("参照物1的id")}', name:'param1Id', index:'a.param1_id', width:150, align:"left"},
@@ -198,7 +283,23 @@ $('#dataGrid').dataGrid({
 		{header:'${text("评估价格")}', name:'price', index:'a.price', width:150, align:"right", formatter: function(val, obj, row, act){
 			return js.formatNumber(val, 2, false, ''); // 数值类型格式化 (原始数值, 小数位数, 是否千分位, 默认值，金额情况下设置0.00);
 		}},
-		{header:'${text("外键id")}', name:'calculateId', index:'a.calculate_id', width:150, align:"left"},
+		{header:'${text("参照物1的计算过程")}', name:'p1Process', index:'a.p1_process', width:150, align:"left"},
+		{header:'${text("参照物2的计算过程")}', name:'p2Process', index:'a.p2_process', width:150, align:"left"},
+		{header:'${text("车辆配置类型")}', name:'configurationType', index:'a.configuration_type', width:150, align:"left"},
+		{header:'${text("发动机类型")}', name:'engineType', index:'a.engine_type', width:150, align:"left"},
+		{header:'${text("变速箱类型")}', name:'transmissionType', index:'a.transmission_type', width:150, align:"left"},
+		{header:'${text("交易时间")}', name:'tradeTime', index:'a.trade_time', width:150, align:"left"},
+		{header:'${text("使用年限-年")}', name:'useYear', index:'a.use_year', width:150, align:"center"},
+		{header:'${text("成新率")}', name:'newRate', index:'a.new_rate', width:150, align:"left"},
+		{header:'${text("付款方式")}', name:'paymentType', index:'a.payment_type', width:150, align:"left"},
+		{header:'${text("二手车交易地点")}', name:'tradePlace', index:'a.trade_place', width:150, align:"left"},
+		{header:'${text("物价指数")}', name:'priceIndex', index:'a.price_index', width:150, align:"left"},
+		{header:'${text("计算过程")}', name:'process', index:'a.process', width:150, align:"left"},
+		{header:'${text("状态")}', name:'status', index:'a.status', width:150, align:"center", formatter: function(val, obj, row, act){
+			return js.getDictLabel(${@DictUtils.getDictListJson('sys_search_status')}, val, '${text("未知")}', true);
+		}},
+		{header:'${text("更新时间")}', name:'updateDate', index:'a.update_date', width:150, align:"center"},
+		{header:'${text("备注信息")}', name:'remarks', index:'a.remarks', width:150, align:"left"},
 		{header:'${text("操作")}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
 			var actions = [];
 			<% if(hasPermi('aa:calculateCurrent:edit')){ %>

@@ -5,6 +5,7 @@ package com.jeesite.modules.aa.service;
 
 import java.util.List;
 
+import com.jeesite.modules.common.entity.ExamUser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,8 +16,8 @@ import com.jeesite.modules.aa.dao.CalculateCurrentDao;
 
 /**
  * 现行市价法Service
- * @author chenlitao
- * @version 2019-07-05
+ * @author lvchangwei
+ * @version 2019-07-22
  */
 @Service
 @Transactional(readOnly=true)
@@ -73,7 +74,22 @@ public class CalculateCurrentService extends CrudService<CalculateCurrentDao, Ca
 		super.delete(calculateCurrent);
 	}
 
-    public CalculateCurrent getByEntity(CalculateCurrent calculateCurrent) {
+	public CalculateCurrent getByEntity(CalculateCurrent calculateCurrent) {
 		return dao.getByEntity(calculateCurrent);
-    }
+	}
+
+	/**
+	 * 计算
+	 * @param calculateCurrent
+	 * @param examUser
+	 * @return
+	 */
+	public CalculateCurrent calculate(CalculateCurrent calculateCurrent, ExamUser examUser) {
+
+
+
+
+
+		return calculateCurrent;
+	}
 }
