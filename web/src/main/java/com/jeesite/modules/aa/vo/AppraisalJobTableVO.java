@@ -11,7 +11,8 @@ public class AppraisalJobTableVO {
     private List<VehicleInstallInfo> vehicleInstallInfoList;      //车辆加装信息
     private List<VehicleDocumentInfo> vehicleDocumentInfoList;        //车辆单证信息
     private VehicleInfo vehicleInfo;        //车辆配置全表
-    private CheckBodySkeleton checkBodySkeleton;        //检查车体骨架
+    private List<CheckBodySkeleton> checkBodySkeletonList;        //检查车体骨架
+//    private ListIdentifyTec
     private IdentifyTecDetail identifyTecDetail;        //鉴定技术状况详情
     private VehicleGradeAssess vehicleGradeAssess;      //车辆等级评定
     private DelegateLetter delegateLetter;      //委托书信息
@@ -48,12 +49,12 @@ public class AppraisalJobTableVO {
         this.vehicleInfo = vehicleInfo;
     }
 
-    public CheckBodySkeleton getCheckBodySkeleton() {
-        return checkBodySkeleton;
+    public List<CheckBodySkeleton> getCheckBodySkeletonList() {
+        return checkBodySkeletonList;
     }
 
-    public void setCheckBodySkeleton(CheckBodySkeleton checkBodySkeleton) {
-        this.checkBodySkeleton = checkBodySkeleton;
+    public void setCheckBodySkeletonList(List<CheckBodySkeleton> checkBodySkeletonList) {
+        this.checkBodySkeletonList = checkBodySkeletonList;
     }
 
     public IdentifyTecDetail getIdentifyTecDetail() {
