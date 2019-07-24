@@ -5,8 +5,10 @@ package com.jeesite.modules.aa.dao;
 
 import com.jeesite.common.dao.CrudDao;
 import com.jeesite.common.mybatis.annotation.MyBatisDao;
+import com.jeesite.modules.aa.entity.CheckBodySkeleton;
 import com.jeesite.modules.aa.entity.ExamResultsDetail;
 import com.jeesite.modules.aa.entity.TechnologyInfo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -20,5 +22,13 @@ import java.util.Map;
 public interface ExamResultsDetailDao extends CrudDao<ExamResultsDetail> {
 
     //获取不等分项--鉴定技术部分
-    List<TechnologyInfo> getExamResults(String examUserId, String paperId);
+    List<TechnologyInfo> getExamResults(@Param("examUserId") String examUserId, @Param("paperId") String paperId);
+
+    //获取车架
+    List<CheckBodySkeleton> getCheckBodySkeleton(@Param("examUserId") String examUserId, @Param("paperId") String paperId);
+
+    //获取字典值
+    List<Map<String,String>> getCarBodyDic();
+
+
 }

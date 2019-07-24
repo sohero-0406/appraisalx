@@ -45,7 +45,7 @@
 			aa_identify_tec tec
 			left join aa_identify_tec_detail detail on detail.indentity_tec_id = tec.id
 			left join aa_technology_info info on info.id = detail.technology_info_id
-			where tec.paper_id = '1151374360001810432' )
+			where tec.paper_id = #{paperId} )
 			UNION All
 			(SELECT
 			detail.id,
@@ -59,11 +59,37 @@
 			aa_identify_tec tec
 			left join aa_identify_tec_detail detail on detail.indentity_tec_id = tec.id
 			left join aa_technology_info info on info.id = detail.technology_info_id
-			where tec.exam_user_id = '2000'  ) ) a
+			where tec.exam_user_id = #{examUserId}  ) ) a
 			left join aa_technology_info tecInfo on tecInfo.id = a.technology_info_id
 
-
-
 	</select>
+
+	<select id="getCheckBodySkeleton" resultType="CheckBodySkeleton">
+			select
+			body.exam_user_id,
+			body.paper_id,
+			body.state,
+			body.description,
+			body.technology_info_id as project,
+			(
+			select data.dict_label from js_sys_dict_data  data
+			where data.dict_type = 'aa_car_body_skeleton' and data.dict_value = body.technology_info_id
+			) as projectName
+			from
+			aa_check_body_skeleton  body
+			<where>
+				<if test="paperId != null and paperId != ''">
+					and body.paper_id = #{paperId}
+				</if>
+				<if test="examUserId != null and examUserId != ''">
+					and body.exam_user_id = #{examUserId}
+				</if>
+			</where>
+	</select>
+
+	<select id="getCarBodyDic" resultType="java.util.Map">
+			select  dict_label,dict_value from js_sys_dict_data where dict_type = 'aa_car_body_skeleton'
+	</select>
+
 	
 </mapper>

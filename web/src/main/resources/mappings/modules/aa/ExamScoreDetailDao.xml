@@ -44,10 +44,12 @@
 		aa_exam_score_detail as detail
 		left join aa_exam_score_classify as class on class.id = detail.score_classify_id
 		left join aa_exam_score_info as info on info.id = detail.score_info_id
-        where 1=1
-		<if test="examId != null and examId != ''">
-			and class.exam_id = #{examId}
-		</if>
+       <where>
+		   <if test="examId != null and examId != ''">
+			   and class.exam_id = #{examId}
+		   </if>
+	   </where>
+
 
 	</select>
 
