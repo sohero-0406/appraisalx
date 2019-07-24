@@ -52,7 +52,7 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
     /**
      * 查询分页数据
      *
-     * @param carInfo      查询条件
+     * @param carInfo 查询条件
      * @return
      */
     @Override
@@ -104,30 +104,29 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
         DelegateUser delegateUser = baseInfoVO.getDelegateUser();
         if (null == delegateUser) {
             delegateUser = new DelegateUser();
-            delegateUser.setExamUserId(examUser.getId());
-            delegateUser.setPaperId(examUser.getPaperId());
-            DelegateUser user = delegateUserService.getByEntity(delegateUser);
-            if (null == user) {
-                //生成委托书编号
-                delegateUserService.createDelegateLetterNum(delegateUser);
-                delegateUserService.save(delegateUser);
-            }
-        } else {
-            delegateUserService.save(delegateUser);
         }
+        delegateUser.setExamUserId(examUser.getId());
+        delegateUser.setPaperId(examUser.getPaperId());
+        DelegateUser user = delegateUserService.getByEntity(delegateUser);
+        if (null == user) {
+            //生成委托书编号
+            delegateUserService.createDelegateLetterNum(delegateUser);
+        }
+        delegateUserService.save(delegateUser);
 
         CarInfo carInfo = baseInfoVO.getCarInfo();
         if (null == carInfo) {
             carInfo = new CarInfo();
         }
         carInfo.setExamUserId(examUser.getId());
+        carInfo.setPaperId(examUser.getPaperId());
         this.save(carInfo);
     }
 
     /**
      * 加载车辆基本信息、委托方基本信息、图片信息、委托书类型列表、燃油种类列表、车身颜色列表
      *
-     * @param examUser     考生用户
+     * @param examUser       考生用户
      * @param pictureTypeIds 考生图片类型ids，多个id之间用“,”分隔
      * @return
      */
@@ -180,14 +179,15 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
 
     /**
      * 根据排序规则（正序或者倒序）返回列表
+     *
      * @param homePageVO
      * @return
      */
     public CarInfo findCarInfoBySortStu(HomePageVO homePageVO) {
-        Map<String,String> hs = new HashMap<>();
-        hs.put("examUserId",homePageVO.getCarInfo().getExamUserId());
-        hs.put("queryCriteria",homePageVO.getQueryCriteria());
-        hs.put("sort",homePageVO.getSort());
+        Map<String, String> hs = new HashMap<>();
+        hs.put("examUserId", homePageVO.getCarInfo().getExamUserId());
+        hs.put("queryCriteria", homePageVO.getQueryCriteria());
+        hs.put("sort", homePageVO.getSort());
         return carInfoDao.findCarInfoBySortStu(hs);
     }
 
