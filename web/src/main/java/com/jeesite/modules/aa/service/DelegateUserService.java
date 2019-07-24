@@ -93,7 +93,7 @@ public class DelegateUserService extends CrudService<DelegateUserDao, DelegateUs
 	 * 生成委托书编号
 	 */
 	@Transactional(readOnly=false)
-    public DelegateUser createDelegateLetterNum(DelegateUser delegateUser) {
+    public void createDelegateLetterNum(DelegateUser delegateUser) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
 		delegateUser.setEntrustDay(df.format(new Date()));
 		Integer entrustNum;
@@ -103,6 +103,5 @@ public class DelegateUserService extends CrudService<DelegateUserDao, DelegateUs
 			entrustNum = 1;
 		}
 		delegateUser.setEntrustNum(String.format("%08d", entrustNum));
-		return delegateUser;
     }
 }
