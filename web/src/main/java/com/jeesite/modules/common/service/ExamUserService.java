@@ -128,6 +128,20 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		return dao.getByEntity(examUser);
 	}
 
+	@Transactional(readOnly=false)
+	public void saveExamEndTime(String examId){
+		ExamUser examUser = new ExamUser();
+		examUser.setExamId(examId);
+		List<ExamUser> examUsers = dao.findList(examUser);
+		for(ExamUser user:examUsers){
+			//考生未结束考试时间
+			if(user.getEndTime()==null || user.getEndTime().equals("")){
+				user.setEndTime(new Date());
+				super.save(user);  //保存
+			}
+		}
+	}
+
 
 
 	//依据考试id和评分项id查询考试想分类id

@@ -25,7 +25,6 @@ import java.util.Date;
 		@Column(name="score", attrName="score", label="分数"),
 		@Column(name="start_time", attrName="startTime", label="考试开始时间"),
 		@Column(name="end_time", attrName="endTime", label="考试结束时间"),
-		@Column(name="state", attrName="state", label="考试状态"),
 		@Column(includeEntity=DataEntity.class),
 	}, orderBy="a.update_date DESC"
 )
