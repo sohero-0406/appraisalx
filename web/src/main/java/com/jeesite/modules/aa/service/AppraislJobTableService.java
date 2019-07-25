@@ -106,11 +106,57 @@ public class AppraislJobTableService {
         }
         appraisalJobTableVO.setCarInfo(carInfo);
 
+
+
         //车辆加装信息
         VehicleInstallInfo vehicleInstallInfo = new VehicleInstallInfo();
         vehicleInstallInfo.setExamUserId(examUser.getExamId());
         vehicleInstallInfo.setPaperId(examUser.getPaperId());
         List<VehicleInstallInfo> vehicleInstallInfoList = vehicleInstallInfoService.findList(vehicleInstallInfo);
+        for(VehicleInstallInfo vii: vehicleInstallInfoList){
+            String project = vii.getProject();
+            if("1".equals(project)){
+                vii.setProject("导航");
+            }else if("1".equals(project)){
+                vii.setProject("倒车影像");
+            }else if("1".equals(project)){
+                vii.setProject("倒车影像");
+            }else if("1".equals(project)){
+                vii.setProject("倒车影像");
+            }else if("1".equals(project)){
+                vii.setProject("倒车影像");
+            }else if("1".equals(project)){
+                vii.setProject("倒车影像");
+            }else if("1".equals(project)){
+                vii.setProject("倒车影像");
+            }else if("1".equals(project)){
+                vii.setProject("倒车影像");
+            }else if("1".equals(project)){
+                vii.setProject("倒车影像");
+            }else if("1".equals(project)){
+                vii.setProject("倒车影像");
+            }else if("1".equals(project)){
+                vii.setProject("倒车影像");
+            }else if("1".equals(project)){
+                vii.setProject("倒车影像");
+            }else if("1".equals(project)){
+                vii.setProject("倒车影像");
+            }else if("1".equals(project)){
+                vii.setProject("倒车影像");
+            }else if("1".equals(project)){
+                vii.setProject("倒车影像");
+            }else if("1".equals(project)){
+                vii.setProject("倒车影像");
+            }else if("1".equals(project)){
+                vii.setProject("倒车影像");
+            }else if("1".equals(project)){
+                vii.setProject("倒车影像");
+            }else if("1".equals(project)){
+                vii.setProject("倒车影像");
+            }else if("1".equals(project)){
+                vii.setProject("倒车影像");
+            }
+        }
         appraisalJobTableVO.setVehicleInstallInfoList(vehicleInstallInfoList);
 
         //车辆单证信息

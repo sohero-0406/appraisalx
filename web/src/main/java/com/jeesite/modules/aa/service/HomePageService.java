@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -147,8 +146,6 @@ public class HomePageService {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            examUser.setExamId(examUser.getExamId());
-            examUser.setState(3);
             examUserService.insert(examUser);
         }else {
             //教师
