@@ -7,6 +7,7 @@ import com.jeesite.common.config.Global;
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.common.entity.CommonResult;
+import com.jeesite.modules.common.entity.Exam;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.service.ExamUserService;
 import com.jeesite.modules.common.utils.UserUtils;
@@ -91,15 +92,15 @@ public class ExamUserController extends BaseController {
 		return renderResult(Global.TRUE, text("删除common_exam_user成功！"));
 	}
 
+
 	/**
 	 *  判考试成绩
 	 */
 	@RequestMapping(value = "gradePapers")
 	@ResponseBody
-	public CommonResult gradePapers(ExamUser examUser) {
+	public CommonResult gradePapers(Exam exam) {
 		CommonResult comRes = new CommonResult();
-
-		comRes.setData(examUserService.gradePapers());
+		comRes.setData(examUserService.gradePapers(exam));
 		return comRes;
 	}
 

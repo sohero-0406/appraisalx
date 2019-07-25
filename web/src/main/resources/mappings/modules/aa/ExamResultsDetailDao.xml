@@ -20,6 +20,7 @@
 			<result property="typeName" column="technologyInfoName"></result>
 			<result property="stuOrTec" column="stuOrTec"></result>
 			<result property="code" column="code"></result>
+			<result property="deductNum" column="deduct_num"></result>
 		</collection>
 	</resultMap>
 	<select id="getExamResults" resultMap="findDataMap">
@@ -89,6 +90,56 @@
 
 	<select id="getCarBodyDic" resultType="java.util.Map">
 			select  dict_label,dict_value from js_sys_dict_data where dict_type = 'aa_car_body_skeleton'
+	</select>
+
+	<select id="validationData" resultType="ExamResultsDetail">
+		select
+			result.exam_user_id,
+			result.score_points,
+			result.right_or_wrong,
+			result.teacher_answer,
+			result.student_answer
+			from aa_exam_results_detail result
+			left join aa_exam_score_classify  class on class.id = result.score_classify_id
+			where class.exam_score_info_id = '1151028180615991297'
+			and result.exam_user_id = #{examUserId}
+	</select>
+
+
+	<resultMap id="findExamResultsDetail" type="ExamScoreClassify">
+		<id property="id" column="id"></id>
+		<result property="examScoreInfoId" column="exam_score_info_id"></result>
+		<result property="name" column="name"></result>
+		<collection property="examResultsDetailList" ofType="ExamResultsDetail">
+			<id property="id" column="detailId"></id>
+			<result property="examUserId" column="exam_user_id"></result>
+			<result property="scorePoints" column="score_points"></result>
+			<result property="score" column="score"></result>
+			<result property="studentAnswer" column="student_answer"></result>
+			<result property="teacherAnswer" column="teacher_answer"></result>
+			<result property="rightOrWrong" column="right_or_wrong"></result>
+		</collection>
+	</resultMap>
+
+	<select id="getExamResultsDetail" resultMap="findExamResultsDetail">
+		select
+        class.id,
+        class.exam_score_info_id,
+		info.name as name,
+        detail.id as detailId,
+        detail.exam_user_id,
+        detail.score_points,
+        detail.score,
+        detail.student_answer,
+        detail.teacher_answer,
+        detail.right_or_wrong
+		from
+		aa_exam_results_detail detail
+		left join aa_exam_score_classify class on class.id = detail.score_classify_id
+		left join aa_exam_score_info info on class.exam_score_info_id = info.id
+		where detail.exam_user_id = '2000'
+
+
 	</select>
 
 	

@@ -34,6 +34,8 @@ public class ExamScoreClassify extends PreEntity<ExamScoreClassify> {
 
  	//非数据库字段
 	private List<ExamScoreDetail> itemList;
+	private List<ExamResultsDetail> examResultsDetailList;
+	private String name;
 	
 	public ExamScoreClassify() {
 		this(null);
@@ -76,5 +78,21 @@ public class ExamScoreClassify extends PreEntity<ExamScoreClassify> {
 
 	public void setItemList(List<ExamScoreDetail> itemList) {
 		this.itemList = itemList;
+	}
+
+	public List<ExamResultsDetail> getExamResultsDetailList() {
+		return examResultsDetailList;
+	}
+
+	public void setExamResultsDetailList(List<ExamResultsDetail> examResultsDetailList) {
+		this.examResultsDetailList = examResultsDetailList;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }

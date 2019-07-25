@@ -8,9 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.jeesite.common.lang.StringUtils;
-import com.jeesite.modules.aa.entity.CheckBodySkeleton;
-import com.jeesite.modules.aa.entity.IdentifyTecDetail;
-import com.jeesite.modules.aa.entity.TechnologyInfo;
+import com.jeesite.modules.aa.entity.*;
 import com.jeesite.modules.common.entity.Exam;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.service.ExamService;
@@ -21,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.service.CrudService;
-import com.jeesite.modules.aa.entity.ExamResultsDetail;
 import com.jeesite.modules.aa.dao.ExamResultsDetailDao;
 
 /**
@@ -91,6 +88,8 @@ public class ExamResultsDetailService extends CrudService<ExamResultsDetailDao, 
 		super.delete(examResultsDetail);
 	}
 
+
+
 	/**
 	 *  不得分项
 	 */
@@ -98,8 +97,6 @@ public class ExamResultsDetailService extends CrudService<ExamResultsDetailDao, 
 	public void saveExamResults(ExamUser examUser) {
 		//考生id
 		String examUserId = examUser.getId();
-		//考试id
-		String examId = examUser.getExamId();
 		//试卷id
         Exam exam = new Exam();
 		exam.setId(examUser.getExamId());
@@ -107,7 +104,7 @@ public class ExamResultsDetailService extends CrudService<ExamResultsDetailDao, 
 		//检查车体骨架数据
 		saveCheckBodySkeleton(exam,examUserId);
 		//鉴定技术状况保存--（不得分项）
-	//	saveIdentifyTecDetail(exam,examUserId);
+		saveIdentifyTecDetail(exam,examUserId);
 	}
 
 	//获取车架
@@ -171,17 +168,21 @@ public class ExamResultsDetailService extends CrudService<ExamResultsDetailDao, 
 			for(IdentifyTecDetail identifyTecDetail:technologyInfo.getItemList()){
 				//如果内容不为空 并且等于paperid 则为老师所填写内容
 				if(StringUtils.isNotBlank(identifyTecDetail.getStuOrTec()) && exam.getPaperId().equals(identifyTecDetail.getStuOrTec())){
-					if("0".equals(identifyTecDetail.getDeductNum())){
+					if("0".equals(identifyTecDetail.getDeductNum()) && StringUtils.isNotBlank(identifyTecDetail.getCode())){
 						examResultsDetail.setTeacherAnswer(identifyTecDetail.getCode()+",不扣分");
-					}else if(!"".equals(identifyTecDetail.getDeductNum()) || null!=identifyTecDetail.getDeductNum()){
+					}else if(!"".equals(identifyTecDetail.getDeductNum()) && null!=identifyTecDetail.getDeductNum() && StringUtils.isNotBlank(identifyTecDetail.getCode())){
 						examResultsDetail.setTeacherAnswer(identifyTecDetail.getCode()+"，扣"+identifyTecDetail.getDeductNum()+"分");
+					}else{
+						examResultsDetail.setTeacherAnswer("--");
 					}
 					//如果内容不为空 并且等于examUserId 则为老师所填写内容
 				}else if(StringUtils.isNotBlank(identifyTecDetail.getStuOrTec()) && examUserId.equals(identifyTecDetail.getStuOrTec())){
-					if("0".equals(identifyTecDetail.getDeductNum())){
+					if("0".equals(identifyTecDetail.getDeductNum()) && StringUtils.isNotBlank(identifyTecDetail.getCode())){
 						examResultsDetail.setStudentAnswer(identifyTecDetail.getCode()+",不扣分");
-					}else if(!"".equals(identifyTecDetail.getDeductNum()) || null!=identifyTecDetail.getDeductNum()){
+					}else if(!"".equals(identifyTecDetail.getDeductNum()) && null!=identifyTecDetail.getDeductNum() && StringUtils.isNotBlank(identifyTecDetail.getCode())){
 						examResultsDetail.setStudentAnswer(identifyTecDetail.getCode()+"，扣"+identifyTecDetail.getDeductNum()+"分");
+					}else{
+						examResultsDetail.setStudentAnswer("--");
 					}
 				}
 			}
@@ -189,6 +190,28 @@ public class ExamResultsDetailService extends CrudService<ExamResultsDetailDao, 
 			super.save(examResultsDetail);
 		}
 
+	}
+
+
+	/**
+	 * 检查 成绩详情是否包含不得分项
+	 */
+	public Boolean validationData(String examUserId){
+		List<ExamResultsDetail> examResultsDetails = dao.validationData(examUserId);
+		if(examResultsDetails.size()<2){
+			//不包含不得分项
+			return false;
+		}else{
+			//包含得分xiang
+			return true;
+		}
+	};
+
+	/**
+	 *  查询不得分项数据
+	 */
+	public List<ExamScoreClassify> getExamResultsDetail(String examUserId){
+		return  dao.getExamResultsDetail(examUserId);
 	}
 
 

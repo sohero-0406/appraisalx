@@ -7,6 +7,7 @@ import com.jeesite.common.dao.CrudDao;
 import com.jeesite.common.mybatis.annotation.MyBatisDao;
 import com.jeesite.modules.aa.entity.CheckBodySkeleton;
 import com.jeesite.modules.aa.entity.ExamResultsDetail;
+import com.jeesite.modules.aa.entity.ExamScoreClassify;
 import com.jeesite.modules.aa.entity.TechnologyInfo;
 import org.apache.ibatis.annotations.Param;
 
@@ -30,5 +31,10 @@ public interface ExamResultsDetailDao extends CrudDao<ExamResultsDetail> {
     //获取字典值
     List<Map<String,String>> getCarBodyDic();
 
+    //验证数据是否包含不得分项
+    List<ExamResultsDetail> validationData(String examUserId);
+
+    //获取考生成绩详情
+    List<ExamScoreClassify> getExamResultsDetail(String examUserId);
 
 }

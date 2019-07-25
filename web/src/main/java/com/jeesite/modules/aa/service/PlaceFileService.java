@@ -72,5 +72,16 @@ public class PlaceFileService extends CrudService<PlaceFileDao, PlaceFile> {
 	public void delete(PlaceFile placeFile) {
 		super.delete(placeFile);
 	}
-	
+
+	@Transactional(readOnly=false)
+	public List<String> getFileByAssessedPicture(String paperId) {
+		return dao.getFileByAssessedPicture(paperId);
+	}
+
+	@Transactional(readOnly=false)
+	public List<String> getPlaceFileByStu(String examUserId) {
+		return dao.getPlaceFileByStu(examUserId);
+	}
+
+
 }

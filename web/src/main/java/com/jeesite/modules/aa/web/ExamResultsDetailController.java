@@ -6,6 +6,7 @@ package com.jeesite.modules.aa.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.ExamUser;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,5 +100,19 @@ public class ExamResultsDetailController extends BaseController {
 		return null;
 	}
 
+	@RequestMapping(value = "getExamResultsDetail")
+	@ResponseBody
+	public CommonResult getExamResultsDetail(ExamUser examUser) {
+		CommonResult comRes = new CommonResult();
+		//首选验证 是否包含得分项 ture包含 false不包含
+		if(examResultsDetailService.validationData(examUser.getId())){
+			comRes.setData(examResultsDetailService.getExamResultsDetail(examUser.getId()));
+		}else{
+			//不包含 先保存不得分项 在进行查询
+			examResultsDetailService.saveExamResults(examUser);
+			comRes.setData(examResultsDetailService.getExamResultsDetail(examUser.getId()));
+		}
+		return comRes;
+	}
 	
 }

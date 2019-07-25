@@ -12,7 +12,7 @@
 		ORDER BY ${sqlMap.order.toSql()}
 	</select> -->
 
-	<select id="timateByType" resultType="java.util.Map">
+	<select id="getEstimateByType" resultType="java.util.Map">
 	select
 		case
 		 when calculate.type = '1' THEN calculateDepreciation.price

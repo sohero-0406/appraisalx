@@ -115,4 +115,14 @@ public class ExamController extends BaseController {
         examService.saveExamInfo(examVO,examScoreJson);
         return comRes;
     }
+
+    /**
+     * 操作考试（未开始，考试中，未统计，已出分）
+     */
+    @RequestMapping(value = "operationExam")
+    @ResponseBody
+    public CommonResult operationExam(Exam exam) {
+        CommonResult comRes = examService.updateExamSate(exam);
+        return comRes;
+    }
 }

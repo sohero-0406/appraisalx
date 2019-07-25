@@ -3,6 +3,7 @@
  */
 package com.jeesite.modules.common.service;
 
+import com.jeesite.common.collect.ListUtils;
 import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.service.CrudService;
@@ -12,6 +13,7 @@ import com.jeesite.modules.common.dao.ExamUserDao;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.Exam;
 import com.jeesite.modules.common.entity.ExamUser;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,7 @@ import java.util.*;
 @Service
 @Transactional(readOnly=true)
 public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
+
 
 	@Autowired
 	private ExamUserDao examUserDao;
@@ -68,6 +71,8 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 	//学生成绩详情表Service
 	@Autowired
 	private ExamResultsDetailService examResultsDetailService;
+	@Autowired
+	private PictureTypeService pictureTypeService;
 
 
 	/**
@@ -119,10 +124,10 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 	public void delete(ExamUser examUser) {
 		super.delete(examUser);
 	}
-
 	public ExamUser getByEntity(ExamUser examUser) {
 		return dao.getByEntity(examUser);
 	}
+
 
 
 	//依据考试id和评分项id查询考试想分类id
@@ -137,8 +142,8 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 	/**
 	 * 学生考试成绩详情接口
 	 */
-	public void saveExamDetail(String examUserId,String examId,String scoreInfoId,String scorePoints,
-							   String score,String teacherAnswer,String studentAnswer,String righrOrWrong){
+	public ExamResultsDetail saveExamDetail(String examUserId,String examId,String scoreInfoId,String scorePoints,
+											String score,String teacherAnswer,String studentAnswer,String righrOrWrong){
 		ExamResultsDetail examResultsDetail = new ExamResultsDetail();
 		examResultsDetail.setExamUserId(examUserId);
 		examResultsDetail.setScoreClassifyId(getScoreClassifyId(examId,scoreInfoId));
@@ -148,16 +153,17 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		examResultsDetail.setTeacherAnswer(teacherAnswer);
 		examResultsDetail.setRightOrWrong(righrOrWrong);
 		examResultsDetailService.save(examResultsDetail);
+		return examResultsDetail;
 	}
 
 	/**
 	 *  判卷
 	 */
 	@Transactional(readOnly = false)
-	public Object gradePapers() {
+	public Object gradePapers(Exam exam) {
 		//页面获取考试id  examId
-		String examId = "1151435216635924480";
-		String paperId = "1151374360001810432"; //页面获取数据
+		String examId = exam.getId();
+		String paperId = exam.getPaperId(); //页面获取数据
 
 		//创建  分数项--分数
 		Map<String, Object> examScoreMap = new HashMap<>();
@@ -208,9 +214,21 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		//六、估算汽车价值
 		Calculate calculateT = calculateService.getByEntity(calculateTec);
 		AppraisalReport appraisalReportT = appraisalReportService.getByEntity(appraisalReportTec);
-		List<PlaceFile> placeFileListT = placeFileService.findList(placeFileTec); //归档
-
-
+		List<String> placeFileListTecList = placeFileService.getFileByAssessedPicture(paperId); //归档
+		List<String> movingPictureTec = new ArrayList<>(); //车辆行驶证
+		List<String> registrationPictureTec = new ArrayList<>();//机动车登记证书
+		List<String> idenPictureTec = new ArrayList<>(); //鉴定评估二手车照片
+		for(String typePicture:placeFileListTecList){
+			//车辆行驶证
+			if("1143432856340893696".equals(typePicture) || "1143435061324763136".equals(typePicture)){
+				movingPictureTec.add(typePicture);
+				//机动车登记证
+			}else if("1143435514869673984".equals(typePicture) || "1143435674886193152".equals(typePicture)){
+				registrationPictureTec.add(typePicture);
+			}else{
+				idenPictureTec.add(typePicture);
+			}
+		}
 
 		//学生答题结果
 		//根据考试获取 学生
@@ -233,9 +251,6 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		Calculate calculateStu = new Calculate();//计算车辆价值
 		AppraisalReport appraisalReportStu = new AppraisalReport();
 		PlaceFile placeFileStu = new PlaceFile();
-
-
-
 
 		for (ExamUser user : examUserList) {
 			//一、委托人
@@ -262,22 +277,27 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 //			//五、鉴定技术状况
 			vehicleGradeAssessStu.setExamUserId(user.getId());
 			VehicleGradeAssess vehicleGradeAssessS = vehicleGradeAssessService.getByEntity(vehicleGradeAssessStu);
-//			BigDecimal identificationCount = getIdentification(vehicleGradeAssessT,vehicleGradeAssessS,examScoreMap,user,examNameMap);
+			BigDecimal identificationCount = getIdentification(vehicleGradeAssessT,vehicleGradeAssessS,examScoreMap,user,examNameMap);
 //			//六、估算价值
 			appraisalReportStu.setExamUserId(user.getId());
 			AppraisalReport appraisalReportS = appraisalReportService.getByEntity(appraisalReportStu);
-			List<PlaceFile> placeFileListS =  placeFileService.findList(placeFileStu);
-			BigDecimal calculateCount = getCalculate(calculateT,user,examScoreMap,checkTradableVehiclesT,checkTradableVehiclesS,
-					appraisalReportT,appraisalReportS,placeFileListT,placeFileListS,examNameMap);
+			List<String> placeFileListS = placeFileService.getPlaceFileByStu(user.getId());
 
-//			BigDecimal count = delegateCount.add(vehicleDocumentCount.add(carInfoCount));
-//			user.setScore(String.valueOf(count));
-//			super.save(user);
+			BigDecimal calculateCount = getCalculate(calculateT,user,examScoreMap,checkTradableVehiclesT,checkTradableVehiclesS,
+					appraisalReportT,appraisalReportS,placeFileListS,examNameMap,movingPictureTec,registrationPictureTec,idenPictureTec);
+
+
+			BigDecimal count = delegateCount.add(vehicleDocumentCount.add(carInfoCount));
+			user.setScore(String.valueOf(count));
+			super.save(user);
 		}
 		return null;
 	}
 
 	//六、估算价值
+	//			List<String> movingPictureTec = new ArrayList<>(); //车辆行驶证
+	//			List<String> registrationPictureTec = new ArrayList<>();//机动车登记证书
+	//			List<String> idenPictureTec = new ArrayList<>(); //鉴定评估二手车照片
 	/**
 	 *
 	 * @param calculateT  老师-估算价值
@@ -287,19 +307,23 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 	 * @param checkTradableVehiclesS  检查可交易车辆-学生
 	 * @param appraisalReportT  二手车鉴定评估报告-老师
 	 * @param appraisalReportS  二手车鉴定评估报告-学生
-	 * @param placeFileListT 归档-老师
 	 * @param placeFileListS 归档-学生
+	 * @param movingPictureTec 车辆行驶证 -老师
+	 * @param registrationPictureTec 机动车登记证书 -老师
+	 * @param idenPictureTec 鉴定评估二手车照片 -老师
 	 * @return
 	 */
 	public BigDecimal getCalculate(Calculate calculateT,ExamUser user,Map<String,Object> examScoreMap,
 								   CheckTradableVehicles checkTradableVehiclesT,CheckTradableVehicles checkTradableVehiclesS,
 								   AppraisalReport appraisalReportT,AppraisalReport appraisalReportS,
-								   List<PlaceFile> placeFileListT,List<PlaceFile> placeFileListS,Map<String,Object> examNameMap){
+								   List<String> placeFileListS,Map<String,Object> examNameMap,
+								   List<String> movingPictureTec,List<String> registrationPictureTec,List<String> idenPictureTec ){
 		BigDecimal calculateCount = new BigDecimal("0");
 		//学生估算方式
 		String studentPrice ="";
-		if(calculateService.getEstimateByType(user.getId())!=null){
-			studentPrice = calculateService.getEstimateByType(user.getId()).get("price");
+		Map<String,String> calculateMap = calculateService.getEstimateByType(user.getId());
+		if(calculateMap!=null){
+			studentPrice = calculateMap.get("price");
 		}
 		if(calculateT.getBeginPrice()!=null && calculateT.getEndPrice()!=null){
 			if(judgeStringBetween(String.valueOf(calculateT.getBeginPrice()),String.valueOf(calculateT.getEndPrice()),studentPrice)){
@@ -369,13 +393,137 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 					(String)examNameMap.get("1151013343665541121"),"0",
 					appraisalReportT.getBaseDateEnd(),appraisalReportS.getBaseDateEnd(),"1");
 		}
+		//归档时效
+		if(StringUtils.isNotBlank(checkTradableVehiclesT.getFileDuring()) && checkTradableVehiclesT.getFileDuring().equals(checkTradableVehiclesS.getFileDuring())){
+			calculateCount = calculateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151028180617695233"))));
+			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
+					(String)examNameMap.get("1151028180617695233"),(String)examScoreMap.get("1151028180617695233"),
+					checkTradableVehiclesT.getFileDuring(),checkTradableVehiclesS.getFileDuring(),"0");
+		}else{
+			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
+					(String)examNameMap.get("1151028180617695233"),"0",
+					checkTradableVehiclesT.getFileDuring(),checkTradableVehiclesS.getFileDuring(),"1");
+		}
 		//归档
+		List<String> removeList = new ArrayList<>();
+		//选中三种证书 等分
+		// 二手车鉴定评估委托书
+		ExamResultsDetail appraisal = saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
+				(String)examNameMap.get("1151013343670108155"),"0",
+				"二手车鉴定评估委托书","","1");
+		//二手车鉴定评估作业表
+		ExamResultsDetail evaluation =  saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
+				(String)examNameMap.get("1151013343670108567"),"0",
+				"二手车鉴定评估作业表","","1");
+		//二手车鉴定评估报告
+		ExamResultsDetail report =  saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
+				(String)examNameMap.get("1151013343670108787"),"0",
+				"二手车鉴定评估报告","","1");
+
+		for(String pictureTypeS:placeFileListS){
+			//判断 二手车鉴定评估委托书
+			if("1152466716125380608".equals(pictureTypeS)){
+				calculateCount = calculateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343670108155"))));
+				appraisal.setStudentAnswer("二手车鉴定评估委托书");
+				appraisal.setScore((String)examScoreMap.get("1151013343670108155"));
+				appraisal.setRightOrWrong("0");
+				examResultsDetailService.update(appraisal);
+				//二手车鉴定评估作业表
+			}else if("1152467065519292416".equals(pictureTypeS)){
+				calculateCount = calculateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343670108567"))));
+				appraisal.setStudentAnswer("二手车鉴定评估作业表");
+				appraisal.setScore((String)examScoreMap.get("1151013343670108567"));
+				appraisal.setRightOrWrong("0");
+				examResultsDetailService.update(evaluation);
+				//二手车鉴定评估报告
+			}else if("1152467158926442496".equals(pictureTypeS)){
+				calculateCount = calculateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343670108787"))));
+				appraisal.setStudentAnswer("二手车鉴定评估报告");
+				appraisal.setScore((String)examScoreMap.get("1151013343670108787"));
+				appraisal.setRightOrWrong("0");
+				examResultsDetailService.update(report);
+			}
+		}
+		removeList.add("1152466716125380608");
+		removeList.add("1152467065519292416");
+		removeList.add("1152467158926442496");
+
+		//学生所选择的 机动车行驶证页面
+		if(placeFileListS.containsAll(movingPictureTec)){
+			//正确
+			calculateCount = calculateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343670102345"))));
+			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
+					(String)examNameMap.get("1151013343670102345"),(String)examScoreMap.get("1151013343670102345"),
+					getPictureName(movingPictureTec),getPictureName(movingPictureTec),"0");
+		}else{
+			//错误
+			List<String> drivingListS = new ArrayList<>();
+			drivingListS.addAll(placeFileListS);
+			drivingListS.retainAll(movingPictureTec);
+			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
+					(String)examNameMap.get("1151013343670102345"),"0",
+					getPictureName(movingPictureTec),getPictureName(drivingListS),"1");
+		}
+		removeList.add("1143432856340893696");
+		removeList.add("1143435061324763136");
 
 
+		//判断 登记证 1151013343670102898
+		if(placeFileListS.containsAll(registrationPictureTec)){
+			//正确
+			calculateCount = calculateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343670102898"))));
+			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
+					(String)examNameMap.get("1151013343670102898"),(String)examScoreMap.get("1151013343670102898"),
+					getPictureName(registrationPictureTec),getPictureName(registrationPictureTec),"0");
+		}else{
+			//错误
+			List<String> registrationListS = new ArrayList<>();
+			registrationListS.addAll(placeFileListS);
+			registrationListS.retainAll(registrationPictureTec);
+			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
+					(String)examNameMap.get("1151013343670102898"),"0",
+					getPictureName(registrationPictureTec),getPictureName(registrationListS),"1");
+		}
+		removeList.add("1143435514869673984");
+		removeList.add("1143435674886193152");
+		placeFileListS.removeAll(removeList);
+		//判断 鉴定评估二手车照片  如果正确 则学生所选全部包含老师所选的
+		if(placeFileListS.containsAll(idenPictureTec)){
+			calculateCount = calculateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343670108678"))));
+			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
+					(String)examNameMap.get("1151013343670108678"),(String)examScoreMap.get("1151013343670108678"),
+					getPictureName(idenPictureTec),getPictureName(placeFileListS),"0");
+
+		}else{
+			//不全部包含 不得分
+			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
+					(String)examNameMap.get("1151013343670108678"),"0",
+					getPictureName(idenPictureTec),getPictureName(placeFileListS),"1");
+		}
 
 		return calculateCount;
 	}
 
+
+	//依据所选的照片或者文档id 转换为中文名称
+	public String getPictureName(List<String> pictureTypeId ){
+		if(CollectionUtils.isEmpty(pictureTypeId)){
+			return "";
+		}else {
+			StringBuilder picturename = new StringBuilder();
+			String[] pictureType= pictureTypeId.toArray(new String[pictureTypeId.size()]);
+			List<PictureType> pictureTypeList =  pictureTypeService.findListByIds(pictureType);
+			int len = pictureTypeList.size();
+			for(int i=0;i<pictureTypeList.size();i++){
+				if(i==(len-1)){
+					picturename.append(pictureTypeList.get(i).getName());
+				}else{
+					picturename.append(pictureTypeList.get(i).getName()+",");
+				}
+			}
+			return picturename.toString();
+		}
+	};
 
 
 
@@ -447,7 +595,6 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 					(String)examNameMap.get("1151013343664201729"),"0",
 					getIsAccidentName(checkTradableVehiclesT.getIsAccident()),getIsAccidentName(checkTradableVehiclesS.getIsAccident()),"1");
 		}
-
 		return  accidentCount;
 	}
 
@@ -990,6 +1137,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		//盖章
 		return delegateCount;
 	}
+
 
 	/**
 	 * 考试计时

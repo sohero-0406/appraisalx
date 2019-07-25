@@ -9,6 +9,7 @@ import com.jeesite.modules.aa.service.ExamDetailService;
 import com.jeesite.modules.aa.service.ExamScoreDetailService;
 import com.jeesite.modules.aa.vo.ExamVO;
 import com.jeesite.modules.common.dao.ExamDao;
+import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.Exam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,8 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 	private ExamScoreDetailService examScoreDetailService;
 	@Autowired
 	private ExamDetailService examDetailService;
+	@Autowired
+	private ExamUserService examUserService;
 
 	/**
 	 * 获取单条数据
@@ -107,5 +110,43 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 	public Exam getByEntity(Exam exam) {
 		return dao.getByEntity(exam);
 	}
+
+	/**
+	 *  修改考试状态
+	 *   参数
+	 *   考试id 和
+	 *   试卷id paperId
+	 */
+	@Transactional(readOnly=false)
+	public CommonResult updateExamSate(Exam exam){
+		//考试状态 state '状态（1:未开始;3:考试中;5:未统计;7:已出分）
+		CommonResult comRes = new CommonResult();
+		Exam examUpdate = dao.getByEntity(exam);
+		switch(exam.getState()){
+			case "1" ://未开始
+				examUpdate.setState("3");
+				super.save(examUpdate);
+				comRes.setData(examUpdate);
+				break;
+			case "3" ://考试中
+				examUpdate.setState("5");
+				super.save(examUpdate);
+				comRes.setData(examUpdate);
+				break;
+			case "5" ://未统计
+				examUpdate.setState("7");
+				examUserService.gradePapers(examUpdate);
+				super.save(examUpdate);
+				comRes.setData(examUpdate);
+				break;
+			case "7" ://已出分
+				comRes.setMsg("考试结果已出！");
+				break;
+			default :
+				comRes.setMsg("未查询到此时卷！");
+		}
+		return comRes;
+	}
+
 
 }
