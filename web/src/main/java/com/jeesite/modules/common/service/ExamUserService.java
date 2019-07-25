@@ -1011,52 +1011,32 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
             comRes.setMsg("未查询到考试信息！");
             return comRes;
         }
+		if ("1".equals(exam.getExamType())) {
+			//倒计时
+			BigDecimal duration = new BigDecimal(exam.getDuration());       //考试总时长
+			duration = duration.multiply(new BigDecimal("60000"));      //换算毫秒值
+			BigDecimal startTime = new BigDecimal(examUser.getStartTime().getTime());       //考试开始时间
+			BigDecimal nowTime = new BigDecimal(new Date().getTime());      //当前时间
+			BigDecimal spentTime = nowTime.subtract(startTime);     //考生考试已用时长（nowTime-startTime）
+			BigDecimal surplusTime = duration.subtract(spentTime);      //本场考试剩余时长(duration-spentTime)
 
-        //判断考生考试状态
-        if (examUser.getState() == 3) {
-            //考试中
-            if ("1".equals(exam.getExamType())) {
-                //倒计时
-                BigDecimal duration = new BigDecimal(exam.getDuration());       //考试总时长
-                duration = duration.multiply(new BigDecimal("60000"));      //换算毫秒值
-                BigDecimal startTime = new BigDecimal(examUser.getStartTime().getTime());       //考试开始时间
-                BigDecimal nowTime = new BigDecimal(new Date().getTime());      //当前时间
-                BigDecimal spentTime = nowTime.subtract(startTime);     //考生考试已用时长（nowTime-startTime）
-                BigDecimal surplusTime = duration.subtract(spentTime);      //本场考试剩余时长(duration-spentTime)
+			//对剩余时长进行校验，如果剩余时长小于零，则考试结束，返回状态码。
+			if (surplusTime.compareTo(new BigDecimal("0")) >= 0) {
+				SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+				df.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
+				comRes.setData(df.format(new Date(surplusTime.longValue())));
+			}else {
+				comRes.setCode(CodeConstant.EXAM_END);
+				comRes.setMsg("考试时间到，考试结束！");
+				return comRes;
+			}
+		}else {
+			//正计时
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			comRes.setData(df.format(new Date()));
+		}
+		return comRes;
 
-                //对剩余时长进行校验，如果剩余时长小于零，则考试结束，更改考试状态，返回状态码。
-                if (surplusTime.compareTo(new BigDecimal("0")) >= 0) {
-                    SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
-                    df.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
-                    comRes.setData(df.format(new Date(surplusTime.longValue())));
-                }else {
-                    //更考试状态
-                    exam.setState("5");
-                    examService.save(exam);
-                    comRes.setData("--:--:--");
-                    comRes.setCode(CodeConstant.NO_STATISTICS);
-                    comRes.setMsg("未统计！");
-                    return comRes;
-                }
-            }else {
-                //正计时
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                comRes.setData(df.format(new Date()));
-            }
-            comRes.setCode(CodeConstant.REQUEST_SUCCESSFUL);
-            comRes.setMsg("考试中！");
-            return comRes;
-        }else if (examUser.getState() ==1) {
-            comRes.setCode(CodeConstant.EXAM_NOT_BEGIN);
-            comRes.setMsg("考试未开始！");
-        }else if (examUser.getState() == 5) {
-            comRes.setCode(CodeConstant.NO_STATISTICS);
-            comRes.setMsg("未统计！");
-        }else if (examUser.getState() == 7) {
-            comRes.setCode(CodeConstant.HAVE_ACHIEVEMENTS);
-            comRes.setMsg("已出分！");
-        }
-        return comRes;
 	}
 
 }

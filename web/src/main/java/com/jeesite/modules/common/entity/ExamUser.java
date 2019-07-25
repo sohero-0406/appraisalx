@@ -38,7 +38,6 @@ public class ExamUser extends PreEntity<ExamUser> {
 	private String password;		// 密码
 	private Date startTime;		//考试开始时间
 	private Date endTime;		//考试结束时间
-	private Integer state;		//考试状态
 
 	//非数据库字段
 	private String paperId;		//试卷id
@@ -102,14 +101,6 @@ public class ExamUser extends PreEntity<ExamUser> {
 
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
-	}
-
-	public Integer getState() {
-		return state;
-	}
-
-	public void setState(Integer state) {
-		this.state = state;
 	}
 
 	public String getPaperId() {
