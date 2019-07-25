@@ -11,5 +11,11 @@
 		</where>
 		ORDER BY ${sqlMap.order.toSql()}
 	</select> -->
-	
+
+	<!-- 查询技术状况 -->
+	<select id="getTechnicalStatus" resultType="String">
+		select dict_label from js_sys_dict_data
+		where dict_value = #{technicalStatus} and dict_type = 'aa_technical_status'
+	</select>
+
 </mapper>

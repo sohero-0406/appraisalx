@@ -5,7 +5,6 @@ package com.jeesite.modules.aa.service;
 
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.service.CrudService;
-import com.jeesite.common.utils.MoneyUtils;
 import com.jeesite.modules.aa.dao.AppraisalReportDao;
 import com.jeesite.modules.aa.entity.*;
 import com.jeesite.modules.aa.vo.AppraisalReportVO;
@@ -37,7 +36,7 @@ public class AppraisalReportService extends CrudService<AppraisalReportDao, Appr
     @Autowired
     private DelegateUserService delegateUserService;
     @Autowired
-    private CarInfoService carInforService;
+    private CarInfoService carInfoService;
     @Autowired
     private VehicleDocumentInfoService vehicleDocumentInfoService;
     @Autowired
@@ -156,7 +155,8 @@ public class AppraisalReportService extends CrudService<AppraisalReportDao, Appr
         CarInfo carInfo = new CarInfo();
         carInfo.setExamUserId(examUser.getExamId());
         carInfo.setPaperId(examUser.getPaperId());
-        carInfo = carInforService.getByEntity(carInfo);
+        carInfo = carInfoService.getByEntity(carInfo);
+        carInfo.setColor(carInfoService.getColor(carInfo));
         if (StringUtils.isNotBlank(carInfo.getRegisterDate())) {
             String[] registerDateArr = carInfo.getRegisterDate().substring(0, 10).split("-");
             carInfo.setRegisterDate(registerDateArr[0] + "年" + registerDateArr[1] + "月" + registerDateArr[2] + "日");
@@ -221,18 +221,8 @@ public class AppraisalReportService extends CrudService<AppraisalReportDao, Appr
         vehicleGradeAssess.setExamUserId(examUser.getExamId());
         vehicleGradeAssess.setPaperId(examUser.getPaperId());
         vehicleGradeAssess = vehicleGradeAssessService.getByEntity(vehicleGradeAssess);
-        if ("1".equals(vehicleGradeAssess.getTechnicalStatus())) {
-            vehicleGradeAssess.setTechnicalStatus("一级");
-        } else if ("2".equals(vehicleGradeAssess.getTechnicalStatus())) {
-            vehicleGradeAssess.setTechnicalStatus("二级");
-        } else if ("3".equals(vehicleGradeAssess.getTechnicalStatus())) {
-            vehicleGradeAssess.setTechnicalStatus("三级");
-        } else if ("4".equals(vehicleGradeAssess.getTechnicalStatus())) {
-            vehicleGradeAssess.setTechnicalStatus("四级");
-        } else if ("5".equals(vehicleGradeAssess.getTechnicalStatus())) {
-            vehicleGradeAssess.setTechnicalStatus("五级");
-        }
-
+        //设置技术状况
+        vehicleGradeAssess.setTechnicalStatus(vehicleGradeAssessService.getTechnicalStatus(vehicleGradeAssess));
         if (StringUtils.isNotBlank(vehicleGradeAssess.getIdentifyDate())) {
             String[] identifyDateArr = vehicleGradeAssess.getIdentifyDate().substring(0, 10).split("-");
             vehicleGradeAssess.setIdentifyDate(identifyDateArr[0] + "年" + identifyDateArr[1] + "月" + identifyDateArr[2] + "日");
@@ -247,31 +237,9 @@ public class AppraisalReportService extends CrudService<AppraisalReportDao, Appr
         calculate.setExamUserId(examUser.getExamId());
         calculate.setPaperId(examUser.getPaperId());
         calculate = calculateService.getByEntity(calculate);
-        if ("1".equals(calculate.getType())) {
-            CalculateDepreciation calculateDepreciation = new CalculateDepreciation();
-            calculateDepreciation.setCalculateId(calculate.getId());
-            calculateDepreciation = calculateDepreciationService.getByEntity(calculateDepreciation);
-            priceCapital = MoneyUtils.change(calculateDepreciation.getPrice());
-            calculate.setType("折旧率估值法");
-        } else if ("2".equals(calculate.getType())) {
-            CalculateKm calculateKm = new CalculateKm();
-            calculateKm.setCalculateId(calculate.getId());
-            calculateKm = calculateKmService.getByEntity(calculateKm);
-            priceCapital = MoneyUtils.change(calculateKm.getPrice());
-            calculate.setType("公里数估值法");
-        } else if ("3".equals(calculate.getType())) {
-            CalculateReplaceCost calculateReplaceCost = new CalculateReplaceCost();
-            calculateReplaceCost.setCalculateId(calculate.getId());
-            calculateReplaceCost = calculateReplaceCostService.getByEntity(calculateReplaceCost);
-            priceCapital = MoneyUtils.change(calculateReplaceCost.getPrice());
-            calculate.setType("重置成本法");
-        } else if ("4".equals(calculate.getType())) {
-            CalculateCurrent calculateCurrent = new CalculateCurrent();
-            calculateCurrent.setCalculateId(calculate.getId());
-            calculateCurrent = calculateCurrentService.getByEntity(calculateCurrent);
-            priceCapital = MoneyUtils.change(calculateCurrent.getPrice());
-            calculate.setType("现行市价法");
-        }
+        //设置算法类型
+        calculate.setType(calculateService.getType(calculate));
+
         appraisalReportVO.setCalculate(calculate);
         appraisalReportVO.setPriceCapital(priceCapital);
 

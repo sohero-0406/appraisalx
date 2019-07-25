@@ -23,10 +23,4 @@
 		WHERE chexing_id = #{chexingId}
 	</select>
 
-	<!-- 查询车型(返回整条记录) -->
-	<select id="getVehicleInfo" resultType="VehicleInfo">
-		SELECT * FROM common_vehicle_info
-		WHERE chexing_id = #{chexingId}
-	</select>
-
 </mapper>

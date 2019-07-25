@@ -28,5 +28,11 @@
 		order by vehicleInstallInfo.project
 	</select>
 
+	<!-- 查询车辆加装信息 -->
+	<select id="getProject" resultType="String">
+		select dict_label from js_sys_dict_data
+		where dict_value = #{project} and dict_type = 'aa_vehicle_install_type'
+	</select>
+
 
 </mapper>

@@ -1,10 +1,7 @@
 package com.jeesite.modules.aa.service;
 
 
-import com.jeesite.modules.aa.entity.CarInfo;
-import com.jeesite.modules.aa.entity.CheckBodySkeleton;
-import com.jeesite.modules.aa.entity.VehicleDocumentInfo;
-import com.jeesite.modules.aa.entity.VehicleInstallInfo;
+import com.jeesite.modules.aa.entity.*;
 import com.jeesite.modules.aa.vo.AppraisalJobTableVO;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.entity.VehicleInfo;
@@ -43,6 +40,8 @@ public class AppraislJobTableService {
     private CheckBodySkeletonService checkBodySkeletonService;
     @Autowired
     private VehicleInfoService vehicleInfoService;
+    @Autowired
+    private CheckTradableVehiclesService checkTradableVehiclesService;
 
     /**
      * 生成鉴定评估作业表
@@ -57,19 +56,7 @@ public class AppraislJobTableService {
         carInfo.setPaperId(examUser.getPaperId());
         carInfo = carInforService.getByEntity(carInfo);
         //设置级别
-        if("1".equals(carInfo.getLevel())){
-            carInfo.setLevel("A0级");
-        }else if("2".equals(carInfo.getLevel())){
-            carInfo.setLevel("A级");
-        }else if("3".equals(carInfo.getLevel())){
-            carInfo.setLevel("B级");
-        }else if("4".equals(carInfo.getLevel())){
-            carInfo.setLevel("C级");
-        }else if("5".equals(carInfo.getLevel())){
-            carInfo.setLevel("D级");
-        }else if("6".equals(carInfo.getLevel())){
-            carInfo.setLevel("SUV");
-        }
+        carInfo.setLevel(carInforService.getLevel(carInfo));
         //设置初登日期
         if (StringUtils.isNotBlank(carInfo.getRegisterDate())) {
             String[] registerDateArr = carInfo.getRegisterDate().substring(0, 10).split("-");
@@ -81,19 +68,7 @@ public class AppraislJobTableService {
             carInfo.setManufactureDate(manufactureDate[0] + "年" + manufactureDate[1] + "月" + manufactureDate[2] + "日");
         }
         //设置环保标准
-        if("1".equals(carInfo.getEnvironmentalStandard())){
-            carInfo.setEnvironmentalStandard("国I");
-        }else if("2".equals(carInfo.getEnvironmentalStandard())){
-            carInfo.setEnvironmentalStandard("国II");
-        }else if("3".equals(carInfo.getEnvironmentalStandard())){
-            carInfo.setEnvironmentalStandard("国III");
-        }else if("4".equals(carInfo.getEnvironmentalStandard())){
-            carInfo.setEnvironmentalStandard("国IV");
-        }else if("5".equals(carInfo.getEnvironmentalStandard())){
-            carInfo.setEnvironmentalStandard("国V");
-        }else if("6".equals(carInfo.getEnvironmentalStandard())){
-            carInfo.setEnvironmentalStandard("国VI");
-        }
+        carInfo.setEnvironmentalStandard(carInforService.getEnvironmentalStandard(carInfo));
         //设置年检到期
         if (StringUtils.isNotBlank(carInfo.getYearCheckDue())) {
             String[] yearCheckDueArr = carInfo.getYearCheckDue().substring(0, 10).split("-");
@@ -113,49 +88,9 @@ public class AppraislJobTableService {
         vehicleInstallInfo.setExamUserId(examUser.getExamId());
         vehicleInstallInfo.setPaperId(examUser.getPaperId());
         List<VehicleInstallInfo> vehicleInstallInfoList = vehicleInstallInfoService.findList(vehicleInstallInfo);
+        //设置加装信息
         for(VehicleInstallInfo vii: vehicleInstallInfoList){
-            String project = vii.getProject();
-            if("1".equals(project)){
-                vii.setProject("导航");
-            }else if("1".equals(project)){
-                vii.setProject("倒车影像");
-            }else if("1".equals(project)){
-                vii.setProject("倒车影像");
-            }else if("1".equals(project)){
-                vii.setProject("倒车影像");
-            }else if("1".equals(project)){
-                vii.setProject("倒车影像");
-            }else if("1".equals(project)){
-                vii.setProject("倒车影像");
-            }else if("1".equals(project)){
-                vii.setProject("倒车影像");
-            }else if("1".equals(project)){
-                vii.setProject("倒车影像");
-            }else if("1".equals(project)){
-                vii.setProject("倒车影像");
-            }else if("1".equals(project)){
-                vii.setProject("倒车影像");
-            }else if("1".equals(project)){
-                vii.setProject("倒车影像");
-            }else if("1".equals(project)){
-                vii.setProject("倒车影像");
-            }else if("1".equals(project)){
-                vii.setProject("倒车影像");
-            }else if("1".equals(project)){
-                vii.setProject("倒车影像");
-            }else if("1".equals(project)){
-                vii.setProject("倒车影像");
-            }else if("1".equals(project)){
-                vii.setProject("倒车影像");
-            }else if("1".equals(project)){
-                vii.setProject("倒车影像");
-            }else if("1".equals(project)){
-                vii.setProject("倒车影像");
-            }else if("1".equals(project)){
-                vii.setProject("倒车影像");
-            }else if("1".equals(project)){
-                vii.setProject("倒车影像");
-            }
+            vii.setProject(vehicleInstallInfoService.getProject(vehicleInstallInfo));
         }
         appraisalJobTableVO.setVehicleInstallInfoList(vehicleInstallInfoList);
 
@@ -164,22 +99,62 @@ public class AppraislJobTableService {
         vehicleDocumentInfo.setExamUserId(examUser.getExamId());
         vehicleDocumentInfo.setPaperId(examUser.getPaperId());
         List<VehicleDocumentInfo> vehicleDocumentInfoList = vehicleDocumentInfoService.findList(vehicleDocumentInfo);
+        for(VehicleDocumentInfo vdi: vehicleDocumentInfoList){
+            //设置是否
+            if("1".equals(vdi.getState())){
+                vdi.setState("是");
+                //设置有效期
+                if (StringUtils.isNotBlank(vdi.getValidity())) {
+                    String[] validity = vdi.getValidity().substring(0, 10).split("-");
+                    vdi.setValidity(validity[0] + "年" + validity[1] + "月" + validity[2] + "日");
+                }
+            }else{
+                vdi.setState("否");
+            }
+        }
         appraisalJobTableVO.setVehicleDocumentInfoList(vehicleDocumentInfoList);
 
         //车辆配置全表
         VehicleInfo vehicleInfo = new VehicleInfo();
         vehicleInfo.setChexingId(carInfo.getModel());
-        vehicleInfo = vehicleInfoService.getVehicleInfo(vehicleInfo);
-        carInfo.setBrand(vehicleInfo.getPinpai());      //设置品牌
+        vehicleInfo = vehicleInfoService.getByEntity(vehicleInfo);
+        //设置品牌
+        carInfo.setBrand(vehicleInfo.getPinpai());
         appraisalJobTableVO.setVehicleInfo(vehicleInfo);
-
 
         //检查车体骨架
         CheckBodySkeleton checkBodySkeleton = new CheckBodySkeleton();
         checkBodySkeleton.setExamUserId(examUser.getExamId());
         checkBodySkeleton.setPaperId(examUser.getPaperId());
         List<CheckBodySkeleton> checkBodySkeletonList = checkBodySkeletonService.findList(checkBodySkeleton);
+        //设置鉴定项
+        for(CheckBodySkeleton cbs: checkBodySkeletonList){
+            cbs.setTechnologyInfoId(checkBodySkeletonService.getTechnologyInfo(cbs));
+        }
         appraisalJobTableVO.setCheckBodySkeletonList(checkBodySkeletonList);
+
+        //检查可交易车辆
+        CheckTradableVehicles checkTradableVehicles = new CheckTradableVehicles();
+        checkTradableVehicles.setExamUserId(examUser.getExamId());
+        checkTradableVehicles.setPaperId(examUser.getPaperId());
+        checkTradableVehicles = checkTradableVehiclesService.getByEntity(checkTradableVehicles);
+        //设置事故车判定
+        if("0".equals(checkTradableVehicles.getIsAccident())){
+            //正常车
+            checkTradableVehicles.setIsAccident("正常车");
+        }else{
+            checkTradableVehicles.setIsAccident("事故车");
+        }
+
+        //鉴定技术状况
+        IdentifyTec identifyTec = new IdentifyTec();
+        identifyTec.setExamUserId(examUser.getExamId());
+        identifyTec.setPaperId(examUser.getPaperId());
+        List<IdentifyTec> identifyTecList = identifyTecService.findList(identifyTec);
+        for(IdentifyTec it: identifyTecList){
+
+        }
+        appraisalJobTableVO.setIdentifyTecList(identifyTecList);
 
 
 

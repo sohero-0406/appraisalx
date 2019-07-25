@@ -3,19 +3,19 @@
  */
 package com.jeesite.modules.aa.service;
 
-import java.util.List;
-
+import com.jeesite.common.entity.Page;
+import com.jeesite.common.service.CrudService;
+import com.jeesite.modules.aa.dao.VehicleGradeAssessDao;
+import com.jeesite.modules.aa.entity.VehicleGradeAssess;
 import com.jeesite.modules.aa.vo.VehicleGradeAssessVO;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.sys.entity.DictData;
 import com.jeesite.modules.sys.utils.DictUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jeesite.common.entity.Page;
-import com.jeesite.common.service.CrudService;
-import com.jeesite.modules.aa.entity.VehicleGradeAssess;
-import com.jeesite.modules.aa.dao.VehicleGradeAssessDao;
+import java.util.List;
 
 /**
  * 车辆等级评定Service
@@ -25,6 +25,9 @@ import com.jeesite.modules.aa.dao.VehicleGradeAssessDao;
 @Service
 @Transactional(readOnly=true)
 public class VehicleGradeAssessService extends CrudService<VehicleGradeAssessDao, VehicleGradeAssess> {
+
+	@Autowired
+	private VehicleGradeAssessDao vehicleGradeAssessDao;
 	
 	/**
 	 * 获取单条数据
@@ -98,4 +101,13 @@ public class VehicleGradeAssessService extends CrudService<VehicleGradeAssessDao
 	public VehicleGradeAssess getByEntity(VehicleGradeAssess vehicleGradeAssess) {
     	return dao.getByEntity(vehicleGradeAssess);
 	}
+
+	/**
+	 * 获取技术状况
+	 * @param vehicleGradeAssess
+	 * @return
+	 */
+    public String getTechnicalStatus(VehicleGradeAssess vehicleGradeAssess) {
+    	return vehicleGradeAssessDao.getTechnicalStatus(vehicleGradeAssess);
+    }
 }

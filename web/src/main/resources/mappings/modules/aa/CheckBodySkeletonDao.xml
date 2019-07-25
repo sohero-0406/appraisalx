@@ -28,4 +28,10 @@
 		</where>
 	</select>
 
+	<!-- 查询鉴定项 -->
+	<select id="getTechnologyInfo" resultType="String">
+		select dict_label from js_sys_dict_data
+		where dict_value = #{technologyInfoId} and dict_type = 'aa_car_body_skeleton'
+	</select>
+
 </mapper>

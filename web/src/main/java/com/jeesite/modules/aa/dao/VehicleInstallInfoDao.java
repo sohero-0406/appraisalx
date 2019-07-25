@@ -20,4 +20,12 @@ import java.util.Map;
 public interface VehicleInstallInfoDao extends CrudDao<VehicleInstallInfo> {
 
 	List<Map<String,String>> getVehicleInstallName(@Param("examUserId") String examUserId, @Param("paperId") String paperId);
+
+    /**
+     * 查询车辆加装信息
+     * @param vehicleInstallInfo
+     * @return
+     */
+    String getProject(VehicleInstallInfo vehicleInstallInfo);
+
 }

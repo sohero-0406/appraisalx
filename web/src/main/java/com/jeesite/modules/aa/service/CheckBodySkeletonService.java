@@ -190,4 +190,11 @@ public class CheckBodySkeletonService extends CrudService<CheckBodySkeletonDao, 
     }
 
     public CheckBodySkeleton getByEntity(CheckBodySkeleton checkBodySkeleton){ return  dao.getByEntity(checkBodySkeleton); }
+
+    /**
+     * 查询鉴定项
+     */
+    public String getTechnologyInfo(CheckBodySkeleton checkBodySkeleton) {
+        return checkBodySkeletonDao.getTechnologyInfo(checkBodySkeleton);
+    }
 }

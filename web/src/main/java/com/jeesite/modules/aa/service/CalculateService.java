@@ -3,10 +3,9 @@
  */
 package com.jeesite.modules.aa.service;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-
+import com.jeesite.common.entity.Page;
+import com.jeesite.common.service.CrudService;
+import com.jeesite.modules.aa.dao.CalculateDao;
 import com.jeesite.modules.aa.entity.*;
 import com.jeesite.modules.aa.vo.CalculateVO;
 import com.jeesite.modules.common.entity.ExamUser;
@@ -14,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jeesite.common.entity.Page;
-import com.jeesite.common.service.CrudService;
-import com.jeesite.modules.aa.dao.CalculateDao;
+import java.util.Map;
 
 /**
  * 计算车辆价值Service
@@ -28,6 +25,8 @@ import com.jeesite.modules.aa.dao.CalculateDao;
 @Transactional(readOnly = true)
 public class CalculateService extends CrudService<CalculateDao, Calculate> {
 
+    @Autowired
+    private CalculateDao calculateDao;
     @Autowired
     private CalculateDepreciationService calculateDepreciationService;
     @Autowired
@@ -52,7 +51,6 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
      * 查询分页数据
      *
      * @param calculate      查询条件
-     * @param calculate.page 分页对象
      * @return
      */
     @Override
@@ -141,5 +139,13 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
     //依据学生的估算方式查找对应的估算值
     public Map<String, String> getEstimateByType(String examUserId){
         return dao.getEstimateByType(examUserId);
+    }
+
+    /**
+     * 查询算法类型
+     * @param calculate
+     */
+    public String getType(Calculate calculate) {
+        return calculateDao.getType(calculate);
     }
 }

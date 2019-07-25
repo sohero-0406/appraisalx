@@ -89,10 +89,4 @@ public class VehicleInfoService extends CrudService<VehicleInfoDao, VehicleInfo>
 		return vehicleInfoDao.getCarModel(vehicleInfo.getChexingId());
 	}
 
-	/**
-	 * 查询车型(返回整条记录)
-	 */
-    public VehicleInfo getVehicleInfo(VehicleInfo vehicleInfo) {
-		return vehicleInfoDao.getVehicleInfo(vehicleInfo.getChexingId());
-    }
 }

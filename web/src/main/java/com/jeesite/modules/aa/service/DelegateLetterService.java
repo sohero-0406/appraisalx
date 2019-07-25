@@ -3,25 +3,21 @@
  */
 package com.jeesite.modules.aa.service;
 
-import java.text.SimpleDateFormat;
-import java.util.List;
-
-import com.jeesite.common.lang.DateUtils;
+import com.jeesite.common.entity.Page;
+import com.jeesite.common.service.CrudService;
+import com.jeesite.modules.aa.dao.DelegateLetterDao;
 import com.jeesite.modules.aa.entity.CarInfo;
+import com.jeesite.modules.aa.entity.DelegateLetter;
 import com.jeesite.modules.aa.entity.DelegateUser;
 import com.jeesite.modules.aa.entity.PictureUser;
 import com.jeesite.modules.aa.vo.DelegateLetterVO;
-import com.jeesite.modules.aa.vo.PictureUserVO;
 import com.jeesite.modules.common.entity.ExamUser;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jeesite.common.entity.Page;
-import com.jeesite.common.service.CrudService;
-import com.jeesite.modules.aa.entity.DelegateLetter;
-import com.jeesite.modules.aa.dao.DelegateLetterDao;
+import java.text.SimpleDateFormat;
 
 /**
  * 委托书信息Service
@@ -120,6 +116,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
 		carInfo.setExamUserId(examUser.getExamId());
 		carInfo.setPaperId(examUser.getPaperId());
 		carInfo = carInfoService.getByEntity(carInfo);
+		carInfo.setColor(carInfoService.getColor(carInfo));
 		if(StringUtils.isNotBlank(carInfo.getRegisterDate())){
 			carInfo.setRegisterDate(new SimpleDateFormat("yyyy年MM月dd日").format(carInfo.getRegisterDate()));
 		}

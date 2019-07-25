@@ -3,22 +3,22 @@
  */
 package com.jeesite.modules.aa.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
+import com.jeesite.common.entity.Page;
+import com.jeesite.common.service.CrudService;
+import com.jeesite.modules.aa.dao.VehicleInstallInfoDao;
+import com.jeesite.modules.aa.entity.VehicleInstallInfo;
 import com.jeesite.modules.aa.vo.VehicleInstallVO;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.sys.entity.DictData;
 import com.jeesite.modules.sys.utils.DictUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jeesite.common.entity.Page;
-import com.jeesite.common.service.CrudService;
-import com.jeesite.modules.aa.entity.VehicleInstallInfo;
-import com.jeesite.modules.aa.dao.VehicleInstallInfoDao;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 车辆加装信息Service
@@ -28,6 +28,9 @@ import com.jeesite.modules.aa.dao.VehicleInstallInfoDao;
 @Service
 @Transactional(readOnly=true)
 public class VehicleInstallInfoService extends CrudService<VehicleInstallInfoDao, VehicleInstallInfo> {
+
+	@Autowired
+	private VehicleInstallInfoDao vehicleInstallInfoDao;
 
 	/**
 	 * 根据考生id加载车辆加装信息
@@ -122,7 +125,6 @@ public class VehicleInstallInfoService extends CrudService<VehicleInstallInfoDao
 	/**
 	 * 查询分页数据
 	 * @param vehicleInstallInfo 查询条件
-	 * @param vehicleInstallInfo.page 分页对象
 	 * @return
 	 */
 	@Override
@@ -177,5 +179,13 @@ public class VehicleInstallInfoService extends CrudService<VehicleInstallInfoDao
 		}
 		return projectName.toString();
 	}
-	
+
+	/**
+	 * 查询车辆加装信息
+	 * @param vehicleInstallInfo
+	 * @return
+	 */
+    public String getProject(VehicleInstallInfo vehicleInstallInfo) {
+		return vehicleInstallInfoDao.getProject(vehicleInstallInfo);
+    }
 }

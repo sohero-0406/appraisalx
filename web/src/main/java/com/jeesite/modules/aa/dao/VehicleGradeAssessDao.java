@@ -14,5 +14,12 @@ import com.jeesite.modules.aa.entity.VehicleGradeAssess;
  */
 @MyBatisDao
 public interface VehicleGradeAssessDao extends CrudDao<VehicleGradeAssess> {
-	
+
+    /**
+     * 获取技术状况
+     * @param vehicleGradeAssess
+     * @return
+     */
+    String getTechnicalStatus(VehicleGradeAssess vehicleGradeAssess);
+
 }

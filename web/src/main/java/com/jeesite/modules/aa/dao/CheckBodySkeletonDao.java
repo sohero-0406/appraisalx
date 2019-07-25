@@ -21,4 +21,10 @@ public interface CheckBodySkeletonDao extends CrudDao<CheckBodySkeleton> {
      * 判定事故车加载
      */
     List<CheckBodySkeleton> findAccidentVehicle(CheckBodySkeleton checkBodySkeleton);
+
+    /**
+     * 查询鉴定项
+     */
+    String getTechnologyInfo(CheckBodySkeleton checkBodySkeleton);
+
 }

@@ -25,6 +25,4 @@ public interface VehicleInfoDao extends CrudDao<VehicleInfo> {
 
     VehicleInfo getCarModel(String chexingId);
 
-    VehicleInfo getVehicleInfo(String chexingId);
-
 }

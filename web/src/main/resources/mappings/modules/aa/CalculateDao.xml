@@ -29,5 +29,11 @@
 		and calculate.exam_user_id = #{examUserId}
 
 	</select>
+
+	<!-- 查询算法类型 -->
+	<select id="getType" resultType="String">
+		select dict_label from js_sys_dict_data
+		where dict_value = #{type} and dict_type = 'aa_calculate_type'
+	</select>
 	
 </mapper>
