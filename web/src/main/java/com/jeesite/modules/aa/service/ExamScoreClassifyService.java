@@ -79,7 +79,7 @@ public class ExamScoreClassifyService extends CrudService<ExamScoreClassifyDao, 
 	 */
 	@Transactional(readOnly=false)
 	public List<Map<String,Object>> getExamScoreInfo(String examId) {
-		return dao.getExamScoreInfo();
+		return dao.getExamScoreInfo(examId);
 	}
 
 	@Transactional(readOnly=false)

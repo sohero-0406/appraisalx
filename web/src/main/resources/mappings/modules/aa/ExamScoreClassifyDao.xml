@@ -23,7 +23,7 @@
 		aa_exam_score_classify class
 		left join aa_exam_score_detail detail on class.id = detail.score_classify_id
 		left join aa_exam_score_info info on info.id = detail.score_info_id
-		where class.exam_id = '1151435216635924480'
+		where class.exam_id = #{examId}
 	</select>
 	
 </mapper>

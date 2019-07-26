@@ -12,16 +12,29 @@
 		ORDER BY ${sqlMap.order.toSql()}
 	</select> -->
 
-	<select id="getExamScoreInfo" resultType="ExamScoreInfo">
-		select
-		  aExam.id as id,
-		  aExam.name as name,
-		  aExam.type as type,
-		  bExam.id as sonId,
-		  bExam.name as sonName
+	<resultMap id="findDataMap" type="ExamScoreInfo">
+		<id property="id" column="id"></id>
+		<result property="name" column="name"></result>
+		<result property="score" column="score"></result>
+		<collection property="itemList" ofType="ExamScoreInfo">
+			<id property="id" column="sonId"></id>
+			<result property="name" column="sonName"></result>
+			<result property="score" column="sonScore"></result>
+		</collection>
+	</resultMap>
+
+	<select id="getExamScoreInfo" resultMap="findDataMap">
+		  select
+			aExam.id,
+			aExam.name,
+			aExam.score,
+			bExam.id as sonId,
+			bExam.name as sonName,
+			bExam.score as sonScore
 		 from aa_exam_score_info aExam
-		LEFT JOIN aa_exam_score_info  bExam on aExam.type = bExam.super_type
-		where aExam.super_type is null
+		LEFT JOIN aa_exam_score_info  bExam on aExam.id = bExam.parent_id
+		where  aExam.parent_id = '0'
+		ORDER BY aExam.sort,bExam.sort;
 
 	</select>
 	

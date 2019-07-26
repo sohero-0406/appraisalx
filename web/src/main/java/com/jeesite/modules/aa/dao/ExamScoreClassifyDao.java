@@ -19,5 +19,5 @@ import java.util.Map;
 public interface ExamScoreClassifyDao extends CrudDao<ExamScoreClassify> {
 
     //根据考试id 获取试卷评分项
-    List<Map<String,Object>> getExamScoreInfo();
+    List<Map<String,Object>> getExamScoreInfo(String examId);
 }
