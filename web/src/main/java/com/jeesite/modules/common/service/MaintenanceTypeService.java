@@ -16,7 +16,7 @@ import com.jeesite.modules.common.dao.MaintenanceTypeDao;
 /**
  * common_maintenance_typeService
  * @author liangtao
- * @version 2019-07-12
+ * @version 2019-07-26
  */
 @Service
 @Transactional(readOnly=true)

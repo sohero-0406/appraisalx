@@ -28,9 +28,6 @@ public interface ExamResultsDetailDao extends CrudDao<ExamResultsDetail> {
     //获取车架
     List<CheckBodySkeleton> getCheckBodySkeleton(@Param("examUserId") String examUserId, @Param("paperId") String paperId);
 
-    //获取字典值
-    List<Map<String,String>> getCarBodyDic();
-
     //验证数据是否包含不得分项
     List<ExamResultsDetail> validationData(String examUserId);
 

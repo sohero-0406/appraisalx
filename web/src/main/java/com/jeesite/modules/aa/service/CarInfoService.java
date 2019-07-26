@@ -212,7 +212,6 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
 
     /**
      * 查询车身颜色
-     * @param carInfo
      */
     public String getColor(CarInfo carInfo) {
         return carInfoDao.getColor(carInfo);

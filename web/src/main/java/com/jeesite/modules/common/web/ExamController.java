@@ -122,6 +122,7 @@ public class ExamController extends BaseController {
     @RequestMapping(value = "operationExam")
     @ResponseBody
     public CommonResult operationExam(Exam exam) {
+        //修改考生状态
         CommonResult comRes = examService.updateExamSate(exam);
         return comRes;
     }

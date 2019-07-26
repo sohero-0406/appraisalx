@@ -52,9 +52,27 @@
 					</div>
 				</div>
 				<div class="form-group">
+					<label class="control-label">${text('维修详细内容')}：</label>
+					<div class="control-inline">
+						<#form:input path="content" maxlength="2048" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
 					<label class="control-label">${text('外观覆盖件详细维修记录,重要组成部件详细维修记录,该车所有的详细维修记录')}：</label>
 					<div class="control-inline">
 						<#form:input path="maintenanceType" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('状态')}：</label>
+					<div class="control-inline width-120">
+						<#form:select path="status" dictType="sys_search_status" blankOption="true" class="form-control"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('备注信息')}：</label>
+					<div class="control-inline">
+						<#form:input path="remarks" maxlength="500" class="form-control width-120"/>
 					</div>
 				</div>
 				<div class="form-group">
@@ -81,7 +99,13 @@ $('#dataGrid').dataGrid({
 		{header:'${text("mileage")}', name:'mileage', index:'a.mileage', width:150, align:"left"},
 		{header:'${text("main_tain_date")}', name:'mainTainDate', index:'a.main_tain_date', width:150, align:"left"},
 		{header:'${text("type")}', name:'type', index:'a.type', width:150, align:"left"},
+		{header:'${text("维修详细内容")}', name:'content', index:'a.content', width:150, align:"left"},
 		{header:'${text("外观覆盖件详细维修记录,重要组成部件详细维修记录,该车所有的详细维修记录")}', name:'maintenanceType', index:'a.maintenance_type', width:150, align:"left"},
+		{header:'${text("状态")}', name:'status', index:'a.status', width:150, align:"center", formatter: function(val, obj, row, act){
+			return js.getDictLabel(${@DictUtils.getDictListJson('sys_search_status')}, val, '${text("未知")}', true);
+		}},
+		{header:'${text("更新时间")}', name:'updateDate', index:'a.update_date', width:150, align:"center"},
+		{header:'${text("备注信息")}', name:'remarks', index:'a.remarks', width:150, align:"left"},
 		{header:'${text("操作")}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
 			var actions = [];
 			<% if(hasPermi('common:maintenanceType:edit')){ %>

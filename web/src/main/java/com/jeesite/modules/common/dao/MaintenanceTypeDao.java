@@ -10,7 +10,7 @@ import com.jeesite.modules.common.entity.MaintenanceType;
 /**
  * common_maintenance_typeDAO接口
  * @author liangtao
- * @version 2019-07-12
+ * @version 2019-07-26
  */
 @MyBatisDao
 public interface MaintenanceTypeDao extends CrudDao<MaintenanceType> {

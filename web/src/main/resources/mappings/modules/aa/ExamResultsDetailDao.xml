@@ -88,10 +88,6 @@
 			</where>
 	</select>
 
-	<select id="getCarBodyDic" resultType="java.util.Map">
-			select  dict_label,dict_value from js_sys_dict_data where dict_type = 'aa_car_body_skeleton'
-	</select>
-
 	<select id="validationData" resultType="ExamResultsDetail">
 		select
 			result.exam_user_id,
@@ -137,7 +133,7 @@
 		aa_exam_results_detail detail
 		left join aa_exam_score_classify class on class.id = detail.score_classify_id
 		left join aa_exam_score_info info on class.exam_score_info_id = info.id
-		where detail.exam_user_id = '2000'
+		where detail.exam_user_id = #{examUserId}
 
 
 	</select>

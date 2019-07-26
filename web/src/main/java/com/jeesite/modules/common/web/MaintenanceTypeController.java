@@ -25,7 +25,7 @@ import com.jeesite.modules.common.service.MaintenanceTypeService;
 /**
  * common_maintenance_typeController
  * @author liangtao
- * @version 2019-07-12
+ * @version 2019-07-26
  */
 @Controller
 @RequestMapping(value = "${adminPath}/common/maintenanceType")

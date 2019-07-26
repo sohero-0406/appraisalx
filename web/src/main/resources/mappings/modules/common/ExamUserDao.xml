@@ -12,4 +12,12 @@
 		ORDER BY ${sqlMap.order.toSql()}
 	</select> -->
 
+	<update id="updateExamUserEndTime" >
+		UPDATE common_exam_user
+		set end_time = (NOW())
+	    where
+		end_time is null
+		and exam_id = #{examId}
+		and status = '0'
+	</update>
 </mapper>

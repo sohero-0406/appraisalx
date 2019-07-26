@@ -130,16 +130,8 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 
 	@Transactional(readOnly=false)
 	public void saveExamEndTime(String examId){
-		ExamUser examUser = new ExamUser();
-		examUser.setExamId(examId);
-		List<ExamUser> examUsers = dao.findList(examUser);
-		for(ExamUser user:examUsers){
-			//考生未结束考试时间
-			if(user.getEndTime()==null || user.getEndTime().equals("")){
-				user.setEndTime(new Date());
-				super.save(user);  //保存
-			}
-		}
+		//依据考试id 在考试结束时 给未结束考试的考生添加结束考试时间
+		dao.updateExamUserEndTime(examId);
 	}
 
 
@@ -301,7 +293,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 					appraisalReportT,appraisalReportS,placeFileListS,examNameMap,movingPictureTec,registrationPictureTec,idenPictureTec);
 
 
-			BigDecimal count = delegateCount.add(vehicleDocumentCount.add(carInfoCount));
+			BigDecimal count = delegateCount.add(vehicleDocumentCount.add(carInfoCount.add(accidentCount.add(identificationCount.add(calculateCount)))));
 			user.setScore(String.valueOf(count));
 			super.save(user);
 		}
@@ -309,9 +301,6 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 	}
 
 	//六、估算价值
-	//			List<String> movingPictureTec = new ArrayList<>(); //车辆行驶证
-	//			List<String> registrationPictureTec = new ArrayList<>();//机动车登记证书
-	//			List<String> idenPictureTec = new ArrayList<>(); //鉴定评估二手车照片
 	/**
 	 *
 	 * @param calculateT  老师-估算价值
@@ -334,7 +323,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 								   List<String> movingPictureTec,List<String> registrationPictureTec,List<String> idenPictureTec ){
 		BigDecimal calculateCount = new BigDecimal("0");
 		//学生估算方式
-		String studentPrice ="";
+		String studentPrice = null;
 		Map<String,String> calculateMap = calculateService.getEstimateByType(user.getId());
 		if(calculateMap!=null){
 			studentPrice = calculateMap.get("price");
@@ -355,11 +344,11 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 				saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
 						(String)examNameMap.get("1151013343665733999"),"0",
 						calculateT.getBeginPrice()+"-"+calculateT.getEndPrice()+"元",
-						studentPrice+"元","1");
+						studentPrice==null?"":(studentPrice+"元"),"1");
 				saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
 						(String)examNameMap.get("1151013343665739992"),"0",
 						calculateT.getBeginPrice()+"-"+calculateT.getEndPrice()+"元",
-						studentPrice+"元","1");
+						studentPrice==null?"":(studentPrice+"元"),"1");
 			}
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
@@ -373,7 +362,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}
 
 		//是否查封、抵押车辆
-		if(StringUtils.isNotBlank(checkTradableVehiclesT.getCheck3())&& checkTradableVehiclesT.getCheck3().equals(checkTradableVehiclesS.getCheck3()) ){
+		if(StringUtils.isNotBlank(checkTradableVehiclesT.getCheck3())&& checkTradableVehiclesS!=null&&checkTradableVehiclesT.getCheck3().equals(checkTradableVehiclesS.getCheck3()) ){
 			calculateCount = calculateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343663128577"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
 					(String)examNameMap.get("1151013343663128577"),(String)examScoreMap.get("1151013343663128577"),
@@ -381,10 +370,10 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
 					(String)examNameMap.get("1151013343663128577"),"0",
-					checkTradableVehiclesT.getCheck3(),checkTradableVehiclesS.getCheck3(),"1");
+					checkTradableVehiclesT.getCheck3(),checkTradableVehiclesS==null?"":checkTradableVehiclesS.getCheck3(),"1");
 		}
 		//未接受处理的交通违法记录：
-		if(StringUtils.isNotBlank(checkTradableVehiclesT.getTrafficIllegalRecord())&& checkTradableVehiclesT.getTrafficIllegalRecord().equals(checkTradableVehiclesS.getTrafficIllegalRecord())){
+		if(StringUtils.isNotBlank(checkTradableVehiclesT.getTrafficIllegalRecord())&& checkTradableVehiclesS!=null&& checkTradableVehiclesT.getTrafficIllegalRecord().equals(checkTradableVehiclesS.getTrafficIllegalRecord())){
 			calculateCount = calculateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343662706689"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
 					(String)examNameMap.get("1151013343662706689"),(String)examScoreMap.get("1151013343662706689"),
@@ -392,12 +381,12 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
 					(String)examNameMap.get("1151013343662706689"),"0",
-					checkTradableVehiclesT.getTrafficIllegalRecord(),checkTradableVehiclesS.getTrafficIllegalRecord(),"1");
+					checkTradableVehiclesT.getTrafficIllegalRecord(),checkTradableVehiclesS==null?"":checkTradableVehiclesS.getTrafficIllegalRecord(),"1");
 		}
 		//车辆鉴定评估价值为人民币（元）   1151013343665739992
 
 		//自鉴定评估基准日至（日）
-		if(StringUtils.isNotEmpty(appraisalReportT.getBaseDateEnd())&& appraisalReportT.getBaseDateEnd().equals(appraisalReportS.getBaseDateEnd()) ){
+		if(StringUtils.isNotEmpty(appraisalReportT.getBaseDateEnd())&&appraisalReportS!=null&& appraisalReportT.getBaseDateEnd().equals(appraisalReportS.getBaseDateEnd()) ){
 			calculateCount = calculateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343665541121"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
 					(String)examNameMap.get("1151013343665541121"),(String)examScoreMap.get("1151013343665541121"),
@@ -405,10 +394,10 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
 					(String)examNameMap.get("1151013343665541121"),"0",
-					appraisalReportT.getBaseDateEnd(),appraisalReportS.getBaseDateEnd(),"1");
+					appraisalReportT.getBaseDateEnd(),appraisalReportS==null?"":appraisalReportS.getBaseDateEnd(),"1");
 		}
 		//归档时效
-		if(StringUtils.isNotBlank(checkTradableVehiclesT.getFileDuring()) && checkTradableVehiclesT.getFileDuring().equals(checkTradableVehiclesS.getFileDuring())){
+		if(StringUtils.isNotBlank(checkTradableVehiclesT.getFileDuring()) &&checkTradableVehiclesS!=null&& checkTradableVehiclesT.getFileDuring().equals(checkTradableVehiclesS.getFileDuring())){
 			calculateCount = calculateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151028180617695233"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
 					(String)examNameMap.get("1151028180617695233"),(String)examScoreMap.get("1151028180617695233"),
@@ -416,7 +405,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
 					(String)examNameMap.get("1151028180617695233"),"0",
-					checkTradableVehiclesT.getFileDuring(),checkTradableVehiclesS.getFileDuring(),"1");
+					checkTradableVehiclesT.getFileDuring(),checkTradableVehiclesS==null?"":checkTradableVehiclesS.getFileDuring(),"1");
 		}
 		//归档
 		List<String> removeList = new ArrayList<>();
@@ -546,7 +535,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 										Map<String,Object> examScoreMap, ExamUser user,Map<String,Object> examNameMap){
 		BigDecimal identificationCount = new BigDecimal(0);
 		//老师答案不为空
-		if(this.judgeStringBetween(vehicleGradeAssessT.getStartScore(),vehicleGradeAssessT.getEndScore(),vehicleGradeAssessS.getScore())){
+		if(vehicleGradeAssessS!=null&&this.judgeStringBetween(vehicleGradeAssessT.getStartScore(),vehicleGradeAssessT.getEndScore(),vehicleGradeAssessS.getScore())){
 			identificationCount = identificationCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343662993409")))); //车辆鉴定得分值（区间值）
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180616400897",
 					(String)examNameMap.get("1151013343662993409"),(String)examScoreMap.get("1151013343662993409"),
@@ -556,11 +545,11 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180616400897",
 					(String)examNameMap.get("1151013343662993409"),"0",
 					vehicleGradeAssessT.getStartScore()+"-"+vehicleGradeAssessT.getEndScore()+"分",
-					vehicleGradeAssessS.getScore()+"分","1");
+					vehicleGradeAssessS==null?"":(vehicleGradeAssessS.getStartScore()==null?"":vehicleGradeAssessS.getStartScore()+"分"),"1");
 
 		}
 		//鉴定日期
-		if(StringUtils.isNotBlank(vehicleGradeAssessT.getIdentifyDate()) && vehicleGradeAssessT.getIdentifyDate().equals(vehicleGradeAssessS.getIdentifyDate()) ){
+		if(StringUtils.isNotBlank(vehicleGradeAssessT.getIdentifyDate()) &&(null!=vehicleGradeAssessS)&& vehicleGradeAssessT.getIdentifyDate().equals(vehicleGradeAssessS.getIdentifyDate()) ){
 			identificationCount = identificationCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151028180615864562")))); //鉴定日期
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180616400897",
 					(String)examNameMap.get("1151028180615864562"),(String)examScoreMap.get("1151028180615864562"),
@@ -568,7 +557,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180616400897",
 					(String)examNameMap.get("1151028180615864562"),"0",
-					vehicleGradeAssessT.getIdentifyDate(),vehicleGradeAssessS.getIdentifyDate(),"1");
+					vehicleGradeAssessT.getIdentifyDate(),
+					vehicleGradeAssessS==null?"":vehicleGradeAssessS.getIdentifyDate(),
+					"1");
 		}
 		return identificationCount;
 	}
@@ -599,7 +590,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 	public BigDecimal getAccidentVehicles(CheckTradableVehicles checkTradableVehiclesT,CheckTradableVehicles checkTradableVehiclesS,
 										  Map<String,Object> examScoreMap,ExamUser user,Map<String,Object> examNameMap){
 		BigDecimal accidentCount = new BigDecimal(0);
-		if(StringUtils.isNotBlank(checkTradableVehiclesT.getIsAccident()) && checkTradableVehiclesT.getIsAccident().equals(checkTradableVehiclesS.getIsAccident())){
+		if(StringUtils.isNotBlank(checkTradableVehiclesT.getIsAccident()) &&(null!=checkTradableVehiclesS)&& checkTradableVehiclesT.getIsAccident().equals(checkTradableVehiclesS.getIsAccident())){
 			accidentCount = accidentCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343664201729"))));  //判定事故车选择正确
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180615991297",
 					(String)examNameMap.get("1151013343664201729"),(String)examScoreMap.get("1151013343664201729"),
@@ -607,7 +598,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180615991297",
 					(String)examNameMap.get("1151013343664201729"),"0",
-					getIsAccidentName(checkTradableVehiclesT.getIsAccident()),getIsAccidentName(checkTradableVehiclesS.getIsAccident()),"1");
+					getIsAccidentName(checkTradableVehiclesT.getIsAccident()),getIsAccidentName(checkTradableVehiclesS==null?"":checkTradableVehiclesS.getIsAccident()),"1");
 		}
 		return  accidentCount;
 	}
@@ -618,7 +609,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 			if("0".equals(isAccident)){
 				return "正常车";
 			}else if("1".equals(isAccident)){
-				return "非正常车";
+				return "事故车";
 			}
 		}
 		return "";
@@ -631,7 +622,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 	public BigDecimal getCarInfo(CarInfo carInfoT,CarInfo carInfoS,Map<String,Object> examScoreMap,List<VehicleInstallInfo> vehicleInstallInfoListT,
 								 List<VehicleInstallInfo> vehicleInstallInfoListS,ExamUser user,Map<String,Object> examNameMap,String paperId){
 		BigDecimal carInfoCount = new BigDecimal(0);
-		if(StringUtils.isNotBlank(carInfoT.getBrand())  && carInfoT.getBrand().equals(carInfoS.getBrand())){
+		if(StringUtils.isNotBlank(carInfoT.getBrand()) &&(null!=carInfoS) && carInfoT.getBrand().equals(carInfoS.getBrand())){
 			carInfoCount = carInfoCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343664197633")))); //品牌
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343664197633"),(String)examScoreMap.get("1151013343664197633"),
@@ -639,9 +630,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343664197633"),"0",
-					carInfoT.getBrand(),carInfoS.getBrand(),"1");
+					carInfoT.getBrand(),carInfoS==null?"":carInfoS.getBrand(),"1");
 		}
-		if(StringUtils.isNotBlank(carInfoT.getModel()) && carInfoT.getModel().equals(carInfoS.getModel())){
+		if(StringUtils.isNotBlank(carInfoT.getModel()) &&(null!=carInfoS) && carInfoT.getModel().equals(carInfoS.getModel())){
 			carInfoCount = carInfoCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343664799745")))); //车型
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343664799745"),(String)examScoreMap.get("1151013343664799745"),
@@ -649,9 +640,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343664799745"),"0",
-					carInfoT.getModel(),carInfoS.getModel(),"1");
+					carInfoT.getModel(),carInfoS==null?"":carInfoS.getModel(),"1");
 		}
-		if(StringUtils.isNotBlank(carInfoT.getLevel()) && carInfoT.getLevel().equals(carInfoS.getLevel())){
+		if(StringUtils.isNotBlank(carInfoT.getLevel()) &&(null!=carInfoS) && carInfoT.getLevel().equals(carInfoS.getLevel())){
 			carInfoCount = carInfoCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343664439297")))); //级别
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343664439297"),(String)examScoreMap.get("1151013343664439297"),
@@ -659,9 +650,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343664439297"),"0",
-					carInfoT.getLevel(),carInfoS.getLevel(),"1");
+					carInfoT.getLevel(),carInfoS==null?"":carInfoS.getLevel(),"1");
 		}
-		if(StringUtils.isNotBlank(carInfoT.getManufactureDate()) &&carInfoT.getManufactureDate().equals(carInfoS.getManufactureDate())){
+		if(StringUtils.isNotBlank(carInfoT.getManufactureDate()) &&(null!=carInfoS) &&carInfoT.getManufactureDate().equals(carInfoS.getManufactureDate())){
 			carInfoCount = carInfoCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343665321234")))); //出厂日期
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343665321234"),(String)examScoreMap.get("1151013343665321234"),
@@ -669,9 +660,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343665321234"),"0",
-					carInfoT.getManufactureDate(),carInfoS.getManufactureDate(),"1");
+					carInfoT.getManufactureDate(),carInfoS==null?"":carInfoS.getManufactureDate(),"1");
 		}
-		if(carInfoT.getChangeNum()==carInfoS.getChangeNum() ){
+		if( (null!=carInfoS) &&carInfoT.getChangeNum()==carInfoS.getChangeNum() ){
 			carInfoCount = carInfoCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343663411201")))); //过户次数
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343663411201"),(String)examScoreMap.get("1151013343663411201"),
@@ -679,9 +670,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343663411201"),"0",
-					String.valueOf(carInfoT.getChangeNum()),String.valueOf(carInfoS.getChangeNum()),"1");
+					String.valueOf(carInfoT.getChangeNum()),String.valueOf(carInfoS==null?"":carInfoS.getChangeNum()),"1");
 		}
-		if(StringUtils.isNotBlank(carInfoT.getEnvironmentalStandard()) &&carInfoT.getEnvironmentalStandard().equals(carInfoS.getEnvironmentalStandard())){
+		if(StringUtils.isNotBlank(carInfoT.getEnvironmentalStandard()) &&(null!=carInfoS) && carInfoT.getEnvironmentalStandard().equals(carInfoS.getEnvironmentalStandard())){
 			carInfoCount = carInfoCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343663699964")))); //环保标准
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343663699964"),(String)examScoreMap.get("1151013343663699964"),
@@ -689,9 +680,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343663699964"),"0",
-					carInfoT.getEnvironmentalStandard(),carInfoS.getEnvironmentalStandard(),"1");
+					carInfoT.getEnvironmentalStandard(),carInfoS==null?"":carInfoS.getEnvironmentalStandard(),"1");
 		}
-		if(StringUtils.isNotBlank(carInfoT.getCurbWeight()) &&carInfoT.getCurbWeight().equals(carInfoS.getCurbWeight())){
+		if(StringUtils.isNotBlank(carInfoT.getCurbWeight()) &&(null!=carInfoS) &&carInfoT.getCurbWeight().equals(carInfoS.getCurbWeight())){
 			carInfoCount = carInfoCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343663931393")))); //整备质量
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343663931393"),(String)examScoreMap.get("1151013343663931393"),
@@ -699,9 +690,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343663931393"),"0",
-					carInfoT.getCurbWeight(),carInfoS.getCurbWeight(),"1");
+					carInfoT.getCurbWeight(),carInfoS==null?"":carInfoS.getCurbWeight(),"1");
 		}
-		if(StringUtils.isNotBlank(carInfoT.getEngineModel()) &&carInfoT.getEngineModel().equals(carInfoS.getEngineModel())){
+		if(StringUtils.isNotBlank(carInfoT.getEngineModel()) &&(null!=carInfoS) &&carInfoT.getEngineModel().equals(carInfoS.getEngineModel())){
 			carInfoCount = carInfoCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343666056124")))); //发动机型号
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343666056124"),(String)examScoreMap.get("1151013343666056124"),
@@ -709,9 +700,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343666056124"),"0",
-					carInfoT.getEngineModel(),carInfoS.getEngineModel(),"1");
+					carInfoT.getEngineModel(),carInfoS==null?"":carInfoS.getEngineModel(),"1");
 		}
-		if(StringUtils.isNotBlank(carInfoT.getEngineNum()) &&carInfoT.getEngineNum().equals(carInfoS.getEngineNum())){
+		if(StringUtils.isNotBlank(carInfoT.getEngineNum()) &&(null!=carInfoS) &&carInfoT.getEngineNum().equals(carInfoS.getEngineNum())){
 			carInfoCount = carInfoCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343666704366")))); //发动机号码
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343666704366"),(String)examScoreMap.get("1151013343666704366"),
@@ -719,9 +710,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343666704366"),"0",
-					carInfoT.getEngineNum(),carInfoS.getEngineNum(),"1");
+					carInfoT.getEngineNum(),carInfoS==null?"":carInfoS.getEngineNum(),"1");
 		}
-		if(StringUtils.isNotBlank(carInfoT.getBodySize()) &&carInfoT.getBodySize().equals(carInfoS.getBodySize())){
+		if(StringUtils.isNotBlank(carInfoT.getBodySize()) &&(null!=carInfoS) &&carInfoT.getBodySize().equals(carInfoS.getBodySize())){
 			carInfoCount = carInfoCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343666286593")))); //车身尺寸
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343666286593"),(String)examScoreMap.get("1151013343666286593"),
@@ -729,9 +720,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343666286593"),"0",
-					carInfoT.getBodySize(),carInfoS.getBodySize(),"1");
+					carInfoT.getBodySize(),carInfoS==null?"":carInfoS.getBodySize(),"1");
 		}
-		if(StringUtils.isNotBlank(carInfoT.getVehicleWarranty()) &&carInfoT.getVehicleWarranty().equals(carInfoS.getVehicleWarranty())){
+		if(StringUtils.isNotBlank(carInfoT.getVehicleWarranty()) &&(null!=carInfoS) &&carInfoT.getVehicleWarranty().equals(carInfoS.getVehicleWarranty())){
 			carInfoCount = carInfoCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343665496065")))); //整车质保
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343665496065"),(String)examScoreMap.get("1151013343665496065"),
@@ -739,9 +730,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343665496065"),"0",
-					carInfoT.getVehicleWarranty(),carInfoS.getVehicleWarranty(),"1");
+					carInfoT.getVehicleWarranty(),carInfoS==null?"":carInfoS.getVehicleWarranty(),"1");
 		}
-		if(StringUtils.isNotBlank(carInfoT.getYearCheckDue()) &&carInfoT.getYearCheckDue().equals(carInfoS.getYearCheckDue())){
+		if(StringUtils.isNotBlank(carInfoT.getYearCheckDue()) &&(null!=carInfoS) &&carInfoT.getYearCheckDue().equals(carInfoS.getYearCheckDue())){
 			carInfoCount = carInfoCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343663656961")))); //年检到期
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343663656961"),(String)examScoreMap.get("1151013343663656961"),
@@ -749,11 +740,10 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343663656961"),"0",
-					carInfoT.getYearCheckDue(),carInfoS.getYearCheckDue(),"1");
+					carInfoT.getYearCheckDue(),carInfoS==null?"":carInfoS.getYearCheckDue(),"1");
 		}
 		//定义开关
 		Boolean flag = false;
-		StringBuilder vehicleInstallProject = new StringBuilder();
 		//车辆加装信息
 		for(int i = 0;i<vehicleInstallInfoListT.size();i++){
 			for(VehicleInstallInfo vehicleStu:vehicleInstallInfoListS){
@@ -803,34 +793,36 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 			Boolean flag = false;
 			//学生所填 答案
 			VehicleDocumentInfo vehicleDocument = null;
-			for(VehicleDocumentInfo vehicleDocumentS:vehicleDocumentInfoListS){
-				//单证项目   是否包含所选项
-				if(StringUtils.isNotBlank(vehicleDocumentT.getProject()) &&vehicleDocumentT.getProject().equals(vehicleDocumentS.getProject())){
-					flag = true;
-					vehicleDocument = vehicleDocumentS;
-					break;
+				for(VehicleDocumentInfo vehicleDocumentS:vehicleDocumentInfoListS){
+					//单证项目   是否包含所选项
+					if(StringUtils.isNotBlank(vehicleDocumentT.getProject()) &&vehicleDocumentT.getProject().equals(vehicleDocumentS.getProject())){
+						flag = true;
+						vehicleDocument = vehicleDocumentS;
+						break;
+					}
 				}
-			}
-			if(flag){
-				if(StringUtils.isNotBlank(vehicleDocumentT.getState()) && vehicleDocumentT.getState().equals(vehicleDocument.getState())){
-					vehicleDocumentCount = vehicleDocumentCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get(getExamScoreInfo(vehicleDocumentT.getProject())))));
-					saveExamDetail(user.getId(),user.getExamId(),"1151028180614815745",
-							(String)examNameMap.get(getExamScoreInfo(vehicleDocumentT.getProject())),(String)examScoreMap.get(getExamScoreInfo(vehicleDocumentT.getProject())),
-							vehicleDocumentT.getState(),vehicleDocument.getState(),"0");
+				if(flag){
+					if(StringUtils.isNotBlank(vehicleDocumentT.getState()) && vehicleDocumentT.getState().equals(vehicleDocument.getState())){
+						vehicleDocumentCount = vehicleDocumentCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get(getExamScoreInfo(vehicleDocumentT.getProject())))));
+						saveExamDetail(user.getId(),user.getExamId(),"1151028180614815745",
+								(String)examNameMap.get(getExamScoreInfo(vehicleDocumentT.getProject())),(String)examScoreMap.get(getExamScoreInfo(vehicleDocumentT.getProject())),
+								getYesOrNo(vehicleDocumentT.getState()),getYesOrNo(vehicleDocument.getState()),"0");
+					}else{
+						saveExamDetail(user.getId(),user.getExamId(),"1151028180614815745",
+								(String)examNameMap.get(getExamScoreInfo(vehicleDocumentT.getProject())),"0",
+								getYesOrNo(vehicleDocumentT.getState()),getYesOrNo(vehicleDocument.getState()),"1");
+					}
 				}else{
 					saveExamDetail(user.getId(),user.getExamId(),"1151028180614815745",
 							(String)examNameMap.get(getExamScoreInfo(vehicleDocumentT.getProject())),"0",
-							vehicleDocumentT.getState(),vehicleDocument.getState(),"1");
+							getYesOrNo(vehicleDocumentT.getState()),"","1");
 				}
-			}else{
-				saveExamDetail(user.getId(),user.getExamId(),"1151028180614815745",
-						(String)examNameMap.get(getExamScoreInfo(vehicleDocumentT.getProject())),"0",
-						vehicleDocumentT.getState(),"","1");
-			}
+
+
 
 		}
 		//判别是否为可交易车辆
-		if(StringUtils.isNotBlank(checkTradableVehiclesT.getIsTrade()) &&checkTradableVehiclesT.getIsTrade().equals(checkTradableVehiclesS.getIsTrade())){
+		if(StringUtils.isNotBlank(checkTradableVehiclesT.getIsTrade()) &&(null!=checkTradableVehiclesS) &&checkTradableVehiclesT.getIsTrade().equals(checkTradableVehiclesS.getIsTrade())){
 			vehicleDocumentCount = vehicleDocumentCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343663693825"))));  //判别是否可交易
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180614815745",
 					(String)examNameMap.get("1151013343663693825"),(String)examScoreMap.get("1151013343663693825"),
@@ -838,9 +830,21 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180614815745",
 					(String)examNameMap.get("1151013343663693825"),"0",
-					checkTradableVehiclesT.getIsTrade(),checkTradableVehiclesS.getIsTrade(),"1");
+					checkTradableVehiclesT.getIsTrade(),checkTradableVehiclesS==null?"":checkTradableVehiclesS.getIsTrade(),"1");
 		}
 		return vehicleDocumentCount;
+	}
+
+	public String getYesOrNo(String state){
+		if(StringUtils.isNotBlank(state)){
+			if("1".equals(state)){
+				return "是";
+			}else{
+				return "否";
+			}
+		}else{
+			return "";
+		}
 	}
 
 	/**
@@ -887,7 +891,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		BigDecimal delegateCount = new BigDecimal(0);
 		//一、委托人
 
-		if(StringUtils.isNotBlank(delegateUserT.getName()) && delegateUserT.getName().equals(delegateUserS.getName())) {
+		if(StringUtils.isNotBlank(delegateUserT.getName()) &&(null!=delegateUserS)&& delegateUserT.getName().equals(delegateUserS.getName())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343664762880"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343664762880"),(String)examScoreMap.get("1151013343664762880"),
@@ -895,9 +899,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343664762880"),"0",
-					delegateUserT.getName(),delegateUserS.getName(),"1");
+					delegateUserT.getName(),delegateUserS==null?"":delegateUserS.getName(),"1");
 		}
-		if(StringUtils.isNotBlank(delegateUserT.getIdNum()) &&delegateUserT.getIdNum().equals(delegateUserS.getIdNum())) {
+		if(StringUtils.isNotBlank(delegateUserT.getIdNum()) &&(null!=delegateUserS) &&delegateUserT.getIdNum().equals(delegateUserS.getIdNum())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343663427585"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343663427585"),(String)examScoreMap.get("1151013343663427585"),
@@ -905,9 +909,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343663427585"),"0",
-					delegateUserT.getIdNum(),delegateUserS.getIdNum(),"1");
+					delegateUserT.getIdNum(),delegateUserS==null?"":delegateUserS.getIdNum(),"1");
 		}
-		if(StringUtils.isNotBlank(delegateUserT.getAddress()) &&delegateUserT.getAddress().equals(delegateUserS.getAddress())) {
+		if(StringUtils.isNotBlank(delegateUserT.getAddress()) &&(null!=delegateUserS)&&delegateUserT.getAddress().equals(delegateUserS.getAddress())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343663116289"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343663116289"),(String)examScoreMap.get("1151013343663116289"),
@@ -915,9 +919,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343663116289"),"0",
-					delegateUserT.getAddress(),delegateUserS.getAddress(),"1");
+					delegateUserT.getAddress(),delegateUserS==null?"":delegateUserS.getAddress(),"1");
 		}
-		if(StringUtils.isNotBlank(delegateUserT.getContact()) &&delegateUserT.getContact().equals(delegateUserS.getContact())) {
+		if(StringUtils.isNotBlank(delegateUserT.getContact()) &&(null!=delegateUserS)&&delegateUserT.getContact().equals(delegateUserS.getContact())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343664889857"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343664889857"),(String)examScoreMap.get("1151013343664889857"),
@@ -925,9 +929,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343664889857"),"0",
-					delegateUserT.getContact(),delegateUserS.getContact(),"1");
+					delegateUserT.getContact(),delegateUserS==null?"":delegateUserS.getContact(),"1");
 		}
-		if(StringUtils.isNotBlank(delegateUserT.getPhone()) &&delegateUserT.getPhone().equals(delegateUserS.getPhone())) {
+		if(StringUtils.isNotBlank(delegateUserT.getPhone()) &&(null!=delegateUserS)&&delegateUserT.getPhone().equals(delegateUserS.getPhone())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343664988161"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343664988161"),(String)examScoreMap.get("1151013343664988161"),
@@ -935,9 +939,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343664988161"),"0",
-					delegateUserT.getPhone(),delegateUserS.getPhone(),"1");
+					delegateUserT.getPhone(),delegateUserS==null?"":delegateUserS.getPhone(),"1");
 		}
-		if(StringUtils.isNotBlank(delegateUserT.getApplyReason()) &&delegateUserT.getApplyReason().equals(delegateUserS.getApplyReason())) {
+		if(StringUtils.isNotBlank(delegateUserT.getApplyReason()) &&(null!=delegateUserS)&&delegateUserT.getApplyReason().equals(delegateUserS.getApplyReason())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343663902721"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343663902721"),(String)examScoreMap.get("1151013343663902721"),
@@ -945,9 +949,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343663902721"),"0",
-					delegateUserT.getApplyReason(),delegateUserS.getApplyReason(),"1");
+					delegateUserT.getApplyReason(),delegateUserS==null?"":delegateUserS.getApplyReason(),"1");
 		}
-		if(StringUtils.isNotBlank(delegateUserT.getCompleteDate()) &&delegateUserT.getCompleteDate().equals(delegateUserS.getCompleteDate())) {
+		if(StringUtils.isNotBlank(delegateUserT.getCompleteDate())&&(null!=delegateUserS) &&delegateUserT.getCompleteDate().equals(delegateUserS.getCompleteDate())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343663427585"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343663427585"),(String)examScoreMap.get("1151013343663427585"),
@@ -955,10 +959,10 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343663427585"),"0",
-					delegateUserT.getCompleteDate(),delegateUserS.getCompleteDate(),"1");
+					delegateUserT.getCompleteDate(),delegateUserS==null?"":delegateUserS.getCompleteDate(),"1");
 		}
 
-		if(StringUtils.isNotBlank(carInfoT.getLicensePlateNum()) &&carInfoT.getLicensePlateNum().equals(carInfoS.getLicensePlateNum())) {
+		if(StringUtils.isNotBlank(carInfoT.getLicensePlateNum()) &&(null!=carInfoS)&&carInfoT.getLicensePlateNum().equals(carInfoS.getLicensePlateNum())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343666503681"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343666503681"),(String)examScoreMap.get("1151013343666503681"),
@@ -966,9 +970,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343666503681"),"0",
-					carInfoT.getLicensePlateNum(),carInfoS.getLicensePlateNum(),"1");
+					carInfoT.getLicensePlateNum(),carInfoS==null?"":carInfoS.getLicensePlateNum(),"1");
 		}
-		if(StringUtils.isNotBlank(carInfoT.getVehicleType()) &&carInfoT.getVehicleType().equals(carInfoS.getVehicleType())) {
+		if(StringUtils.isNotBlank(carInfoT.getVehicleType()) &&(null!=carInfoS)&&carInfoT.getVehicleType().equals(carInfoS.getVehicleType())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343664988163"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343664988163"),(String)examScoreMap.get("1151013343664988163"),
@@ -976,9 +980,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343664988163"),"0",
-					carInfoT.getVehicleType(),carInfoS.getVehicleType(),"1");
+					carInfoT.getVehicleType(),carInfoS==null?"":carInfoS.getVehicleType(),"1");
 		}
-		if(StringUtils.isNotBlank(carInfoT.getVinCode()) &&carInfoT.getVinCode().equals(carInfoS.getVinCode())) {
+		if(StringUtils.isNotBlank(carInfoT.getVinCode()) &&(null!=carInfoS)&&carInfoT.getVinCode().equals(carInfoS.getVinCode())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343664328705"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343664328705"),(String)examScoreMap.get("1151013343664328705"),
@@ -986,9 +990,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343664328705"),"0",
-					carInfoT.getVinCode(),carInfoS.getVinCode(),"1");
+					carInfoT.getVinCode(),carInfoS==null?"":carInfoS.getVinCode(),"1");
 		}
-		if(StringUtils.isNotBlank(carInfoT.getLabelType()) &&carInfoT.getLabelType().equals(carInfoS.getLabelType())) {
+		if(StringUtils.isNotBlank(carInfoT.getLabelType())&&(null!=carInfoS) &&carInfoT.getLabelType().equals(carInfoS.getLabelType())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343666032641"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343666032641"),(String)examScoreMap.get("1151013343666032641"),
@@ -996,9 +1000,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343666032641"),"0",
-					carInfoT.getLabelType(),carInfoS.getLabelType(),"1");
+					carInfoT.getLabelType(),carInfoS==null?"":carInfoS.getLabelType(),"1");
 		}
-		if(StringUtils.isNotBlank(carInfoT.getUsage()) &&carInfoT.getUsage().equals(carInfoS.getUsage())) {
+		if(StringUtils.isNotBlank(carInfoT.getUsage()) &&(null!=carInfoS)&&carInfoT.getUsage().equals(carInfoS.getUsage())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343666728961"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343666728961"),(String)examScoreMap.get("1151013343666728961"),
@@ -1006,9 +1010,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343666728961"),"0",
-					carInfoT.getUsage(),carInfoS.getUsage(),"1");
+					carInfoT.getUsage(),carInfoS==null?"":carInfoS.getUsage(),"1");
 		}
-		if(StringUtils.isNotBlank(carInfoT.getTotalQuality()) &&carInfoT.getTotalQuality().equals(carInfoS.getTotalQuality())) {
+		if(StringUtils.isNotBlank(carInfoT.getTotalQuality())&&(null!=carInfoS) &&carInfoT.getTotalQuality().equals(carInfoS.getTotalQuality())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343663927297"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343663927297"),(String)examScoreMap.get("1151013343663927297"),
@@ -1016,9 +1020,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343663927297"),"0",
-					carInfoT.getTotalQuality(),carInfoS.getTotalQuality(),"1");
+					carInfoT.getTotalQuality(),carInfoS==null?"":carInfoS.getTotalQuality(),"1");
 		}
-		if(StringUtils.isNotBlank(carInfoT.getSear()) &&carInfoT.getSear().equals(carInfoS.getSear())) {
+		if(StringUtils.isNotBlank(carInfoT.getSear()) &&(null!=carInfoS)&&carInfoT.getSear().equals(carInfoS.getSear())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343664050177"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343664050177"),(String)examScoreMap.get("1151013343664050177"),
@@ -1026,9 +1030,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343664050177"),"0",
-					carInfoT.getSear(),carInfoS.getSear(),"1");
+					carInfoT.getSear(),carInfoS==null?"":carInfoS.getSear(),"1");
 		}
-		if(StringUtils.isNotBlank(carInfoT.getDisplacement()) &&carInfoT.getDisplacement().equals(carInfoS.getDisplacement())) {
+		if(StringUtils.isNotBlank(carInfoT.getDisplacement()) &&(null!=carInfoS)&&carInfoT.getDisplacement().equals(carInfoS.getDisplacement())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343662784513"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343662784513"),(String)examScoreMap.get("1151013343662784513"),
@@ -1036,9 +1040,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343662784513"),"0",
-					carInfoT.getDisplacement(),carInfoS.getDisplacement(),"1");
+					carInfoT.getDisplacement(),carInfoS==null?"":carInfoS.getDisplacement(),"1");
 		}
-		if(StringUtils.isNotBlank(carInfoT.getFuelType()) &&carInfoT.getFuelType().equals(carInfoS.getFuelType())) {
+		if(StringUtils.isNotBlank(carInfoT.getFuelType()) &&(null!=carInfoS)&&carInfoT.getFuelType().equals(carInfoS.getFuelType())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343665344513"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343665344513"),(String)examScoreMap.get("1151013343665344513"),
@@ -1046,9 +1050,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343665344513"),"0",
-					carInfoT.getFuelType(),carInfoS.getFuelType(),"1");
+					carInfoT.getFuelType(),carInfoS==null?"":carInfoS.getFuelType(),"1");
 		}
-		if(StringUtils.isNotBlank(carInfoT.getRegisterDate()) &&carInfoT.getRegisterDate().equals(carInfoS.getRegisterDate())) {
+		if(StringUtils.isNotBlank(carInfoT.getRegisterDate()) &&(null!=carInfoS)&&carInfoT.getRegisterDate().equals(carInfoS.getRegisterDate())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343662788609"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343662788609"),(String)examScoreMap.get("1151013343662788609"),
@@ -1056,29 +1060,33 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343662788609"),"0",
-					carInfoT.getRegisterDate(),carInfoS.getRegisterDate(),"1");
+					carInfoT.getRegisterDate(),carInfoS==null?"":carInfoS.getRegisterDate(),"1");
 		}
-		if(StringUtils.isNotBlank(carInfoT.getColor()) &&carInfoT.getColor().equals(carInfoS.getColor())) {
+		if(StringUtils.isNotBlank(carInfoT.getColor()) &&(null!=carInfoS)&&carInfoT.getColor().equals(carInfoS.getColor())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343664787457"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343664787457"),(String)examScoreMap.get("1151013343664787457"),
-					carInfoT.getColor(),carInfoS.getColor(),"0");
+					carInfoService.getColor(carInfoT),carInfoService.getColor(carInfoS),"0");
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343664787457"),"0",
-					carInfoT.getColor(),carInfoS.getColor(),"1");
+					carInfoService.getColor(carInfoT),carInfoS==null?"":carInfoService.getColor(carInfoS),"1");
 		}
-		if(carInfoT.getUseYear()==carInfoS.getUseYear() && carInfoT.getUseMonth()==carInfoS.getUseMonth()) {
+		if((null!=carInfoS) && carInfoT.getUseYear()==carInfoS.getUseYear()&&carInfoT.getUseMonth()==carInfoS.getUseMonth()) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343665397761"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343665397761"),(String)examScoreMap.get("1151013343665397761"),
-					String.valueOf(carInfoT.getUseMonth()),String.valueOf(carInfoS.getUseMonth()),"0");
+					setNullToEmpty(carInfoT.getUseYear(),"年")+setNullToEmpty(carInfoT.getUseMonth(),"月"),
+					setNullToEmpty(carInfoS.getUseYear(),"年")+setNullToEmpty(carInfoS.getUseMonth(),"月"),
+					"0");
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343665397761"),"0",
-					String.valueOf(carInfoT.getUseMonth()),String.valueOf(carInfoS.getUseMonth()),"1");
+					setNullToEmpty(carInfoT.getUseYear(),"年")+setNullToEmpty(carInfoT.getUseMonth(),"月"),
+					setNullToEmpty(carInfoS==null?"":carInfoS.getUseYear(),"年")+setNullToEmpty(carInfoS==null?"":carInfoS.getUseMonth(),"月"),
+					"1");
 		}
-		if(StringUtils.isNotBlank(carInfoT.getMileage()) &&carInfoT.getMileage().equals(carInfoS.getMileage())) {
+		if(StringUtils.isNotBlank(carInfoT.getMileage()) &&(null!=carInfoS)&&carInfoT.getMileage().equals(carInfoS.getMileage())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343665954817"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343665954817"),(String)examScoreMap.get("1151013343665954817"),
@@ -1086,9 +1094,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343665954817"),"0",
-					carInfoT.getMileage(),carInfoS.getMileage(),"1");
+					carInfoT.getMileage(),carInfoS==null?"":carInfoS.getMileage(),"1");
 		}
-		if(StringUtils.isNotBlank(carInfoT.getEngineOverhaulTimes()) &&carInfoT.getEngineOverhaulTimes().equals(carInfoS.getEngineOverhaulTimes())) {
+		if(StringUtils.isNotBlank(carInfoT.getEngineOverhaulTimes())&&(null!=carInfoS) &&carInfoT.getEngineOverhaulTimes().equals(carInfoS.getEngineOverhaulTimes())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343666315265"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343666315265"),(String)examScoreMap.get("1151013343666315265"),
@@ -1096,9 +1104,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343666315265"),"0",
-					carInfoT.getEngineOverhaulTimes(),carInfoS.getEngineOverhaulTimes(),"1");
+					carInfoT.getEngineOverhaulTimes(),carInfoS==null?"":carInfoS.getEngineOverhaulTimes(),"1");
 		}
-		if(StringUtils.isNotBlank(carInfoT.getCarOverhaulTimes()) &&carInfoT.getCarOverhaulTimes().equals(carInfoS.getCarOverhaulTimes())) {
+		if(StringUtils.isNotBlank(carInfoT.getCarOverhaulTimes()) &&(null!=carInfoS)&&carInfoT.getCarOverhaulTimes().equals(carInfoS.getCarOverhaulTimes())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343664455681"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343664455681"),(String)examScoreMap.get("1151013343664455681"),
@@ -1106,9 +1114,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343664455681"),"0",
-					carInfoT.getCarOverhaulTimes(),carInfoS.getCarOverhaulTimes(),"1");
+					carInfoT.getCarOverhaulTimes(),carInfoS==null?"":carInfoS.getCarOverhaulTimes(),"1");
 		}
-		if(StringUtils.isNotBlank(carInfoT.getMaintenanceSituation()) &&carInfoT.getMaintenanceSituation().equals(carInfoS.getMaintenanceSituation())) {
+		if(StringUtils.isNotBlank(carInfoT.getMaintenanceSituation())&&(null!=carInfoS) &&carInfoT.getMaintenanceSituation().equals(carInfoS.getMaintenanceSituation())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343665635329"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343665635329"),(String)examScoreMap.get("1151013343665635329"),
@@ -1116,9 +1124,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343665635329"),"0",
-					carInfoT.getMaintenanceSituation(),carInfoS.getMaintenanceSituation(),"1");
+					carInfoT.getMaintenanceSituation(),carInfoS==null?"":carInfoS.getMaintenanceSituation(),"1");
 		}
-		if(StringUtils.isNotBlank(carInfoT.getAccident()) &&carInfoT.getAccident().equals(carInfoS.getAccident())) {
+		if(StringUtils.isNotBlank(carInfoT.getAccident())&&(null!=carInfoS) &&carInfoT.getAccident().equals(carInfoS.getAccident())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343665983489"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343665983489"),(String)examScoreMap.get("1151013343665983489"),
@@ -1126,9 +1134,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343665983489"),"0",
-					carInfoT.getAccident(),carInfoS.getAccident(),"1");
+					carInfoT.getAccident(),carInfoS==null?"":carInfoS.getAccident(),"1");
 		}
-		if(StringUtils.isNotBlank(carInfoT.getPurchaseDate()) &&carInfoT.getPurchaseDate().equals(carInfoS.getPurchaseDate())) {
+		if(StringUtils.isNotBlank(carInfoT.getPurchaseDate())&&(null!=carInfoS) &&carInfoT.getPurchaseDate().equals(carInfoS.getPurchaseDate())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343666704385"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343666704385"),(String)examScoreMap.get("1151013343666704385"),
@@ -1136,9 +1144,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343666704385"),"0",
-					carInfoT.getPurchaseDate(),carInfoS.getPurchaseDate(),"1");
+					carInfoT.getPurchaseDate(),carInfoS==null?"":carInfoS.getPurchaseDate(),"1");
 		}
-		if(StringUtils.isNotBlank(carInfoT.getOriginalPrice()) &&carInfoT.getOriginalPrice().equals(carInfoS.getOriginalPrice())) {
+		if(StringUtils.isNotBlank(carInfoT.getOriginalPrice())&&(null!=carInfoS) &&carInfoT.getOriginalPrice().equals(carInfoS.getOriginalPrice())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343663955969"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343663955969"),(String)examScoreMap.get("1151013343663955969"),
@@ -1146,10 +1154,26 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343663955969"),"0",
-					carInfoT.getOriginalPrice(),carInfoS.getOriginalPrice(),"1");
+					carInfoT.getOriginalPrice(),carInfoS==null?"":carInfoS.getOriginalPrice(),"1");
 		}
 		//盖章
 		return delegateCount;
+	}
+
+
+
+	/**
+	 * //数据判断 如果为 null 则替换成 ""
+	 * @param obj  需要判断的字符串
+	 * @param str
+	 */
+	public String setNullToEmpty(Object obj,String str){
+		//如果不为空
+		if(null!=obj && (!"".equals(obj))){
+			return obj+str;
+		}else{
+			return "";
+		}
 	}
 
 

@@ -15,4 +15,5 @@ import com.jeesite.modules.common.entity.ExamUser;
 @MyBatisDao
 public interface ExamUserDao extends CrudDao<ExamUser> {
 
+    void updateExamUserEndTime(String examId);
 }
