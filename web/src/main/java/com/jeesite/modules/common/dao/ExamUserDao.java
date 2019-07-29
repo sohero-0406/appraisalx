@@ -7,6 +7,8 @@ import com.jeesite.common.dao.CrudDao;
 import com.jeesite.common.mybatis.annotation.MyBatisDao;
 import com.jeesite.modules.common.entity.ExamUser;
 
+import java.util.List;
+
 /**
  * common_exam_userDAO接口
  * @author lvchangwei
@@ -16,4 +18,7 @@ import com.jeesite.modules.common.entity.ExamUser;
 public interface ExamUserDao extends CrudDao<ExamUser> {
 
     void updateExamUserEndTime(String examId);
+
+    List<ExamUser> getExamUserScoreList(String examId);
+
 }

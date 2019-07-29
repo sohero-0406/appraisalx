@@ -9,6 +9,7 @@ import com.jeesite.modules.aa.entity.CheckBodySkeleton;
 import com.jeesite.modules.aa.entity.ExamResultsDetail;
 import com.jeesite.modules.aa.entity.ExamScoreClassify;
 import com.jeesite.modules.aa.entity.TechnologyInfo;
+import com.jeesite.modules.common.entity.ExamUser;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -32,6 +33,6 @@ public interface ExamResultsDetailDao extends CrudDao<ExamResultsDetail> {
     List<ExamResultsDetail> validationData(String examUserId);
 
     //获取考生成绩详情
-    List<ExamScoreClassify> getExamResultsDetail(String examUserId);
+    List<ExamScoreClassify> getExamResultsDetail(ExamUser examUser);
 
 }

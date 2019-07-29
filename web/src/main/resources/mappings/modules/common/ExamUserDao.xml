@@ -20,4 +20,17 @@
 		and exam_id = #{examId}
 		and status = '0'
 	</update>
+
+	<select id="getExamUserScoreList" resultType="ExamUser">
+	select
+	  id,
+	  exam_id,
+      user_num,
+      score,
+      CEILING((( UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(start_time) )/60)) as duration
+      from common_exam_user
+      where
+      exam_id = #{examId}
+	</select>
+
 </mapper>

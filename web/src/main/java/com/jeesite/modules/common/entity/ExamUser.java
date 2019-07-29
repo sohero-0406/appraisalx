@@ -41,6 +41,7 @@ public class ExamUser extends PreEntity<ExamUser> {
 	//非数据库字段
 	private String paperId;		//试卷id
 	private String score;		// 分数
+	private String duration;  //考试时长
 
 	public ExamUser() {
 		this(null);
@@ -118,5 +119,11 @@ public class ExamUser extends PreEntity<ExamUser> {
 		this.score = score;
 	}
 
+	public String getDuration() {
+		return duration;
+	}
 
+	public void setDuration(String duration) {
+		this.duration = duration;
+	}
 }

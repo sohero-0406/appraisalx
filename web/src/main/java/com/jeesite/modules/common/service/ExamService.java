@@ -227,20 +227,17 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 				examUpdate.setState("3");
 				examUpdate.setStartTime(new Date()); //记录考试开始时间
 				super.save(examUpdate);
-				comRes.setData(examUpdate);
 				break;
 			case "3" ://考试中
 				examUpdate.setState("5");
 				examUpdate.setEndTime(new Date());  //记录考试结束时
 				super.save(examUpdate);
 				examUserService.saveExamEndTime(examUpdate.getId());
-				comRes.setData(examUpdate);
 				break;
 			case "5" ://未统计
 				examUpdate.setState("7");
 				examUserService.gradePapers(examUpdate);
 				super.save(examUpdate);
-				comRes.setData(examUpdate);
 				break;
 			case "7" ://已出分
 				comRes.setMsg("考试结果已出！");

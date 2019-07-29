@@ -147,7 +147,6 @@ public class ExamController extends BaseController {
     public CommonResult getExam(Exam exam) {
         CommonResult comRes = new CommonResult();
         examService.get(exam);
-
         comRes.setData(exam);
         return comRes;
     }

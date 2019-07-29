@@ -172,8 +172,10 @@ public class ExamResultsDetailService extends CrudService<ExamResultsDetailDao, 
 						examResultsDetail.setTeacherAnswer(identifyTecDetail.getCode()+",不扣分");
 					}else if(!"".equals(identifyTecDetail.getDeductNum()) && null!=identifyTecDetail.getDeductNum() && StringUtils.isNotBlank(identifyTecDetail.getCode())){
 						examResultsDetail.setTeacherAnswer(identifyTecDetail.getCode()+"，扣"+identifyTecDetail.getDeductNum()+"分");
-					}else{
-						examResultsDetail.setTeacherAnswer("--");
+					}
+					//老师没填项是否显示
+					else{
+						examResultsDetail.setTeacherAnswer("");
 					}
 					//如果内容不为空 并且等于examUserId 则为老师所填写内容
 				}else if(StringUtils.isNotBlank(identifyTecDetail.getStuOrTec()) && examUserId.equals(identifyTecDetail.getStuOrTec())){
@@ -181,8 +183,10 @@ public class ExamResultsDetailService extends CrudService<ExamResultsDetailDao, 
 						examResultsDetail.setStudentAnswer(identifyTecDetail.getCode()+",不扣分");
 					}else if(!"".equals(identifyTecDetail.getDeductNum()) && null!=identifyTecDetail.getDeductNum() && StringUtils.isNotBlank(identifyTecDetail.getCode())){
 						examResultsDetail.setStudentAnswer(identifyTecDetail.getCode()+"，扣"+identifyTecDetail.getDeductNum()+"分");
-					}else{
-						examResultsDetail.setStudentAnswer("--");
+					}
+//					//老师没填项是否显示
+					else{
+						examResultsDetail.setStudentAnswer("");
 					}
 				}
 			}
@@ -210,8 +214,8 @@ public class ExamResultsDetailService extends CrudService<ExamResultsDetailDao, 
 	/**
 	 *  查询不得分项数据
 	 */
-	public List<ExamScoreClassify> getExamResultsDetail(String examUserId){
-		return  dao.getExamResultsDetail(examUserId);
+	public List<ExamScoreClassify> getExamResultsDetail(ExamUser examUser){
+		return  dao.getExamResultsDetail(examUser);
 	}
 
 

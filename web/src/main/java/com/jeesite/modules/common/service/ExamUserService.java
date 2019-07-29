@@ -128,6 +128,13 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		return dao.getByEntity(examUser);
 	}
 
+    //查看 考试成绩列表依据考试id
+	@Transactional(readOnly=false)
+	public List<ExamUser> getExamUserScoreList(String examId){
+		List<ExamUser> examUserList = dao.getExamUserScoreList(examId);
+		return examUserList;
+	}
+
 	@Transactional(readOnly=false)
 	public void saveExamEndTime(String examId){
 		//依据考试id 在考试结束时 给未结束考试的考生添加结束考试时间

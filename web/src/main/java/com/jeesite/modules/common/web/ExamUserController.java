@@ -4,7 +4,9 @@
 package com.jeesite.modules.common.web;
 
 import com.jeesite.common.config.Global;
+import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.entity.Page;
+import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.Exam;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * common_exam_userController
@@ -92,17 +95,33 @@ public class ExamUserController extends BaseController {
 		return renderResult(Global.TRUE, text("删除common_exam_user成功！"));
 	}
 
-
-	/**
-	 *  判考试成绩
-	 */
-	@RequestMapping(value = "gradePapers")
+	//查询考试成绩列表
+	@RequestMapping(value = "getExamUserScoreList")
 	@ResponseBody
-	public CommonResult gradePapers(Exam exam) {
+	public CommonResult getExamUserScoreList(String examId){
 		CommonResult comRes = new CommonResult();
-		comRes.setData(examUserService.gradePapers(exam));
+		//判断开始id 是否为空
+		if(!StringUtils.isNotBlank(examId)){
+			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+			comRes.setMsg("请求参数有误");
+			return comRes;
+		}
+		comRes.setData(examUserService.getExamUserScoreList(examId));
 		return comRes;
 	}
+
+
+//	/**
+//	 *  判考试成绩
+//	 */
+//	@RequestMapping(value = "gradePapers")
+//	@ResponseBody
+//	public CommonResult gradePapers(Exam exam) {
+//		CommonResult comRes = new CommonResult();
+//		comRes.setData(examUserService.gradePapers(exam));
+//		return comRes;
+//	}
+
 
 	/**
 	 * 考试计时

@@ -133,8 +133,8 @@
 		aa_exam_results_detail detail
 		left join aa_exam_score_classify class on class.id = detail.score_classify_id
 		left join aa_exam_score_info info on class.exam_score_info_id = info.id
-		where detail.exam_user_id = #{examUserId}
-
+		where detail.exam_user_id = #{id}
+		and class.exam_id = #{examId}
 
 	</select>
 
