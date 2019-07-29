@@ -87,5 +87,11 @@ public class ExamScoreClassifyService extends CrudService<ExamScoreClassifyDao, 
 		return dao.getByEntity(examScoreClassify);
 	}
 
+	@Transactional(readOnly=false)
+	public void deleteExamScoreClassify(String examId) {
+		;dao.deleteExamScoreClassify(examId);
+	}
+
+
 
 }

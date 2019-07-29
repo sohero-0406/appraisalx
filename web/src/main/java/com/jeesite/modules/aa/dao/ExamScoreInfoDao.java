@@ -5,6 +5,7 @@ package com.jeesite.modules.aa.dao;
 
 import com.jeesite.common.dao.CrudDao;
 import com.jeesite.common.mybatis.annotation.MyBatisDao;
+import com.jeesite.modules.aa.entity.ExamScoreClassify;
 import com.jeesite.modules.aa.entity.ExamScoreInfo;
 
 import java.util.List;
@@ -17,6 +18,6 @@ import java.util.List;
 @MyBatisDao
 public interface ExamScoreInfoDao extends CrudDao<ExamScoreInfo> {
 
-    List<ExamScoreInfo> getExamScoreInfo();
+    List<ExamScoreClassify> getExamScoreInfo();
 	
 }

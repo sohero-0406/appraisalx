@@ -18,12 +18,15 @@
 		exam.name,
 		exam.duration,
 		paper.name as paperName,
-		exam.create_date,
+		Date_Format(exam.create_date,'%Y%m%d') as createTime,
 		exam.state,
 		exam.paper_id
 		from common_Exam as exam
 		left join aa_paper paper on exam.paper_id = paper.id
 		where exam.status = '0'
+		<if test="keyword != null and keyword != ''">
+			and exam.name like CONCAT('%',#{keyword},'%')
+		</if>
 
 	</select>
 

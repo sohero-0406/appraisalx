@@ -6,6 +6,7 @@ package com.jeesite.modules.common.dao;
 import com.jeesite.common.dao.CrudDao;
 import com.jeesite.common.mybatis.annotation.MyBatisDao;
 import com.jeesite.modules.common.entity.Exam;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -21,6 +22,6 @@ public interface ExamDao extends CrudDao<Exam> {
      * 批量获取考试数据
      * @return
      */
-    public List<Exam> getExamInfo();
+    public List<Exam> getExamInfo(@Param("keyword") String keyword);
 
 }

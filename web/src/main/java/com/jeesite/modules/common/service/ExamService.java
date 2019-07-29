@@ -3,10 +3,15 @@
  */
 package com.jeesite.modules.common.service;
 
+import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.entity.Page;
+import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.service.CrudService;
+import com.jeesite.modules.aa.entity.ExamDetail;
+import com.jeesite.modules.aa.entity.ExamScoreClassify;
 import com.jeesite.modules.aa.service.ExamDetailService;
 import com.jeesite.modules.aa.service.ExamScoreDetailService;
+import com.jeesite.modules.aa.service.ExamScoreInfoService;
 import com.jeesite.modules.aa.vo.ExamVO;
 import com.jeesite.modules.common.dao.ExamDao;
 import com.jeesite.modules.common.entity.CommonResult;
@@ -15,8 +20,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 /**
  * common_examService
  * @author lvchangwei
@@ -32,6 +41,8 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 	private ExamDetailService examDetailService;
 	@Autowired
 	private ExamUserService examUserService;
+	@Autowired
+	private ExamScoreInfoService examScoreInfoService;
 
 	/**
 	 * 获取单条数据
@@ -85,27 +96,115 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 
 	/**
 	 *  获取考试信息
+	 *  keyword 搜索关键字
 	 */
 	@Transactional(readOnly=false)
-	public List<Exam> getExamInfo() {
-		return dao.getExamInfo();
+	public List<Exam> getExamInfo(String keyword) {
+		return dao.getExamInfo(keyword);
 	}
 
 	/**
-	 *  新建考试功能
+	 *  保存考试功能
 	 */
 	@Transactional(readOnly=false)
-	public void saveExamInfo(ExamVO examVO, String examScoreJson) {
-
-		super.save(examVO.getExam());
+	public CommonResult saveExamInfo(ExamVO examVO, String examScoreJson) {
+		CommonResult comRes = new CommonResult();
+		Exam exam = examVO.getExam();
+		if(null==exam){
+			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);//请求参数有误
+			comRes.setMsg("请输入考试信息");
+			return comRes;
+		}
+		if(!StringUtils.isNotBlank(exam.getPaperId())){
+			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);//请求参数有误
+			comRes.setMsg("请选择试卷");
+			return comRes;
+		}
+		//内容模块选择不能为空
+		if(null==examVO.getExamDetail()){
+			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);//请求参数有误
+			comRes.setMsg("内容模块选择不能为空");
+			return comRes;
+		}
+        //分值设定不能为空
+		if(!StringUtils.isNotBlank(examScoreJson)){
+			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);//请求参数有误
+			comRes.setMsg("分值设定不能为空");
+			return comRes;
+		}
+		String id = exam.getId();
+		//判断新建/修改
+		if(StringUtils.isNotBlank(id)){
+			//修改
+			if(!StringUtils.isNotBlank(exam.getState())){ //判断考试状态不能为空
+				comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);//请求参数有误
+				comRes.setMsg("考试状态不能为空");
+				return comRes;
+			}
+			if(!"1".equals(exam.getState())){ //除新建状态下的数据 其余不可修改
+				comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);//请求参数有误
+				comRes.setMsg("此状态下的考试不能修改");
+				return comRes;
+			}
+		}else{
+			examVO.getExam().setState("1");
+		}
+		super.save(exam);
 		//获取考试id
 		String examId = examVO.getExam().getId();
-		//保存--分值设定
-		examScoreDetailService.saveExamScoreInfo(examScoreJson,examId);
 		//保存--内容模块选择
 		examDetailService.saveExamInfoDetail(examId,examVO.getExamDetail());
-
+		//判断如果为 修改评分项 则先清空数据，在进行保存
+		if(StringUtils.isNotBlank(id)){
+			//先删除分值项
+			examScoreDetailService.deleteExamScoreInfo(examId);
+		}
+		//保存--分值设定
+		examScoreDetailService.saveExamScoreInfo(examScoreJson,examId);
+		return comRes;
 	}
+
+	//新建/修改考试
+	@Transactional(readOnly=false)
+	public CommonResult addOrUpdateExam(String examId){
+		CommonResult comRes = new CommonResult();
+		//考试评分项
+		List<ExamScoreClassify> examScoreInfoList = examScoreInfoService.getExamScoreInfo(examId);
+		//内容模板选择
+		ExamDetail examDetail = examDetailService.getExamInfoDetail(examId);
+		Exam exam = new Exam();
+		if(StringUtils.isNotBlank(examId)){
+			exam.setId(examId);
+			exam = dao.getByEntity(exam);
+		}
+		Map<String,Object> returnMap = new HashMap();
+		returnMap.put("examScoreJson",examScoreInfoList);
+		returnMap.put("examDetail",examDetail);
+		returnMap.put("exam",exam);
+		comRes.setData(returnMap);
+		return comRes;
+	}
+
+	//删除考试 (考试id，考试状态)
+	@Transactional(readOnly=false)
+	public CommonResult deleteExam(Exam exam){
+		CommonResult comRes = new CommonResult();
+		if(null==exam && StringUtils.isBlank(exam.getId())){
+			comRes.setMsg("请先选择考试!");
+			return comRes;
+		}else if ("".equals(exam.getState()) || null==exam.getState() || (!"1".equals(exam.getState()))){
+			comRes.setMsg("此状态下的考试不能被删除!");
+			return comRes;
+		}
+		//删除考试
+		dao.delete(exam);
+		//删除 评分项
+		examScoreDetailService.deleteExamScoreInfo(exam.getId());
+		//删除内容模板
+		examDetailService.deleteExamDetail(exam.getId());
+		return comRes;
+	};
+
 
 	@Transactional(readOnly=false)
 	public Exam getByEntity(Exam exam) {

@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.jeesite.common.lang.StringUtils;
 import com.jeesite.modules.aa.entity.ExamScoreClassify;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +91,8 @@ public class ExamScoreDetailService extends CrudService<ExamScoreDetailDao, Exam
 	 */
 	@Transactional(readOnly=false)
 	public void saveExamScoreInfo(String examScoreJson,String examId) {
+		examScoreJson = examScoreJson.replace("\n","");
+		examScoreJson = examScoreJson.replace(" ","");
 		JSONObject obj = JSONObject.parseObject(examScoreJson);
 		JSONArray recordsArray = obj.getJSONArray("data");
 		//判断非空
@@ -113,4 +116,24 @@ public class ExamScoreDetailService extends CrudService<ExamScoreDetailDao, Exam
 			}
 		}
 	}
+
+	//先删除
+	@Transactional(readOnly=false)
+	public void deleteExamScoreInfo(String examId){
+		if(StringUtils.isNotBlank(examId)){
+			ExamScoreClassify examScoreClassify = new ExamScoreClassify();
+			examScoreClassify.setExamId(examId);
+			List<ExamScoreClassify> examScoreClassifyList = examScoreClassifyService.findList(examScoreClassify);
+			//如果数组不为空 进行删除
+			if(CollectionUtils.isNotEmpty(examScoreClassifyList)){
+				dao.deleteExamScoreDetail(examScoreClassifyList);
+				examScoreClassifyService.deleteExamScoreClassify(examId);
+			}
+		}
+
+
+	}
+
+
+
 }

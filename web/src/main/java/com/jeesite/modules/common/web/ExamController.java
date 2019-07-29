@@ -98,21 +98,57 @@ public class ExamController extends BaseController {
      */
     @RequestMapping(value = "getExamInfo")
     @ResponseBody
-    public CommonResult getExamInfo() {
+    public CommonResult getExamInfo(String keyword) {
         CommonResult comRes = new CommonResult();
-        List<Exam> examList = examService.getExamInfo();
+        List<Exam> examList = examService.getExamInfo(keyword);
         comRes.setData(examList);
         return comRes;
     }
 
     /**
-     * 新建考试功能
+     * 保存考试功能
      */
     @RequestMapping(value = "saveExamInfo")
     @ResponseBody
     public CommonResult saveExamInfo(ExamVO examVO, String examScoreJson) {
+        CommonResult comRes = examService.saveExamInfo(examVO,examScoreJson);
+        return comRes;
+    }
+
+    /**
+     * 新建修改考试功能
+     * (包含考试评分项和内容模板)
+     */
+    @RequestMapping(value = "addOrUpdateExam")
+    @ResponseBody
+    public CommonResult addExam(String examId) {
+        CommonResult comRes =  examService.addOrUpdateExam(examId);
+        return comRes;
+    }
+
+    /**
+     *  依据考试删除考试
+     * @param examId
+     * @return
+     */
+    @RequestMapping(value = "deleteExam")
+    @ResponseBody
+    public CommonResult deleteExam(Exam exam) {
+        CommonResult comRes = examService.deleteExam(exam);
+        return comRes;
+    }
+
+
+    /**
+     * 查看考试详情接口
+     */
+    @RequestMapping(value = "getExam")
+    @ResponseBody
+    public CommonResult getExam(Exam exam) {
         CommonResult comRes = new CommonResult();
-        examService.saveExamInfo(examVO,examScoreJson);
+        examService.get(exam);
+
+        comRes.setData(exam);
         return comRes;
     }
 

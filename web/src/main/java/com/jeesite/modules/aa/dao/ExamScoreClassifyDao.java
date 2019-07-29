@@ -20,4 +20,8 @@ public interface ExamScoreClassifyDao extends CrudDao<ExamScoreClassify> {
 
     //根据考试id 获取试卷评分项
     List<Map<String,Object>> getExamScoreInfo(String examId);
+
+    //依据考试id删除得分项
+    void deleteExamScoreClassify(String examId);
+
 }

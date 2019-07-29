@@ -6,6 +6,7 @@ package com.jeesite.modules.aa.dao;
 import com.jeesite.common.dao.CrudDao;
 import com.jeesite.common.mybatis.annotation.MyBatisDao;
 import com.jeesite.modules.aa.entity.ExamDetail;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 考试详情表DAO接口
@@ -14,5 +15,6 @@ import com.jeesite.modules.aa.entity.ExamDetail;
  */
 @MyBatisDao
 public interface ExamDetailDao extends CrudDao<ExamDetail> {
-	
+
+    void deleteExamDetail(@Param("examId") String examId);
 }

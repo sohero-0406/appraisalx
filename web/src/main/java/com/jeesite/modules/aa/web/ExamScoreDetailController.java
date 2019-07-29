@@ -111,9 +111,9 @@ public class ExamScoreDetailController extends BaseController {
 	 */
 	@RequestMapping(value = "saveExamScoreInfo")
 	@ResponseBody
-	public CommonResult saveExamScoreInfo(String examScoreJson) {
+	public CommonResult saveExamScoreInfo(String examScoreJson,String examId) {
 		CommonResult comRes = new CommonResult();
-//		examScoreDetailService.saveExamScoreInfo(examScoreJson);
+		examScoreDetailService.saveExamScoreInfo(examScoreJson,examId);
 		return comRes;
 	}
 

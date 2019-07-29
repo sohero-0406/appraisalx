@@ -25,5 +25,9 @@
 		left join aa_exam_score_info info on info.id = detail.score_info_id
 		where class.exam_id = #{examId}
 	</select>
+
+	<delete id="deleteExamScoreClassify">
+		DELETE from aa_exam_score_classify where exam_id = #{examId}
+	</delete>
 	
 </mapper>

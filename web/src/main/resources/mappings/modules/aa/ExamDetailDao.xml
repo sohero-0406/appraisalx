@@ -11,5 +11,7 @@
 		</where>
 		ORDER BY ${sqlMap.order.toSql()}
 	</select> -->
-	
+	<delete id="deleteExamDetail">
+		delete from aa_exam_detail where exam_id = #{examId}
+	</delete>
 </mapper>

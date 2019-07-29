@@ -6,6 +6,7 @@ package com.jeesite.modules.aa.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.jeesite.modules.aa.entity.ExamScoreClassify;
 import com.jeesite.modules.common.entity.CommonResult;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,9 +103,9 @@ public class ExamScoreInfoController extends BaseController {
 	 */
 	@RequestMapping(value = "getExamScoreInfo")
 	@ResponseBody
-	public CommonResult getExamScormeInfo() {
+	public CommonResult getExamScormeInfo(String examId) {
 		CommonResult comRes = new CommonResult();
-		List<ExamScoreInfo> examScoreInfo = examScoreInfoService.getExamScoreInfo();
+		List<ExamScoreClassify> examScoreInfo = examScoreInfoService.getExamScoreInfo(examId);
 		comRes.setData(examScoreInfo);
 		return comRes;
 	}

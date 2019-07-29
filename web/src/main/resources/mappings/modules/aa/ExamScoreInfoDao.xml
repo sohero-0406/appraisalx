@@ -12,13 +12,12 @@
 		ORDER BY ${sqlMap.order.toSql()}
 	</select> -->
 
-	<resultMap id="findDataMap" type="ExamScoreInfo">
-		<id property="id" column="id"></id>
+	<resultMap id="findDataMap" type="ExamScoreClassify">
+		<id property="examScoreInfoId" column="id"></id>
 		<result property="name" column="name"></result>
 		<result property="score" column="score"></result>
-		<collection property="itemList" ofType="ExamScoreInfo">
-			<id property="id" column="sonId"></id>
-			<result property="name" column="sonName"></result>
+		<collection property="itemList" ofType="ExamScoreDetail">
+			<id property="scoreInfoId" column="sonId"></id>
 			<result property="score" column="sonScore"></result>
 		</collection>
 	</resultMap>

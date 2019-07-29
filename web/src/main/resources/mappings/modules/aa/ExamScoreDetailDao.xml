@@ -17,13 +17,11 @@
 	<resultMap id="findDataMap" type="ExamScoreClassify">
 		<id property="id" column="id"></id>
 		<result property="examId" column="exam_id"></result>
-		<result property="totalDeduct" column="total_deduct"></result>
 		<result property="score" column="score"></result>
 		<result property="examScoreInfoId" column="exam_score_info_id"></result>
 		<collection property="itemList" ofType="ExamScoreDetail">
 			<id property="id" column="examScoreDetailId"></id>
 			<result property="technologyInfoId" column="technology_info_id"></result>
-			<result property="infoName" column="name"></result>
 			<result property="scoreInfoId" column="score_info_id"></result>
 			<result property="score" column="oneScore"></result>
 		</collection>
@@ -49,9 +47,20 @@
 			   and class.exam_id = #{examId}
 		   </if>
 	   </where>
-
-
 	</select>
+
+
+	<delete id="deleteExamScoreDetail">
+        delete from
+        aa_exam_score_detail
+        where
+        score_classify_id in
+		<foreach collection="examScoreClassifyList" item="examScoreClassify" index="index" open="(" close=")" separator=",">
+			#{examScoreClassify.id}
+		</foreach>
+
+   </delete>
+
 
 
 </mapper>

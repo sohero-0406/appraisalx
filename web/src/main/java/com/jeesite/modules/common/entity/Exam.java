@@ -47,6 +47,8 @@ public class Exam extends PreEntity<Exam> {
 	private String examType;		// 考试计时（1、倒计时 2、倒计时）
 	private String paperName; //考试名称
 
+	private String createTime; //创建时间
+
 	public Exam() {
 		this(null);
 	}
@@ -141,5 +143,13 @@ public class Exam extends PreEntity<Exam> {
 
 	public void setExamType(String examType) {
 		this.examType = examType;
+	}
+
+	public String getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
 	}
 }

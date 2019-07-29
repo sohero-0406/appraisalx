@@ -5,6 +5,9 @@ package com.jeesite.modules.aa.service;
 
 import java.util.List;
 
+import com.jeesite.common.lang.StringUtils;
+import com.jeesite.modules.common.entity.CommonResult;
+import com.jeesite.modules.common.entity.Exam;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,4 +89,33 @@ public class ExamDetailService extends CrudService<ExamDetailDao, ExamDetail> {
 		examDetail.setExamId(examId);
 		super.save(examDetail);
 	}
+
+	/**
+	 *  加载/新建考试结束后查看
+	 */
+	@Transactional(readOnly=false)
+	public ExamDetail getExamInfoDetail(String examId) {
+         //判断是否在 新建考试结束前后
+		//新建考试后--查看修改
+		ExamDetail examDetail = new ExamDetail();
+		if(StringUtils.isNotBlank(examId)){
+			//依据考试id查询
+			examDetail.setExamId(examId);
+			examDetail = dao.getByEntity(examDetail);
+			//新建考试前--页面初始化数据
+		}else{
+			examDetail.setEnableAccidentVehicle("1");
+			examDetail.setEnableCheckBodySkeleton("1");
+			examDetail.setEnableRoadTest("1");
+		}
+		return examDetail;
+	}
+
+	/**
+	 * 依据考试id 删除考试内容模块选择数据
+	 */
+	public void deleteExamDetail(String examId){
+		dao.deleteExamDetail(examId);
+	}
+
 }

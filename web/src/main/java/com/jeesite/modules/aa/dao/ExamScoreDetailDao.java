@@ -21,4 +21,7 @@ public interface ExamScoreDetailDao extends CrudDao<ExamScoreDetail> {
 
     //根据考试id 获取所有考试分值项
     List<ExamScoreClassify> findData(@Param("examId") String examId);
+
+    void deleteExamScoreDetail(@Param("examScoreClassifyList") List<ExamScoreClassify> examScoreClassifyList);
+
 }
