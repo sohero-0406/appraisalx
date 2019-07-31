@@ -28,4 +28,10 @@ public interface VehicleInstallInfoDao extends CrudDao<VehicleInstallInfo> {
      */
     String getProject(VehicleInstallInfo vehicleInstallInfo);
 
+
+    /**
+     * 真删除
+     * @param vehicleInstallInfo
+     */
+    void deleteEntity(VehicleInstallInfo vehicleInstallInfo);
 }

@@ -7,6 +7,12 @@ import com.jeesite.common.entity.Page;
 import com.jeesite.common.service.CrudService;
 import com.jeesite.modules.aa.dao.VehicleInstallInfoDao;
 import com.jeesite.modules.aa.entity.VehicleInstallInfo;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import com.jeesite.common.constant.CodeConstant;
+import com.jeesite.common.lang.StringUtils;
 import com.jeesite.modules.aa.vo.VehicleInstallVO;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.ExamUser;
@@ -22,11 +28,12 @@ import java.util.Map;
 
 /**
  * 车辆加装信息Service
+ *
  * @author chenlitao
  * @version 2019-07-03
  */
 @Service
-@Transactional(readOnly=true)
+@Transactional(readOnly = true)
 public class VehicleInstallInfoService extends CrudService<VehicleInstallInfoDao, VehicleInstallInfo> {
 
 	@Autowired
@@ -67,50 +74,34 @@ public class VehicleInstallInfoService extends CrudService<VehicleInstallInfoDao
 		return comRes;
 	}
 
-	/**
-	 * 保存加装信息
-	 * @param examUser
-	 * @param vehicleInstallVOList 待保存的加装信息
-	 * @return
-	 */
-	@Transactional
-	public CommonResult saveAndDelete(ExamUser examUser, List<VehicleInstallVO> vehicleInstallVOList){
-		VehicleInstallInfo vehicleInstallInfo = new VehicleInstallInfo();
-		vehicleInstallInfo.setExamUserId(examUser.getId());
-		vehicleInstallInfo.setPaperId(examUser.getPaperId());
-		List<VehicleInstallInfo> vehicleInstallInfoList = this.findList(vehicleInstallInfo);
-		if(vehicleInstallVOList == null){
-			vehicleInstallVOList = new ArrayList<>();
-		}
-		//执行删除和更新
-		for(VehicleInstallInfo vii : vehicleInstallInfoList){
-			boolean isNeedDelete = true;
-			for(VehicleInstallVO vivo : vehicleInstallVOList){
-				if(vii.getId().equals(vivo.getVehicleInstallId())){
-					vii.setExamUserId(examUser.getId());
-					vii.setPaperId(examUser.getPaperId());
-					vii.setProject(vivo.getProject());
-					this.save(vii);
-					isNeedDelete = false;
-					break;
-				}
-			}
-			if(isNeedDelete){
-				this.delete(vii);
-			}
-		}
-		//执行新增
-		for(VehicleInstallVO vivo : vehicleInstallVOList){
-			if(vivo.getVehicleInstallId() == null || vivo.getVehicleInstallId().trim().length() <= 0){
-				VehicleInstallInfo vii = new VehicleInstallInfo();
-				vii.setExamUserId(examUser.getId());
-				vii.setPaperId(examUser.getPaperId());
-				vii.setProject(vivo.getProject());
-				this.save(vii);
-			}
-		}
-		return new CommonResult();
-	}
+    /**
+     * 保存加装信息
+     *
+     * @param examUser
+     * @param vehicleInstallVOList 待保存的加装信息
+     * @return
+     */
+    @Transactional
+    public CommonResult saveAndDelete(ExamUser examUser, List<VehicleInstallVO> vehicleInstallVOList) {
+        //保证有用户登录，防止全表删除
+        if (StringUtils.isNotBlank(examUser.getId()) || StringUtils.isNotBlank(examUser.getPaperId())) {
+            VehicleInstallInfo vehicleInstallInfo = new VehicleInstallInfo();
+            vehicleInstallInfo.setExamUserId(examUser.getId());
+            vehicleInstallInfo.setPaperId(examUser.getPaperId());
+            dao.deleteEntity(vehicleInstallInfo);
+            //执行新增
+            for (VehicleInstallVO vivo : vehicleInstallVOList) {
+                VehicleInstallInfo vii = new VehicleInstallInfo();
+                vii.setExamUserId(examUser.getId());
+                vii.setPaperId(examUser.getPaperId());
+                vii.setProject(vivo.getProject());
+                this.save(vii);
+            }
+        } else {
+            return new CommonResult(CodeConstant.LOGIN_TIMEOUT,"登录人信息丢失，请重新登录！");
+        }
+        return new CommonResult();
+    }
 
 	/**
 	 * 获取单条数据
@@ -125,6 +116,7 @@ public class VehicleInstallInfoService extends CrudService<VehicleInstallInfoDao
 	/**
 	 * 查询分页数据
 	 * @param vehicleInstallInfo 查询条件
+	 * @param vehicleInstallInfo.page 分页对象
 	 * @return
 	 */
 	@Override
@@ -180,12 +172,12 @@ public class VehicleInstallInfoService extends CrudService<VehicleInstallInfoDao
 		return projectName.toString();
 	}
 
-	/**
-	 * 查询车辆加装信息
-	 * @param vehicleInstallInfo
-	 * @return
-	 */
+    /**
+     * 查询车辆加装信息
+     * @param vehicleInstallInfo
+     * @return
+     */
     public String getProject(VehicleInstallInfo vehicleInstallInfo) {
-		return vehicleInstallInfoDao.getProject(vehicleInstallInfo);
+        return vehicleInstallInfoDao.getProject(vehicleInstallInfo);
     }
 }

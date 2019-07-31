@@ -11,6 +11,8 @@ import com.jeesite.common.mybatis.annotation.Column;
 import com.jeesite.common.mybatis.annotation.Table;
 import com.jeesite.common.mybatis.mapper.query.QueryType;
 
+import java.math.BigDecimal;
+
 /**
  * 折旧率估值法Entity
  * @author chenlitao
@@ -28,10 +30,10 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 public class CalculateDepreciation extends PreEntity<CalculateDepreciation> {
 	
 	private static final long serialVersionUID = 1L;
-	private Double salePrice;		// 车辆销售价格
+	private BigDecimal salePrice;		// 车辆销售价格
 	private String depreciationRate;		// 年限折旧率之和
 	private String process;		//计算过程
-	private Double price;		// 评估价格
+	private BigDecimal price;		// 评估价格
 	private String calculateId;		// 外键id
 
 	//非数据库字段
@@ -45,11 +47,11 @@ public class CalculateDepreciation extends PreEntity<CalculateDepreciation> {
 		super(id);
 	}
 	
-	public Double getSalePrice() {
+	public BigDecimal getSalePrice() {
 		return salePrice;
 	}
 
-	public void setSalePrice(Double salePrice) {
+	public void setSalePrice(BigDecimal salePrice) {
 		this.salePrice = salePrice;
 	}
 
@@ -71,11 +73,11 @@ public class CalculateDepreciation extends PreEntity<CalculateDepreciation> {
 		this.process = process;
 	}
 	
-	public Double getPrice() {
+	public BigDecimal getPrice() {
 		return price;
 	}
 
-	public void setPrice(Double price) {
+	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
 	

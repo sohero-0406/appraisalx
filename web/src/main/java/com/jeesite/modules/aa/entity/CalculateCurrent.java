@@ -11,6 +11,8 @@ import com.jeesite.common.mybatis.annotation.Column;
 import com.jeesite.common.mybatis.annotation.Table;
 import com.jeesite.common.mybatis.mapper.query.QueryType;
 
+import java.math.BigDecimal;
+
 /**
  * 现行市价法Entity
  * @author lvchangwei
@@ -59,21 +61,21 @@ public class CalculateCurrent extends PreEntity<CalculateCurrent> {
 	private String calculateId;		// 外键id
 	private String p1Type;		// 参照物1的价格更有益的车辆0：参照车辆，1是评估车辆
 	private String param1Id;		// 参照物1的id
-	private Double p1ExcellentPrice;		// 参照物1的优异价格
-	private Double p1K1;		// 参照物1的k1
-	private Double p1K2;		// 参照物1的k2
-	private Double p1K3;		// 参照物1的k3
-	private Double p1K4;		// 参照物1的k4
-	private Double p1Price;		// 参照物1的评估值
+	private BigDecimal p1ExcellentPrice;		// 参照物1的优异价格
+	private BigDecimal p1K1;		// 参照物1的k1
+	private BigDecimal p1K2;		// 参照物1的k2
+	private BigDecimal p1K3;		// 参照物1的k3
+	private BigDecimal p1K4;		// 参照物1的k4
+	private BigDecimal p1Price;		// 参照物1的评估值
 	private String param2Id;		// 参照物2的id
 	private String p2Type;		// 参照物2的价格更有益的车辆0：参照车辆，1是评估车辆
-	private Double p2ExcellentPrice;		// 参照物2的优异价格
-	private Double p2K1;		// 参照物2的k1
-	private Double p2K2;		// 参照物2的k2
-	private Double p2K3;		// 参照物2的k3
-	private Double p2K4;		// 参照物2的k4
-	private Double p2Price;		// 参照物2的评估值
-	private Double price;		// 评估价格
+	private BigDecimal p2ExcellentPrice;		// 参照物2的优异价格
+	private BigDecimal p2K1;		// 参照物2的k1
+	private BigDecimal p2K2;		// 参照物2的k2
+	private BigDecimal p2K3;		// 参照物2的k3
+	private BigDecimal p2K4;		// 参照物2的k4
+	private BigDecimal p2Price;		// 参照物2的评估值
+	private BigDecimal price;		// 评估价格
 	private String p1Process;		// 参照物1的计算过程
 	private String p2Process;		// 参照物2的计算过程
 	private String configurationType;		// 车辆配置类型
@@ -131,51 +133,51 @@ public class CalculateCurrent extends PreEntity<CalculateCurrent> {
 		this.param1Id = param1Id;
 	}
 	
-	public Double getP1ExcellentPrice() {
+	public BigDecimal getP1ExcellentPrice() {
 		return p1ExcellentPrice;
 	}
 
-	public void setP1ExcellentPrice(Double p1ExcellentPrice) {
+	public void setP1ExcellentPrice(BigDecimal p1ExcellentPrice) {
 		this.p1ExcellentPrice = p1ExcellentPrice;
 	}
 	
-	public Double getP1K1() {
+	public BigDecimal getP1K1() {
 		return p1K1;
 	}
 
-	public void setP1K1(Double p1K1) {
+	public void setP1K1(BigDecimal p1K1) {
 		this.p1K1 = p1K1;
 	}
 	
-	public Double getP1K2() {
+	public BigDecimal getP1K2() {
 		return p1K2;
 	}
 
-	public void setP1K2(Double p1K2) {
+	public void setP1K2(BigDecimal p1K2) {
 		this.p1K2 = p1K2;
 	}
 	
-	public Double getP1K3() {
+	public BigDecimal getP1K3() {
 		return p1K3;
 	}
 
-	public void setP1K3(Double p1K3) {
+	public void setP1K3(BigDecimal p1K3) {
 		this.p1K3 = p1K3;
 	}
 	
-	public Double getP1K4() {
+	public BigDecimal getP1K4() {
 		return p1K4;
 	}
 
-	public void setP1K4(Double p1K4) {
+	public void setP1K4(BigDecimal p1K4) {
 		this.p1K4 = p1K4;
 	}
 	
-	public Double getP1Price() {
+	public BigDecimal getP1Price() {
 		return p1Price;
 	}
 
-	public void setP1Price(Double p1Price) {
+	public void setP1Price(BigDecimal p1Price) {
 		this.p1Price = p1Price;
 	}
 	
@@ -197,59 +199,59 @@ public class CalculateCurrent extends PreEntity<CalculateCurrent> {
 		this.p2Type = p2Type;
 	}
 	
-	public Double getP2ExcellentPrice() {
+	public BigDecimal getP2ExcellentPrice() {
 		return p2ExcellentPrice;
 	}
 
-	public void setP2ExcellentPrice(Double p2ExcellentPrice) {
+	public void setP2ExcellentPrice(BigDecimal p2ExcellentPrice) {
 		this.p2ExcellentPrice = p2ExcellentPrice;
 	}
 	
-	public Double getP2K1() {
+	public BigDecimal getP2K1() {
 		return p2K1;
 	}
 
-	public void setP2K1(Double p2K1) {
+	public void setP2K1(BigDecimal p2K1) {
 		this.p2K1 = p2K1;
 	}
 	
-	public Double getP2K2() {
+	public BigDecimal getP2K2() {
 		return p2K2;
 	}
 
-	public void setP2K2(Double p2K2) {
+	public void setP2K2(BigDecimal p2K2) {
 		this.p2K2 = p2K2;
 	}
 	
-	public Double getP2K3() {
+	public BigDecimal getP2K3() {
 		return p2K3;
 	}
 
-	public void setP2K3(Double p2K3) {
+	public void setP2K3(BigDecimal p2K3) {
 		this.p2K3 = p2K3;
 	}
 	
-	public Double getP2K4() {
+	public BigDecimal getP2K4() {
 		return p2K4;
 	}
 
-	public void setP2K4(Double p2K4) {
+	public void setP2K4(BigDecimal p2K4) {
 		this.p2K4 = p2K4;
 	}
 	
-	public Double getP2Price() {
+	public BigDecimal getP2Price() {
 		return p2Price;
 	}
 
-	public void setP2Price(Double p2Price) {
+	public void setP2Price(BigDecimal p2Price) {
 		this.p2Price = p2Price;
 	}
 	
-	public Double getPrice() {
+	public BigDecimal getPrice() {
 		return price;
 	}
 
-	public void setPrice(Double price) {
+	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
 	

@@ -35,4 +35,15 @@
 	</select>
 
 
+	<delete id="deleteEntity">
+		delete from aa_vehicle_install_info
+		<where>
+			<if test="examUserId != null and examUserId != ''">
+				and exam_user_id = #{examUserId}
+			</if>
+			<if test="paperId != null and paperId != ''">
+				and paper_id = #{paperId}
+			</if>
+		</where>
+	</delete>
 </mapper>

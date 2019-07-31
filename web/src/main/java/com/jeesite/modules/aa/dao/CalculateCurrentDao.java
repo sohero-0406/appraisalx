@@ -5,6 +5,7 @@ package com.jeesite.modules.aa.dao;
 
 import com.jeesite.common.dao.CrudDao;
 import com.jeesite.common.mybatis.annotation.MyBatisDao;
+import com.jeesite.modules.aa.entity.Calculate;
 import com.jeesite.modules.aa.entity.CalculateCurrent;
 
 /**
@@ -14,5 +15,11 @@ import com.jeesite.modules.aa.entity.CalculateCurrent;
  */
 @MyBatisDao
 public interface CalculateCurrentDao extends CrudDao<CalculateCurrent> {
-	
+
+    /**
+     * 根据计算类型，查询被评估车辆相关参数
+     * @param calculate
+     * @return
+     */
+    CalculateCurrent getByCalculate(Calculate calculate);
 }

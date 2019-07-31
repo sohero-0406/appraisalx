@@ -11,6 +11,8 @@ import com.jeesite.common.mybatis.annotation.Column;
 import com.jeesite.common.mybatis.annotation.Table;
 import com.jeesite.common.mybatis.mapper.query.QueryType;
 
+import java.math.BigDecimal;
+
 /**
  * 公里数估值法Entity
  * @author chenlitao
@@ -27,10 +29,10 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 public class CalculateKm extends PreEntity<CalculateKm> {
 	
 	private static final long serialVersionUID = 1L;
-	private Double salePrice;		// 车辆销售价格
+	private BigDecimal salePrice;		// 车辆销售价格
 	private String calculateId;		// 外键id
 	private String process;		//计算过程
-	private Double price;		// 评估价格
+	private BigDecimal price;		// 评估价格
 
 	//非数据库字段
 	private String mileage;		//行驶里程(km)
@@ -43,11 +45,11 @@ public class CalculateKm extends PreEntity<CalculateKm> {
 		super(id);
 	}
 	
-	public Double getSalePrice() {
+	public BigDecimal getSalePrice() {
 		return salePrice;
 	}
 
-	public void setSalePrice(Double salePrice) {
+	public void setSalePrice(BigDecimal salePrice) {
 		this.salePrice = salePrice;
 	}
 	
@@ -69,11 +71,11 @@ public class CalculateKm extends PreEntity<CalculateKm> {
 		this.process = process;
 	}
 
-	public Double getPrice() {
+	public BigDecimal getPrice() {
 		return price;
 	}
 
-	public void setPrice(Double price) {
+	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
 

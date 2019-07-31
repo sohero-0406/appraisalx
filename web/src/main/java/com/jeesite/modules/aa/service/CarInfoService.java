@@ -111,9 +111,8 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
         if (null == user) {
             //生成委托书编号
             delegateUserService.createDelegateLetterNum(delegateUser);
-        }else {
-            delegateUserService.save(delegateUser);
         }
+        delegateUserService.save(delegateUser);
 
         CarInfo carInfo = baseInfoVO.getCarInfo();
         if (null == carInfo) {
@@ -163,6 +162,10 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
         //加载使用性质
         List<DictData> usageList = DictUtils.getDictList("aa_usage_type");
         baseInfoVO.setUsageList(usageList);
+
+        //加载车身颜色
+        List<DictData> colorList = DictUtils.getDictList("aa_vehicle_color");
+        baseInfoVO.setColorList(colorList);
 
         //加载车辆级别
         List<DictData> levelList = DictUtils.getDictList("aa_vehicle_level");

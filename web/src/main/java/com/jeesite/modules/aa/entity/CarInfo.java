@@ -264,7 +264,7 @@ public class CarInfo extends PreEntity<CarInfo> {
 		this.registerDate = registerDate;
 	}
 	
-	@Length(min=0, max=32, message="车身颜色长度不能超过 32 个字符")
+	@Length(min=0, max=10, message="车身颜色长度不能超过 10 个字符")
 	public String getColor() {
 		return color;
 	}

@@ -78,9 +78,7 @@ public class HomePageService {
             homePageVO.setVehicleGradeAssess(vehicleGradeAssess);
             result.setVehicleGradeAssess(vehicleGradeAssess);
 
-            VehicleInfo vehicleInfo = new VehicleInfo();
-            vehicleInfo.setChexingId(carInfo.getModel());
-            vehicleInfo = vehicleInfoService.getCarModel(vehicleInfo);
+            VehicleInfo vehicleInfo = vehicleInfoService.getCarModel(carInfo.getModel());
             homePageVO.setVehicleInfo(vehicleInfo);
             result.setVehicleInfo(vehicleInfo);
         }
@@ -121,9 +119,7 @@ public class HomePageService {
                 vehicleGradeAssess = vehicleGradeAssessService.getByEntity(vehicleGradeAssess);
                 temp.setVehicleGradeAssess(vehicleGradeAssess);
 
-                VehicleInfo vehicleInfo = new VehicleInfo();
-                vehicleInfo.setChexingId(carInfo.getModel());
-                vehicleInfo = vehicleInfoService.getCarModel(vehicleInfo);
+                VehicleInfo vehicleInfo = vehicleInfoService.getCarModel(carInfo.getModel());
                 temp.setVehicleInfo(vehicleInfo);
 
                 result.add(temp);

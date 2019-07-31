@@ -11,6 +11,8 @@ import com.jeesite.common.mybatis.annotation.Column;
 import com.jeesite.common.mybatis.annotation.Table;
 import com.jeesite.common.mybatis.mapper.query.QueryType;
 
+import java.math.BigDecimal;
+
 /**
  * 重置成本法Entity
  * @author chenlitao
@@ -38,10 +40,10 @@ public class CalculateReplaceCost extends PreEntity<CalculateReplaceCost> {
 	
 	private static final long serialVersionUID = 1L;
 	private String calculateId;		// 外键id
-	private Double salePrice;		// 新车销售价
-	private Double purchaseTax;		// 车辆购置税
-	private Double licenseFee;		// 牌照费
-	private Double updateRepeatCost;		// 更新重置成本
+	private BigDecimal salePrice;		// 新车销售价
+	private BigDecimal purchaseTax;		// 车辆购置税
+	private BigDecimal licenseFee;		// 牌照费
+	private BigDecimal updateRepeatCost;		// 更新重置成本
 	private String provideUseYear;		// 规定使用年限
 	private String tecNewRateCoefficient;		// 技术鉴定成新率系数
 	private String tecNewRate;		// 技术鉴定成新率
@@ -49,7 +51,11 @@ public class CalculateReplaceCost extends PreEntity<CalculateReplaceCost> {
 	private String yearNewRate;		// 年限成新率
 	private String allNewRate;		// 综合成新率
 	private String process;		//计算过程
-	private Double price;		// 评估价格
+	private BigDecimal price;		// 评估价格
+
+	//非数据库字段
+	private String score;		// 车辆技术状况分值
+	private String identifyDate;		//鉴定日期
 	
 	public CalculateReplaceCost() {
 		this(null);
@@ -68,35 +74,35 @@ public class CalculateReplaceCost extends PreEntity<CalculateReplaceCost> {
 		this.calculateId = calculateId;
 	}
 	
-	public Double getSalePrice() {
+	public BigDecimal getSalePrice() {
 		return salePrice;
 	}
 
-	public void setSalePrice(Double salePrice) {
+	public void setSalePrice(BigDecimal salePrice) {
 		this.salePrice = salePrice;
 	}
 	
-	public Double getPurchaseTax() {
+	public BigDecimal getPurchaseTax() {
 		return purchaseTax;
 	}
 
-	public void setPurchaseTax(Double purchaseTax) {
+	public void setPurchaseTax(BigDecimal purchaseTax) {
 		this.purchaseTax = purchaseTax;
 	}
 	
-	public Double getLicenseFee() {
+	public BigDecimal getLicenseFee() {
 		return licenseFee;
 	}
 
-	public void setLicenseFee(Double licenseFee) {
+	public void setLicenseFee(BigDecimal licenseFee) {
 		this.licenseFee = licenseFee;
 	}
 	
-	public Double getUpdateRepeatCost() {
+	public BigDecimal getUpdateRepeatCost() {
 		return updateRepeatCost;
 	}
 
-	public void setUpdateRepeatCost(Double updateRepeatCost) {
+	public void setUpdateRepeatCost(BigDecimal updateRepeatCost) {
 		this.updateRepeatCost = updateRepeatCost;
 	}
 	
@@ -163,12 +169,27 @@ public class CalculateReplaceCost extends PreEntity<CalculateReplaceCost> {
 		this.process = process;
 	}
 	
-	public Double getPrice() {
+	public BigDecimal getPrice() {
 		return price;
 	}
 
-	public void setPrice(Double price) {
+	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
-	
+
+	public String getScore() {
+		return score;
+	}
+
+	public void setScore(String score) {
+		this.score = score;
+	}
+
+	public String getIdentifyDate() {
+		return identifyDate;
+	}
+
+	public void setIdentifyDate(String identifyDate) {
+		this.identifyDate = identifyDate;
+	}
 }

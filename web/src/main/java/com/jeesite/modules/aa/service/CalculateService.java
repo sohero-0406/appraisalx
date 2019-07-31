@@ -9,6 +9,8 @@ import com.jeesite.modules.aa.dao.CalculateDao;
 import com.jeesite.modules.aa.entity.*;
 import com.jeesite.modules.aa.vo.CalculateVO;
 import com.jeesite.modules.common.entity.ExamUser;
+import com.jeesite.modules.common.entity.VehicleInfo;
+import com.jeesite.modules.common.service.VehicleInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +37,10 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
     private CalculateKmService calculateKmService;
     @Autowired
     private CalculateCurrentService calculateCurrentService;
+    @Autowired
+    private CarInfoService carInfoService;
+    @Autowired
+    private VehicleInfoService vehicleInfoService;
 
     /**
      * 获取单条数据
@@ -50,7 +56,7 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
     /**
      * 查询分页数据
      *
-     * @param calculate      查询条件
+     * @param calculate 查询条件
      * @return
      */
     @Override
@@ -99,6 +105,18 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
      */
     public CalculateVO getCalculate(ExamUser examUser) {
         CalculateVO vo = new CalculateVO();
+
+        CarInfo carInfo = new CarInfo();
+        carInfo.setExamUserId(examUser.getId());
+        carInfo.setPaperId(examUser.getPaperId());
+        carInfo = carInfoService.getByEntity(carInfo);
+        if (null != carInfo) {
+            VehicleInfo vehicleInfo = vehicleInfoService.getCarModel(carInfo.getModel());
+            if (null != vehicleInfo) {
+                vo.setNewCarPrice(vehicleInfo.getChangshangzhidaojiaYuan());
+            }
+        }
+
         Calculate calculate = new Calculate();
         calculate.setExamUserId(examUser.getId());
         calculate.setPaperId(examUser.getPaperId());
@@ -137,12 +155,13 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
     }
 
     //依据学生的估算方式查找对应的估算值
-    public Map<String, String> getEstimateByType(String examUserId){
+    public Map<String, String> getEstimateByType(String examUserId) {
         return dao.getEstimateByType(examUserId);
     }
 
     /**
      * 查询算法类型
+     *
      * @param calculate
      */
     public String getType(Calculate calculate) {

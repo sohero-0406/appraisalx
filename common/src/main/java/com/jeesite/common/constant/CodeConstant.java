@@ -21,11 +21,18 @@ public class CodeConstant {
     public static final String FAILED_TO_IDENTIFY_REFLECTIVE_OR_OVEREXPOSED_ON_IMAGE = "1006";
     //识别失败，未知状态
     public static final String FAILED_TO_IDENTIFY_UNKNOWN_STATE = "1007";
-    //考试结束
-    public static final String EXAM_END = "1011";
     //请求失败
     public static final String REQUEST_FAILED = "1010";
+    //考试结束
+    public static final String EXAM_END = "1011";
     //请求参数有误
     public static final String WRONG_REQUEST_PARAMETER = "1020";
+    //未完善被评估车辆及参照物数据表
+    public static final String REFERENCES_EVALUATED_INCOMPLETE = "1012";
+    //参照物不存在
+    public static final String REFERENCE_NOT_EXIST = "1013";
+
+    //登录超时
+    public static final String LOGIN_TIMEOUT = "2000";
 
 }

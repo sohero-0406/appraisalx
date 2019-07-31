@@ -8,6 +8,7 @@ public class CalculateVO {
     private CalculateDepreciation calculateDepreciation;
     private CalculateKm calculateKm;
     private CalculateReplaceCost calculateReplaceCost;
+    private String newCarPrice;         //新车市场参考价格
 
     public Calculate getCalculate() {
         return calculate;
@@ -47,5 +48,13 @@ public class CalculateVO {
 
     public void setCalculateReplaceCost(CalculateReplaceCost calculateReplaceCost) {
         this.calculateReplaceCost = calculateReplaceCost;
+    }
+
+    public String getNewCarPrice() {
+        return newCarPrice;
+    }
+
+    public void setNewCarPrice(String newCarPrice) {
+        this.newCarPrice = newCarPrice;
     }
 }

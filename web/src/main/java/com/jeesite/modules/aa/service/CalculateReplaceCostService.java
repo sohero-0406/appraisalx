@@ -114,13 +114,13 @@ public class CalculateReplaceCostService extends CrudService<CalculateReplaceCos
      */
     public CalculateReplaceCost calculate(CalculateReplaceCost cost, ExamUser examUser) {
         //新车销售价
-        BigDecimal salePrice = new BigDecimal(cost.getSalePrice());
+        BigDecimal salePrice = cost.getSalePrice();
         // 牌照费
-        BigDecimal licenseFee = new BigDecimal(0);
+        BigDecimal licenseFee;
         //规定使用年限（月）
-        BigDecimal provideUseMonth = new BigDecimal(0);
+        BigDecimal provideUseMonth;
         //技术鉴定成新率系数
-        BigDecimal tecNewRateCoefficient = new BigDecimal(0);
+        BigDecimal tecNewRateCoefficient;
 
         //查询车辆技术状况分值
         VehicleGradeAssess assess = new VehicleGradeAssess();
@@ -130,6 +130,8 @@ public class CalculateReplaceCostService extends CrudService<CalculateReplaceCos
         if (null == assess) {
             return cost;
         }
+        cost.setScore(assess.getScore());
+        cost.setIdentifyDate(assess.getIdentifyDate());
         BigDecimal score = new BigDecimal(assess.getScore());
         //考生
         if (StringUtils.isNotBlank(examUser.getExamId())) {
@@ -137,9 +139,10 @@ public class CalculateReplaceCostService extends CrudService<CalculateReplaceCos
             Calculate calculate = new Calculate();
             calculate.setType("3");
             Exam exam = examService.get(examUser.getExamId());
-            if (null != exam) {
-                calculate.setPaperId(exam.getPaperId());
+            if (null == exam) {
+                return cost;
             }
+            calculate.setPaperId(exam.getPaperId());
             calculate = calculateService.getByEntity(calculate);
             //教师用的不是该算法
             if (null == calculate) {
@@ -156,14 +159,14 @@ public class CalculateReplaceCostService extends CrudService<CalculateReplaceCos
             cost.setProvideUseYear(teaCost.getProvideUseYear());
             cost.setTecNewRateCoefficient(teaCost.getTecNewRateCoefficient());
             // 牌照费
-            licenseFee = new BigDecimal(teaCost.getLicenseFee());
+            licenseFee = teaCost.getLicenseFee();
             //规定使用年限（月）
             provideUseMonth = new BigDecimal(teaCost.getProvideUseYear()).multiply(new BigDecimal(12));
             //技术鉴定成新率系数
             tecNewRateCoefficient = MathUtils.removePercent(teaCost.getTecNewRateCoefficient());
         } else {
             //教师
-            licenseFee = new BigDecimal(cost.getLicenseFee());
+            licenseFee = cost.getLicenseFee();
             provideUseMonth = new BigDecimal(cost.getProvideUseYear()).multiply(new BigDecimal(12));
             tecNewRateCoefficient = MathUtils.removePercent(cost.getTecNewRateCoefficient());
         }
@@ -205,12 +208,12 @@ public class CalculateReplaceCostService extends CrudService<CalculateReplaceCos
         //车辆购置税
         BigDecimal purchaseTax = salePrice.divide(new BigDecimal(1).add(vat), 6, BigDecimal.ROUND_HALF_UP)
                 .multiply(purchase).setScale(2, BigDecimal.ROUND_HALF_UP);
-        cost.setPurchaseTax(purchaseTax.doubleValue());
+        cost.setPurchaseTax(purchaseTax);
         process.append("车辆购置税=新车销售价格（含增值税）/（1+增值税率）×车辆购置税税率=" + salePrice + "/(1+" + vat
                 + ")×" + purchase + "=" + purchaseTax + "元;");
         //更新重置成本
         BigDecimal updateRepeatCost = salePrice.add(purchaseTax).add(licenseFee);
-        cost.setUpdateRepeatCost(updateRepeatCost.doubleValue());
+        cost.setUpdateRepeatCost(updateRepeatCost);
         process.append("更新重置成本=新车销售价格（含增值税）+车辆购置税+牌照费=" + salePrice + "+" + purchaseTax + "+"
                 + licenseFee + "=" + updateRepeatCost + "元;");
         //年限成新率
@@ -233,7 +236,7 @@ public class CalculateReplaceCostService extends CrudService<CalculateReplaceCos
                 + MathUtils.addPercent(allNewRate) + ";");
         //评估价格
         BigDecimal price = updateRepeatCost.multiply(allNewRate).setScale(2, BigDecimal.ROUND_HALF_UP);
-        cost.setPrice(price.doubleValue());
+        cost.setPrice(price);
         process.append("评估价格=更新重置成本×综合成新率=" + updateRepeatCost + "×" + allNewRate + "=" + price + "元;");
         cost.setProcess(process.toString());
         return cost;

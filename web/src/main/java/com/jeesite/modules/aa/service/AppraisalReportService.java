@@ -251,9 +251,7 @@ public class AppraisalReportService extends CrudService<AppraisalReportDao, Appr
         appraisalReportVO.setDelegateLetter(delegateLetter);
 
         //车辆配置全表
-        VehicleInfo vehicleInfo = new VehicleInfo();
-        vehicleInfo.setChexingId(carInfo.getModel());
-        vehicleInfo = vehicleInfoService.getCarModel(vehicleInfo);
+        VehicleInfo vehicleInfo = vehicleInfoService.getCarModel(carInfo.getModel());
         appraisalReportVO.setVehicleInfo(vehicleInfo);
 
         return appraisalReportVO;

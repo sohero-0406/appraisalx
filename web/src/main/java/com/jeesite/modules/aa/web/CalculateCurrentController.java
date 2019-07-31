@@ -102,9 +102,7 @@ public class CalculateCurrentController extends BaseController {
 	@ResponseBody
 	public CommonResult calculate(CalculateCurrent calculateCurrent) {
 		ExamUser examUser = UserUtils.getExamUser();
-		calculateCurrent = calculateCurrentService.calculate(calculateCurrent, examUser);
-		CommonResult result = new CommonResult();
-		result.setData(calculateCurrent);
-		return result;
+		CommonResult commonResult = calculateCurrentService.calculate(calculateCurrent, examUser);
+		return commonResult;
 	}
 }

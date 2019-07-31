@@ -21,6 +21,7 @@ public class UserUtils {
             examUser.setId("1");
             examUser.setUserId("1");
             examUser.setExamId("1");
+            request.getSession().setAttribute("examUser",examUser);
         }
 //        if (null == examUser) {
 //            examUser = new ExamUser();
