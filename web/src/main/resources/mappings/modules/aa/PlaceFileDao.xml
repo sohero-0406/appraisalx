@@ -33,5 +33,65 @@
 		left join aa_picture_type type on type.id = user.picture_type_id
 		where  file.exam_user_id = #{examUserId}
 	</select>
+
+
+	<resultMap id="findDataMap" type="PictureUser">
+		<id property="pictureId" column="id"></id>
+		<result property="name" column="name"></result>
+		<collection property="itemList" ofType="PictureUser">
+			<id property="id" column="userId"></id>
+			<result property="name" column="userName"></result>
+			<result property="choose" column="choose"></result>
+		</collection>
+	</resultMap>
+
+
+	<select id="selectPlaceListFrist" resultMap="findDataMap">
+		select
+		typePare.id,
+        typePare.name,
+		user.id as userId,
+		user.name as userName,
+		IF(file.id IS NOT NULL,1,0) as choose,
+		file.id
+		from aa_picture_user user
+		left join aa_picture_type type on user.picture_type_id = type.id
+		left join aa_picture_type typePare on type.parent_id = typePare.id
+		left join aa_place_file file on user.id = file.picture_user_id
+		<where>
+			<if test="type == '0'.toString() ">
+				and typePare.parent_id = '0'
+			</if>
+			<if test="type ==  '1'.toString() ">
+				and typePare.parent_id &lt;&gt; '0'
+			</if>
+			<if test="examUserId != null and examUserId != ''">
+				and user.exam_user_id = #{examUserId}
+			</if>
+			<if test="paperId != null and paperId != ''">
+				and user.paper_id = #{paperId}
+			</if>
+		        and typePare.id &lt;&gt; '1152466208266469376'
+		</where>
+	</select>
+
+
+	<select id="selectPlace" resultType="PictureUser">
+		select
+			user.id,
+			user.name,
+			 IF(file.id IS NOT NULL,1,0) as choose
+			from
+			aa_picture_user user
+			left join aa_place_file file on file.picture_user_id = user.id
+			where user.picture_type_id  in ('1152466716125380608','1152467065519292416','1152467158926442496')
+			<if test="id != null and id != ''">
+				and user.exam_user_id = #{id}
+			</if>
+			<if test="paperId != null and paperId != ''">
+				and user.paper_id = #{paperId}
+			</if>
+
+	</select>
 	
 </mapper>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeesite.modules.common.dao.OperationLogDao">
+	
+	<!-- 查询数据
+	<select id="findList" resultType="OperationLog">
+		SELECT ${sqlMap.column.toSql()}
+		FROM ${sqlMap.table.toSql()}
+		<where>
+			${sqlMap.where.toSql()}
+		</where>
+		ORDER BY ${sqlMap.order.toSql()}
+	</select> -->
+
+	<select id="getOperationLog" resultType="OperationLog">
+		select
+		login_name,
+		request_ip,
+		DATE_FORMAT(create_date,'%Y.%m.%d %H:%i') operatingTime,
+		operating_content
+		from
+		common_operation_log
+		<where>
+			<if test="keyword != null and keyword!= ''">
+				AND CONCAT(login_name, request_ip,operating_content,create_date) LIKE CONCAT('%',#{keyword},'%')
+			</if>
+		</where>
+	</select>
+
+</mapper>

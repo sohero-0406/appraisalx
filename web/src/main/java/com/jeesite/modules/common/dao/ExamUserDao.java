@@ -21,4 +21,6 @@ public interface ExamUserDao extends CrudDao<ExamUser> {
 
     List<ExamUser> getExamUserScoreList(String examId);
 
+    void deleteExamUser(String examUserId);
+
 }

@@ -3,7 +3,8 @@
  */
 package com.jeesite.modules.common.service;
 
-import com.jeesite.common.collect.ListUtils;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.service.CrudService;
@@ -140,6 +141,51 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		//依据考试id 在考试结束时 给未结束考试的考生添加结束考试时间
 		dao.updateExamUserEndTime(examId);
 	}
+
+	/**
+	 * 保存考生信息
+	 * @param examUserJson
+	 * @param examId
+	 * @return
+	 */
+	@Transactional(readOnly=false)
+	public CommonResult saveExamUser(String examUserJson,String examId){
+		CommonResult comRes = new CommonResult();
+		examUserJson = examUserJson.replace("\n","");
+		examUserJson = examUserJson.replace(" ","");
+		JSONArray jsonArray = JSONObject.parseArray(examUserJson);
+		for(Object o:jsonArray){
+			JSONObject userJson = (JSONObject) o;
+			ExamUser examUser = new ExamUser();
+			examUser.setExamId(examId);
+			examUser.setPassword(userJson.getString("password"));
+			super.save(examUser);
+		}
+		return comRes;
+	}
+
+	//考生删除
+	@Transactional(readOnly=false)
+	public CommonResult deletExamUser(String examUserIdListJson){
+		CommonResult comRes = new CommonResult();
+		examUserIdListJson = examUserIdListJson.replace("\n","");
+		examUserIdListJson = examUserIdListJson.replace(" ","");
+		JSONArray jsonArray = JSONObject.parseArray(examUserIdListJson);
+		for(Object o:jsonArray){
+			JSONObject examUser = (JSONObject) o;
+			String examUserId = examUser.getString("examUserId");
+			if(StringUtils.isBlank(examUserId)){
+				comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+				comRes.setMsg("请先选择考生！");
+				return comRes;
+			}
+			dao.deleteExamUser(examUserId);
+		}
+		comRes.setMsg("删除成功！");
+		return comRes;
+	}
+
+
 
 
 

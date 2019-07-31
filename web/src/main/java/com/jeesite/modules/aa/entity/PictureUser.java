@@ -11,6 +11,8 @@ import com.jeesite.common.mybatis.annotation.Column;
 import com.jeesite.common.mybatis.annotation.Table;
 import com.jeesite.common.mybatis.mapper.query.QueryType;
 
+import java.util.List;
+
 /**
  * 用户图片表Entity
  * @author chenlitao
@@ -34,6 +36,10 @@ public class PictureUser extends PreEntity<PictureUser> {
 	private String paperId;		// 试卷id
 	private String pictureTypeId;		// 图片类型id
 	private String name;		// 图片名称
+
+	private List<PictureUser> itemList;
+	private String choose;  //是否选择
+	private String pictureId; //图片id
 	
 	public PictureUser() {
 		this(null);
@@ -87,5 +93,28 @@ public class PictureUser extends PreEntity<PictureUser> {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
+	public List<PictureUser> getItemList() {
+		return itemList;
+	}
+
+	public void setItemList(List<PictureUser> itemList) {
+		this.itemList = itemList;
+	}
+
+	public String getChoose() {
+		return choose;
+	}
+
+	public void setChoose(String choose) {
+		this.choose = choose;
+	}
+
+	public String getPictureId() {
+		return pictureId;
+	}
+
+	public void setPictureId(String pictureId) {
+		this.pictureId = pictureId;
+	}
 }

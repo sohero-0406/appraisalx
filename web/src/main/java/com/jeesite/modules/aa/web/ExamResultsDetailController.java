@@ -95,13 +95,6 @@ public class ExamResultsDetailController extends BaseController {
 		return renderResult(Global.TRUE, text("删除学生成绩详情表成功！"));
 	}
 
-	@RequestMapping(value = "saveExamResultsDetail")
-	@ResponseBody
-	public String saveExamResultsDetail(ExamUser examUser) {
-		examResultsDetailService.saveExamResults(examUser);
-		return null;
-	}
-
 	@RequestMapping(value = "getExamResultsDetail")
 	@ResponseBody
 	public CommonResult getExamResultsDetail(ExamUser examUser) {

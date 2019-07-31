@@ -95,6 +95,23 @@ public class ExamUserController extends BaseController {
 		return renderResult(Global.TRUE, text("删除common_exam_user成功！"));
 	}
 
+	//保存考生
+	@RequestMapping(value = "saveExamUser")
+	@ResponseBody
+	public CommonResult saveExamUser(@Validated String examUserJson,String examUserId){
+		CommonResult comRes = examUserService.saveExamUser(examUserJson,examUserId);
+		return comRes;
+	}
+    //批量删除考生
+	@RequestMapping(value = "deleteExamUser")
+	@ResponseBody
+	public CommonResult deleteExamUser(@Validated String examUserIdListJson){
+		CommonResult comRes = examUserService.deletExamUser(examUserIdListJson);
+		return comRes;
+	}
+
+
+
 	//查询考试成绩列表
 	@RequestMapping(value = "getExamUserScoreList")
 	@ResponseBody
@@ -111,18 +128,6 @@ public class ExamUserController extends BaseController {
 	}
 
 
-//	/**
-//	 *  判考试成绩
-//	 */
-//	@RequestMapping(value = "gradePapers")
-//	@ResponseBody
-//	public CommonResult gradePapers(Exam exam) {
-//		CommonResult comRes = new CommonResult();
-//		comRes.setData(examUserService.gradePapers(exam));
-//		return comRes;
-//	}
-
-
 	/**
 	 * 考试计时
 	 */
@@ -132,6 +137,7 @@ public class ExamUserController extends BaseController {
 		ExamUser examUser = UserUtils.getExamUser();
 		return examUserService.examTiming(examUser);
 	}
+
 
 }
 
