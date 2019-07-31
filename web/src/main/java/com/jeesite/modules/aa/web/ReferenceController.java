@@ -4,7 +4,9 @@
 package com.jeesite.modules.aa.web;
 
 import com.jeesite.common.config.Global;
+import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.entity.Page;
+import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.aa.entity.Reference;
 import com.jeesite.modules.aa.service.ReferenceService;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * 参照物表Controller
@@ -106,15 +109,15 @@ public class ReferenceController extends BaseController {
 	 */
 	@RequestMapping(value = "deleteReference")
 	@ResponseBody
-	public CommonResult deleteReference(@Validated Reference reference) {
-		if(reference.getId().isEmpty()){
-			CommonResult comRes = new CommonResult();
-			comRes.setCode("1010");
-			comRes.setMsg("未传入ID");
+	public CommonResult deleteReference(@Validated String referenceIdList) {
+		CommonResult comRes = new CommonResult();
+		if(StringUtils.isBlank(referenceIdList)){
+			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+			comRes.setMsg("请先选择数据!");
 			return comRes;
 		}
-		referenceService.delete(reference);
-		return new CommonResult();
+		referenceService.deleteReference(referenceIdList);
+		return comRes;
 	}
 
 	/**

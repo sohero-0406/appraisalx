@@ -3,12 +3,12 @@
  */
 package com.jeesite.modules.aa.entity;
 
+import com.jeesite.modules.common.entity.PreEntity;
 import org.hibernate.validator.constraints.Length;
 
 import com.jeesite.common.entity.DataEntity;
 import com.jeesite.common.mybatis.annotation.Column;
 import com.jeesite.common.mybatis.annotation.Table;
-import com.jeesite.common.mybatis.mapper.query.QueryType;
 
 /**
  * 大平台域名设置Entity
@@ -23,7 +23,7 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 		@Column(name="context_path", attrName="contextPath", label="项目路径"),
 	}, orderBy="a.update_date DESC"
 )
-public class SystemSetting extends DataEntity<SystemSetting> {
+public class SystemSetting extends PreEntity<SystemSetting> {
 	
 	private static final long serialVersionUID = 1L;
 	private String ip;		// ip地址

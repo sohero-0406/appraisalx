@@ -76,4 +76,15 @@ public class SystemSettingService extends CrudService<SystemSettingDao, SystemSe
 	public SystemSetting getByEntity(SystemSetting systemSetting) {
 		return dao.getByEntity(systemSetting);
 	}
+
+	@Transactional(readOnly=false)
+	public void  phyDeleteByEntity(SystemSetting systemSetting){
+		dao.phyDeleteByEntity(systemSetting);
+	}
+
+	@Transactional(readOnly=false)
+	public long  insertSystemSetting(SystemSetting systemSetting){
+        return dao.insert(systemSetting);
+	}
+
 }

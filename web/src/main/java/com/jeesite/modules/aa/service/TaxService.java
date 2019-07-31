@@ -76,4 +76,16 @@ public class TaxService extends CrudService<TaxDao, Tax> {
     public Tax getByEntity(Tax tax) {
 		return dao.getByEntity(tax);
     }
+
+	/**
+	 *  全部删除
+	 */
+	@Transactional(readOnly=false)
+	public void phyDeleteByEntity(Tax tax){
+		dao.phyDeleteByEntity(tax);
+	}
+	@Transactional(readOnly=false)
+	public long insertTax(Tax tax){
+		return dao.insert(tax);
+	}
 }
