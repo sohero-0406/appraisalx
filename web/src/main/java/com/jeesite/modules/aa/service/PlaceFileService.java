@@ -5,6 +5,16 @@ package com.jeesite.modules.aa.service;
 
 import java.util.List;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.jeesite.common.lang.StringUtils;
+import com.jeesite.modules.aa.entity.CheckTradableVehicles;
+import com.jeesite.modules.aa.entity.PictureUser;
+import com.jeesite.modules.common.entity.CommonResult;
+import com.jeesite.modules.common.entity.ExamUser;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.poi.ss.usermodel.Picture;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +31,9 @@ import com.jeesite.modules.aa.dao.PlaceFileDao;
 @Service
 @Transactional(readOnly=true)
 public class PlaceFileService extends CrudService<PlaceFileDao, PlaceFile> {
+
+	@Autowired
+	private CheckTradableVehiclesService checkTradableVehiclesService;
 	
 	/**
 	 * 获取单条数据
@@ -84,4 +97,57 @@ public class PlaceFileService extends CrudService<PlaceFileDao, PlaceFile> {
 	}
 
 
+	@Transactional
+	public List<PictureUser> getPlaceFileList(ExamUser examUser){
+		//接受委托、检查可交易车辆、记录车辆基本信息、判别事故车辆 归档数据列表 type = 0
+		String type = "0";
+		List<PictureUser> pictureUserList =  dao.selectPlaceListFrist(examUser.getId(),examUser.getPaperId(),type);
+		type = "1"; // 鉴定技术状况 数据列表
+		List<PictureUser> pictureUserListIdentification =  dao.selectPlaceListFrist(examUser.getId(),examUser.getPaperId(),type);
+		//车辆鉴定报告
+		PictureUser pictureUser = new PictureUser();
+		pictureUser.setId("1143446339264172032"); //鉴定技术状况
+		pictureUser.setName("鉴定技术状况");
+		pictureUser.setItemList(pictureUserListIdentification);
+		//报告
+		List<PictureUser> pictureUserPlace = dao.selectPlace(examUser);
+		pictureUserList.add(pictureUser);
+		pictureUserList.addAll(pictureUserPlace);
+		return pictureUserList;
+	}
+
+
+	//保存 用户归档
+	@Transactional(readOnly=false)
+	public void saveArchive(String pictureUserJson, String fileDuring, ExamUser examUser){
+		pictureUserJson = pictureUserJson.replace("\n","");
+		pictureUserJson = pictureUserJson.replace(" ","");
+		JSONArray jsonArray = JSONObject.parseArray(pictureUserJson);
+		//先删除 在保存
+		PlaceFile place = new PlaceFile();
+		place.setExamUserId(examUser.getId());
+		place.setPaperId(examUser.getPaperId());
+		dao.phyDeleteByEntity(place);  //s
+		//保存归档
+		if(CollectionUtils.isNotEmpty(jsonArray)){
+			for(Object picture : jsonArray){
+				JSONObject p = (JSONObject)picture;
+                 PlaceFile placeFile = new PlaceFile();
+                 placeFile.setPaperId(examUser.getPaperId());
+                 placeFile.setExamUserId(examUser.getId());
+                 placeFile.setPictureUserId(p.getString("id"));
+                 super.save(placeFile);
+			}
+		}
+		if(StringUtils.isNotBlank(fileDuring)){
+			//更新归档时效 aa_check_tradable_vehicles
+			CheckTradableVehicles checkTradableVehicles = new CheckTradableVehicles();
+			checkTradableVehicles.setExamUserId(examUser.getId());
+			checkTradableVehicles.setPaperId(examUser.getPaperId());
+			checkTradableVehicles = checkTradableVehiclesService.getByEntity(checkTradableVehicles);
+			checkTradableVehicles.setFileDuring(fileDuring);
+			checkTradableVehiclesService.save(checkTradableVehicles);
+		}
+
+	}
 }

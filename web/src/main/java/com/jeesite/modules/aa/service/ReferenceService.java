@@ -106,4 +106,18 @@ public class ReferenceService extends CrudService<ReferenceDao, Reference> {
 		return referenceVO;
 
 	}
+
+	/**
+	 *  删除 真删
+	 */
+	@Transactional(readOnly=false)
+	public void deleteReference(String referenceIdList){
+		String[] idList = referenceIdList.split(",");
+		Reference reference = new Reference();
+		for(String id:idList){
+			reference.setId(id);
+			dao.phyDelete(reference);
+		}
+	}
+
 }

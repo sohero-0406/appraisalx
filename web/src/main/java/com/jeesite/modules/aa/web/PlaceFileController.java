@@ -6,7 +6,12 @@ package com.jeesite.modules.aa.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.shiro.authz.annotation.RequiresPermissions;
+import com.jeesite.common.constant.CodeConstant;
+import com.jeesite.common.lang.StringUtils;
+import com.jeesite.modules.aa.entity.PictureUser;
+import com.jeesite.modules.common.entity.CommonResult;
+import com.jeesite.modules.common.entity.ExamUser;
+import com.jeesite.modules.common.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -90,5 +95,52 @@ public class PlaceFileController extends BaseController {
 		placeFileService.delete(placeFile);
 		return renderResult(Global.TRUE, text("删除归档成功！"));
 	}
+
+	/**
+	 *  待归档数据查询  考生传examUserId 老师传paperId  详细跟吕哥分析
+	 */
+	@RequestMapping(value = "getWaitingArchive")
+	@ResponseBody
+	public CommonResult getWaitingArchive(PictureUser pictureUser) {
+		CommonResult comRes = new CommonResult();
+		return comRes;
+	}
+
+	/**
+	 *  保存用户归档功能
+	 */
+	@RequestMapping(value = "saveArchive")
+	@ResponseBody
+	public CommonResult saveArchive(String pictureUserJson,String fileDuring,ExamUser examUser) {
+		CommonResult comRes = new CommonResult();
+		//判断 参数是否违规
+		if(StringUtils.isBlank(examUser.getId()) && StringUtils.isBlank(examUser.getPaperId())){
+			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+			comRes.setMsg("请求参数异常");
+			return comRes;
+		}
+        placeFileService.saveArchive(pictureUserJson,fileDuring,examUser);
+		return comRes;
+	}
+
+	/**
+	 * 用户 创建归档显示列表
+	 * @param examUser
+	 * @return
+	 */
+	@RequestMapping(value = "getPlaceFileList")
+	@ResponseBody
+	public CommonResult getPlaceFileList(ExamUser examUser) {
+		CommonResult comRes = new CommonResult();
+		//如果 同时存在考生id和试卷id 数据存在异常
+		if(StringUtils.isNotBlank(examUser.getId())&&StringUtils.isNotBlank(examUser.getPaperId())){
+			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+			comRes.setMsg("请求参数异常!");
+			return comRes;
+		}
+		comRes.setData(placeFileService.getPlaceFileList(examUser));
+		return comRes;
+	}
+
 	
 }

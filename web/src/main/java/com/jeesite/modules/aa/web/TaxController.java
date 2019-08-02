@@ -4,10 +4,13 @@
 package com.jeesite.modules.aa.web;
 
 import com.jeesite.common.config.Global;
+import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.entity.Page;
+import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.aa.entity.Tax;
 import com.jeesite.modules.aa.service.TaxService;
+import com.jeesite.modules.common.entity.CommonResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -87,6 +90,45 @@ public class TaxController extends BaseController {
 	public String delete(Tax tax) {
 		taxService.delete(tax);
 		return renderResult(Global.TRUE, text("删除税率表成功！"));
+	}
+
+	@PostMapping(value = "saveTax")
+	@ResponseBody
+	public CommonResult saveTax(Tax tax) {
+		CommonResult comRes = new CommonResult();
+		if(null==tax || StringUtils.isBlank(tax.getId())){
+			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+			comRes.setMsg("参数不能为空");
+			return comRes;
+		}
+		if (StringUtils.isBlank(tax.getPurchase())){
+			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+			comRes.setMsg("购置税税率不能为空");
+			return comRes;
+		}
+		if (StringUtils.isBlank(tax.getVat())){
+			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+			comRes.setMsg("增值税税率不能为空");
+			return comRes;
+		}
+		//验证是否出现多条数据
+		Tax taxTest = new Tax();
+		int len = taxService.findList(taxTest).size();
+		//因为此数据必为一条 所以一旦多条数据 全部删除，保存用户最后一次输入的有效数据
+		if(len>1){
+			taxService.phyDeleteByEntity(taxTest);
+			if(1==(int)taxService.insertTax(tax)){
+				comRes.setMsg("修改成功!");
+				return comRes;
+			}else{
+				comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+				comRes.setMsg("修改失败!");
+				return comRes;
+			}
+		}
+		comRes.setMsg("修改成功!");
+		taxService.save(tax);
+		return comRes;
 	}
 	
 }

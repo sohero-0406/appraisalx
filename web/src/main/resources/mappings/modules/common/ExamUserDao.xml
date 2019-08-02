@@ -33,4 +33,8 @@
       exam_id = #{examId}
 	</select>
 
+	<delete id="deleteExamUser">
+		delete from common_exam_user where id = #{examUserId}
+	</delete>
+
 </mapper>

@@ -128,7 +128,7 @@ public class ExamController extends BaseController {
 
     /**
      *  依据考试删除考试
-     * @param examId
+     * @param
      * @return
      */
     @RequestMapping(value = "deleteExam")
