@@ -180,7 +180,6 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         if(StringUtils.isBlank(delegateUser.getAppraisalDate())){
             SimpleDateFormat df = new SimpleDateFormat("yyyy");
             delegateUser.setAppraisalDate(df.format(new Date()));
-//		    appraisalReport.setAppraisalDate(df.format(new Date()));
             Integer appraisalNum;
             Integer max = findAppraisalNumMAX(delegateUser.getAppraisalDate());
             if(null!=max){
@@ -188,7 +187,6 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
             }else{
                 appraisalNum = 1;
             }
-//		    appraisalReport.setAppraisalNum(String.format("%08d", appraisalNum));
             delegateUser.setAppraisalNum(String.format("%8d", appraisalNum).replace(" ", "0"));
             delegateUserService.save(delegateUser);
         }
