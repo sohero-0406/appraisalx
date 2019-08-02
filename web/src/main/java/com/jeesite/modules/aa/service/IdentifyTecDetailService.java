@@ -167,4 +167,13 @@ public class IdentifyTecDetailService extends CrudService<IdentifyTecDetailDao, 
         identifyTec.setItemMap(map);
         return identifyTec;
     }
+
+    /**
+     * 鉴定技术状况 - 二手车鉴定评估作业表
+     * @param examUser
+     * @return
+     */
+    public List<IdentifyTec> findIdentityTecCondition(IdentifyTec identifyTec) {
+        return identifyTecDetailDao.findIdentityTecCondition(identifyTec);
+    }
 }

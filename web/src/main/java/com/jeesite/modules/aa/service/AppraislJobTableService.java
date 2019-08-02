@@ -81,8 +81,6 @@ public class AppraislJobTableService {
         }
         appraisalJobTableVO.setCarInfo(carInfo);
 
-
-
         //车辆加装信息
         VehicleInstallInfo vehicleInstallInfo = new VehicleInstallInfo();
         vehicleInstallInfo.setExamUserId(examUser.getExamId());
@@ -90,7 +88,7 @@ public class AppraislJobTableService {
         List<VehicleInstallInfo> vehicleInstallInfoList = vehicleInstallInfoService.findList(vehicleInstallInfo);
         //设置加装信息
         for(VehicleInstallInfo vii: vehicleInstallInfoList){
-            vii.setProject(vehicleInstallInfoService.getProject(vehicleInstallInfo));
+            vii.setProject(vehicleInstallInfoService.getProject(vii));
         }
         appraisalJobTableVO.setVehicleInstallInfoList(vehicleInstallInfoList);
 
@@ -102,14 +100,14 @@ public class AppraislJobTableService {
         for(VehicleDocumentInfo vdi: vehicleDocumentInfoList){
             //设置是否
             if("1".equals(vdi.getState())){
-                vdi.setState("是");
+                vdi.setState("有");
                 //设置有效期
                 if (StringUtils.isNotBlank(vdi.getValidity())) {
                     String[] validity = vdi.getValidity().substring(0, 10).split("-");
                     vdi.setValidity(validity[0] + "年" + validity[1] + "月" + validity[2] + "日");
                 }
             }else{
-                vdi.setState("否");
+                vdi.setState("无");
             }
         }
         appraisalJobTableVO.setVehicleDocumentInfoList(vehicleDocumentInfoList);
@@ -121,6 +119,13 @@ public class AppraislJobTableService {
         //设置品牌
         carInfo.setBrand(vehicleInfo.getPinpai());
         appraisalJobTableVO.setVehicleInfo(vehicleInfo);
+        //设置年款型号
+        String[] chexingArr = vehicleInfo.getChexingmingcheng().split(" ");
+        StringBuilder sb = new StringBuilder();
+        for(int i = 1; i < chexingArr.length; i++){
+            sb.append(chexingArr[i]);
+        }
+        appraisalJobTableVO.setNiankuanxinghao(sb.toString());
 
         //检查车体骨架
         CheckBodySkeleton checkBodySkeleton = new CheckBodySkeleton();
@@ -145,31 +150,29 @@ public class AppraislJobTableService {
         }else{
             checkTradableVehicles.setIsAccident("事故车");
         }
+        appraisalJobTableVO.setCheckTradableVehicles(checkTradableVehicles);
 
         //鉴定技术状况
         IdentifyTec identifyTec = new IdentifyTec();
         identifyTec.setExamUserId(examUser.getExamId());
         identifyTec.setPaperId(examUser.getPaperId());
-        List<IdentifyTec> identifyTecList = identifyTecService.findList(identifyTec);
-        for(IdentifyTec it: identifyTecList){
+        List<IdentifyTec> identifyTecDetailList =  identifyTecDetailService.findIdentityTecCondition(identifyTec);
+        appraisalJobTableVO.setIdentifyTecList(identifyTecDetailList);
 
-        }
-        appraisalJobTableVO.setIdentifyTecList(identifyTecList);
+        //车辆等级评定
+        VehicleGradeAssess vehicleGradeAssess = new VehicleGradeAssess();
+        vehicleGradeAssess.setExamUserId(examUser.getExamId());
+        vehicleGradeAssess.setPaperId(examUser.getPaperId());
+        vehicleGradeAssess = vehicleGradeAssessService.getByEntity(vehicleGradeAssess);
+        //设置技术状况
+        vehicleGradeAssess.setTechnicalStatus(vehicleGradeAssessService.getTechnicalStatus(vehicleGradeAssess));
+        appraisalJobTableVO.setVehicleGradeAssess(vehicleGradeAssess);
 
-
-
-
-
-
-
-        //设置年款型号
-        String[] chexingArr = vehicleInfo.getChexingmingcheng().split(" ");
-        StringBuilder sb = new StringBuilder();
-        for(int i = 1; i < chexingArr.length; i++){
-            sb.append(chexingArr[i]);
-        }
-        appraisalJobTableVO.setNiankuanxinghao(sb.toString());
-
+        // 作业表尾部信息
+        DelegateLetter delegateLetter = new DelegateLetter();
+        delegateLetter.setExamUserId(examUser.getExamId());
+        delegateLetter.setPaperId(examUser.getPaperId());
+        appraisalJobTableVO.setDelegateLetter(delegateLetterService.getByEntity(delegateLetter));
         return appraisalJobTableVO;
     }
 

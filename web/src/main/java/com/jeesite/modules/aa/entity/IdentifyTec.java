@@ -35,6 +35,8 @@ public class IdentifyTec extends PreEntity<IdentifyTec> {
 	private String examUserId;		// 外键Id
 	private String paperId;		// 试卷id
 	private String type;		// 所属模块
+	// 非数据库字段 - 字典表映射名称 - 对应上述type
+	private String typeName;
 	private String totalDeduct;		// 扣分合计
 	private String description;		// 缺陷描述
 
@@ -43,6 +45,14 @@ public class IdentifyTec extends PreEntity<IdentifyTec> {
 	//学生或教师已作答的题目
 	private Map<String,IdentifyTecDetail> itemMap;
 	private ExamDetail examDetail;
+
+	public String getTypeName() {
+		return typeName;
+	}
+
+	public void setTypeName(String typeName) {
+		this.typeName = typeName;
+	}
 
 	public IdentifyTec() {
 		this(null);

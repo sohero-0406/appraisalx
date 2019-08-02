@@ -17,6 +17,7 @@
 		<result property="type" column="type"></result>
 		<result property="totalDeduct" column="total_deduct"></result>
 		<result property="description" column="description"></result>
+		<result property="typeName" column="type_name"></result>
 
 		<collection property="itemList" ofType="IdentifyTecDetail">
 			<id property="id" column="identifyTecDetailId"></id>
@@ -47,4 +48,33 @@
 		</where>
 	</select>
 
+	<select id="findIdentityTecCondition" resultMap="findDataMap">
+		SELECT
+			it.id,
+			it.type,
+			sdd.dict_label AS type_name,
+			it.total_deduct,
+			it.description,
+			itd.technology_info_id,
+			itd.id AS identifyTecDetailId,
+			ti.name,
+			itd.code,
+			itd.degree,
+			itd.deduct_num
+		FROM
+			aa_identify_tec_detail itd
+			LEFT JOIN aa_identify_tec it ON itd.indentity_tec_id = it.id
+			LEFT JOIN aa_technology_info ti ON itd.technology_info_id = ti.id
+			LEFT JOIN js_sys_dict_data sdd ON (it.type = sdd.dict_value and sdd.dict_type = 'aa_module_type')
+		<where>
+			<if test="examUserId != null and examUserId != ''">
+				and it.exam_user_id = #{examUserId}
+			</if>
+			<if test="paperId != null and paperId != ''">
+				and it.paper_id = #{paperId}
+			</if>
+		</where>
+		ORDER BY
+			it.type
+	</select>
 </mapper>
