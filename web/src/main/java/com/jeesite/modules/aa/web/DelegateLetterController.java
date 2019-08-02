@@ -111,10 +111,47 @@ public class DelegateLetterController extends BaseController {
 	@ResponseBody
 	public CommonResult saveDelegateLetter(DelegateLetter delegateLetter) {
 		ExamUser examUser = UserUtils.getExamUser();
-		delegateLetter.setExamUserId(examUser.getExamId());
 		delegateLetter.setPaperId(examUser.getPaperId());
 		delegateLetterService.save(delegateLetter);
 		return new CommonResult();
 	}
+
+
+	/**
+	 * 查询鉴定报告
+	 */
+	@RequestMapping(value = "findAppraisalReport")
+	@ResponseBody
+	public CommonResult findAppraisalReport() {
+		ExamUser examUser = UserUtils.getExamUser();
+		CommonResult comRes = new CommonResult();
+		comRes.setData(delegateLetterService.findAppraisalReport(examUser));
+		return comRes;
+	}
+
+
+
+
+
+	@RequestMapping(value = "test")
+	@ResponseBody
+	public CommonResult createAppraisalReportNum() {
+		ExamUser examUser = UserUtils.getExamUser();
+		CommonResult comRes = new CommonResult();
+		comRes.setData(delegateLetterService.appraisalReportInfo(examUser));
+		return comRes;
+	}
+
+	@RequestMapping(value = "test1")
+	@ResponseBody
+	public CommonResult createAppraisalReportNum1() {
+		ExamUser examUser = UserUtils.getExamUser();
+		CommonResult comRes = new CommonResult();
+		delegateLetterService.generateLetter(examUser);
+		return comRes;
+	}
+
+
+
 
 }

@@ -11,5 +11,10 @@
 		</where>
 		ORDER BY ${sqlMap.order.toSql()}
 	</select> -->
-	
+
+	<select id="findAppraisalNumMAX" resultType="Integer">
+		SELECT MAX(appraisal_num) FROM aa_delegate_user
+		WHERE appraisal_date = #{year}
+	</select>
+
 </mapper>

@@ -6,6 +6,7 @@ package com.jeesite.modules.aa.dao;
 import com.jeesite.common.dao.CrudDao;
 import com.jeesite.common.mybatis.annotation.MyBatisDao;
 import com.jeesite.modules.aa.entity.Calculate;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Map;
 
@@ -17,7 +18,7 @@ import java.util.Map;
 @MyBatisDao
 public interface CalculateDao extends CrudDao<Calculate> {
 
-    Map<String, String> getEstimateByType(String examUserId);
+    Map<String, String> getEstimateByType(@Param("examUserId") String examUserId, @Param("paperId") String paperId);
 
     /**
      * 查询算法类型

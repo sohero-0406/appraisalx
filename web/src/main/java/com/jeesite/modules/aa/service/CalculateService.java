@@ -196,8 +196,8 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
     }
 
     //依据学生的估算方式查找对应的估算值
-    public Map<String, String> getEstimateByType(String examUserId) {
-        return dao.getEstimateByType(examUserId);
+    public Map<String, String> getEstimateByType(String examUserId,String paperId) {
+        return dao.getEstimateByType(examUserId,paperId);
     }
 
     /**

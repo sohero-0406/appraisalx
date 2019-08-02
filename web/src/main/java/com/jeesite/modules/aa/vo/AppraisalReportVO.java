@@ -7,6 +7,7 @@ import java.util.List;
 
 public class AppraisalReportVO {
 
+    private DelegateLetter delegateLetter;      //委托书信息 --绪言
     private AppraisalReport appraisalReport;        //鉴定报告
     private DelegateUser delegateUser;      //委托人
     private CarInfo carInfo;        //车辆信息
@@ -14,7 +15,7 @@ public class AppraisalReportVO {
     private CheckTradableVehicles checkTradableVehicles;        //检查可交易车辆
     private VehicleGradeAssess vehicleGradeAssess;      //车辆等级评定
     private Calculate calculate;        //计算车辆价值
-    private DelegateLetter delegateLetter;      //委托书信息
+
     private VehicleInfo vehicleInfo;        //车辆配置全表
     private String carOwner;        //车主
     private String defectDescription;       //缺陷描述

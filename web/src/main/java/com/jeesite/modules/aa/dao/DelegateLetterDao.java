@@ -14,5 +14,6 @@ import com.jeesite.modules.aa.entity.DelegateLetter;
  */
 @MyBatisDao
 public interface DelegateLetterDao extends CrudDao<DelegateLetter> {
-	
+
+    Integer findAppraisalNumMAX(String year);
 }

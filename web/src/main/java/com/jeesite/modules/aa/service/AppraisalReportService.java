@@ -245,7 +245,6 @@ public class AppraisalReportService extends CrudService<AppraisalReportDao, Appr
 
         //委托书信息
         DelegateLetter delegateLetter = new DelegateLetter();
-        delegateLetter.setExamUserId(examUser.getExamId());
         delegateLetter.setPaperId(examUser.getPaperId());
         delegateLetter = delegateLetterService.getByEntity(delegateLetter);
         appraisalReportVO.setDelegateLetter(delegateLetter);

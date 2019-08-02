@@ -26,7 +26,13 @@
 		left join aa_calculate_km calculateKm on calculateKm.calculate_id = calculate.id
 		left join aa_calculate_replace_cost calculateReplaceCost on calculateReplaceCost.calculate_id = calculate.id
 		where calculate.status = '0'
-		and calculate.exam_user_id = #{examUserId}
+		<if test="examUserId != null and examUserId != ''">
+			and calculate.exam_user_id = #{examUserId}
+		</if>
+		<if test="paperId != null and paperId != ''">
+			and calculate.paper_id = #{paperId}
+		</if>
+
 
 	</select>
 

@@ -18,13 +18,13 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
  */
 @Table(name="aa_delegate_letter", alias="a", columns={
 		@Column(name="id", attrName="id", label="主键", isPK=true),
-		@Column(name="exam_user_id", attrName="examUserId", label="外键id"),
 		@Column(name="paper_id", attrName="paperId", label="试卷id"),
 		@Column(name="organization_name", attrName="organizationName", label="鉴定评估机构名称", queryType=QueryType.LIKE),
 		@Column(name="id_num", attrName="idNum", label="法人代码证"),
 		@Column(name="organization_address", attrName="organizationAddress", label="鉴定评估机构地址"),
 		@Column(name="contact", attrName="contact", label="联系人"),
 		@Column(name="phone", attrName="phone", label="电话"),
+		@Column(name="check_name", attrName="checkName", label="复核人姓名", queryType=QueryType.LIKE),
 		@Column(name="name", attrName="name", label="受托方姓名", queryType=QueryType.LIKE),
 		@Column(includeEntity=DataEntity.class),
 	}, orderBy="a.update_date DESC"
@@ -40,6 +40,8 @@ public class DelegateLetter extends PreEntity<DelegateLetter> {
 	private String contact;		// 联系人
 	private String phone;		// 电话
 	private String name;		// 受托方姓名
+
+	private String checkName;		// 复核人姓名
 	
 	public DelegateLetter() {
 		this(null);
@@ -47,15 +49,6 @@ public class DelegateLetter extends PreEntity<DelegateLetter> {
 
 	public DelegateLetter(String id){
 		super(id);
-	}
-
-	@Length(min=0, max=64, message="外键id长度不能超过 64 个字符")
-	public String getExamUserId() {
-		return examUserId;
-	}
-
-	public void setExamUserId(String examUserId) {
-		this.examUserId = examUserId;
 	}
 
 	@Length(min=0, max=64, message="试卷id长度不能超过 64 个字符")
@@ -119,6 +112,15 @@ public class DelegateLetter extends PreEntity<DelegateLetter> {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Length(min=0, max=32, message="复核人姓名长度不能超过 32 个字符")
+	public String getCheckName() {
+		return checkName;
+	}
+
+	public void setCheckName(String checkName) {
+		this.checkName = checkName;
 	}
 	
 }

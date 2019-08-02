@@ -33,6 +33,8 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 		@Column(name="entrust_type", attrName="entrustType", label="委托书类型"),
 		@Column(name="apply_reason", attrName="applyReason", label="申请缘由"),
 		@Column(name="complete_date", attrName="completeDate", label="完成日期"),
+		@Column(name="appraisal_date", attrName="appraisalDate", label="评报字-时间"),
+		@Column(name="appraisal_num", attrName="appraisalNum", label="评报字-数字（8位）"),
 		@Column(includeEntity=DataEntity.class),
 	}, orderBy="a.update_date DESC"
 )
@@ -54,6 +56,9 @@ public class DelegateUser extends PreEntity<DelegateUser> {
 	private String entrustType;		// 委托书类型
 	private String applyReason;		// 申请缘由
 	private String completeDate;		// 完成日期
+
+	private String appraisalDate;		// 评报字-时间
+	private String appraisalNum;		// 评报字-时间
 	
 	public DelegateUser() {
 		this(null);
@@ -196,6 +201,27 @@ public class DelegateUser extends PreEntity<DelegateUser> {
 
 	public void setCompleteDate(String completeDate) {
 		this.completeDate = completeDate;
+	}
+
+
+
+
+	@Length(min=0, max=32, message="评报字-时间长度不能超过 16 个字符")
+	public String getAppraisalDate() {
+		return appraisalDate;
+	}
+
+	public void setAppraisalDate(String appraisalDate) {
+		this.appraisalDate = appraisalDate;
+	}
+
+	@Length(min=0, max=10, message="评报字-数字（8位）长度不能超过 8 个字符")
+	public String getAppraisalNum() {
+		return appraisalNum;
+	}
+
+	public void setAppraisalNum(String appraisalNum) {
+		this.appraisalNum = appraisalNum;
 	}
 	
 }

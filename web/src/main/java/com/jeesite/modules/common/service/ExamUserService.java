@@ -378,7 +378,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		BigDecimal calculateCount = new BigDecimal("0");
 		//学生估算方式
 		String studentPrice = null;
-		Map<String,String> calculateMap = calculateService.getEstimateByType(user.getId());
+		Map<String,String> calculateMap = calculateService.getEstimateByType(user.getId(),"");
 		if(calculateMap!=null){
 			studentPrice = calculateMap.get("price");
 		}

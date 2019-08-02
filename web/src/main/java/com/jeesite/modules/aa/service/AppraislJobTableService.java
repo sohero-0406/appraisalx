@@ -172,7 +172,6 @@ public class AppraislJobTableService {
 
         // 作业表尾部信息
         DelegateLetter delegateLetter = new DelegateLetter();
-        delegateLetter.setExamUserId(examUser.getExamId());
         delegateLetter.setPaperId(examUser.getPaperId());
         appraisalJobTableVO.setDelegateLetter(delegateLetterService.getByEntity(delegateLetter));
         return appraisalJobTableVO;
