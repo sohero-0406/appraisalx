@@ -88,6 +88,14 @@ public class CalculateCurrent extends PreEntity<CalculateCurrent> {
 	private String tradePlace;		// 二手车交易地点
 	private String priceIndex;		// 物价指数
 	private String process;		// 计算过程
+
+	//非数据库字段
+	private String model;		// 车型
+	private String displacement;		// 排量（ml）
+	private String environmentalStandard;		// 尾气排放标准
+	private String registerDate;		// 初次登记日期
+	private String usedYear;		// 已使用年限
+	private String score;		// 技术鉴定分值
 	
 	public CalculateCurrent() {
 		this(null);
@@ -361,5 +369,52 @@ public class CalculateCurrent extends PreEntity<CalculateCurrent> {
 	public void setProcess(String process) {
 		this.process = process;
 	}
-	
+
+	public String getModel() {
+		return model;
+	}
+
+	public void setModel(String model) {
+		this.model = model;
+	}
+
+	public String getDisplacement() {
+		return displacement;
+	}
+
+	public void setDisplacement(String displacement) {
+		this.displacement = displacement;
+	}
+
+	public String getEnvironmentalStandard() {
+		return environmentalStandard;
+	}
+
+	public void setEnvironmentalStandard(String environmentalStandard) {
+		this.environmentalStandard = environmentalStandard;
+	}
+
+	public String getRegisterDate() {
+		return registerDate;
+	}
+
+	public void setRegisterDate(String registerDate) {
+		this.registerDate = registerDate;
+	}
+
+	public String getUsedYear() {
+		return usedYear;
+	}
+
+	public void setUsedYear(String usedYear) {
+		this.usedYear = usedYear;
+	}
+
+	public String getScore() {
+		return score;
+	}
+
+	public void setScore(String score) {
+		this.score = score;
+	}
 }

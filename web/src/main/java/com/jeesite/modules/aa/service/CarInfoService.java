@@ -194,29 +194,4 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
         hs.put("sort", homePageVO.getSort());
         return carInfoDao.findCarInfoBySortStu(hs);
     }
-
-    /**
-     * 查询车辆等级
-     * @param carInfo
-     * @return
-     */
-    public String getLevel(CarInfo carInfo) {
-        return carInfoDao.getLevel(carInfo);
-    }
-
-    /**
-     * 查询环保标准
-     * @param carInfo
-     * @return
-     */
-    public String getEnvironmentalStandard(CarInfo carInfo) {
-        return carInfoDao.getEnvironmentalStandard(carInfo);
-    }
-
-    /**
-     * 查询车身颜色
-     */
-    public String getColor(CarInfo carInfo) {
-        return carInfoDao.getColor(carInfo);
-    }
 }

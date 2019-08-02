@@ -28,28 +28,4 @@
 			</if>
 		</if>
 	</select>
-
-	<!-- 查询车辆等级 -->
-	<select id="getLevel" resultType="java.lang.String">
-		select dict_label from js_sys_dict_data
-		where dict_value = #{level} and dict_type = 'aa_vehicle_level'
-		and status = '0'
-	</select>
-
-	<!-- 查询环保标准 -->
-	<select id="getEnvironmentalStandard" resultType="java.lang.String">
-		select dict_label from js_sys_dict_data
-		where dict_value = #{environmentalStandard} and dict_type = 'aa_environmental_standard'
-	    and status = '0'
-	</select>
-
-	<!-- 查询车身颜色 -->
-	<select id="getColor" resultType="java.lang.String">
-		select dict_label from js_sys_dict_data
-		where
-		dict_type = 'aa_vehicle_color'
-		and dict_value= #{color}
-		and status = '0'
-	</select>
-	
 </mapper>

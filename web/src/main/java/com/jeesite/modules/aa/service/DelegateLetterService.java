@@ -12,6 +12,7 @@ import com.jeesite.modules.aa.entity.DelegateUser;
 import com.jeesite.modules.aa.entity.PictureUser;
 import com.jeesite.modules.aa.vo.DelegateLetterVO;
 import com.jeesite.modules.common.entity.ExamUser;
+import com.jeesite.modules.sys.utils.DictUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -116,7 +117,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
 		carInfo.setExamUserId(examUser.getExamId());
 		carInfo.setPaperId(examUser.getPaperId());
 		carInfo = carInfoService.getByEntity(carInfo);
-		carInfo.setColor(carInfoService.getColor(carInfo));
+		carInfo.setColor(DictUtils.getDictLabel("aa_vehicle_color",carInfo.getLevel(),""));
 		if(StringUtils.isNotBlank(carInfo.getRegisterDate())){
 			String[] registerDate = carInfo.getRegisterDate().split("-");
 			carInfo.setRegisterDate(registerDate[0] + "年" + registerDate[1] + "月" + registerDate[2] + "日");

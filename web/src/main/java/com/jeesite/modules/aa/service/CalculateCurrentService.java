@@ -9,13 +9,14 @@ import java.util.List;
 import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.utils.MathUtils;
-import com.jeesite.modules.aa.entity.Calculate;
-import com.jeesite.modules.aa.entity.Reference;
-import com.jeesite.modules.aa.entity.VehicleGradeAssess;
+import com.jeesite.modules.aa.entity.*;
 import com.jeesite.modules.aa.vo.CalculateCurrentVO;
 import com.jeesite.modules.aa.vo.CalculateVO;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.ExamUser;
+import com.jeesite.modules.common.entity.VehicleInfo;
+import com.jeesite.modules.common.service.VehicleInfoService;
+import com.jeesite.modules.sys.utils.DictUtils;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.service.CrudService;
-import com.jeesite.modules.aa.entity.CalculateCurrent;
 import com.jeesite.modules.aa.dao.CalculateCurrentDao;
 
 /**
@@ -42,6 +42,10 @@ public class CalculateCurrentService extends CrudService<CalculateCurrentDao, Ca
     private ReferenceService referenceService;
     @Autowired
     private VehicleGradeAssessService vehicleGradeAssessService;
+    @Autowired
+    private CarInfoService carInfoService;
+    @Autowired
+    private VehicleInfoService vehicleInfoService;
 
     /**
      * 获取单条数据
@@ -317,6 +321,33 @@ public class CalculateCurrentService extends CrudService<CalculateCurrentDao, Ca
         if (null == calculateCurrent) {
             return vo;
         }
+        //查询不在该算法中的值
+        CarInfo carInfo = new CarInfo();
+        carInfo.setExamUserId(examUser.getId());
+        carInfo.setPaperId(examUser.getPaperId());
+        carInfo = carInfoService.getByEntity(carInfo);
+        if (carInfo == null) {
+            return vo;
+        }
+        VehicleInfo vehicleInfo = vehicleInfoService.getCarModel(carInfo.getModel());
+        if (null != vehicleInfo) {
+            calculateCurrent.setModel(vehicleInfo.getChexingmingcheng());
+        }
+        calculateCurrent.setDisplacement(carInfo.getDisplacement());
+        calculateCurrent.setEnvironmentalStandard(DictUtils.getDictLabel("aa_environmental_standard",
+                carInfo.getEnvironmentalStandard(), ""));
+        calculateCurrent.setRegisterDate(carInfo.getRegisterDate());
+        calculateCurrent.setUsedYear(carInfo.getUseYear() + "年" + carInfo.getUseMonth() + "个月");
+
+        //查询技术鉴定分值
+        VehicleGradeAssess vehicleGradeAssess = new VehicleGradeAssess();
+        vehicleGradeAssess.setExamUserId(examUser.getId());
+        vehicleGradeAssess.setPaperId(examUser.getPaperId());
+        vehicleGradeAssess = vehicleGradeAssessService.getByEntity(vehicleGradeAssess);
+        if (null != vehicleGradeAssess) {
+            calculateCurrent.setScore(vehicleGradeAssess.getScore());
+        }
+
         vo.setCalculateCurrent(calculateCurrent);
         String p1Id = calculateCurrent.getParam1Id();
         String p2Id = calculateCurrent.getParam2Id();

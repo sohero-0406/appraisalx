@@ -18,24 +18,4 @@ import java.util.Map;
 public interface CarInfoDao extends CrudDao<CarInfo> {
 
     CarInfo findCarInfoBySortStu(Map<String,String> hs);
-
-    /**
-     * 查询车辆等级
-     * @param carInfo
-     * @return
-     */
-    String getLevel(CarInfo carInfo);
-
-    /**
-     * 查询环保标准
-     * @param carInfo
-     * @return
-     */
-    String getEnvironmentalStandard(CarInfo carInfo);
-
-    /**
-     * 查询车身颜色
-     * @param carInfo
-     */
-    String getColor(CarInfo carInfo);
 }

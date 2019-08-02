@@ -14,6 +14,7 @@ import com.jeesite.modules.common.dao.ExamUserDao;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.Exam;
 import com.jeesite.modules.common.entity.ExamUser;
+import com.jeesite.modules.sys.utils.DictUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1119,11 +1120,15 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343664787457"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343664787457"),(String)examScoreMap.get("1151013343664787457"),
-					carInfoService.getColor(carInfoT),carInfoService.getColor(carInfoS),"0");
+					DictUtils.getDictLabel("aa_vehicle_color",carInfoT.getLevel(),""),
+					DictUtils.getDictLabel("aa_vehicle_color",carInfoS.getLevel(),""),
+					"0");
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343664787457"),"0",
-					carInfoService.getColor(carInfoT),carInfoS==null?"":carInfoService.getColor(carInfoS),"1");
+					DictUtils.getDictLabel("aa_vehicle_color",carInfoT.getLevel(),""),
+					carInfoS==null?"":
+							DictUtils.getDictLabel("aa_vehicle_color",carInfoS.getLevel(),""),"1");
 		}
 		if((null!=carInfoS) && carInfoT.getUseYear()==carInfoS.getUseYear()&&carInfoT.getUseMonth()==carInfoS.getUseMonth()) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343665397761"))));

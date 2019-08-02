@@ -6,6 +6,7 @@ import com.jeesite.modules.aa.vo.AppraisalJobTableVO;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.entity.VehicleInfo;
 import com.jeesite.modules.common.service.VehicleInfoService;
+import com.jeesite.modules.sys.utils.DictUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,7 +57,7 @@ public class AppraislJobTableService {
         carInfo.setPaperId(examUser.getPaperId());
         carInfo = carInforService.getByEntity(carInfo);
         //设置级别
-        carInfo.setLevel(carInforService.getLevel(carInfo));
+        carInfo.setLevel(DictUtils.getDictLabel("aa_vehicle_level",carInfo.getLevel(),""));
         //设置初登日期
         if (StringUtils.isNotBlank(carInfo.getRegisterDate())) {
             String[] registerDateArr = carInfo.getRegisterDate().substring(0, 10).split("-");
@@ -68,7 +69,8 @@ public class AppraislJobTableService {
             carInfo.setManufactureDate(manufactureDate[0] + "年" + manufactureDate[1] + "月" + manufactureDate[2] + "日");
         }
         //设置环保标准
-        carInfo.setEnvironmentalStandard(carInforService.getEnvironmentalStandard(carInfo));
+        carInfo.setEnvironmentalStandard(DictUtils.getDictLabel("aa_environmental_standard",
+                carInfo.getEnvironmentalStandard(),""));
         //设置年检到期
         if (StringUtils.isNotBlank(carInfo.getYearCheckDue())) {
             String[] yearCheckDueArr = carInfo.getYearCheckDue().substring(0, 10).split("-");

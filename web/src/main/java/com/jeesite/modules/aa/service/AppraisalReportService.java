@@ -11,6 +11,7 @@ import com.jeesite.modules.aa.vo.AppraisalReportVO;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.entity.VehicleInfo;
 import com.jeesite.modules.common.service.VehicleInfoService;
+import com.jeesite.modules.sys.utils.DictUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -156,7 +157,7 @@ public class AppraisalReportService extends CrudService<AppraisalReportDao, Appr
         carInfo.setExamUserId(examUser.getExamId());
         carInfo.setPaperId(examUser.getPaperId());
         carInfo = carInfoService.getByEntity(carInfo);
-        carInfo.setColor(carInfoService.getColor(carInfo));
+        carInfo.setColor(DictUtils.getDictLabel("aa_vehicle_color",carInfo.getLevel(),""));
         if (StringUtils.isNotBlank(carInfo.getRegisterDate())) {
             String[] registerDateArr = carInfo.getRegisterDate().substring(0, 10).split("-");
             carInfo.setRegisterDate(registerDateArr[0] + "年" + registerDateArr[1] + "月" + registerDateArr[2] + "日");
@@ -168,11 +169,10 @@ public class AppraisalReportService extends CrudService<AppraisalReportDao, Appr
         appraisalReportVO.setCarInfo(carInfo);
 
         //车辆单证信息
-        List<VehicleDocumentInfo> vehicleDocumentInfoList = new ArrayList<VehicleDocumentInfo>();
         VehicleDocumentInfo vehicleDocumentInfo = new VehicleDocumentInfo();
         vehicleDocumentInfo.setExamUserId(examUser.getExamId());
         vehicleDocumentInfo.setPaperId(examUser.getPaperId());
-        vehicleDocumentInfoList = vehicleDocumentInfoService.findList(vehicleDocumentInfo);
+        List<VehicleDocumentInfo> vehicleDocumentInfoList = vehicleDocumentInfoService.findList(vehicleDocumentInfo);
         for (VehicleDocumentInfo temp : vehicleDocumentInfoList) {
             if ("1".equals(temp.getState())) {
                 temp.setState("是");
