@@ -142,4 +142,8 @@ public class CalculateDepreciationService extends CrudService<CalculateDepreciat
         }
         return calculateDepreciation;
     }
+
+    public void phyDeleteByEntity(CalculateDepreciation calculateDepreciation) {
+        dao.phyDeleteByEntity(calculateDepreciation);
+    }
 }

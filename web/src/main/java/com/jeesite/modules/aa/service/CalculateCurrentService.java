@@ -12,6 +12,8 @@ import com.jeesite.common.utils.MathUtils;
 import com.jeesite.modules.aa.entity.Calculate;
 import com.jeesite.modules.aa.entity.Reference;
 import com.jeesite.modules.aa.entity.VehicleGradeAssess;
+import com.jeesite.modules.aa.vo.CalculateCurrentVO;
+import com.jeesite.modules.aa.vo.CalculateVO;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.ExamUser;
 import org.hibernate.validator.constraints.Length;
@@ -125,7 +127,6 @@ public class CalculateCurrentService extends CrudService<CalculateCurrentDao, Ca
         Calculate calculate = new Calculate();
         calculate.setExamUserId(examUser.getId());
         calculate.setPaperId(examUser.getPaperId());
-        calculate.setType("4");
         calculateCurrent = this.getByCalculate(calculate);
         if (null == calculateCurrent) {
             return new CommonResult(CodeConstant.REFERENCES_EVALUATED_INCOMPLETE, "请完善被评估车辆及参照物数据表！");
@@ -277,5 +278,55 @@ public class CalculateCurrentService extends CrudService<CalculateCurrentDao, Ca
      */
     private CalculateCurrent getByCalculate(Calculate calculate) {
         return dao.getByCalculate(calculate);
+    }
+
+    /**
+     * 保存被评估车辆信息
+     *
+     * @param calculateCurrent
+     * @param examUser
+     */
+    @Transactional
+    public void saveVehiclesAssess(CalculateCurrent calculateCurrent, ExamUser examUser) {
+        //删除其他算法的记录
+        Calculate calculate = calculateService.deleteCalculate(examUser);
+        calculate.setExamUserId(examUser.getId());
+        calculate.setPaperId(examUser.getPaperId());
+        calculate.setType("4");
+        calculateService.save(calculate);
+
+        calculateCurrent.setCalculateId(calculate.getId());
+        this.save(calculateCurrent);
+    }
+
+    public void phyDeleteByEntity(CalculateCurrent calculateCurrent) {
+        dao.phyDeleteByEntity(calculateCurrent);
+    }
+
+    /**
+     * 加载被评估车辆信息及参照物
+     *
+     * @return
+     */
+    public CalculateCurrentVO findVehiclesAssess(ExamUser examUser) {
+        CalculateCurrentVO vo = new CalculateCurrentVO();
+        Calculate calculate = new Calculate();
+        calculate.setExamUserId(examUser.getId());
+        calculate.setPaperId(examUser.getPaperId());
+        CalculateCurrent calculateCurrent = this.getByCalculate(calculate);
+        if (null == calculateCurrent) {
+            return vo;
+        }
+        vo.setCalculateCurrent(calculateCurrent);
+        String p1Id = calculateCurrent.getParam1Id();
+        String p2Id = calculateCurrent.getParam2Id();
+        if (StringUtils.isNotBlank(p1Id)) {
+            vo.setReference1(referenceService.get(p1Id));
+        }
+        if (StringUtils.isNotBlank(p2Id)) {
+            vo.setReference2(referenceService.get(p2Id));
+        }
+        vo.setReferenceList(referenceService.findList(new Reference()));
+        return vo;
     }
 }

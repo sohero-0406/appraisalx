@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 		@Column(name="calculate_id", attrName="calculateId", label="外键id"),
 		@Column(name="process", attrName="process", label="计算过程"),
 		@Column(name="price", attrName="price", label="评估价格"),
+		@Column(includeEntity=DataEntity.class),
 	}, orderBy="a.update_date DESC"
 )
 public class CalculateKm extends PreEntity<CalculateKm> {

@@ -145,9 +145,50 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
                 vo.setCalculateCurrent(calculateCurrentService.getByEntity(calculateCurrent));
                 break;
         }
-
-
         return vo;
+    }
+
+    /**
+     * 保存车辆评估价值算法
+     *
+     * @param vo
+     * @param examUser
+     */
+    @Transactional
+    public void saveCalculate(CalculateVO vo, ExamUser examUser) {
+        Calculate calculate = vo.getCalculate();
+        String type = calculate.getType();
+        //现行市价法有被评估车辆，不能删除
+        if (!"4".equals(type)) {
+            this.deleteCalculate(examUser);
+        }
+        calculate.setExamUserId(examUser.getId());
+        calculate.setPaperId(examUser.getPaperId());
+        this.save(calculate);
+        String calculateId = calculate.getId();
+
+        switch (calculate.getType()) {
+            case "1"://折旧率估值法
+                CalculateDepreciation calculateDepreciation = vo.getCalculateDepreciation();
+                calculateDepreciation.setCalculateId(calculateId);
+                calculateDepreciationService.save(calculateDepreciation);
+                break;
+            case "2"://公里数估值法
+                CalculateKm calculateKm = vo.getCalculateKm();
+                calculateKm.setCalculateId(calculateId);
+                calculateKmService.save(calculateKm);
+                break;
+            case "3"://重置成本法
+                CalculateReplaceCost calculateReplaceCost = vo.getCalculateReplaceCost();
+                calculateReplaceCost.setCalculateId(calculateId);
+                calculateReplaceCostService.save(calculateReplaceCost);
+                break;
+            case "4"://现行市价法
+                CalculateCurrent calculateCurrent = vo.getCalculateCurrent();
+                calculateCurrent.setCalculateId(calculateId);
+                calculateCurrentService.save(calculateCurrent);
+                break;
+        }
     }
 
     public Calculate getByEntity(Calculate calculate) {
@@ -166,5 +207,46 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
      */
     public String getType(Calculate calculate) {
         return calculateDao.getType(calculate);
+    }
+
+    /**
+     * 删除之前算法存的数据
+     *
+     * @param examUser
+     */
+    @Transactional
+    public Calculate deleteCalculate(ExamUser examUser) {
+        Calculate calculate = new Calculate();
+        calculate.setExamUserId(examUser.getId());
+        calculate.setPaperId(examUser.getPaperId());
+        calculate = this.getByEntity(calculate);
+        if (null != calculate) {
+            String type = calculate.getType();
+            String calculateId = calculate.getId();
+            switch (type) {
+                case "1"://折旧率估值法
+                    CalculateDepreciation calculateDepreciation = new CalculateDepreciation();
+                    calculateDepreciation.setCalculateId(calculateId);
+                    calculateDepreciationService.phyDeleteByEntity(calculateDepreciation);
+                    break;
+                case "2"://公里数估值法
+                    CalculateKm calculateKm = new CalculateKm();
+                    calculateKm.setCalculateId(calculateId);
+                    calculateKmService.phyDeleteByEntity(calculateKm);
+                    break;
+                case "3"://重置成本法
+                    CalculateReplaceCost calculateReplaceCost = new CalculateReplaceCost();
+                    calculateReplaceCost.setCalculateId(calculateId);
+                    calculateReplaceCostService.phyDeleteByEntity(calculateReplaceCost);
+                    break;
+                case "4"://现行市价法
+                    CalculateCurrent calculateCurrent = new CalculateCurrent();
+                    calculateCurrent.setCalculateId(calculateId);
+                    calculateCurrentService.phyDeleteByEntity(calculateCurrent);
+                    break;
+            }
+            return calculate;
+        }
+        return new Calculate();
     }
 }

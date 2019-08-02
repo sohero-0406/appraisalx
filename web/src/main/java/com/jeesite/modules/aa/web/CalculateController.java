@@ -105,7 +105,7 @@ public class CalculateController extends BaseController {
 	 * 获取车辆评估价值算法
 	 * @return
 	 */
-	@PostMapping(value = "getCalculate")
+	@RequestMapping(value = "getCalculate")
 	@ResponseBody
 	public CommonResult getCalculate(){
 		CommonResult comRes = new CommonResult();
@@ -113,6 +113,17 @@ public class CalculateController extends BaseController {
 		CalculateVO calculateVO = calculateService.getCalculate(examUser);
 		comRes.setData(calculateVO);
 		return comRes;
+	}
+
+	/**
+	 * 保存车辆评估价值算法
+	 */
+	@RequestMapping(value = "saveCalculate")
+	@ResponseBody
+	public CommonResult saveCalculate(CalculateVO vo){
+		ExamUser examUser = UserUtils.getExamUser();
+		calculateService.saveCalculate(vo,examUser);
+		return new CommonResult();
 	}
 
 	/**

@@ -241,4 +241,8 @@ public class CalculateReplaceCostService extends CrudService<CalculateReplaceCos
         cost.setProcess(process.toString());
         return cost;
     }
+
+    public void phyDeleteByEntity(CalculateReplaceCost calculateReplaceCost) {
+        dao.phyDeleteByEntity(calculateReplaceCost);
+    }
 }

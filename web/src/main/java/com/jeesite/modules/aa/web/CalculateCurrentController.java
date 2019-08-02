@@ -6,7 +6,10 @@ package com.jeesite.modules.aa.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.jeesite.modules.aa.entity.Calculate;
 import com.jeesite.modules.aa.entity.CalculateReplaceCost;
+import com.jeesite.modules.aa.vo.CalculateCurrentVO;
+import com.jeesite.modules.aa.vo.CalculateVO;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.utils.UserUtils;
@@ -104,5 +107,31 @@ public class CalculateCurrentController extends BaseController {
 		ExamUser examUser = UserUtils.getExamUser();
 		CommonResult commonResult = calculateCurrentService.calculate(calculateCurrent, examUser);
 		return commonResult;
+	}
+
+	/**
+	 * 保存被评估车辆信息
+	 */
+	@RequestMapping(value = "saveVehiclesAssess")
+	@ResponseBody
+	public CommonResult saveVehiclesAssess(CalculateCurrent calculateCurrent){
+		CommonResult result = new CommonResult();
+		ExamUser examUser = UserUtils.getExamUser();
+		calculateCurrentService.saveVehiclesAssess(calculateCurrent,examUser);
+		result.setData(calculateCurrent.getId());
+		return result;
+	}
+
+	/**
+	 * 加载被评估车辆信息及参照物
+	 */
+	@RequestMapping(value = "findVehiclesAssess")
+	@ResponseBody
+	public CommonResult findVehiclesAssess(){
+		CommonResult result = new CommonResult();
+		ExamUser examUser = UserUtils.getExamUser();
+		CalculateCurrentVO vo = calculateCurrentService.findVehiclesAssess(examUser);
+		result.setData(vo);
+		return result;
 	}
 }

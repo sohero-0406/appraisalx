@@ -13,12 +13,10 @@
 	</select> -->
 
 	<select id="getByCalculate" resultType="CalculateCurrent">
-		SELECT * FROM `aa_calculate_current` a
+		SELECT a.* FROM `aa_calculate_current` a
 		left join aa_calculate b on a.calculate_id = b.id
 		<where>
-			<if test="type != null and type != ''">
-				and b.type = #{type}
-			</if>
+			and b.type = '4'
 			<if test="examUserId != null and examUserId != ''">
 				and b.exam_user_id = #{examUserId}
 			</if>

@@ -281,7 +281,7 @@ public class AppraisalReportService extends CrudService<AppraisalReportDao, Appr
             appraisalNum = 1;
         }
         appraisalReport.setAppraisalNum(String.format("%08d", appraisalNum));
-        this.insert(appraisalReport);
+        this.save(appraisalReport);
         return appraisalReport;
     }
 }
