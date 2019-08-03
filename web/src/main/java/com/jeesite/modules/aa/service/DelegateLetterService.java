@@ -171,27 +171,22 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
     public void createAppraisalReportNum(ExamUser examUser) {
         DelegateUser delegateUser = new DelegateUser();
         //判断 学生或者老师
-        if(StringUtils.isNotBlank(examUser.getPaperId())){
-            //老师
-            delegateUser.setPaperId(examUser.getPaperId());
-        }else{
-            //学生
-            delegateUser.setExamUserId(examUser.getId());
-        }
+        //老师
+        delegateUser.setPaperId(examUser.getPaperId());
+        //学生
+        delegateUser.setExamUserId(examUser.getId());
         delegateUser = delegateUserService.getByEntity(delegateUser);
         //判断 是否记录 时间标号  如果为空 修改数据
         if(StringUtils.isBlank(delegateUser.getAppraisalDate())){
             SimpleDateFormat df = new SimpleDateFormat("yyyy");
             delegateUser.setAppraisalDate(df.format(new Date()));
-//		    appraisalReport.setAppraisalDate(df.format(new Date()));
             Integer appraisalNum;
-            Integer max = findAppraisalNumMAX(df.format(new Date()));
+            Integer max = findAppraisalNumMAX(delegateUser.getAppraisalDate());
             if(null!=max){
                 appraisalNum = max + 1;
             }else{
                 appraisalNum = 1;
             }
-//		    appraisalReport.setAppraisalNum(String.format("%08d", appraisalNum));
             delegateUser.setAppraisalNum(String.format("%8d", appraisalNum).replace(" ", "0"));
             delegateUserService.save(delegateUser);
         }
