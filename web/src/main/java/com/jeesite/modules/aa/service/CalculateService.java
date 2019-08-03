@@ -41,6 +41,8 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
     private CarInfoService carInfoService;
     @Autowired
     private VehicleInfoService vehicleInfoService;
+    @Autowired
+    private DelegateLetterService delegateLetterService;
 
     /**
      * 获取单条数据
@@ -189,6 +191,7 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
                 calculateCurrentService.save(calculateCurrent);
                 break;
         }
+        delegateLetterService.createAppraisalReportNum(examUser);
     }
 
     public Calculate getByEntity(Calculate calculate) {

@@ -111,6 +111,7 @@ public class CalculateKmService extends CrudService<CalculateKmDao, CalculateKm>
             if (StringUtils.isBlank(mileage)) {
                 mileage = "0";
             }
+            calculateKm.setMileage(mileage);
             BigDecimal mileageBig = new BigDecimal(mileage);
             BigDecimal salePrice = calculateKm.getSalePrice().setScale(2, BigDecimal.ROUND_HALF_UP);
             BigDecimal price = new BigDecimal(0);
