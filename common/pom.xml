@@ -300,6 +300,13 @@
 			<version>20.0</version>
 			<scope>compile</scope>
 		</dependency>
+
+		<!-- swagger 接口导出文档-->
+		<dependency>
+			<groupId>io.github.swagger2markup</groupId>
+			<artifactId>swagger2markup</artifactId>
+			<version>${swagger2markup.version}</version>
+		</dependency>
 		<!--<dependency>-->
 			<!--<groupId>org.apache.poi</groupId>-->
 			<!--<artifactId>poi-ooxml</artifactId>-->

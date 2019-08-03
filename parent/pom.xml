@@ -51,6 +51,7 @@
 		<j2cache.version>2.7.0-release</j2cache.version>
 		<beetl.version>2.9-SNAPSHOT</beetl.version>
 		<swagger.version>1.5.20</swagger.version>
+		<swagger2markup.version>1.3.3</swagger2markup.version>
 		
 		<!-- environment setting -->
 		<java.version>1.8</java.version>
