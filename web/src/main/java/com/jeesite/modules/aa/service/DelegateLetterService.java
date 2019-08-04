@@ -2,7 +2,7 @@
  * Copyright (c) 2013-Now http://jeesite.com All rights reserved.
  */
 package com.jeesite.modules.aa.service;
-
+import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.service.CrudService;
 import com.jeesite.common.utils.MoneyUtils;
@@ -11,17 +11,24 @@ import com.jeesite.modules.aa.dao.DelegateLetterDao;
 import com.jeesite.modules.aa.entity.*;
 import com.jeesite.modules.aa.vo.AppraisalReportVO;
 import com.jeesite.modules.aa.vo.DelegateLetterVO;
-import com.jeesite.modules.common.entity.Exam;
-import com.jeesite.modules.common.entity.ExamUser;
-import com.jeesite.modules.common.entity.VehicleInfo;
+import com.jeesite.modules.common.entity.*;
+import com.jeesite.modules.common.service.CommonUserService;
 import com.jeesite.modules.common.service.ExamService;
 import com.jeesite.modules.common.service.VehicleInfoService;
+import com.jeesite.modules.common.utils.UserUtils;
 import com.jeesite.modules.sys.utils.DictUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import sun.awt.EventQueueDelegate;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -32,7 +39,7 @@ import java.util.*;
  */
 @Service
 @Transactional(readOnly=true)
-public class DelegateLetterService extends CrudService<DelegateLetterDao, DelegateLetter> {
+public class DelegateLetterService extends CrudService<DelegateLetterDao, DelegateLetter>  {
 
     @Autowired
     private DelegateUserService delegateUserService;
@@ -56,7 +63,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
     private VehicleInfoService vehicleInfoService;
     @Autowired
     private ExamService examService;
-	
+
 	/**
 	 * 获取单条数据
 	 * @param delegateLetter
@@ -66,7 +73,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
 	public DelegateLetter get(DelegateLetter delegateLetter) {
 		return super.get(delegateLetter);
 	}
-	
+
 	/**
 	 * 查询分页数据
 	 * @param delegateLetter 查询条件
@@ -76,7 +83,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
 	public Page<DelegateLetter> findPage(DelegateLetter delegateLetter) {
 		return super.findPage(delegateLetter);
 	}
-	
+
 	/**
 	 * 保存数据（插入或更新）
 	 * @param delegateLetter
@@ -86,7 +93,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
 	public void save(DelegateLetter delegateLetter) {
 		super.save(delegateLetter);
 	}
-	
+
 	/**
 	 * 更新状态
 	 * @param delegateLetter
@@ -96,7 +103,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
 	public void updateStatus(DelegateLetter delegateLetter) {
 		super.updateStatus(delegateLetter);
 	}
-	
+
 	/**
 	 * 删除数据
 	 * @param delegateLetter
@@ -142,10 +149,6 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
 			String[] registerDate = carInfo.getRegisterDate().split("-");
 			carInfo.setRegisterDate(registerDate[0] + "年" + registerDate[1] + "月" + registerDate[2] + "日");
 		}
-		if(StringUtils.isNotBlank(carInfo.getYearCheckDue())){
-			String[] yearCheckDue = carInfo.getYearCheckDue().split("-");
-			carInfo.setYearCheckDue(yearCheckDue[0] + "年" + yearCheckDue[1] + "月" + yearCheckDue[2] + "日");
-		}
 		if(StringUtils.isNotBlank(carInfo.getPurchaseDate())){
 			String[] purchaseDate = carInfo.getPurchaseDate().split("-");
 			carInfo.setPurchaseDate(purchaseDate[0] + "年" + purchaseDate[1] + "月" + purchaseDate[2] + "日");
@@ -161,6 +164,30 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
 
 		return delegateLetterVO;
 	}
+
+    /**
+     * 参数check_name  复核人姓名
+     * @param delegateLetter
+     */
+    @Transactional(readOnly=false)
+	public CommonResult saveAppraisalReport(DelegateLetter delegateLetter,ExamUser examUser){
+        CommonResult comRes = new CommonResult();
+        DelegateLetter letter = new DelegateLetter();
+	    //查找对应的 教师手输数据
+        letter.setPaperId(examUser.getPaperId());
+        letter = dao.getByEntity(letter);
+        if (null==letter){  //判断是否存在数据
+            comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+            comRes.setMsg("数据存在异常!");
+            return comRes;
+        }
+        letter.setCheckName(delegateLetter.getCheckName());
+        letter.setAppraiser(delegateLetter.getAppraiser());  //二手车鉴定评估师
+        letter.setAppraiserDate(delegateLetter.getAppraiserDate()); //二手车鉴定评估机构盖章日期
+        super.save(letter);
+        return comRes;
+    }
+
 
 
 
@@ -207,44 +234,31 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
     public AppraisalReportVO findAppraisalReport(ExamUser examUser) {
 
         AppraisalReportVO appraisalReportVO = new AppraisalReportVO();
-
         //缺陷描述
         StringBuilder defectDescription = new StringBuilder();
         //大写金额
         String priceCapital = null;
-
-        //鉴定报告
-//		AppraisalReport appraisalReport = new AppraisalReport();
-//		appraisalReport.setExamUserId(examUser.getId());
-//		appraisalReport.setPaperId(examUser.getPaperId());
-//		appraisalReport = dao.getByEntity(appraisalReport);
-//		if (StringUtils.isNotBlank(appraisalReport.getBaseDateEnd())) {
-//			String[] baseDateEndArr = appraisalReport.getBaseDateEnd().substring(0, 10).split("-");
-//			appraisalReport.setBaseDateEnd(baseDateEndArr[0] + "年" + baseDateEndArr[1] + "月" + baseDateEndArr[2] + "日");
-//		}
-//		appraisalReportVO.setAppraisalReport(appraisalReport);
-
         //委托人
         DelegateUser delegateUser = new DelegateUser();
         delegateUser.setExamUserId(examUser.getId());
         delegateUser.setPaperId(examUser.getPaperId());
         delegateUser = delegateUserService.getByEntity(delegateUser);
         appraisalReportVO.setDelegateUser(delegateUser);
-        appraisalReportVO.setCarOwner(delegateUser.getName());
 
         //车辆信息
         CarInfo carInfo = new CarInfo();
         carInfo.setExamUserId(examUser.getId());
         carInfo.setPaperId(examUser.getPaperId());
         carInfo = carInfoService.getByEntity(carInfo);
-        carInfo.setColor(DictUtils.getDictLabel("aa_vehicle_color",carInfo.getLevel(),""));
+        if(StringUtils.isNotBlank(carInfo.getLevel())){
+            carInfo.setColor(DictUtils.getDictLabel("aa_vehicle_color",carInfo.getLevel(),""));
+        }
+        if (StringUtils.isNotBlank(carInfo.getUsage())){
+            carInfo.setUsage(DictUtils.getDictLabel("aa_usage_type",carInfo.getUsage(),""));
+        }
         if (StringUtils.isNotBlank(carInfo.getRegisterDate())) {
             String[] registerDateArr = carInfo.getRegisterDate().substring(0, 10).split("-");
             carInfo.setRegisterDate(registerDateArr[0] + "年" + registerDateArr[1] + "月" + registerDateArr[2] + "日");
-        }
-        if (StringUtils.isNotBlank(carInfo.getYearCheckDue())) {
-            String[] yearCheckDueArr = carInfo.getYearCheckDue().substring(0, 10).split("-");
-            carInfo.setYearCheckDue(yearCheckDueArr[0] + "年" + yearCheckDueArr[1] + "月");
         }
         appraisalReportVO.setCarInfo(carInfo);
 
@@ -269,10 +283,19 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         identifyTec.setExamUserId(examUser.getId());
         identifyTec.setPaperId(examUser.getPaperId());
         identifyTecList = identifyTecService.findList(identifyTec);
-        for (IdentifyTec temp : identifyTecList) {
-            defectDescription.append(temp.getDescription());
+        List<String> descrip = new ArrayList<>();
+        for (IdentifyTec tec : identifyTecList){
+            if(StringUtils.isNotBlank(tec.getDescription())){
+                descrip.add(tec.getDescription());
+            }
         }
-
+        for(int i=0;i<descrip.size();i++){
+            if(i==descrip.size()-1){
+                defectDescription.append(descrip.get(i));
+            }else{
+                defectDescription.append(descrip.get(i)+",");
+            }
+        }
         //车辆等级评定
         VehicleGradeAssess vehicleGradeAssess = new VehicleGradeAssess();
         vehicleGradeAssess.setExamUserId(examUser.getId());
@@ -280,12 +303,8 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         vehicleGradeAssess = vehicleGradeAssessService.getByEntity(vehicleGradeAssess);
         //设置技术状况
         vehicleGradeAssess.setTechnicalStatus(vehicleGradeAssessService.getTechnicalStatus(vehicleGradeAssess));
-//        if (StringUtils.isNotBlank(vehicleGradeAssess.getIdentifyDate())) {
-//            String[] identifyDateArr = vehicleGradeAssess.getIdentifyDate().substring(0, 10).split("-");
-//            vehicleGradeAssess.setIdentifyDate(identifyDateArr[0] + "年" + identifyDateArr[1] + "月" + identifyDateArr[2] + "日");
-//        }
         appraisalReportVO.setVehicleGradeAssess(vehicleGradeAssess);
-        defectDescription.append(vehicleGradeAssess.getDescription());
+        defectDescription.append(StringUtils.isNotBlank(vehicleGradeAssess.getDescription())?","+vehicleGradeAssess.getDescription():"");
         //填入缺陷描述
         appraisalReportVO.setDefectDescription(defectDescription.toString());
 
@@ -301,7 +320,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         appraisalReportVO.setCalculate(calculate);
         appraisalReportVO.setPriceCapital(priceCapital);
 
-        //委托书信息
+        //教师手动输入数据
         DelegateLetter delegateLetter = new DelegateLetter();
         if(StringUtils.isNotBlank(examUser.getPaperId())){
             delegateLetter.setPaperId(examUser.getPaperId());
@@ -326,20 +345,26 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
      * 整理报告内容
      */
     public Map appraisalReportInfo(ExamUser examUser){
+
         Map<String,Object> returnMap = new HashMap<>();
         AppraisalReportVO appraisalReportVO = this.findAppraisalReport(examUser);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        returnMap.put("appraisalNum",appraisalReportVO.getDelegateUser().getAppraisalNum()); //评报字-数字（8位
+        returnMap.put("appraisalDate",appraisalReportVO.getDelegateUser().getAppraisalDate());//评报字-时间
+
         //一、绪言
         returnMap.put("organizationName",appraisalReportVO.getDelegateLetter().getOrganizationName());//机构
         returnMap.put("name",appraisalReportVO.getDelegateUser().getName());                  //接受委托\委托方
         returnMap.put("licensePlateNum",appraisalReportVO.getCarInfo().getLicensePlateNum());//牌号
-        //returnMap.put(""); //（来自作业表）所表现的市场价值 ？？？？？？
+        appraisalReportVO.getVehicleGradeAssess().getIdentifyDate();
         //二、委托方
         //委托方 同上name
         returnMap.put("contact",appraisalReportVO.getDelegateUser().getContact());//委托方联系人
         returnMap.put("phone",appraisalReportVO.getDelegateUser().getPhone());//联系电话
         //车主姓名 同上name
         //三、评定基准日
-        //returnMap.put(""); //鉴定评估基准日 ?????
+        // //鉴定评估基准日 见下
         //四、鉴定评估车辆信息
         CarInfo carInfo = appraisalReportVO.getCarInfo();
         returnMap.put("labelType",carInfo.getLevel());//厂牌型号
@@ -348,10 +373,11 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         returnMap.put("vinCode",carInfo.getVinCode()); //车辆识别代号／车架号
         returnMap.put("color",carInfo.getColor());
         returnMap.put("mileage",carInfo.getMileage()); //表征里程 (行驶里程)
-        returnMap.put("registerDate",carInfo.getRegisterDate());  //注册登记日期(初次登记日期)
-        returnMap.put("yearCheckDue",carInfo.getYearCheckDue());//年审检验合格有效期
+        returnMap.put("registerDate",carInfo.getRegisterDate());  //注册登记日期(初次登记日期) 见下
+
+        //returnMap.put("yearCheckDue",carInfo.getYearCheckDue());//年审检验合格有效期  见下
         //returnMap.put(); //交强险截止日期
-        returnMap.put("check3","1".equals(appraisalReportVO.getCheckTradableVehicles().getCheck3())?"是":"否");//是否查封、抵押车辆
+        returnMap.put("check3",appraisalReportVO.getCheckTradableVehicles().getCheck3());//是否查封、抵押车辆
         //returnMap.put("");
 
         //车船税截止日期
@@ -365,6 +391,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         returnMap.put("vehicleLicense","");
         SimpleDateFormat df = new SimpleDateFormat("yyyy");
         SimpleDateFormat dfM = new SimpleDateFormat("MM");
+        SimpleDateFormat tfM = new SimpleDateFormat("dd");
         List<VehicleDocumentInfo> vehicleDocumentInfoList = appraisalReportVO.getVehicleDocumentInfolist();
         for(VehicleDocumentInfo vehicleDocumentInfo:vehicleDocumentInfoList){
             //车船税截止日期
@@ -376,49 +403,96 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
             }
             if("8".equals(vehicleDocumentInfo.getProject()) && StringUtils.isNotBlank(vehicleDocumentInfo.getState())){
                 // 车辆购置税（费）证
-                returnMap.replace("vehiclePurchaseTax",("1".equals(vehicleDocumentInfo.getState())?"是":"否"));
+                returnMap.replace("vehiclePurchaseTax",vehicleDocumentInfo.getState());
                 break;
             }
             //机动车登记证书
             if("2".equals(vehicleDocumentInfo.getProject()) && StringUtils.isNotBlank(vehicleDocumentInfo.getState())){
-                returnMap.replace("vehicleRegistration",("1".equals(vehicleDocumentInfo.getState())?"是":"否"));
+                returnMap.replace("vehicleRegistration",vehicleDocumentInfo.getState());
                 break;
             }
             // 机动车行驶证
             if("1".equals(vehicleDocumentInfo.getProject()) && StringUtils.isNotBlank(vehicleDocumentInfo.getState())){
-                returnMap.put("vehicleLicense",("1".equals(vehicleDocumentInfo.getState())?"是":"否"));
+                returnMap.put("vehicleLicense",vehicleDocumentInfo.getState());
                 break;
             }
         }
-        returnMap.put("trafficIllegalRecord","1".equals(appraisalReportVO.getCheckTradableVehicles().getTrafficIllegalRecord())?"有":"无");//未接受处理的交通违法记录
-        //使用性质 ？？？？？？？？？？
+        returnMap.put("trafficIllegalRecord",appraisalReportVO.getCheckTradableVehicles().getTrafficIllegalRecord());//未接受处理的交通违法记录
+        //使用性质
+        returnMap.put("usage",appraisalReportVO.getCarInfo().getUsage());
         //五、技术鉴定结果
         returnMap.put("defectDescription",appraisalReportVO.getDefectDescription());//技术状况缺陷描述
-        returnMap.put("","");//重要配置及参数信息
-        returnMap.put("","");//技术状况鉴定等级
-        returnMap.put("","");//等级描述
+        returnMap.put("chexingmingcheng",appraisalReportVO.getVehicleInfo().getChexingmingcheng());//重要配置及参数信息
+        returnMap.put("technicalStatus",appraisalReportVO.getVehicleGradeAssess().getTechnicalStatus());//技术状况鉴定等级
+        returnMap.put("score",appraisalReportVO.getVehicleGradeAssess().getScore());//等级描述
         // 六、价值评估
         returnMap.put("type",appraisalReportVO.getCalculate().getType());//价值估算方法
-        String price = calculateService.getEstimateByType(examUser.getUserId(),examUser.getPaperId()).get("price");
-        returnMap.put("price",price);
-        returnMap.put("bigPrice", MoneyUtils.change(Double.valueOf(price)));
+        Map<String,String> calculateMap =  calculateService.getEstimateByType(examUser.getUserId(),examUser.getPaperId());
+        returnMap.put("price",calculateMap.get("price"));  //价格
+        returnMap.put("process",calculateMap.get("process"));//计算过程
+        returnMap.put("bigPrice", MoneyUtils.change(Double.valueOf(calculateMap.get("price"))));
         //计算过程
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        returnMap.put("yearCheckDueYear","");
+        returnMap.put("yearCheckDueMonth","");
+
+        returnMap.put("identifyYear","");
+        returnMap.put("identifyMonth","");
+        returnMap.put("identifyDay","");
+
+        returnMap.put("identifyAfterYear","");
+        returnMap.put("identifyAfterMonth","");
+        returnMap.put("identifyAfterDay","");
+
+        //交强险截止日期
+        returnMap.put("compulsoryInsuranceYear","");
+        returnMap.put("compulsoryInsuranceMonth","");
+        returnMap.put("compulsoryInsuranceDay","");
+        //二手车鉴定评估机构盖章日期
+        returnMap.put("appraiserDateYear","");
+        returnMap.put("appraiserDateMonth","");
+        returnMap.put("appraiserDateDay","");
+
         //八、鉴定评估报告法律效力
-        Date identifyDate = null;
+        Date identifyDate;
+        Date identifyAfterDate ;
+        Date yearCheckDueDate ;
         try{
-            identifyDate  = formatter.parse(appraisalReportVO.getVehicleGradeAssess().getIdentifyDate());
-            Calendar calendar = new GregorianCalendar();
-            calendar.setTime(identifyDate);
-            calendar.add(calendar.DATE,90);
-            identifyDate = calendar.getTime();
+            if(StringUtils.isNotBlank(appraisalReportVO.getVehicleGradeAssess().getIdentifyDate())){
+                identifyDate  = formatter.parse(appraisalReportVO.getVehicleGradeAssess().getIdentifyDate());
+                Calendar calendar = new GregorianCalendar();
+                calendar.setTime(identifyDate);
+                calendar.add(calendar.DATE,90);
+                identifyAfterDate = calendar.getTime();
+                returnMap.replace("identifyYear",String.format("%tY", identifyDate));
+                returnMap.replace("identifyMonth",String.format("%tm", identifyDate));
+                returnMap.replace("identifyDay",String.format("%td", identifyDate));
+                returnMap.replace("identifyAfterYear",String.format("%tY", identifyAfterDate));
+                returnMap.replace("identifyAfterMonth",String.format("%tm", identifyAfterDate));
+                returnMap.replace("identifyAfterDay",String.format("%td", identifyAfterDate));
+            }
+            if(StringUtils.isNotBlank(appraisalReportVO.getDelegateLetter().getAppraiserDate())){
+                returnMap.replace("appraiserDateYear",df.format(appraisalReportVO.getDelegateLetter().getAppraiserDate()));
+                returnMap.replace("appraiserDateMonth",dfM.format(appraisalReportVO.getDelegateLetter().getAppraiserDate()));
+                returnMap.replace("appraiserDateDay",tfM.format(appraisalReportVO.getDelegateLetter().getAppraiserDate()));
+            }
+            if(StringUtils.isNotBlank(carInfo.getYearCheckDue())){
+                yearCheckDueDate = formatter.parse(carInfo.getYearCheckDue());
+                returnMap.replace("yearCheckDueYear",String.format("%tY",yearCheckDueDate));
+                returnMap.replace("yearCheckDueMonth",String.format("%tm",yearCheckDueDate));
+            }
         }catch (Exception e){
+            logger.warn("时间转换异常!--用户id为"+examUser.getUserId()+"--，生成鉴定报告异常");
         }
-        returnMap.put("identifyYear",String.format("%tY", identifyDate));
-        returnMap.put("identifyMonth",String.format("%tm", identifyDate));
-        returnMap.put("identifyDay",String.format("%td", identifyDate));
+
+        //九 复核人
+        returnMap.put("appraiser",appraisalReportVO.getDelegateLetter().getAppraiser());
+        returnMap.put("checkName",appraisalReportVO.getDelegateLetter().getCheckName());
+
         return returnMap;
     }
+
+
+
 
 
 
@@ -426,86 +500,184 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
      * 生成鉴定报告
      * 生成鉴定评估报告
      */
+    @Transactional
     public void generateLetter(ExamUser examUser) {
 
         Map<String,String> reportMap = this.appraisalReportInfo(examUser);
+        DelegateUser delegateUser = new DelegateUser();
+        delegateUser.setExamUserId(examUser.getId());
+        delegateUser.setPaperId(examUser.getPaperId());
+        delegateUser = delegateUserService.getByEntity(delegateUser);
 
         try{
-            long startTime = System.currentTimeMillis();
             WordExport changer = new WordExport();
             String fileName = "E:/word.docx";
             System.out.println(fileName);
             changer.setTemplate(fileName);
             Map<String, String> content = new HashMap<String, String>();
+
+            content.put("appraisalNum",reportMap.get("appraisalNum"));// //评报字-数字（8位
+            content.put("appraisalDate",reportMap.get("appraisalDate")); //评报字-时间
+
+            //一、绪言
             content.put("organizationName",reportMap.get("organizationName"));
             content.put("name",reportMap.get("name"));
             content.put("licensePlateNum",reportMap.get("licensePlateNum"));
-//
-//
-//            content.put("Principles", "格式规范、标准统一、利于阅览");
-//            content.put("Purpose", "规范会议操作、提高会议质量");
-//            content.put("Scope", "公司会议、部门之间业务协调会议");
-//
-//            content.put("customerName", "**有限公司");
-//            content.put("address", "机场路2号");
-//
-//            content.put("tradeName", "水泥制造");
-//            content.put("price1", "1.085");
-//		Map<String,Object> picture1 = new HashMap<String, Object>();
-//		picture1.put("width", 100);
-//		picture1.put("height", 150);
-//		picture1.put("type", "jpg");
-//		picture1.put("content", inputStream2ByteArray(new FileInputStream("E:\\picture\\21.jpg"), true));
-//		content.put("price1", picture1);
+            content.put("identifyYear",reportMap.get("identifyYear"));
+            content.put("identifyMonth",reportMap.get("identifyMonth"));
+            content.put("identifyDay",reportMap.get("identifyDay"));
+            //二、委托方
+            content.put("name1",reportMap.get("name"));
+            content.put("contact",reportMap.get("contact"));
+            content.put("phone",reportMap.get("phone"));
+            content.put("name2",reportMap.get("name"));
+            //三、基准日同上
+            content.put("identifyYear1",reportMap.get("identifyYear"));
+            content.put("identifyMonth1",reportMap.get("identifyMonth"));
+            content.put("identifyDay1",reportMap.get("identifyDay"));
 
-//            content.put("price2", "0.906");
-//            content.put("price3", "0.433");
-//            content.put("numPrice", "0.675");
-//
-//            content.put("company_name", "**有限公司");
-//            content.put("company_address", "机场路2号");
-//
-//            content.put("pictureimg", "E:/picture/21.jpg");
+            //四、鉴定评估车辆信息
+            content.put("labelType",reportMap.get("labelType"));
+            content.put("licensePlateNum1",reportMap.get("licensePlateNum"));
+            content.put("engineNum",reportMap.get("engineNum"));
+            content.put("vinCode",reportMap.get("vinCode"));
+            content.put("color",reportMap.get("color"));
+            content.put("mileage",reportMap.get("mileage"));
+            //注册登记日期
+            content.put("registerDate",reportMap.get("registerDate"));
+
+            //年审检验合格
+            content.put("yearCheckDueYear",reportMap.get("yearCheckDueYear"));
+            content.put("yearCheckDueMonth",reportMap.get("yearCheckDueMonth"));
+            //车船税截止
+            content.put("carTaxEndDateYear",reportMap.get("carTaxEndDateYear"));
+            content.put("carTaxEndDateMonth",reportMap.get("carTaxEndDateMonth"));
+            //交强险截止日期
+            content.put("compulsoryInsuranceYear",reportMap.get("compulsoryInsuranceYear"));
+            content.put("compulsoryInsuranceMonth",reportMap.get("compulsoryInsuranceMonth"));
+            content.put("compulsoryInsuranceDay",reportMap.get("compulsoryInsuranceDay"));
+
+            content.put("check3",StringUtils.isBlank(reportMap.get("check3"))?"":("1".equals(reportMap.get("check3"))?"是":"否"));
+            content.put("vehiclePurchaseTax",
+                    StringUtils.isBlank(reportMap.get("vehiclePurchaseTax"))?"":("1".equals(reportMap.get("vehiclePurchaseTax"))?"有":"无"));
+            content.put("vehicleRegistration",
+                    StringUtils.isBlank(reportMap.get("vehicleRegistration"))?"":("1".equals(reportMap.get("vehicleRegistration"))?"有":"无"));
+            content.put("vehicleLicense",
+                    StringUtils.isBlank(reportMap.get("vehicleLicense"))?"":("1".equals(reportMap.get("vehicleLicense"))?"有":"无"));
+            content.put("trafficIllegalRecord",
+                    StringUtils.isBlank(reportMap.get("trafficIllegalRecord"))?"":("1".equals(reportMap.get("trafficIllegalRecord"))?"有":"无"));
+            content.put("usage",reportMap.get("usage"));
+
+            //五、技术鉴定结果process
+            content.put("defectDescription",reportMap.get("defectDescription"));
+            content.put("chexingmingcheng",reportMap.get("chexingmingcheng"));
+            content.put("technicalStatus",reportMap.get("technicalStatus"));
+            content.put("score",StringUtils.isNotBlank(reportMap.get("score"))?reportMap.get("score")+"分":"");
+
+            // 六、价值评估
+            content.put("type",reportMap.get("type"));
+            content.put("process",reportMap.get("process"));//计算过程
+            content.put("price",reportMap.get("price"));
+            content.put("bigPrice",reportMap.get("bigPrice"));
+
+            //八、鉴定评估报告法律效力
+            content.put("identifyAfterYear",reportMap.get("identifyAfterYear"));
+            content.put("identifyAfterMonth",reportMap.get("identifyAfterMonth"));
+            content.put("identifyAfterDay",reportMap.get("identifyAfterDay"));
+            // 九、声明
+            content.put("checkName",reportMap.get("checkName"));
+            content.put("appraiser",reportMap.get("appraiser"));
+            content.put("appraiserDateYear",reportMap.get("appraiserDateYear"));
+            content.put("appraiserDateMonth",reportMap.get("appraiserDateMonth"));
+            content.put("appraiserDateDay",reportMap.get("appraiserDateDay"));
+            content.put("identifyYear2",reportMap.get("identifyYear"));
+            content.put("identifyMonth2",reportMap.get("identifyMonth"));
+            content.put("identifyDay2",reportMap.get("identifyDay"));
+
+
             changer.replaceBookMark(content);
-
-            //替换表格标签
-            List<Map<String, String>> content2 = new ArrayList<Map<String, String>>();
-            Map<String, String> table1 = new HashMap<String, String>();
-
-            table1.put("MONTH", "*月份");
-            table1.put("SALE_DEP", "75分");
-            table1.put("TECH_CENTER", "80分");
-            table1.put("CUSTOMER_SERVICE", "85分");
-            table1.put("HUMAN_RESOURCES", "90分");
-            table1.put("FINANCIAL", "95分");
-            table1.put("WORKSHOP", "80分");
-            table1.put("TOTAL", "85分");
-
-            for (int i = 0; i < 3; i++) {
-                content2.add(table1);
+            //报告生成位置
+            String generateUrl = "E:/generateUrl/"+new Date().getTime()+delegateUser.getName() + ".docx";
+            //保存文件路径
+            PictureUser picture;
+            PictureUser pictureUser = new PictureUser();
+            pictureUser.setExamUserId(examUser.getId());
+            pictureUser.setPaperId(examUser.getPaperId());
+            pictureUser.setPictureTypeId("1152467158926442496"); //二手车鉴定评估报告
+            picture = pictureUserService.getByEntity(pictureUser);
+            if(null!=picture){
+                pictureUser =picture;
             }
-//		changer.fillTableAtBookMark("Table", content2);
-//		changer.fillTableAtBookMark("month", content2);
-            //表格中文本的替换
-            Map<String, String> table = new HashMap<>();
-            table.put("CUSTOMER_NAME", "**有限公司");
-            table.put("ADDRESS", "机场路2号");
-            table.put("USER_NO", "3021170207");
-            table.put("tradeName", "水泥制造");
-            table.put("PRICE_1", "1.085");
-            table.put("PRICE_2", "0.906");
-            table.put("PRICE_3", "0.433");
-            table.put("NUM_PRICE", "0.675");
-//            changer.replaceText(table, "Table2");
+            pictureUser.setUrl(generateUrl);
+            pictureUserService.save(pictureUser);
             //保存替换后的WORD
-            changer.saveAs(fileName + "_out.docx");
-            System.out.println("time==" + (System.currentTimeMillis() - startTime));
+            changer.saveAs(generateUrl);
         }catch (Exception e){
 
         }
 
+    }
+
+    /**
+     * 报告下载功能
+     * @param request
+     * @param response
+     * @param examUser
+     * @return
+     */
+    @Transactional
+    public Object getWord(HttpServletRequest request, HttpServletResponse response,ExamUser examUser)  {
+        PictureUser pictureUser = new PictureUser();
+        pictureUser.setExamUserId(examUser.getId());
+        pictureUser.setPaperId(examUser.getPaperId());
+        pictureUser.setPictureTypeId("1152467158926442496"); //二手车鉴定评估报告
+        pictureUser = pictureUserService.getByEntity(pictureUser);
+        DelegateUser delegateUser = new DelegateUser();
+        delegateUser.setExamUserId(examUser.getId());
+        delegateUser.setPaperId(examUser.getPaperId());
+        delegateUser = delegateUserService.getByEntity(delegateUser);
+        String url = pictureUser.getUrl();
+        File fileurl = new File(url);
+        //浏览器下载后的文件名称showValue,从url中截取到源文件名称以及，以及文件类型，如board.docx;
+        String showValue = delegateUser.getName()+"二手车鉴定评估报告"+".docx";
+        System.out.println(showValue);
+        try{
+            //将文件读入文件流
+            InputStream inStream = new FileInputStream(fileurl);
+            //获得浏览器代理信息
+            final String userAgent = request.getHeader("USER-AGENT");
+            //判断浏览器代理并分别设置响应给浏览器的编码格式
+            String finalFileName;
+            if(StringUtils.contains(userAgent, "MSIE")||StringUtils.contains(userAgent,"Trident")){//IE浏览器
+                finalFileName = URLEncoder.encode(showValue,"UTF8");
+                System.out.println("IE浏览器");
+            }else if(StringUtils.contains(userAgent, "Mozilla")){//google,火狐浏览器
+                finalFileName = new String(showValue.getBytes(), "ISO8859-1");
+            }else{
+                finalFileName = URLEncoder.encode(showValue,"UTF8");//其他浏览器
+            }
+            //设置HTTP响应头
+            response.reset();//重置 响应头
+            response.setContentType("application/x-download");//告知浏览器下载文件，而不是直接打开，浏览器默认为打开
+            response.addHeader("Content-Disposition" ,"attachment;filename=\"" +finalFileName+ "\"");//下载文件的名称
+
+            // 循环取出流中的数据
+            byte[] b = new byte[1024];
+            int len;
+            while ((len = inStream.read(b)) > 0){
+                response.getOutputStream().write(b, 0, len);
+            }
+            inStream.close();
+            response.getOutputStream().close();
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+        return "";
 
     }
 
 
+
 }
+
+

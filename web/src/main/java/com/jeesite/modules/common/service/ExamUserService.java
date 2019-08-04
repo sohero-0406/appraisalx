@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -440,16 +441,16 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		//车辆鉴定评估价值为人民币（元）   1151013343665739992
 
 		//自鉴定评估基准日至（日）
-		if(StringUtils.isNotEmpty(appraisalReportT.getBaseDateEnd())&&appraisalReportS!=null&& appraisalReportT.getBaseDateEnd().equals(appraisalReportS.getBaseDateEnd()) ){
-			calculateCount = calculateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343665541121"))));
-			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
-					(String)examNameMap.get("1151013343665541121"),(String)examScoreMap.get("1151013343665541121"),
-					appraisalReportT.getBaseDateEnd(),appraisalReportS.getBaseDateEnd(),"0");
-		}else{
-			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
-					(String)examNameMap.get("1151013343665541121"),"0",
-					appraisalReportT.getBaseDateEnd(),appraisalReportS==null?"":appraisalReportS.getBaseDateEnd(),"1");
-		}
+//		if(StringUtils.isNotEmpty(appraisalReportT.getBaseDateEnd())&&appraisalReportS!=null&& appraisalReportT.getBaseDateEnd().equals(appraisalReportS.getBaseDateEnd()) ){
+//			calculateCount = calculateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343665541121"))));
+//			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
+//					(String)examNameMap.get("1151013343665541121"),(String)examScoreMap.get("1151013343665541121"),
+//					appraisalReportT.getBaseDateEnd(),appraisalReportS.getBaseDateEnd(),"0");
+//		}else{
+//			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
+//					(String)examNameMap.get("1151013343665541121"),"0",
+//					appraisalReportT.getBaseDateEnd(),appraisalReportS==null?"":appraisalReportS.getBaseDateEnd(),"1");
+//		}
 		//归档时效
 		if(StringUtils.isNotBlank(checkTradableVehiclesT.getFileDuring()) &&checkTradableVehiclesS!=null&& checkTradableVehiclesT.getFileDuring().equals(checkTradableVehiclesS.getFileDuring())){
 			calculateCount = calculateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151028180617695233"))));
@@ -608,16 +609,43 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180616400897",
 					(String)examNameMap.get("1151028180615864562"),(String)examScoreMap.get("1151028180615864562"),
 					vehicleGradeAssessT.getIdentifyDate(),vehicleGradeAssessS.getIdentifyDate(),"0");
+			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
+					(String)examNameMap.get("1151013343665541121"),(String)examScoreMap.get("1151013343665541121"),
+					setTimePlusNinetydays(vehicleGradeAssessT.getIdentifyDate()),
+					setTimePlusNinetydays(vehicleGradeAssessS.getIdentifyDate()),
+					"0");
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180616400897",
 					(String)examNameMap.get("1151028180615864562"),"0",
 					vehicleGradeAssessT.getIdentifyDate(),
 					vehicleGradeAssessS==null?"":vehicleGradeAssessS.getIdentifyDate(),
 					"1");
+			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
+					(String)examNameMap.get("1151013343665541121"),"0",
+					setTimePlusNinetydays(vehicleGradeAssessT.getIdentifyDate()),
+					vehicleGradeAssessS==null?"":setTimePlusNinetydays(vehicleGradeAssessS.getIdentifyDate())
+					,"1");
 		}
 		return identificationCount;
 	}
 
+	//时间加上九十天
+	public String setTimePlusNinetydays(String day){
+		if(StringUtils.isNotBlank(day)){
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			try {
+				Date baseDate = sdf.parse(day);
+				Calendar calendar = new GregorianCalendar();
+				calendar.setTime(baseDate);
+				calendar.add(calendar.DATE,90);
+				baseDate = calendar.getTime();
+				return sdf.format(baseDate);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		return "";
+	}
 
 
 	//判断 某字符串类型 在某字符串类型区间 并判断是或否为空

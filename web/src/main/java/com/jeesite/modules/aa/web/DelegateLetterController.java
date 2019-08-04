@@ -4,6 +4,7 @@
 package com.jeesite.modules.aa.web;
 
 import com.jeesite.common.config.Global;
+import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.aa.entity.DelegateLetter;
@@ -11,6 +12,7 @@ import com.jeesite.modules.aa.service.DelegateLetterService;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.utils.UserUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -118,33 +120,45 @@ public class DelegateLetterController extends BaseController {
 
 
 	/**
-	 * 查询鉴定报告
+	 * 保存一份鉴定评估报告
+	 */
+	@RequestMapping(value = "saveAppraisalReport")
+	@ResponseBody
+	public CommonResult saveAppraisalReport(DelegateLetter delegateLetter) {
+		CommonResult comRes = new CommonResult();
+		ExamUser examUser = UserUtils.getExamUser();
+		//如果paperId 为空，则参数出现异常
+		if(StringUtils.isBlank(examUser.getPaperId())){
+			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+			comRes.setMsg("请求参数存在异常!");
+			return comRes;
+		}
+		comRes = delegateLetterService.saveAppraisalReport(delegateLetter,examUser);
+		return comRes;
+	}
+
+
+
+	/**
+	 * 鉴定评估报告预览
 	 */
 	@RequestMapping(value = "findAppraisalReport")
 	@ResponseBody
 	public CommonResult findAppraisalReport() {
 		ExamUser examUser = UserUtils.getExamUser();
 		CommonResult comRes = new CommonResult();
-		comRes.setData(delegateLetterService.findAppraisalReport(examUser));
-		return comRes;
-	}
-
-
-
-
-
-	@RequestMapping(value = "test")
-	@ResponseBody
-	public CommonResult createAppraisalReportNum() {
-		ExamUser examUser = UserUtils.getExamUser();
-		CommonResult comRes = new CommonResult();
 		comRes.setData(delegateLetterService.appraisalReportInfo(examUser));
 		return comRes;
 	}
 
-	@RequestMapping(value = "test1")
+
+	/**
+	 *  生成鉴定评估报告
+	 * @return
+	 */
+	@RequestMapping(value = "generateAppraisalReport")
 	@ResponseBody
-	public CommonResult createAppraisalReportNum1() {
+	public CommonResult generateAppraisalReport() {
 		ExamUser examUser = UserUtils.getExamUser();
 		CommonResult comRes = new CommonResult();
 		delegateLetterService.generateLetter(examUser);
@@ -152,6 +166,18 @@ public class DelegateLetterController extends BaseController {
 	}
 
 
-
-
+	/**
+	 *  下载鉴定报告
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "downloadAppraisalReport")
+	@ResponseBody
+	public CommonResult getWord(HttpServletRequest request, HttpServletResponse response){
+		ExamUser examUser = UserUtils.getExamUser();
+		CommonResult comRes = new CommonResult();
+		delegateLetterService.getWord(request,response,examUser);
+		return comRes;
+	}
 }

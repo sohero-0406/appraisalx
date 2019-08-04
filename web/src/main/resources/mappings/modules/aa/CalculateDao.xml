@@ -19,7 +19,14 @@
 		 when calculate.type = '2' THEN calculateKm.price
 		 when calculate.type = '3' THEN calculateReplaceCost.price
 		 when calculate.type = '4' THEN calculateCurrent.price
-		ELSE ' ' END AS price
+		ELSE ' ' END AS price,
+		case
+		when calculate.type = '1' THEN calculateDepreciation.process
+		when calculate.type = '2' THEN calculateKm.process
+		when calculate.type = '3' THEN calculateReplaceCost.process
+		when calculate.type = '4' THEN calculateCurrent.process
+		ELSE ' ' END AS process
+
 		from aa_calculate calculate
 		left join aa_calculate_current calculateCurrent on calculateCurrent.calculate_id = calculate.id
 		left join aa_calculate_depreciation calculateDepreciation on calculateDepreciation.calculate_id = calculate.id
