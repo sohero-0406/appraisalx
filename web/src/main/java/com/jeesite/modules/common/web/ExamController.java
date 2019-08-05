@@ -5,6 +5,7 @@ package com.jeesite.modules.common.web;
 
 import com.jeesite.common.config.Global;
 import com.jeesite.common.entity.Page;
+import com.jeesite.common.utils.download.DownloadWordUtils;
 import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.aa.vo.ExamVO;
 import com.jeesite.modules.common.entity.CommonResult;
@@ -161,4 +162,21 @@ public class ExamController extends BaseController {
         CommonResult comRes = examService.updateExamSate(exam);
         return comRes;
     }
+
+    /**
+     *  下载情景信息模板
+     */
+    @RequestMapping(value = "downloadInformationModule")
+    @ResponseBody
+    public Object downloadInformationModule(HttpServletRequest request, HttpServletResponse response) {
+        //修改考生状态
+        //声明下载文件名称
+        String name = "二手车鉴定评估情景描述";
+        //声明路径
+        String url = "E:/二手车鉴定评估情景描述.docx";
+        //下载目标文件
+        return DownloadWordUtils.downloadWord(request,response,url,name);
+    }
+
+
 }
