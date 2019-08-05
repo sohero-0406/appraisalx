@@ -634,7 +634,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         delegateUser = delegateUserService.getByEntity(delegateUser);
         String name = delegateUser.getName()+"鉴定评估报告";
         String url = pictureUser.getUrl();
-        return DownloadWordUtils.downloadWord(request,response,url,name);
+        return DownloadWordUtils.downloadWord(request,response,url,name,"docx");
 
     }
 

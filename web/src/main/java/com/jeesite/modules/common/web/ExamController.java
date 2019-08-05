@@ -175,7 +175,7 @@ public class ExamController extends BaseController {
         //声明路径
         String url = "E:/二手车鉴定评估情景描述.docx";
         //下载目标文件
-        return DownloadWordUtils.downloadWord(request,response,url,name);
+        return DownloadWordUtils.downloadWord(request,response,url,name,"docx");
     }
 
 
