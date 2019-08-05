@@ -24,6 +24,8 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 		@Column(name="organization_address", attrName="organizationAddress", label="鉴定评估机构地址"),
 		@Column(name="contact", attrName="contact", label="联系人"),
 		@Column(name="phone", attrName="phone", label="电话"),
+		@Column(name="appraiser", attrName="appraiser", label="二手车鉴定评估师"),
+		@Column(name="appraiser_date", attrName="appraiserDate", label="二手车鉴定评估机构盖章日期"),
 		@Column(name="check_name", attrName="checkName", label="复核人姓名", queryType=QueryType.LIKE),
 		@Column(name="name", attrName="name", label="受托方姓名", queryType=QueryType.LIKE),
 		@Column(includeEntity=DataEntity.class),
@@ -40,7 +42,8 @@ public class DelegateLetter extends PreEntity<DelegateLetter> {
 	private String contact;		// 联系人
 	private String phone;		// 电话
 	private String name;		// 受托方姓名
-
+    private String appraiser;
+    private String appraiserDate;
 	private String checkName;		// 复核人姓名
 	
 	public DelegateLetter() {
@@ -122,5 +125,22 @@ public class DelegateLetter extends PreEntity<DelegateLetter> {
 	public void setCheckName(String checkName) {
 		this.checkName = checkName;
 	}
-	
+
+	@Length(min=0, max=32, message="二手车鉴定评估师长度不能超过 32 个字符")
+	public String getAppraiser() {
+		return appraiser;
+	}
+
+	public void setAppraiser(String appraiser) {
+		this.appraiser = appraiser;
+	}
+
+	@Length(min=0, max=32, message="二手车鉴定评估机构盖章日期长度不能超过 32 个字符")
+	public String getAppraiserDate() {
+		return appraiserDate;
+	}
+
+	public void setAppraiserDate(String appraiserDate) {
+		this.appraiserDate = appraiserDate;
+	}
 }
