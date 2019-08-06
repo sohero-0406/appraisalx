@@ -147,5 +147,16 @@ public class SignInService {
         return image;
     }
 
+    //判断考生是否存在
+    public Boolean judgmentExist(ExamUser examUser){
+        ExamUser user=  examUserService.getByEntity(examUser);
+        if(null==user){
+            return true; //用户不存在
+        }else{
+            return false;//用户存在
+        }
+    }
+
+
 
 }

@@ -4,16 +4,20 @@ import com.jeesite.common.cache.CacheUtils;
 import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.web.http.ServletUtils;
 import com.jeesite.modules.aa.service.SignInService;
+import com.jeesite.modules.aa.vo.BaseVO;
 import com.jeesite.modules.aa.vo.LoginVO;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.utils.UserUtils;
+import com.sun.javafx.collections.MappingChange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -53,13 +57,18 @@ public class SignInController {
      */
     @RequestMapping(value = "generateQrCode")
     @ResponseBody
-    public String  generateQrCode(){
+    public CommonResult generateQrCode(){
+        CommonResult comRes = new CommonResult();
         String uuid = UUID.randomUUID().toString();
         String url = "localhost:8980/appraisal/test/testData/getDate3"+"?uuid="+uuid;
         int width = 300;
         int height = 300;
         String logoPath = "E:/ray.jpg";
-        return signInService.generateQrCode(url,width,height,logoPath);
+        BaseVO baseVO = new BaseVO();
+        baseVO.setBase(signInService.generateQrCode(url,width,height,logoPath).replaceAll("\r|\n", ""));
+        baseVO.setUuid(uuid);
+        comRes.setData(baseVO);
+        return comRes;
 
     }
 
@@ -72,7 +81,7 @@ public class SignInController {
     @ResponseBody
     public CommonResult  sweepTheYard(String uuid) {
         ExamUser examUser = UserUtils.getExamUser();
-        CacheUtils.put("sysCache",uuid,examUser);
+        CacheUtils.put(uuid,examUser);
         return new CommonResult();
     }
 
@@ -86,9 +95,20 @@ public class SignInController {
     public CommonResult  getUUid(String uuid) {
         CommonResult comRes = new CommonResult();
         ExamUser examUser = CacheUtils.get(uuid);
-        comRes.setData(examUser);
+        //判断是否为空，并判断是否存在
+        if(null==examUser){
+            comRes.setCode(CodeConstant.REQUEST_FAILED);
+            comRes.setMsg("请扫码登录!");
+            return comRes;
+        }
+        if(signInService.judgmentExist(examUser)){
+            comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+            comRes.setMsg("请求用户不存在!");
+            return comRes;
+        }
         ServletUtils.getRequest().setAttribute("examUser",examUser);
         return comRes;
+
     }
 
 

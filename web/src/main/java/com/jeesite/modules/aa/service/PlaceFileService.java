@@ -3,7 +3,9 @@
  */
 package com.jeesite.modules.aa.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -98,7 +100,8 @@ public class PlaceFileService extends CrudService<PlaceFileDao, PlaceFile> {
 
 
 	@Transactional
-	public List<PictureUser> getPlaceFileList(ExamUser examUser){
+	public Map getPlaceFileList(ExamUser examUser){
+		Map<String,Object> returnMap = new HashMap<>();
 		//接受委托、检查可交易车辆、记录车辆基本信息、判别事故车辆 归档数据列表 type = 0
 		String type = "0";
 		List<PictureUser> pictureUserList =  dao.selectPlaceListFrist(examUser.getId(),examUser.getPaperId(),type);
@@ -106,14 +109,21 @@ public class PlaceFileService extends CrudService<PlaceFileDao, PlaceFile> {
 		List<PictureUser> pictureUserListIdentification =  dao.selectPlaceListFrist(examUser.getId(),examUser.getPaperId(),type);
 		//车辆鉴定报告
 		PictureUser pictureUser = new PictureUser();
-		pictureUser.setId("1143446339264172032"); //鉴定技术状况
+		pictureUser.setPictureId("1143446339264172032"); //鉴定技术状况
 		pictureUser.setName("鉴定技术状况");
 		pictureUser.setItemList(pictureUserListIdentification);
 		//报告
 		List<PictureUser> pictureUserPlace = dao.selectPlace(examUser);
 		pictureUserList.add(pictureUser);
 		pictureUserList.addAll(pictureUserPlace);
-		return pictureUserList;
+
+		CheckTradableVehicles checkTradableVehicles = new CheckTradableVehicles();
+		checkTradableVehicles.setExamUserId(examUser.getId());
+		checkTradableVehicles.setPaperId(examUser.getPaperId());
+		checkTradableVehicles = checkTradableVehiclesService.getByEntity(checkTradableVehicles);
+		returnMap.put("pictureUserList",pictureUserList);
+		returnMap.put("fileDuring",null==checkTradableVehicles?"":checkTradableVehicles.getFileDuring());
+		return returnMap;
 	}
 
 

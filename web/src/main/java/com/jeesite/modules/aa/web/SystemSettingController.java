@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.lang.StringUtils;
+import com.jeesite.modules.aa.entity.Tax;
 import com.jeesite.modules.common.entity.CommonResult;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,8 @@ import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.aa.entity.SystemSetting;
 import com.jeesite.modules.aa.service.SystemSettingService;
 
+import java.util.List;
+
 /**
  * 大平台域名设置Controller
  * @author lvchangwei
@@ -40,7 +43,7 @@ public class SystemSettingController extends BaseController {
 	/**
 	 * 获取数据
 	 */
-	@ModelAttribute
+//	@ModelAttribute
 	public SystemSetting get(String id, boolean isNewRecord) {
 		return systemSettingService.get(id, isNewRecord);
 	}
@@ -94,6 +97,25 @@ public class SystemSettingController extends BaseController {
 		return renderResult(Global.TRUE, text("删除大平台域名设置成功！"));
 	}
 
+	/**
+	 *  加载大平台域名设置
+	 */
+	@RequestMapping(value = "getSystemSetting")
+	@ResponseBody
+	public CommonResult getSystemSetting(SystemSetting systemSetting) {
+		CommonResult comRes = new CommonResult();
+		List<SystemSetting> systemSettingList = systemSettingService.findList(systemSetting);
+		if(systemSettingList.size()<=0){
+			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+			comRes.setMsg("请求参数异常!");
+			return comRes;
+		}
+		SystemSetting systemSettingListModel = systemSettingList.get(0);
+		comRes.setData(systemSettingListModel);
+		return comRes;
+	}
+
+
 	//修改端口号
 	@RequestMapping(value = "saveSystemSetting")
 	@ResponseBody
@@ -117,6 +139,13 @@ public class SystemSettingController extends BaseController {
 		if(StringUtils.isBlank(systemSetting.getContextPath())){
 			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
 			comRes.setMsg("项目路径不能为空");
+			return comRes;
+		}
+		SystemSetting systemSettingExist = new SystemSetting();
+		systemSettingExist.setId(systemSetting.getId());
+		if(null==systemSettingService.getByEntity(systemSettingExist)){
+			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+			comRes.setMsg("请求参数异常");
 			return comRes;
 		}
 		SystemSetting systemSettingTest = new SystemSetting();

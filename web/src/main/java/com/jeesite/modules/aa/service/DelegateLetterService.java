@@ -253,10 +253,6 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         if (StringUtils.isNotBlank(carInfo.getUsage())){
             carInfo.setUsage(DictUtils.getDictLabel("aa_usage_type",carInfo.getUsage(),""));
         }
-//        if (StringUtils.isNotBlank(carInfo.getRegisterDate())) {
-//            String[] registerDateArr = carInfo.getRegisterDate().substring(0, 10).split("-");
-////            carInfo.setRegisterDate(registerDateArr[0] + "年" + registerDateArr[1] + "月" + registerDateArr[2] + "日");
-//        }
         appraisalReportVO.setCarInfo(carInfo);
 
         //车辆单证信息
