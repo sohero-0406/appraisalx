@@ -8,7 +8,6 @@ import java.util.List;
 public class AppraisalReportVO {
 
     private DelegateLetter delegateLetter;      //委托书信息 --绪言
-    private AppraisalReport appraisalReport;        //鉴定报告
     private DelegateUser delegateUser;      //委托人
     private CarInfo carInfo;        //车辆信息
     private List<VehicleDocumentInfo> vehicleDocumentInfolist;        //车辆单证信息
@@ -21,13 +20,6 @@ public class AppraisalReportVO {
     private String defectDescription;       //缺陷描述
     private String priceCapital;        //金额大写
 
-    public AppraisalReport getAppraisalReport() {
-        return appraisalReport;
-    }
-
-    public void setAppraisalReport(AppraisalReport appraisalReport) {
-        this.appraisalReport = appraisalReport;
-    }
 
     public DelegateUser getDelegateUser() {
         return delegateUser;

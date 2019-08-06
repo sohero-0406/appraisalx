@@ -8,6 +8,8 @@ import com.jeesite.common.entity.Page;
 import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.aa.entity.DelegateUser;
 import com.jeesite.modules.aa.service.DelegateUserService;
+import com.jeesite.modules.common.entity.ExamUser;
+import com.jeesite.modules.common.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -87,6 +89,16 @@ public class DelegateUserController extends BaseController {
 	public String delete(DelegateUser delegateUser) {
 		delegateUserService.delete(delegateUser);
 		return renderResult(Global.TRUE, text("删除委托方信息成功！"));
+	}
+
+	@RequestMapping(value = "getSession")
+	@ResponseBody
+	public String getSession(HttpServletRequest request,HttpServletResponse response) {
+		ExamUser examUser = UserUtils.getExamUser();
+//		examUser.re
+		String a = (String)request.getSession().getAttribute("admin");
+		System.out.println("得到session内的数据");
+		return null;
 	}
 
 }
