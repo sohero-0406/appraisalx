@@ -65,9 +65,6 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 	//计算车辆价值Service
 	@Autowired
 	private CalculateService calculateService;
-	//二手车鉴定评估报告Service
-	@Autowired
-	private AppraisalReportService appraisalReportService;
 	//归档
 	@Autowired
 	private PlaceFileService placeFileService;
@@ -245,7 +242,6 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		VehicleInstallInfo vehicleInstallInfoTec = new VehicleInstallInfo(); //车辆加装信息
 		VehicleGradeAssess vehicleGradeAssessTec = new VehicleGradeAssess();
 		Calculate calculateTec = new Calculate();//计算车辆价值
-		AppraisalReport appraisalReportTec = new AppraisalReport();
 		PlaceFile placeFileTec = new PlaceFile();
 
 
@@ -256,7 +252,6 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		vehicleInstallInfoTec.setPaperId(paperId);
 		vehicleGradeAssessTec.setPaperId(paperId);
 		calculateTec.setPaperId(paperId);
-		appraisalReportTec.setPaperId(paperId);
 		placeFileTec.setPaperId(paperId);
 
 
@@ -274,7 +269,6 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		VehicleGradeAssess vehicleGradeAssessT = vehicleGradeAssessService.getByEntity(vehicleGradeAssessTec);
 		//六、估算汽车价值
 		Calculate calculateT = calculateService.getByEntity(calculateTec);
-		AppraisalReport appraisalReportT = appraisalReportService.getByEntity(appraisalReportTec);
 		List<String> placeFileListTecList = placeFileService.getFileByAssessedPicture(paperId); //归档
 		List<String> movingPictureTec = new ArrayList<>(); //车辆行驶证
 		List<String> registrationPictureTec = new ArrayList<>();//机动车登记证书
@@ -309,10 +303,6 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		//五、鉴定技术状况
 		VehicleGradeAssess vehicleGradeAssessStu = new VehicleGradeAssess();
 		//六、估算价值
-		Calculate calculateStu = new Calculate();//计算车辆价值
-		AppraisalReport appraisalReportStu = new AppraisalReport();
-		PlaceFile placeFileStu = new PlaceFile();
-
 		for (ExamUser user : examUserList) {
 			//一、委托人
 			delegateUserStu.setExamUserId(user.getId());
@@ -340,12 +330,10 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 			VehicleGradeAssess vehicleGradeAssessS = vehicleGradeAssessService.getByEntity(vehicleGradeAssessStu);
 			BigDecimal identificationCount = getIdentification(vehicleGradeAssessT,vehicleGradeAssessS,examScoreMap,user,examNameMap);
 //			//六、估算价值
-			appraisalReportStu.setExamUserId(user.getId());
-			AppraisalReport appraisalReportS = appraisalReportService.getByEntity(appraisalReportStu);
 			List<String> placeFileListS = placeFileService.getPlaceFileByStu(user.getId());
 
-			BigDecimal calculateCount = getCalculate(calculateT,user,examScoreMap,checkTradableVehiclesT,checkTradableVehiclesS,
-					appraisalReportT,appraisalReportS,placeFileListS,examNameMap,movingPictureTec,registrationPictureTec,idenPictureTec);
+			BigDecimal calculateCount = getCalculate(calculateT,user,examScoreMap,checkTradableVehiclesT,checkTradableVehiclesS
+					,placeFileListS,examNameMap,movingPictureTec,registrationPictureTec,idenPictureTec);
 
 
 			BigDecimal count = delegateCount.add(vehicleDocumentCount.add(carInfoCount.add(accidentCount.add(identificationCount.add(calculateCount)))));
@@ -363,8 +351,6 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 	 * @param examScoreMap  评分分数项
 	 * @param checkTradableVehiclesT  检查可交易车辆-老师
 	 * @param checkTradableVehiclesS  检查可交易车辆-学生
-	 * @param appraisalReportT  二手车鉴定评估报告-老师
-	 * @param appraisalReportS  二手车鉴定评估报告-学生
 	 * @param placeFileListS 归档-学生
 	 * @param movingPictureTec 车辆行驶证 -老师
 	 * @param registrationPictureTec 机动车登记证书 -老师
@@ -373,7 +359,6 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 	 */
 	public BigDecimal getCalculate(Calculate calculateT,ExamUser user,Map<String,Object> examScoreMap,
 								   CheckTradableVehicles checkTradableVehiclesT,CheckTradableVehicles checkTradableVehiclesS,
-								   AppraisalReport appraisalReportT,AppraisalReport appraisalReportS,
 								   List<String> placeFileListS,Map<String,Object> examNameMap,
 								   List<String> movingPictureTec,List<String> registrationPictureTec,List<String> idenPictureTec ){
 		BigDecimal calculateCount = new BigDecimal("0");
@@ -440,17 +425,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}
 		//车辆鉴定评估价值为人民币（元）   1151013343665739992
 
-		//自鉴定评估基准日至（日）
-//		if(StringUtils.isNotEmpty(appraisalReportT.getBaseDateEnd())&&appraisalReportS!=null&& appraisalReportT.getBaseDateEnd().equals(appraisalReportS.getBaseDateEnd()) ){
-//			calculateCount = calculateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343665541121"))));
-//			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
-//					(String)examNameMap.get("1151013343665541121"),(String)examScoreMap.get("1151013343665541121"),
-//					appraisalReportT.getBaseDateEnd(),appraisalReportS.getBaseDateEnd(),"0");
-//		}else{
-//			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
-//					(String)examNameMap.get("1151013343665541121"),"0",
-//					appraisalReportT.getBaseDateEnd(),appraisalReportS==null?"":appraisalReportS.getBaseDateEnd(),"1");
-//		}
+
 		//归档时效
 		if(StringUtils.isNotBlank(checkTradableVehiclesT.getFileDuring()) &&checkTradableVehiclesS!=null&& checkTradableVehiclesT.getFileDuring().equals(checkTradableVehiclesS.getFileDuring())){
 			calculateCount = calculateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151028180617695233"))));
