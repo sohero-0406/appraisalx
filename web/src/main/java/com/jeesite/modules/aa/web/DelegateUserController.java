@@ -91,14 +91,5 @@ public class DelegateUserController extends BaseController {
 		return renderResult(Global.TRUE, text("删除委托方信息成功！"));
 	}
 
-	@RequestMapping(value = "getSession")
-	@ResponseBody
-	public String getSession(HttpServletRequest request,HttpServletResponse response) {
-		ExamUser examUser = UserUtils.getExamUser();
-//		examUser.re
-		String a = (String)request.getSession().getAttribute("admin");
-		System.out.println("得到session内的数据");
-		return null;
-	}
 
 }
