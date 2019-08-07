@@ -3,16 +3,14 @@
  */
 package com.jeesite.modules.aa.entity;
 
-import com.jeesite.modules.common.entity.PreEntity;
-import net.sf.jsqlparser.expression.DateTimeLiteralExpression;
-import org.hibernate.validator.constraints.Length;
-
 import com.jeesite.common.entity.DataEntity;
 import com.jeesite.common.mybatis.annotation.Column;
 import com.jeesite.common.mybatis.annotation.Table;
 import com.jeesite.common.mybatis.mapper.query.QueryType;
+import com.jeesite.modules.common.entity.PreEntity;
+import org.hibernate.validator.constraints.Length;
 
-import java.sql.Date;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 /**
@@ -24,7 +22,7 @@ import java.sql.Timestamp;
 		@Column(name="id", attrName="id", label="主键", isPK=true),
 		@Column(name="user_id", attrName="userId", label="用户id"),
 		@Column(name="name", attrName="name", label="试卷名称", queryType=QueryType.LIKE),
-		@Column(name="totalscore", attrName="totalscore", label="试卷总分"),
+		@Column(name="total_score", attrName="totalScore", label="试卷总分"),
 		@Column(name="state", attrName="state", label="启用禁用状态"),
 		@Column(name="create_by", attrName="createBy", label="创建者"),
 		@Column(name="update_date", attrName="createDate", label="创建时间"),
@@ -36,7 +34,7 @@ public class Paper extends PreEntity<Paper> {
 	private static final long serialVersionUID = 1L;
 	private String userId;		// 用户id
 	private String name;		// 试卷名称
-	private Integer totalscore;		// 试卷总分
+	private BigDecimal totalScore;		// 试卷总分
 	private String state;		//启用禁用状态
 	private String createBy;		//创建者
 	private Timestamp createDate;		//创建时间
@@ -68,12 +66,14 @@ public class Paper extends PreEntity<Paper> {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	public Integer getTotalscore() {
-		return totalscore;
+
+	public BigDecimal getTotalScore() {
+		return totalScore;
 	}
 
-	public void setTotalscore(Integer totalscore) { this.totalscore = totalscore; }
+	public void setTotalScore(BigDecimal totalScore) {
+		this.totalScore = totalScore;
+	}
 
 	@Override
 	public String getStatus() {
