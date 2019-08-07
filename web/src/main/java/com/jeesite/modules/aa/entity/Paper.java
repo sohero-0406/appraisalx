@@ -39,8 +39,6 @@ public class Paper extends PreEntity<Paper> {
 	private String createBy;		//创建者
 	private Timestamp createDate;		//创建时间
 
-	private CarInfo carInfo;
-	
 	public Paper() {
 		this(null);
 	}
@@ -83,14 +81,6 @@ public class Paper extends PreEntity<Paper> {
 	@Override
 	public void setStatus(String status) {
 		this.status = status;
-	}
-
-	public CarInfo getCarInfo() {
-		return carInfo;
-	}
-
-	public void setCarInfo(CarInfo carInfo) {
-		this.carInfo = carInfo;
 	}
 
 	@Length(min=0, max=16, message="启用禁用状态长度不能超过 16 个字符")
