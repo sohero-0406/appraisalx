@@ -97,21 +97,12 @@ public class PlaceFileController extends BaseController {
 	}
 
 	/**
-	 *  待归档数据查询  考生传examUserId 老师传paperId  详细跟吕哥分析
-	 */
-	@RequestMapping(value = "getWaitingArchive")
-	@ResponseBody
-	public CommonResult getWaitingArchive(PictureUser pictureUser) {
-		CommonResult comRes = new CommonResult();
-		return comRes;
-	}
-
-	/**
 	 *  保存用户归档功能
 	 */
 	@RequestMapping(value = "saveArchive")
 	@ResponseBody
-	public CommonResult saveArchive(String pictureUserJson,String fileDuring,ExamUser examUser) {
+	public CommonResult saveArchive(String pictureUserJson,String fileDuring) {
+		ExamUser examUser = UserUtils.getExamUser();
 		CommonResult comRes = new CommonResult();
 		//判断 参数是否违规
 		if(StringUtils.isBlank(examUser.getId()) && StringUtils.isBlank(examUser.getPaperId())){
@@ -125,12 +116,12 @@ public class PlaceFileController extends BaseController {
 
 	/**
 	 * 用户 创建归档显示列表
-	 * @param examUser
 	 * @return
 	 */
 	@RequestMapping(value = "getPlaceFileList")
 	@ResponseBody
-	public CommonResult getPlaceFileList(ExamUser examUser) {
+	public CommonResult getPlaceFileList() {
+		ExamUser examUser  = UserUtils.getExamUser();
 		CommonResult comRes = new CommonResult();
 		//如果 同时存在考生id和试卷id 数据存在异常
 		if(StringUtils.isNotBlank(examUser.getId())&&StringUtils.isNotBlank(examUser.getPaperId())){

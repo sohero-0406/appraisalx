@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -252,10 +253,6 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         if (StringUtils.isNotBlank(carInfo.getUsage())){
             carInfo.setUsage(DictUtils.getDictLabel("aa_usage_type",carInfo.getUsage(),""));
         }
-        if (StringUtils.isNotBlank(carInfo.getRegisterDate())) {
-            String[] registerDateArr = carInfo.getRegisterDate().substring(0, 10).split("-");
-            carInfo.setRegisterDate(registerDateArr[0] + "年" + registerDateArr[1] + "月" + registerDateArr[2] + "日");
-        }
         appraisalReportVO.setCarInfo(carInfo);
 
         //车辆单证信息
@@ -340,11 +337,12 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
     /**
      * 整理报告内容
      */
-    public Map appraisalReportInfo(ExamUser examUser){
+    public Map appraisalReportInfo(ExamUser examUser) throws ParseException {
 
         Map<String,Object> returnMap = new HashMap<>();
         AppraisalReportVO appraisalReportVO = this.findAppraisalReport(examUser);
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+//        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+//        SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy年MM月dd日");
 
         returnMap.put("appraisalNum",appraisalReportVO.getDelegateUser().getAppraisalNum()); //评报字-数字（8位
         returnMap.put("appraisalDate",appraisalReportVO.getDelegateUser().getAppraisalDate());//评报字-时间
@@ -369,48 +367,65 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         returnMap.put("vinCode",carInfo.getVinCode()); //车辆识别代号／车架号
         returnMap.put("color",carInfo.getColor());
         returnMap.put("mileage",carInfo.getMileage()); //表征里程 (行驶里程)
-        returnMap.put("registerDate",carInfo.getRegisterDate());  //注册登记日期(初次登记日期) 见下
-
-        //returnMap.put("yearCheckDue",carInfo.getYearCheckDue());//年审检验合格有效期  见下
-        //returnMap.put(); //交强险截止日期
+        returnMap.put("registerDateYear","");  //注册登记日期(初次登记日期) 见下
+        returnMap.put("registerDateMonth","");
+        returnMap.put("registerDateDay","");
+        if (StringUtils.isNotBlank( carInfo.getRegisterDate())){
+            String[] registerDate = carInfo.getRegisterDate().substring(0, 10).split("-");
+            returnMap.replace("registerDateYear",registerDate[0]);
+            returnMap.replace("registerDateMonth",registerDate[1]);
+            returnMap.replace("registerDateDay",registerDate[2]);
+        }
         returnMap.put("check3",appraisalReportVO.getCheckTradableVehicles().getCheck3());//是否查封、抵押车辆
-        //returnMap.put("");
+
 
         //车船税截止日期
         returnMap.put("carTaxEndDateYear",""); //年
         returnMap.put("carTaxEndDateMonth","");//月
+        //交强险截止日期
+        returnMap.put("compulsoryInsuranceYear","");
+        returnMap.put("compulsoryInsuranceMonth","");
+        returnMap.put("compulsoryInsuranceDay","");
+
         // 车辆购置税（费）证
         returnMap.put("vehiclePurchaseTax","");
         // 机动车登记证书
         returnMap.put("vehicleRegistration","");
         // 机动车行驶证
         returnMap.put("vehicleLicense","");
-        SimpleDateFormat df = new SimpleDateFormat("yyyy");
-        SimpleDateFormat dfM = new SimpleDateFormat("MM");
-        SimpleDateFormat tfM = new SimpleDateFormat("dd");
         List<VehicleDocumentInfo> vehicleDocumentInfoList = appraisalReportVO.getVehicleDocumentInfolist();
         for(VehicleDocumentInfo vehicleDocumentInfo:vehicleDocumentInfoList){
             //车船税截止日期
-            if("3".equals(vehicleDocumentInfo.getProject())
+            if("3".equals(vehicleDocumentInfo.getProject()) && "1".equals(vehicleDocumentInfo.getState())
                     && StringUtils.isNotBlank(vehicleDocumentInfo.getValidity()) ){
-                returnMap.replace("carTaxEndDateYear",df.format(vehicleDocumentInfo.getValidity())); //年
-                returnMap.replace("carTaxEndDateMonth",dfM.format(vehicleDocumentInfo.getValidity()));//月
-                break;
+                String[] dateArray  = vehicleDocumentInfo.getValidity().substring(0,10).split("-");
+                returnMap.replace("carTaxEndDateYear",dateArray[0]); //年
+                returnMap.replace("carTaxEndDateMonth",dateArray[1]);//月
+                continue;
+            }
+            //交强险截止日期
+            if("4".equals(vehicleDocumentInfo.getProject())  && "1".equals(vehicleDocumentInfo.getState())
+                    && StringUtils.isNotBlank(vehicleDocumentInfo.getValidity()) ){
+                String[] dateArray = vehicleDocumentInfo.getValidity().substring(0,10).split("-");
+                returnMap.replace("compulsoryInsuranceYear",dateArray[0]); //年
+                returnMap.replace("compulsoryInsuranceMonth",dateArray[1]);//月
+                returnMap.replace("compulsoryInsuranceDay",dateArray[2]);//日
+                continue;
             }
             if("8".equals(vehicleDocumentInfo.getProject()) && StringUtils.isNotBlank(vehicleDocumentInfo.getState())){
                 // 车辆购置税（费）证
                 returnMap.replace("vehiclePurchaseTax",vehicleDocumentInfo.getState());
-                break;
+                continue;
             }
             //机动车登记证书
             if("2".equals(vehicleDocumentInfo.getProject()) && StringUtils.isNotBlank(vehicleDocumentInfo.getState())){
                 returnMap.replace("vehicleRegistration",vehicleDocumentInfo.getState());
-                break;
+                continue;
             }
             // 机动车行驶证
             if("1".equals(vehicleDocumentInfo.getProject()) && StringUtils.isNotBlank(vehicleDocumentInfo.getState())){
-                returnMap.put("vehicleLicense",vehicleDocumentInfo.getState());
-                break;
+                returnMap.replace("vehicleLicense",vehicleDocumentInfo.getState());
+                continue;
             }
         }
         returnMap.put("trafficIllegalRecord",appraisalReportVO.getCheckTradableVehicles().getTrafficIllegalRecord());//未接受处理的交通违法记录
@@ -430,28 +445,38 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         //计算过程
         returnMap.put("yearCheckDueYear","");
         returnMap.put("yearCheckDueMonth","");
+        //年检
+        if(StringUtils.isNotBlank(carInfo.getYearCheckDue())){
+            String[] dateArray = carInfo.getYearCheckDue().substring(0,10).split("-");
+            returnMap.replace("yearCheckDueYear",dateArray[0]);
+            returnMap.replace("yearCheckDueMonth",dateArray[1]);
+        }
 
-        returnMap.put("identifyYear","");
-        returnMap.put("identifyMonth","");
-        returnMap.put("identifyDay","");
-
-        returnMap.put("identifyAfterYear","");
-        returnMap.put("identifyAfterMonth","");
-        returnMap.put("identifyAfterDay","");
-
-        //交强险截止日期
-        returnMap.put("compulsoryInsuranceYear","");
-        returnMap.put("compulsoryInsuranceMonth","");
-        returnMap.put("compulsoryInsuranceDay","");
         //二手车鉴定评估机构盖章日期
         returnMap.put("appraiserDateYear","");
         returnMap.put("appraiserDateMonth","");
         returnMap.put("appraiserDateDay","");
 
+        if(StringUtils.isNotBlank(appraisalReportVO.getDelegateLetter().getAppraiserDate())){
+            String[] dateArray =appraisalReportVO.getDelegateLetter().getAppraiserDate().substring(0,10).split("-");
+            returnMap.replace("appraiserDateYear",dateArray[0]);
+            returnMap.replace("appraiserDateMonth",dateArray[1]);
+            returnMap.replace("appraiserDateDay",dateArray[2]);
+        }
+        //鉴定评估基准日
+        returnMap.put("identifyYear","");
+        returnMap.put("identifyMonth","");
+        returnMap.put("identifyDay","");
+        //鉴定评估基准日  加90天
+        returnMap.put("identifyAfterYear","");
+        returnMap.put("identifyAfterMonth","");
+        returnMap.put("identifyAfterDay","");
+
+
         //八、鉴定评估报告法律效力
         Date identifyDate;
         Date identifyAfterDate ;
-        Date yearCheckDueDate ;
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         try{
             if(StringUtils.isNotBlank(appraisalReportVO.getVehicleGradeAssess().getIdentifyDate())){
                 identifyDate  = formatter.parse(appraisalReportVO.getVehicleGradeAssess().getIdentifyDate());
@@ -466,16 +491,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
                 returnMap.replace("identifyAfterMonth",String.format("%tm", identifyAfterDate));
                 returnMap.replace("identifyAfterDay",String.format("%td", identifyAfterDate));
             }
-            if(StringUtils.isNotBlank(appraisalReportVO.getDelegateLetter().getAppraiserDate())){
-                returnMap.replace("appraiserDateYear",df.format(appraisalReportVO.getDelegateLetter().getAppraiserDate()));
-                returnMap.replace("appraiserDateMonth",dfM.format(appraisalReportVO.getDelegateLetter().getAppraiserDate()));
-                returnMap.replace("appraiserDateDay",tfM.format(appraisalReportVO.getDelegateLetter().getAppraiserDate()));
-            }
-            if(StringUtils.isNotBlank(carInfo.getYearCheckDue())){
-                yearCheckDueDate = formatter.parse(carInfo.getYearCheckDue());
-                returnMap.replace("yearCheckDueYear",String.format("%tY",yearCheckDueDate));
-                returnMap.replace("yearCheckDueMonth",String.format("%tm",yearCheckDueDate));
-            }
+
         }catch (Exception e){
             logger.warn("时间转换异常!--用户id为"+examUser.getUserId()+"--，生成鉴定报告异常");
         }
@@ -489,15 +505,12 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
 
 
 
-
-
-
     /***
      * 生成鉴定报告
      * 生成鉴定评估报告
      */
     @Transactional
-    public void generateLetter(ExamUser examUser) {
+    public void generateLetter(ExamUser examUser) throws ParseException {
 
         Map<String,String> reportMap = this.appraisalReportInfo(examUser);
         DelegateUser delegateUser = new DelegateUser();
@@ -508,7 +521,6 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         try{
             WordExport changer = new WordExport();
             String fileName = "E:/word.docx";
-            System.out.println(fileName);
             changer.setTemplate(fileName);
             Map<String, String> content = new HashMap<String, String>();
 
@@ -539,8 +551,12 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
             content.put("vinCode",reportMap.get("vinCode"));
             content.put("color",reportMap.get("color"));
             content.put("mileage",reportMap.get("mileage"));
+
+
             //注册登记日期
-            content.put("registerDate",reportMap.get("registerDate"));
+            content.put("registerDateYear",reportMap.get("registerDateYear"));
+            content.put("registerDateMonth",reportMap.get("registerDateMonth"));
+            content.put("registerDateDay",reportMap.get("registerDateDay"));
 
             //年审检验合格
             content.put("yearCheckDueYear",reportMap.get("yearCheckDueYear"));

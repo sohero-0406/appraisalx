@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.ParseException;
 
 /**
  * 委托书信息Controller
@@ -144,7 +145,7 @@ public class DelegateLetterController extends BaseController {
 	 */
 	@RequestMapping(value = "findAppraisalReport")
 	@ResponseBody
-	public CommonResult findAppraisalReport() {
+	public CommonResult findAppraisalReport() throws ParseException {
 		ExamUser examUser = UserUtils.getExamUser();
 		CommonResult comRes = new CommonResult();
 		comRes.setData(delegateLetterService.appraisalReportInfo(examUser));
@@ -158,7 +159,7 @@ public class DelegateLetterController extends BaseController {
 	 */
 	@RequestMapping(value = "generateAppraisalReport")
 	@ResponseBody
-	public CommonResult generateAppraisalReport() {
+	public CommonResult generateAppraisalReport() throws ParseException {
 		ExamUser examUser = UserUtils.getExamUser();
 		CommonResult comRes = new CommonResult();
 		delegateLetterService.generateLetter(examUser);

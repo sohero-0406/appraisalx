@@ -125,11 +125,12 @@ public class OperationLogController extends BaseController {
 		if(StringUtils.isNotBlank(keyword)){
 			keyword = keyword.replace(".","-");
 		}
-		comRes.setData(operationLogService.getOperationLog(keyword));
 		List<OperationLog> list = operationLogService.getOperationLog(keyword);
 		String fileName = "操作日志" + DateUtils.getDate("yyyyMMddHHmmss") + ".xlsx";
 		try(ExcelExport ee = new ExcelExport("操作日志", OperationLog.class)) {
 			ee.setDataList(list).write(response, fileName);
+		}catch (Exception e){
+			logger.warn("教师端日志导出异常!");
 		}
 	}
 

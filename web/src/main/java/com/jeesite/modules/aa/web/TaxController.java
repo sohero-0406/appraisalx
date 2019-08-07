@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * 税率表Controller
@@ -38,7 +39,7 @@ public class TaxController extends BaseController {
 	/**
 	 * 获取数据
 	 */
-	@ModelAttribute
+//	@ModelAttribute
 	public Tax get(String id, boolean isNewRecord) {
 		return taxService.get(id, isNewRecord);
 	}
@@ -92,6 +93,25 @@ public class TaxController extends BaseController {
 		return renderResult(Global.TRUE, text("删除税率表成功！"));
 	}
 
+	/**
+	 *  加载税率基数
+	 */
+	@RequestMapping(value = "getTex")
+	@ResponseBody
+	public CommonResult getTex(Tax tax) {
+		CommonResult comRes = new CommonResult();
+		List<Tax> taxList = taxService.findList(tax);
+		if(taxList.size()<=0){
+			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+			comRes.setMsg("请求参数异常!");
+			return comRes;
+		}
+		Tax taxModel = taxList.get(0);
+		comRes.setData(taxModel);
+		return comRes;
+	}
+
+
 	@PostMapping(value = "saveTax")
 	@ResponseBody
 	public CommonResult saveTax(Tax tax) {
@@ -111,6 +131,14 @@ public class TaxController extends BaseController {
 			comRes.setMsg("增值税税率不能为空");
 			return comRes;
 		}
+		Tax taxExist = new Tax();
+		taxExist.setId(tax.getId());
+		if(null==taxService.getByEntity(taxExist)){
+			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+			comRes.setMsg("请求参数异常");
+			return comRes;
+		}
+
 		//验证是否出现多条数据
 		Tax taxTest = new Tax();
 		int len = taxService.findList(taxTest).size();
