@@ -6,25 +6,17 @@ package com.jeesite.modules.common.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.jeesite.modules.common.entity.Maintenance;
-import com.jeesite.modules.common.entity.VehicleDanger;
-import com.jeesite.modules.common.entity.VehicleDangerDetail;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
+import com.jeesite.common.constant.CodeConstant;
+import com.jeesite.modules.common.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.jeesite.common.config.Global;
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.web.BaseController;
-import com.jeesite.modules.common.entity.VehicleDangerTotal;
 import com.jeesite.modules.common.service.VehicleDangerTotalService;
 
 /**
@@ -98,34 +90,52 @@ public class VehicleDangerTotalController extends BaseController {
     }
 
     /**
-     * @param
-     * @return
+     * @description: 加载出险记录全表
+     * @param: []
+     * @return: com.jeesite.modules.common.entity.CommonResult
+     * @author: Jiangyf
+     * @date: 2019/8/6
+     * @time: 14:26
      */
-    @RequestMapping(value = "total")
+    @RequestMapping(value = "findVehicleDangerTotalList")
     @ResponseBody
-    public String total(String aaa) {
-
-        JSONObject obj = JSONObject.parseObject(aaa);
-        JSONObject resultJson = obj.getJSONObject("result");
-        JSONObject dataJson = resultJson.getJSONObject("data");
-        JSONObject detailsJson = dataJson.getJSONObject("details");
-        JSONArray recordsArray = detailsJson.getJSONArray("records");
-        String vehicleDangerTotalString = detailsJson.toJSONString();
-        //声明车辆出险总表实体类
-        VehicleDangerTotal vehicleDangerTotal = JSONObject.parseObject(vehicleDangerTotalString, VehicleDangerTotal.class);
-        int recordsArrayLen = recordsArray.size();
-        if (recordsArrayLen > 0) {
-            //获取车架号
-            vehicleDangerTotal.setVinCode((String) ((JSONObject) recordsArray.get(0)).get("vin"));
-            //获取车辆类型
-            vehicleDangerTotal.setVehicleType((String) ((JSONObject) recordsArray.get(0)).get("vehicle_Type"));
-        }
-        //车辆出险总表保存
-        vehicleDangerTotalService.save(vehicleDangerTotal);
-        //保存 出险记录详情表与车辆出险记录表
-        vehicleDangerTotalService.saveVehicleDangerAndDetail(recordsArray, vehicleDangerTotal);
-        return "成功";
+    public CommonResult findVehicleDangerTotalList() {
+        CommonResult comRes = new CommonResult();
+        comRes.setData(vehicleDangerTotalService.findList(new VehicleDangerTotal()));
+        return comRes;
     }
 
+    /**
+    * @description: 加载已保存出险记录(编辑时调用)
+    * @param: [vehicleDangerTotal]
+    * @return: com.jeesite.modules.common.entity.CommonResult
+    * @author: Jiangyf
+    * @date: 2019/8/7
+    * @time: 14:09
+    */
+    @RequestMapping(value = "findSavedVehicleDanger")
+    @ResponseBody
+    public CommonResult findSavedVehicleDanger(VehicleDangerTotal vehicleDangerTotal) {
+        if (null == vehicleDangerTotal.getId()) {
+            return new CommonResult(CodeConstant.REQUEST_FAILED, "参数为空");
+        }
+        return vehicleDangerTotalService.findSavedVehicleDanger(vehicleDangerTotal);
+    }
 
+    /**
+     * @description: 删除出险记录
+     * @param: [vehicleDangerTotal]
+     * @return: com.jeesite.modules.common.entity.CommonResult
+     * @author: Jiangyf
+     * @date: 2019/8/6
+     * @time: 17:30
+     */
+    @RequestMapping(value = "deleteVehicleDanger")
+    @ResponseBody
+    public CommonResult deleteVehicleDanger(VehicleDangerTotal vehicleDangerTotal) {
+        if (null == vehicleDangerTotal.getId()) {
+            return new CommonResult(CodeConstant.REQUEST_FAILED, "参数为空");
+        }
+        return vehicleDangerTotalService.deleteVehicleDanger(vehicleDangerTotal, true);
+    }
 }

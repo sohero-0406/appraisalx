@@ -24,8 +24,8 @@ import com.jeesite.modules.common.service.MaintenanceTypeService;
 
 /**
  * common_maintenance_typeController
- * @author liangtao
- * @version 2019-07-26
+ * @author jiangyanfei
+ * @version 2019-08-05
  */
 @Controller
 @RequestMapping(value = "${adminPath}/common/maintenanceType")
@@ -45,6 +45,7 @@ public class MaintenanceTypeController extends BaseController {
 	/**
 	 * 查询列表
 	 */
+	@RequiresPermissions("common:maintenanceType:view")
 	@RequestMapping(value = {"list", ""})
 	public String list(MaintenanceType maintenanceType, Model model) {
 		model.addAttribute("maintenanceType", maintenanceType);
@@ -54,6 +55,7 @@ public class MaintenanceTypeController extends BaseController {
 	/**
 	 * 查询列表数据
 	 */
+	@RequiresPermissions("common:maintenanceType:view")
 	@RequestMapping(value = "listData")
 	@ResponseBody
 	public Page<MaintenanceType> listData(MaintenanceType maintenanceType, HttpServletRequest request, HttpServletResponse response) {
@@ -65,6 +67,7 @@ public class MaintenanceTypeController extends BaseController {
 	/**
 	 * 查看编辑表单
 	 */
+	@RequiresPermissions("common:maintenanceType:view")
 	@RequestMapping(value = "form")
 	public String form(MaintenanceType maintenanceType, Model model) {
 		model.addAttribute("maintenanceType", maintenanceType);
@@ -74,6 +77,7 @@ public class MaintenanceTypeController extends BaseController {
 	/**
 	 * 保存common_maintenance_type
 	 */
+	@RequiresPermissions("common:maintenanceType:edit")
 	@PostMapping(value = "save")
 	@ResponseBody
 	public String save(@Validated MaintenanceType maintenanceType) {
@@ -84,6 +88,7 @@ public class MaintenanceTypeController extends BaseController {
 	/**
 	 * 删除common_maintenance_type
 	 */
+	@RequiresPermissions("common:maintenanceType:edit")
 	@RequestMapping(value = "delete")
 	@ResponseBody
 	public String delete(MaintenanceType maintenanceType) {

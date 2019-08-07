@@ -6,6 +6,7 @@ package com.jeesite.modules.common.dao;
 import com.jeesite.common.dao.CrudDao;
 import com.jeesite.common.mybatis.annotation.MyBatisDao;
 import com.jeesite.modules.common.entity.VehicleDangerTotal;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 车辆出险总表DAO接口
@@ -14,5 +15,5 @@ import com.jeesite.modules.common.entity.VehicleDangerTotal;
  */
 @MyBatisDao
 public interface VehicleDangerTotalDao extends CrudDao<VehicleDangerTotal> {
-	
+
 }

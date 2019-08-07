@@ -10,7 +10,6 @@ import com.jeesite.modules.aa.entity.Reference;
 import com.jeesite.modules.aa.vo.ReferenceVO;
 import com.jeesite.modules.sys.entity.DictData;
 import com.jeesite.modules.sys.utils.DictUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,106 +17,109 @@ import java.util.List;
 
 /**
  * 参照物表Service
+ *
  * @author lvchangwei
  * @version 2019-07-16
  */
 @Service
-@Transactional(readOnly=true)
+@Transactional(readOnly = true)
 public class ReferenceService extends CrudService<ReferenceDao, Reference> {
 
-	
-	/**
-	 * 获取单条数据
-	 * @param reference
-	 * @return
-	 */
-	@Override
-	public Reference get(Reference reference) {
-		return super.get(reference);
-	}
-	
-	/**
-	 * 查询分页数据
-	 * @param reference 查询条件
-	 * @return
-	 */
-	@Override
-	public Page<Reference> findPage(Reference reference) {
-		return super.findPage(reference);
-	}
-	
-	/**
-	 * 保存数据（插入或更新）
-	 * @param reference
-	 */
-	@Override
-	@Transactional(readOnly=false)
-	public void save(Reference reference) {
-		super.save(reference);
-	}
-	
-	/**
-	 * 更新状态
-	 * @param reference
-	 */
-	@Override
-	@Transactional(readOnly=false)
-	public void updateStatus(Reference reference) {
-		super.updateStatus(reference);
-	}
-	
-	/**
-	 * 删除数据
-	 * @param reference
-	 */
-	@Override
-	@Transactional(readOnly=false)
-	public void delete(Reference reference) {
-		super.delete(reference);
-	}
+    /**
+     * 获取单条数据
+     *
+     * @param reference
+     * @return
+     */
+    @Override
+    public Reference get(Reference reference) {
+        return super.get(reference);
+    }
 
-	/**
-	 * 初始化参照物
-	 */
-	public ReferenceVO initReference(Reference reference) {
+    /**
+     * 查询分页数据
+     *
+     * @param reference 查询条件
+     * @return
+     */
+    @Override
+    public Page<Reference> findPage(Reference reference) {
+        return super.findPage(reference);
+    }
 
-		ReferenceVO referenceVO = new ReferenceVO();
-		//加载车辆配置类型
-		List<DictData> vehicleConfigurationTypeList = DictUtils.getDictList("aa_vehicle_configuration_type");
-		referenceVO.setVehicleConfigurationTypeList(vehicleConfigurationTypeList);
+    /**
+     * 保存数据（插入或更新）
+     *
+     * @param reference
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public void save(Reference reference) {
+        super.save(reference);
+    }
 
-		//加载发动机类型
-		List<DictData> engineTypeList = DictUtils.getDictList("aa_engine_type");
-		referenceVO.setEngineTypeList(engineTypeList);
+    /**
+     * 更新状态
+     *
+     * @param reference
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public void updateStatus(Reference reference) {
+        super.updateStatus(reference);
+    }
 
-		//加载变速箱类型
-		List<DictData> gearboxTypeList = DictUtils.getDictList("aa_gearbox_type");
-		referenceVO.setGearboxTypeList(gearboxTypeList);
+    /**
+     * 删除数据
+     *
+     * @param reference
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public void delete(Reference reference) {
+        super.delete(reference);
+    }
 
-		//加载环保标准
-		List<DictData> environmentalStandardList = DictUtils.getDictList("aa_environmental_standard");
-		referenceVO.setEnvironmentalStandardList(environmentalStandardList);
+    /**
+     * 初始化参照物
+     */
+    public ReferenceVO initReference(Reference reference) {
 
-		//加载付款方式
-		List<DictData> paymentMethodList = DictUtils.getDictList("aa_payment_method");
-		referenceVO.setPaymentMethodList(paymentMethodList);
+        ReferenceVO referenceVO = new ReferenceVO();
+        //加载车辆配置类型
+        List<DictData> vehicleConfigurationTypeList = DictUtils.getDictList("aa_vehicle_configuration_type");
+        referenceVO.setVehicleConfigurationTypeList(vehicleConfigurationTypeList);
 
-		referenceVO.setReference(this.get(reference));
-		return referenceVO;
+        //加载发动机类型
+        List<DictData> engineTypeList = DictUtils.getDictList("aa_engine_type");
+        referenceVO.setEngineTypeList(engineTypeList);
 
-	}
+        //加载变速箱类型
+        List<DictData> gearboxTypeList = DictUtils.getDictList("aa_gearbox_type");
+        referenceVO.setGearboxTypeList(gearboxTypeList);
 
-	/**
-	 *  删除 真删
-	 */
-	@Transactional(readOnly=false)
-	public void deleteReference(String referenceIdList){
-		String[] idList = referenceIdList.split(",");
-		Reference reference = new Reference();
-		for(String id:idList){
-			reference.setId(id);
-			dao.phyDelete(reference);
-		}
-	}
+        //加载环保标准
+        List<DictData> environmentalStandardList = DictUtils.getDictList("aa_environmental_standard");
+        referenceVO.setEnvironmentalStandardList(environmentalStandardList);
 
+        //加载付款方式
+        List<DictData> paymentMethodList = DictUtils.getDictList("aa_payment_method");
+        referenceVO.setPaymentMethodList(paymentMethodList);
+
+        referenceVO.setReference(this.get(reference));
+        return referenceVO;
+    }
+
+    /**
+     * 删除 真删
+     */
+    @Transactional(readOnly = false)
+    public void deleteReference(String referenceIdList) {
+        String[] idList = referenceIdList.split(",");
+        Reference reference = new Reference();
+        for (String id : idList) {
+            reference.setId(id);
+            dao.phyDelete(reference);
+        }
+    }
 }

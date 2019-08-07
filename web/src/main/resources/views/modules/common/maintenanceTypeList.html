@@ -64,6 +64,12 @@
 					</div>
 				</div>
 				<div class="form-group">
+					<label class="control-label">${text('维修材料')}：</label>
+					<div class="control-inline">
+						<#form:input path="material" maxlength="255" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
 					<label class="control-label">${text('状态')}：</label>
 					<div class="control-inline width-120">
 						<#form:select path="status" dictType="sys_search_status" blankOption="true" class="form-control"/>
@@ -101,6 +107,7 @@ $('#dataGrid').dataGrid({
 		{header:'${text("type")}', name:'type', index:'a.type', width:150, align:"left"},
 		{header:'${text("维修详细内容")}', name:'content', index:'a.content', width:150, align:"left"},
 		{header:'${text("外观覆盖件详细维修记录,重要组成部件详细维修记录,该车所有的详细维修记录")}', name:'maintenanceType', index:'a.maintenance_type', width:150, align:"left"},
+		{header:'${text("维修材料")}', name:'material', index:'a.material', width:150, align:"left"},
 		{header:'${text("状态")}', name:'status', index:'a.status', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_search_status')}, val, '${text("未知")}', true);
 		}},

@@ -11,5 +11,31 @@
 		</where>
 		ORDER BY ${sqlMap.order.toSql()}
 	</select> -->
-	
+
+    <select id="findVehicleDangerDetail" resultType="com.jeesite.modules.common.entity.VehicleDangerDetail">
+        SELECT
+            id,
+            common_vehicle_danger_id,
+            ( SELECT dict_label FROM js_sys_dict_data jsdd WHERE jsdd.dict_type = 'aa_claim_type' AND jsdd.dict_value = cvdd.danger_single_type ) AS danger_single_type,
+            danger_single_name,
+            danger_single_money
+        FROM
+            common_vehicle_danger_detail cvdd
+            WHERE common_vehicle_danger_id = #{vehicleDangerDetail.commonVehicleDangerId}
+    </select>
+    <select id="findListByVehicleDangers" resultType="com.jeesite.modules.common.entity.VehicleDangerDetail">
+        SELECT
+            id,
+            common_vehicle_danger_id,
+            danger_single_type,
+            danger_single_name,
+            danger_single_money
+        FROM
+            common_vehicle_danger_detail
+        WHERE
+            common_vehicle_danger_id in 
+            <foreach collection="vehicleDangers" open="(" close=")" separator="," item="vehicleDanger">
+                #{vehicleDanger.id}
+            </foreach>
+    </select>
 </mapper>

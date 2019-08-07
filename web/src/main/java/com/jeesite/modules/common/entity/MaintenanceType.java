@@ -12,8 +12,8 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 
 /**
  * common_maintenance_typeEntity
- * @author liangtao
- * @version 2019-07-26
+ * @author jiangyanfei
+ * @version 2019-08-05
  */
 @Table(name="common_maintenance_type", alias="a", columns={
 		@Column(name="id", attrName="id", label="id", isPK=true),
@@ -24,10 +24,11 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 		@Column(name="type", attrName="type", label="type"),
 		@Column(name="content", attrName="content", label="维修详细内容"),
 		@Column(name="maintenance_type", attrName="maintenanceType", label="外观覆盖件详细维修记录,重要组成部件详细维修记录,该车所有的详细维修记录"),
+		@Column(name="material", attrName="material", label="维修材料"),
 		@Column(includeEntity=DataEntity.class),
 	}, orderBy="a.update_date DESC"
 )
-public class MaintenanceType extends PreEntity<MaintenanceType> {
+public class MaintenanceType extends DataEntity<MaintenanceType> {
 	
 	private static final long serialVersionUID = 1L;
 	private String maintenanceId;		// 维保记录主键
@@ -37,6 +38,7 @@ public class MaintenanceType extends PreEntity<MaintenanceType> {
 	private String type;		// type
 	private String content;		// 维修详细内容
 	private String maintenanceType;		// 外观覆盖件详细维修记录,重要组成部件详细维修记录,该车所有的详细维修记录
+	private String material;		// 维修材料
 	
 	public MaintenanceType() {
 		this(null);
@@ -107,6 +109,15 @@ public class MaintenanceType extends PreEntity<MaintenanceType> {
 
 	public void setMaintenanceType(String maintenanceType) {
 		this.maintenanceType = maintenanceType;
+	}
+	
+	@Length(min=0, max=255, message="维修材料长度不能超过 255 个字符")
+	public String getMaterial() {
+		return material;
+	}
+
+	public void setMaterial(String material) {
+		this.material = material;
 	}
 	
 }

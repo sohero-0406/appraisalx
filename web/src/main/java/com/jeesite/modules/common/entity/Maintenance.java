@@ -12,19 +12,22 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 
 /**
  * 车辆维保记录Entity
- * @author liangtao
- * @version 2019-07-12
+ * @author jiangyanfei
+ * @version 2019-08-05
  */
 @Table(name="common_maintenance", alias="a", columns={
 		@Column(name="id", attrName="id", label="主键，车辆维保记录表", isPK=true),
 		@Column(name="result_code", attrName="resultCode", label="二级编码"),
 		@Column(name="result_msg", attrName="resultMsg", label="二级编码描述"),
 		@Column(name="brand", attrName="brand", label="品牌"),
+		@Column(name="maintenance_total_id", attrName="maintenanceTotalId", label="维保总表记录主键"),
 		@Column(name="model_name", attrName="modelName", label="车型", queryType=QueryType.LIKE),
 		@Column(name="series_name", attrName="seriesName", label="车系", queryType=QueryType.LIKE),
 		@Column(name="vin", attrName="vin", label="vin码"),
 		@Column(name="manufacturer", attrName="manufacturer", label="生产厂商"),
+		@Column(name="service_type", attrName="serviceType", label="维保类型", comment="维保类型(维修、保养)"),
 		@Column(name="make_date", attrName="makeDate", label="生产年份"),
+		@Column(name="service_date", attrName="serviceDate", label="维保时间"),
 		@Column(name="transmission_type", attrName="transmissionType", label="变速箱类型"),
 		@Column(name="displacement", attrName="displacement", label="排量"),
 		@Column(name="effluent_standard", attrName="effluentStandard", label="排放标准"),
@@ -39,19 +42,23 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 		@Column(name="main_tain_times", attrName="mainTainTimes", label="每年保养次数"),
 		@Column(name="last_repair_time", attrName="lastRepairTime", label="最后一次维修时间"),
 		@Column(name="mileage_every_year", attrName="mileageEveryYear", label="每年行驶公里数"),
-	}, orderBy="a.id DESC"
+		@Column(includeEntity=DataEntity.class),
+	}, orderBy="a.update_date DESC"
 )
-public class Maintenance extends PreEntity<Maintenance> {
+public class Maintenance extends DataEntity<Maintenance> {
 	
 	private static final long serialVersionUID = 1L;
 	private String resultCode;		// 二级编码
 	private String resultMsg;		// 二级编码描述
 	private String brand;		// 品牌
+	private String maintenanceTotalId;		// 维保总表记录主键
 	private String modelName;		// 车型
 	private String seriesName;		// 车系
 	private String vin;		// vin码
 	private String manufacturer;		// 生产厂商
+	private String serviceType;		// 维保类型(维修、保养)
 	private String makeDate;		// 生产年份
+	private String serviceDate;		// 维保时间
 	private String transmissionType;		// 变速箱类型
 	private String displacement;		// 排量
 	private String effluentStandard;		// 排放标准
@@ -102,6 +109,15 @@ public class Maintenance extends PreEntity<Maintenance> {
 		this.brand = brand;
 	}
 	
+	@Length(min=0, max=64, message="维保总表记录主键长度不能超过 64 个字符")
+	public String getMaintenanceTotalId() {
+		return maintenanceTotalId;
+	}
+
+	public void setMaintenanceTotalId(String maintenanceTotalId) {
+		this.maintenanceTotalId = maintenanceTotalId;
+	}
+	
 	@Length(min=0, max=64, message="车型长度不能超过 64 个字符")
 	public String getModelName() {
 		return modelName;
@@ -138,6 +154,15 @@ public class Maintenance extends PreEntity<Maintenance> {
 		this.manufacturer = manufacturer;
 	}
 	
+	@Length(min=0, max=64, message="维保类型长度不能超过 64 个字符")
+	public String getServiceType() {
+		return serviceType;
+	}
+
+	public void setServiceType(String serviceType) {
+		this.serviceType = serviceType;
+	}
+	
 	@Length(min=0, max=32, message="生产年份长度不能超过 32 个字符")
 	public String getMakeDate() {
 		return makeDate;
@@ -145,6 +170,15 @@ public class Maintenance extends PreEntity<Maintenance> {
 
 	public void setMakeDate(String makeDate) {
 		this.makeDate = makeDate;
+	}
+	
+	@Length(min=0, max=32, message="维保时间长度不能超过 32 个字符")
+	public String getServiceDate() {
+		return serviceDate;
+	}
+
+	public void setServiceDate(String serviceDate) {
+		this.serviceDate = serviceDate;
 	}
 	
 	@Length(min=0, max=64, message="变速箱类型长度不能超过 64 个字符")

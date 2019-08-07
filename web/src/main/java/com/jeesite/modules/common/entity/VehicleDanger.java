@@ -28,7 +28,20 @@ public class VehicleDanger extends PreEntity<VehicleDanger> {
 	private String commonVehicleDangerTotalId;		// 车辆出险总记录表id
 	private String dangerDate;		// 出险日期
 	private String serviceMoney;		// 维修金额（单位：分）
-	
+
+	/**
+	 * 数据库不存在字段 显示对象用
+	 */
+	private String vin;
+
+	public String getVin() {
+		return vin;
+	}
+
+	public void setVin(String vin) {
+		this.vin = vin;
+	}
+
 	public VehicleDanger() {
 		this(null);
 	}

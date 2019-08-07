@@ -11,5 +11,50 @@
 		</where>
 		ORDER BY ${sqlMap.order.toSql()}
 	</select> -->
-	
+
+
+    <select id="findMaintenance" resultType="com.jeesite.modules.common.entity.Maintenance">
+        SELECT
+            id,
+            ( SELECT dict_label FROM js_sys_dict_data jsdd WHERE dict_type = 'aa_maintenance_type' AND jsdd.dict_value = cm.service_type ) AS service_type,
+            service_date,
+            maintenance_total_id
+        FROM
+            common_maintenance cm
+        where
+            cm.maintenance_total_id = #{maintenance.maintenanceTotalId}
+    </select>
+    <select id="findMaintenanceDetail" resultType="com.jeesite.modules.common.entity.Maintenance">
+        SELECT
+            id,
+            result_code,
+            result_msg,
+            maintenance_total_id,
+            ( SELECT dict_label FROM js_sys_dict_data jsdd WHERE dict_type = 'aa_maintenance_type' AND jsdd.dict_value = cm.service_type ) AS service_type,
+            service_date,
+            brand,
+            model_name,
+            series_name,
+            vin,
+            manufacturer,
+            make_date,
+            transmission_type,
+            displacement,
+            effluent_standard,
+            ( SELECT dict_label FROM js_sys_dict_data jsdd WHERE dict_type = 'sys_yes_no' AND jsdd.dict_value = cm.car_fire_flag ) AS car_fire_flag,
+            ( SELECT dict_label FROM js_sys_dict_data jsdd WHERE dict_type = 'sys_yes_no' AND jsdd.dict_value = cm.car_fire_flag ) AS car_water_flag,
+            ( SELECT dict_label FROM js_sys_dict_data jsdd WHERE dict_type = 'sys_yes_no' AND jsdd.dict_value = cm.car_fire_flag ) AS car_component_records_flag,
+            ( SELECT dict_label FROM js_sys_dict_data jsdd WHERE dict_type = 'sys_yes_no' AND jsdd.dict_value = cm.car_fire_flag ) AS car_construct_records_flag,
+            ( SELECT dict_label FROM js_sys_dict_data jsdd WHERE dict_type = 'sys_yes_no' AND jsdd.dict_value = cm.car_fire_flag ) AS car_outside_records_flag,
+            ( SELECT dict_label FROM js_sys_dict_data jsdd WHERE dict_type = 'sys_yes_no' AND jsdd.dict_value = cm.car_fire_flag ) AS mileage_is_normal_flag,
+            mileage_estimate,
+            last_main_tain_time,
+            main_tain_times,
+            last_repair_time,
+            mileage_every_year
+        FROM
+            common_maintenance cm
+        WHERE
+            cm.id = #{maintenance.id}
+    </select>
 </mapper>

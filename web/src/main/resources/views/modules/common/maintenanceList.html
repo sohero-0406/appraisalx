@@ -34,6 +34,12 @@
 					</div>
 				</div>
 				<div class="form-group">
+					<label class="control-label">${text('维保总表记录主键')}：</label>
+					<div class="control-inline">
+						<#form:input path="maintenanceTotalId" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
 					<label class="control-label">${text('车型')}：</label>
 					<div class="control-inline">
 						<#form:input path="modelName" maxlength="64" class="form-control width-120"/>
@@ -58,9 +64,21 @@
 					</div>
 				</div>
 				<div class="form-group">
+					<label class="control-label">${text('维保类型')}：</label>
+					<div class="control-inline">
+						<#form:input path="serviceType" maxlength="64" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
 					<label class="control-label">${text('生产年份')}：</label>
 					<div class="control-inline">
 						<#form:input path="makeDate" maxlength="32" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('维保时间')}：</label>
+					<div class="control-inline">
+						<#form:input path="serviceDate" maxlength="32" class="form-control width-120"/>
 					</div>
 				</div>
 				<div class="form-group">
@@ -148,6 +166,18 @@
 					</div>
 				</div>
 				<div class="form-group">
+					<label class="control-label">${text('状态')}：</label>
+					<div class="control-inline width-120">
+						<#form:select path="status" dictType="sys_search_status" blankOption="true" class="form-control"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label">${text('备注信息')}：</label>
+					<div class="control-inline">
+						<#form:input path="remarks" maxlength="500" class="form-control width-120"/>
+					</div>
+				</div>
+				<div class="form-group">
 					<button type="submit" class="btn btn-primary btn-sm">${text('查询')}</button>
 					<button type="reset" class="btn btn-default btn-sm">${text('重置')}</button>
 				</div>
@@ -168,11 +198,14 @@ $('#dataGrid').dataGrid({
 		}},
 		{header:'${text("二级编码描述")}', name:'resultMsg', index:'a.result_msg', width:150, align:"left"},
 		{header:'${text("品牌")}', name:'brand', index:'a.brand', width:150, align:"left"},
+		{header:'${text("维保总表记录主键")}', name:'maintenanceTotalId', index:'a.maintenance_total_id', width:150, align:"left"},
 		{header:'${text("车型")}', name:'modelName', index:'a.model_name', width:150, align:"left"},
 		{header:'${text("车系")}', name:'seriesName', index:'a.series_name', width:150, align:"left"},
 		{header:'${text("vin码")}', name:'vin', index:'a.vin', width:150, align:"left"},
 		{header:'${text("生产厂商")}', name:'manufacturer', index:'a.manufacturer', width:150, align:"left"},
+		{header:'${text("维保类型")}', name:'serviceType', index:'a.service_type', width:150, align:"left"},
 		{header:'${text("生产年份")}', name:'makeDate', index:'a.make_date', width:150, align:"left"},
+		{header:'${text("维保时间")}', name:'serviceDate', index:'a.service_date', width:150, align:"left"},
 		{header:'${text("变速箱类型")}', name:'transmissionType', index:'a.transmission_type', width:150, align:"left"},
 		{header:'${text("排量")}', name:'displacement', index:'a.displacement', width:150, align:"left"},
 		{header:'${text("排放标准")}', name:'effluentStandard', index:'a.effluent_standard', width:150, align:"left"},
@@ -187,6 +220,11 @@ $('#dataGrid').dataGrid({
 		{header:'${text("每年保养次数")}', name:'mainTainTimes', index:'a.main_tain_times', width:150, align:"left"},
 		{header:'${text("最后一次维修时间")}', name:'lastRepairTime', index:'a.last_repair_time', width:150, align:"left"},
 		{header:'${text("每年行驶公里数")}', name:'mileageEveryYear', index:'a.mileage_every_year', width:150, align:"left"},
+		{header:'${text("状态")}', name:'status', index:'a.status', width:150, align:"center", formatter: function(val, obj, row, act){
+			return js.getDictLabel(${@DictUtils.getDictListJson('sys_search_status')}, val, '${text("未知")}', true);
+		}},
+		{header:'${text("更新时间")}', name:'updateDate', index:'a.update_date', width:150, align:"center"},
+		{header:'${text("备注信息")}', name:'remarks', index:'a.remarks', width:150, align:"left"},
 		{header:'${text("操作")}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
 			var actions = [];
 			<% if(hasPermi('common:maintenance:edit')){ %>
