@@ -99,15 +99,15 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 	 *  keyword 搜索关键字
 	 */
 	@Transactional(readOnly=false)
-	public List<Exam> getExamInfo(String keyword) {
-		return dao.getExamInfo(keyword);
+	public List<Exam> getExamInfo(String keyword,String type) {
+		return dao.getExamInfo(keyword,type);
 	}
 
 	/**
-	 *  保存考试功能
+	 *  保存、修改  考试/练习功能
 	 */
 	@Transactional(readOnly=false)
-	public CommonResult saveExamInfo(ExamVO examVO, String examScoreJson) {
+	public CommonResult  saveExamInfo(ExamVO examVO, String examScoreJson) {
 		CommonResult comRes = new CommonResult();
 		Exam exam = examVO.getExam();
 		if(null==exam){
@@ -115,7 +115,13 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 			comRes.setMsg("请输入考试信息");
 			return comRes;
 		}
-		if(!StringUtils.isNotBlank(exam.getPaperId())){
+		//如果考试类型为空 或者考试类型参数不符合规范 都定义为保存考试失败
+		if(StringUtils.isBlank(exam.getType()) && ((!("1".equals(exam.getType()))) || (!("2".equals(exam.getType()))))){
+			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);//请求参数有误
+			comRes.setMsg("请求参数异常");
+			return comRes;
+		}
+		if(StringUtils.isBlank(exam.getPaperId())){
 			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);//请求参数有误
 			comRes.setMsg("请选择试卷");
 			return comRes;
@@ -127,16 +133,17 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 			return comRes;
 		}
         //分值设定不能为空
-		if(!StringUtils.isNotBlank(examScoreJson)){
+		if(StringUtils.isBlank(examScoreJson)){
 			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);//请求参数有误
 			comRes.setMsg("分值设定不能为空");
 			return comRes;
 		}
-		String id = exam.getId();
+		//考试id
+		String examId = exam.getId();
 		//判断新建/修改
-		if(StringUtils.isNotBlank(id)){
+		if(StringUtils.isNotBlank(examId)){
 			//修改
-			if(!StringUtils.isNotBlank(exam.getState())){ //判断考试状态不能为空
+			if(StringUtils.isBlank(exam.getState())){ //判断考试状态不能为空
 				comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);//请求参数有误
 				comRes.setMsg("考试状态不能为空");
 				return comRes;
@@ -146,16 +153,20 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 				comRes.setMsg("此状态下的考试不能修改");
 				return comRes;
 			}
+			//如果考试详情未编辑
+			if(StringUtils.isBlank(examVO.getExamDetail().getId())){
+				ExamDetail detail = new ExamDetail();
+				detail.setExamId(examId);
+				examVO.getExamDetail().setId(examDetailService.getByEntity(detail).getId());
+			}
 		}else{
 			examVO.getExam().setState("1");
 		}
 		super.save(exam);
-		//获取考试id
-		String examId = examVO.getExam().getId();
 		//保存--内容模块选择
 		examDetailService.saveExamInfoDetail(examId,examVO.getExamDetail());
 		//判断如果为 修改评分项 则先清空数据，在进行保存
-		if(StringUtils.isNotBlank(id)){
+		if(StringUtils.isNotBlank(examId)){
 			//先删除分值项
 			examScoreDetailService.deleteExamScoreInfo(examId);
 		}

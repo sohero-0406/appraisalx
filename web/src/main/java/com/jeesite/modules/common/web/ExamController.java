@@ -4,7 +4,9 @@
 package com.jeesite.modules.common.web;
 
 import com.jeesite.common.config.Global;
+import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.entity.Page;
+import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.utils.download.DownloadWordUtils;
 import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.aa.vo.ExamVO;
@@ -95,13 +97,18 @@ public class ExamController extends BaseController {
     }
 
     /**
-     * 获取考试信息
+     * 获取考试信息 (type 1考试 2练习)
      */
     @RequestMapping(value = "getExamInfo")
     @ResponseBody
-    public CommonResult getExamInfo(String keyword) {
+    public CommonResult getExamInfo(String keyword,String type) {
         CommonResult comRes = new CommonResult();
-        List<Exam> examList = examService.getExamInfo(keyword);
+        if(StringUtils.isBlank(type)){
+            comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+            comRes.setMsg("请求参数异常!");
+            return comRes;
+        }
+        List<Exam> examList = examService.getExamInfo(keyword,type);
         comRes.setData(examList);
         return comRes;
     }
