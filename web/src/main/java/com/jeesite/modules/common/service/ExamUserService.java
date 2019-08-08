@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.cache.CacheUtils;
 import com.jeesite.common.constant.CodeConstant;
+import com.jeesite.common.constant.ServiceConstant;
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.service.CrudService;
 import com.jeesite.modules.aa.entity.*;
@@ -43,6 +44,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 	@Autowired
 	private ExamService examService;
 
+
 	@Autowired
 	private ExamScoreClassifyService examScoreClassifyService;
 
@@ -75,6 +77,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 	private ExamResultsDetailService examResultsDetailService;
 	@Autowired
 	private PictureTypeService pictureTypeService;
+    //调用大平台--学生数据
+	@Autowired
+	private HttpClientService httpClientService;
 
 
 	/**
@@ -1300,4 +1305,45 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
     public ExamUser getAllowLogin(ExamUser examUser) {
 		return dao.getAllowLogin(examUser);
     }
+
+	/**
+	 *
+	 * @return
+	 */
+	public CommonResult getLoadStuListByIds(String userIds){
+		Map<String,String> map = new HashMap();
+		map.put("ids",userIds);
+		CommonResult comRes = httpClientService.post(ServiceConstant.DERIVE_STUDENT_ACHIEVEMENT,map);
+		return comRes;
+
+	}
+
+	public List<ExamUser> getExamUserListByPlatfrom(JSONArray array, List<ExamUser> examUserList, String examId){
+		Exam exam = new Exam();
+		exam.setId(examId);
+		String examName = examService.getByEntity(exam).getName();
+		List<ExamUser> list = new ArrayList<>();
+		for(Object platformExamUser:array){
+			JSONObject platformUser = (JSONObject)platformExamUser;
+			ExamUser user = new ExamUser();
+			user.setUserId(platformUser.getString("userName"));
+			user.setTrueName(platformUser.getString("trueName"));
+			user.setSchoolName(platformUser.getString("schoolName"));
+			user.setMajorName(platformUser.getString("majorName"));
+			user.setClassName(platformUser.getString("className"));
+			user.setGender(platformUser.getString("gender"));
+			for(ExamUser localExamUser : examUserList){
+				if(StringUtils.isNotBlank(localExamUser.getUserId())&&localExamUser.getUserId().equals(platformUser.getString("id"))){
+					user.setScore(localExamUser.getScore());
+					break;
+				}
+			}
+			user.setExamName(examName);
+			list.add(user);
+
+		}
+		return list;
+	}
+
+
 }
