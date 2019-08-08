@@ -3,6 +3,8 @@
  */
 package com.jeesite.modules.common.service;
 
+import com.jeesite.common.lang.StringUtils;
+import com.jeesite.modules.common.dao.MaintenanceTotalDao;
 import com.jeesite.modules.common.dao.MaintenanceTypeDao;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.MaintenanceTotal;
@@ -39,6 +41,9 @@ public class MaintenanceService extends CrudService<MaintenanceDao, Maintenance>
 
     @Autowired
     private MaintenanceTypeService maintenanceTypeService;
+
+    @Autowired
+    private MaintenanceTotalDao maintenanceTotalDao;
 
     /**
      * 获取单条数据
@@ -106,7 +111,12 @@ public class MaintenanceService extends CrudService<MaintenanceDao, Maintenance>
     public CommonResult findMaintenance(MaintenanceTotal maintenanceTotal) {
         CommonResult commonResult = new CommonResult();
         Maintenance maintenance = new Maintenance();
-        maintenance.setMaintenanceTotalId(maintenanceTotal.getId());
+        if (null == maintenanceTotal.getId() && StringUtils.isNotBlank(maintenanceTotal.getVinCode())) {
+            // 学生端调用查询维保记录
+            maintenance.setMaintenanceTotalId(maintenanceTotalDao.getByEntity(maintenanceTotal).getId());
+        } else {
+            maintenance.setMaintenanceTotalId(maintenanceTotal.getId());
+        }
         commonResult.setData(dao.findMaintenance(maintenance));
         return commonResult;
     }
