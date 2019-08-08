@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.jeesite.common.constant.CodeConstant;
+import com.jeesite.common.lang.StringUtils;
 import com.jeesite.modules.common.entity.CommonResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -120,7 +121,7 @@ public class MaintenanceTotalController extends BaseController {
     @RequestMapping(value = "findSavedMaintenance")
     @ResponseBody
     public CommonResult findSavedMaintenance(MaintenanceTotal maintenanceTotal) {
-        if (null == maintenanceTotal.getId()) {
+        if (StringUtils.isBlank(maintenanceTotal.getId())) {
             return new CommonResult(CodeConstant.REQUEST_FAILED, "参数为空");
         }
         return maintenanceTotalService.findSavedMaintenance(maintenanceTotal);
@@ -137,7 +138,7 @@ public class MaintenanceTotalController extends BaseController {
     @RequestMapping(value = "deleteMaintenance")
     @ResponseBody
     public CommonResult deleteMaintenance(MaintenanceTotal maintenanceTotal) {
-        if (null == maintenanceTotal.getId()) {
+        if (StringUtils.isBlank(maintenanceTotal.getId())) {
             return new CommonResult(CodeConstant.REQUEST_FAILED, "参数为空");
         }
         return maintenanceTotalService.deleteMaintenance(maintenanceTotal, true);

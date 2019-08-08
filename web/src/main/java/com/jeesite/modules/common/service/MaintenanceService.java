@@ -3,6 +3,7 @@
  */
 package com.jeesite.modules.common.service;
 
+import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.lang.StringUtils;
 import com.jeesite.modules.common.dao.MaintenanceTotalDao;
 import com.jeesite.modules.common.dao.MaintenanceTypeDao;
@@ -111,13 +112,21 @@ public class MaintenanceService extends CrudService<MaintenanceDao, Maintenance>
     public CommonResult findMaintenance(MaintenanceTotal maintenanceTotal) {
         CommonResult commonResult = new CommonResult();
         Maintenance maintenance = new Maintenance();
-        if (null == maintenanceTotal.getId() && StringUtils.isNotBlank(maintenanceTotal.getVinCode())) {
+        if (StringUtils.isBlank(maintenanceTotal.getId()) && StringUtils.isNotBlank(maintenanceTotal.getVinCode())) {
             // 学生端调用查询维保记录
-            maintenance.setMaintenanceTotalId(maintenanceTotalDao.getByEntity(maintenanceTotal).getId());
+            MaintenanceTotal total = maintenanceTotalDao.getByEntity(maintenanceTotal);
+            if (null == total) {
+                return new CommonResult(CodeConstant.REQUEST_FAILED, "空对象");
+            }
+            maintenance.setMaintenanceTotalId(total.getId());
         } else {
             maintenance.setMaintenanceTotalId(maintenanceTotal.getId());
         }
-        commonResult.setData(dao.findMaintenance(maintenance));
+        List<Maintenance> maintenances = dao.findMaintenance(maintenance);
+        if (maintenances.size() <= 0) {
+            return new CommonResult(CodeConstant.REQUEST_FAILED, "空列表");
+        }
+        commonResult.setData(maintenances);
         return commonResult;
     }
 
@@ -137,9 +146,9 @@ public class MaintenanceService extends CrudService<MaintenanceDao, Maintenance>
         // 设置详细维修记录
         MaintenanceType maintenanceType = new MaintenanceType();
         maintenanceType.setMaintenanceId(maintenance.getId());
-        List<MaintenanceType> outsideAnalyzeRepairRecords = maintenanceTypeDao.findRepairRecords(maintenanceType, DictUtils.getDictValue("aa_repairRecord_type", "外观覆盖件详细维修记录", ""));
-        List<MaintenanceType> componentAnalyzeRepairRecords = maintenanceTypeDao.findRepairRecords(maintenanceType, DictUtils.getDictValue("aa_repairRecord_type", "重要组成部件详细维修记录", ""));
-        List<MaintenanceType> normalRepairRecords = maintenanceTypeDao.findRepairRecords(maintenanceType, DictUtils.getDictValue("aa_repairRecord_type", "该车所有的详细维修记录", ""));
+        List<MaintenanceType> outsideAnalyzeRepairRecords = maintenanceTypeDao.findRepairRecords(maintenanceType, "1");
+        List<MaintenanceType> componentAnalyzeRepairRecords = maintenanceTypeDao.findRepairRecords(maintenanceType, "2");
+        List<MaintenanceType> normalRepairRecords = maintenanceTypeDao.findRepairRecords(maintenanceType, "3");
         maintenanceRecord.setOutsideAnalyzeRepairRecords(outsideAnalyzeRepairRecords);
         maintenanceRecord.setComponentAnalyzeRepairRecords(componentAnalyzeRepairRecords);
         maintenanceRecord.setNormalRepairRecords(normalRepairRecords);

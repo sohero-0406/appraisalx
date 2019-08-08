@@ -13,7 +13,6 @@ import com.jeesite.modules.common.entity.MaintenanceTotal;
 import com.jeesite.modules.common.service.MaintenanceTotalService;
 import com.jeesite.modules.common.vo.MaintenanceInfoVO;
 import com.jeesite.modules.sys.utils.DictUtils;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -54,7 +53,6 @@ public class MaintenanceController extends BaseController {
     /**
      * 查询列表
      */
-    @RequiresPermissions("common:maintenance:view")
     @RequestMapping(value = {"list", ""})
     public String list(Maintenance maintenance, Model model) {
         model.addAttribute("maintenance", maintenance);
@@ -64,7 +62,6 @@ public class MaintenanceController extends BaseController {
     /**
      * 查询列表数据
      */
-    @RequiresPermissions("common:maintenance:view")
     @RequestMapping(value = "listData")
     @ResponseBody
     public Page<Maintenance> listData(Maintenance maintenance, HttpServletRequest request, HttpServletResponse response) {
@@ -76,7 +73,6 @@ public class MaintenanceController extends BaseController {
     /**
      * 查看编辑表单
      */
-    @RequiresPermissions("common:maintenance:view")
     @RequestMapping(value = "form")
     public String form(Maintenance maintenance, Model model) {
         model.addAttribute("maintenance", maintenance);
@@ -86,7 +82,6 @@ public class MaintenanceController extends BaseController {
     /**
      * 保存车辆维保记录
      */
-    @RequiresPermissions("common:maintenance:edit")
     @PostMapping(value = "save")
     @ResponseBody
     public String save(@Validated Maintenance maintenance) {
@@ -97,7 +92,6 @@ public class MaintenanceController extends BaseController {
     /**
      * 删除车辆维保记录
      */
-    @RequiresPermissions("common:maintenance:edit")
     @RequestMapping(value = "delete")
     @ResponseBody
     public String delete(Maintenance maintenance) {
@@ -117,7 +111,7 @@ public class MaintenanceController extends BaseController {
     @ResponseBody
     public CommonResult findMaintenance(MaintenanceTotal maintenanceTotal) {
         CommonResult commonResult = new CommonResult();
-        if (null == maintenanceTotal.getId()) {
+        if (StringUtils.isBlank(maintenanceTotal.getId())) {
             commonResult.setCode(CodeConstant.REQUEST_FAILED);
             commonResult.setMsg("参数为空");
             return commonResult;
@@ -137,7 +131,7 @@ public class MaintenanceController extends BaseController {
     @ResponseBody
     public CommonResult findMaintenanceDetail(Maintenance maintenance) {
         CommonResult commonResult = new CommonResult();
-        if (null == maintenance.getId()) {
+        if (StringUtils.isBlank(maintenance.getId())) {
             commonResult.setCode(CodeConstant.REQUEST_FAILED);
             commonResult.setMsg("参数为空");
             return commonResult;

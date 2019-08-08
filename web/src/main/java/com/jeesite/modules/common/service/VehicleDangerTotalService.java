@@ -108,16 +108,13 @@ public class VehicleDangerTotalService extends CrudService<VehicleDangerTotalDao
     @Transactional(readOnly = false)
     public CommonResult deleteVehicleDanger(VehicleDangerTotal total, boolean flag) {
         CommonResult commonResult = new CommonResult();
-        // 获取出险总表以及其关联对象(列表)
-        VehicleDanger vehicleDanger = null;
-        List<VehicleDanger> vehicleDangers = null;
-        List<VehicleDangerDetail> vehicleDangerDetails = null;
         try {
+            // 获取出险总表以及其关联对象(列表)
             VehicleDangerTotal vehicleDangerTotal = this.get(total.getId());
-            vehicleDanger = new VehicleDanger();
+            VehicleDanger vehicleDanger = new VehicleDanger();
             vehicleDanger.setCommonVehicleDangerTotalId(total.getId());
-            vehicleDangers = vehicleDangerService.findList(vehicleDanger);
-            vehicleDangerDetails = vehicleDangerDetailService.findListByVehicleDangers(vehicleDangers);
+            List<VehicleDanger> vehicleDangers = vehicleDangerService.findList(vehicleDanger);
+            List<VehicleDangerDetail> vehicleDangerDetails = vehicleDangerDetailService.findListByVehicleDangers(vehicleDangers);
             // 依次执行数据删除
             if (flag) {
                 dao.phyDelete(vehicleDangerTotal);
@@ -157,6 +154,9 @@ public class VehicleDangerTotalService extends CrudService<VehicleDangerTotalDao
         VehicleDanger vehicleDanger = new VehicleDanger();
         vehicleDanger.setCommonVehicleDangerTotalId(total.getId());
         List<VehicleDanger> vehicleDangers = vehicleDangerService.findList(vehicleDanger);
+        if (vehicleDangers.size() <= 0) {
+            return new CommonResult(CodeConstant.REQUEST_FAILED, "空列表");
+        }
         // 获取并填充理赔内容数据
         vehicleDangers.forEach(v -> {
             VehicleDangerRecord vehicleDangerRecord = new VehicleDangerRecord();
