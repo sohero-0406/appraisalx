@@ -25,12 +25,12 @@ public class CodeConstant {
     public static final String REQUEST_FAILED = "1010";
     //考试结束
     public static final String EXAM_END = "1011";
-    //请求参数有误
-    public static final String WRONG_REQUEST_PARAMETER = "1020";
     //未完善被评估车辆及参照物数据表
     public static final String REFERENCES_EVALUATED_INCOMPLETE = "1012";
     //参照物不存在
     public static final String REFERENCE_NOT_EXIST = "1013";
+    //请求参数有误
+    public static final String WRONG_REQUEST_PARAMETER = "1020";
 
     //登录超时
     public static final String LOGIN_TIMEOUT = "2000";
