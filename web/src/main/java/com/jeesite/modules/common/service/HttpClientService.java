@@ -38,11 +38,10 @@ public class HttpClientService {
      * @param map         请求入参
      * @return
      */
-    public String post(String serviceName, Map<String, String> map) {
+    public CommonResult post(String serviceName, Map<String, String> map) {
         String platformUrl = CacheUtils.get("platformUrl");
         String url = platformUrl + serviceName;
-        String result = HttpClientUtils.post(url,map);
-        JSONObject object = JSONObject.parseObject(result);
-        return object.getString("data");
+        String result = HttpClientUtils.post(url, map);
+        return JSONObject.parseObject(result, CommonResult.class);
     }
 }
