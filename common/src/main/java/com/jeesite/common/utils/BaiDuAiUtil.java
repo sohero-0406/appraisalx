@@ -17,7 +17,7 @@ import com.baidu.aip.ocr.AipOcr;
  */
 public class BaiDuAiUtil {
 	/**身份证正面类型id*/
-	private static final String PICTURE_TYPE_ID_ID_FRONT = "1143431602191151104";
+	public static final String PICTURE_TYPE_ID_ID_FRONT = "1143431602191151104";
 	/**车牌照类型id*/
 	private static final String PICTURE_TYPE_ID_PLATE_LICENSE = "1143431962274000896";
 	/**vin类型id*/
@@ -28,17 +28,17 @@ public class BaiDuAiUtil {
 	private static final String PICTURE_TYPE_ID_VEHICLE_REGISTRATION = "1143435514869673984";
 	/**机动车销售统一发票类型id*/
 	private static final String PICTURE_TYPE_ID_NEW_CAR_INVOICE = "1143435831549947904";
-	private static final String BAIDU_AI_APP_ID = "16478193";
-	private static final String BAIDU_AI_API_KEY = "QcRCqPDGrqlDSyVpdpXdyfkt";
-	private static final String BAIDU_AI_SECRET_KEY = "yUrF5LaMH8NNnmyKXZou3r5SjYE4C2KI";
+	private static final String BAIDU_AI_APP_ID = "16970638";
+	private static final String BAIDU_AI_API_KEY = "LgyBU72NmZwgLWGjyQ1Gv64k";
+	private static final String BAIDU_AI_SECRET_KEY = "oIzu2MduVjte6T3DyOe8ynHAgSe5I8vm";
 	/**基础地址*/
 //	private static final String BAIDU_AI_BASE_HOST = "https://aip.baidubce.com/rest/2.0/ocr/v1/";
 	/**自定义模版id之车辆铭牌*/
 	private static final String VEHICLE_NAMEPLATE = "a54066f45faae926ba07d4d780b750ac";
 	/**自定义模版id之机动车销售统一发票*/
-	private static final String NEW_CAR_INVOICE = "67a038627f86a36821032597c2929cb6";
+	private static final String NEW_CAR_INVOICE = "c26279131caf92aba9fac3a3c8ffd10d";
 	/**自定义模版id之机动车登记证*/
-	private static final String VEHICLE_REGISTRATION = "467ffbcb69d52a61085a22226d57cade"; 
+	private static final String VEHICLE_REGISTRATION = "97bcb88f366a5125e0bc943511dc4607";
 	private AipOcr client;
 	
 	public BaiDuAiUtil() {
@@ -185,14 +185,15 @@ public class BaiDuAiUtil {
 		JSONObject childJsonObj = null;
 		for(int i = 0; i < jsonArr.length(); i++){
 			childJsonObj = jsonArr.optJSONObject(i);
-			switch (childJsonObj.optString("word_name")){
-				case "厂牌型号":
-					result.put("labelType", childJsonObj.optString("word"));
-					break;
-				case "小写":
-					result.put("originalPrice", childJsonObj.optString("word"));
-					break;
-			}
+			result.put(childJsonObj.optString("word_name"),childJsonObj.optString("word"));
+//			switch (childJsonObj.optString("word_name")){
+//				case "厂牌型号":
+//					result.put("labelType", childJsonObj.optString("word"));
+//					break;
+//				case "小写":
+//					result.put("originalPrice", childJsonObj.optString("word"));
+//					break;
+//			}
 		}
 
 		return result;
@@ -218,23 +219,24 @@ public class BaiDuAiUtil {
 		JSONObject childJsonObj = null;
 		for(int i = 0; i < jsonArr.length(); i++){
 			childJsonObj = jsonArr.optJSONObject(i);
-			switch (childJsonObj.optString("word_name")){
-				case "车身颜色":
-					result.put("color", childJsonObj.optString("word"));
-					break;
-				case "燃料种类":
-					result.put("fuelType", childJsonObj.optString("word"));
-					break;
-                case "总质量":
-                    result.put("totalQuality", childJsonObj.optString("word"));
-                    break;
-                case "登记日期":
-                    result.put("registerDate", childJsonObj.optString("word"));
-                    break;
-                case "排量":
-                    result.put("displacement", childJsonObj.optString("word"));
-                    break;
-			}
+			result.put(childJsonObj.optString("word_name"),childJsonObj.optString("word"));
+//			switch (){
+//				case "车身颜色":
+//					result.put("color", );
+//					break;
+//				case "燃料种类":
+//					result.put("fuelType", childJsonObj.optString("word"));
+//					break;
+//                case "总质量":
+//                    result.put("totalQuality", childJsonObj.optString("word"));
+//                    break;
+//                case "登记日期":
+//                    result.put("registerDate", childJsonObj.optString("word"));
+//                    break;
+//                case "排量":
+//                    result.put("displacement", childJsonObj.optString("word"));
+//                    break;
+//			}
 		}
 
 		return result;

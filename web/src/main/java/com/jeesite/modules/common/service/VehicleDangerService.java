@@ -6,6 +6,7 @@ package com.jeesite.modules.common.service;
 import java.util.List;
 
 import com.jeesite.common.lang.StringUtils;
+import com.jeesite.modules.common.dao.VehicleDangerTotalDao;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.VehicleDangerDetail;
 import com.jeesite.modules.common.entity.VehicleDangerTotal;
@@ -35,6 +36,9 @@ public class VehicleDangerService extends CrudService<VehicleDangerDao, VehicleD
 
     @Autowired
     private VehicleDangerDetailService vehicleDangerDetailService;
+
+    @Autowired
+    private VehicleDangerTotalDao vehicleDangerTotalDao;
 
     /**
      * 获取单条数据
@@ -101,15 +105,22 @@ public class VehicleDangerService extends CrudService<VehicleDangerDao, VehicleD
      */
     public CommonResult findVehicleDanger(VehicleDangerTotal vehicleDangerTotal) {
         CommonResult commonResult = new CommonResult();
-        String vinCode = vehicleDangerTotalService.get(vehicleDangerTotal.getId()).getVinCode();
         VehicleDanger vehicleDanger = new VehicleDanger();
-        vehicleDanger.setCommonVehicleDangerTotalId(vehicleDangerTotal.getId());
+        String vinCode = null;
+        if (null == vehicleDangerTotal.getId() && StringUtils.isNotBlank(vehicleDangerTotal.getVinCode())) {
+            vinCode = vehicleDangerTotal.getVinCode();
+            // 学生端调用查询出险记录 根据VIN码 获取总表id
+            vehicleDanger.setCommonVehicleDangerTotalId(vehicleDangerTotalDao.getByEntity(vehicleDangerTotal).getId());
+        } else {
+            vinCode = vehicleDangerTotalService.get(vehicleDangerTotal.getId()).getVinCode();
+            vehicleDanger.setCommonVehicleDangerTotalId(vehicleDangerTotal.getId());
+        }
         List<VehicleDanger> vehicleDangers = dao.findList(vehicleDanger);
-        vehicleDangers.forEach(danger -> {
+        for (VehicleDanger danger : vehicleDangers) {
             if (StringUtils.isBlank(danger.getVin())) {
                 danger.setVin(vinCode);
             }
-        });
+        }
         commonResult.setData(vehicleDangers);
         return commonResult;
     }
