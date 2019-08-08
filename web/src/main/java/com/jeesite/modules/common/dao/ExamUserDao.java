@@ -23,4 +23,5 @@ public interface ExamUserDao extends CrudDao<ExamUser> {
 
     void deleteExamUser(String examUserId);
 
+    ExamUser getAllowLogin(ExamUser examUser);
 }

@@ -11,6 +11,7 @@ import com.jeesite.modules.aa.dao.IdentifyTecDao;
 import com.jeesite.modules.aa.entity.IdentifyTec;
 import com.jeesite.modules.aa.entity.IdentifyTecDetail;
 import com.jeesite.modules.common.entity.ExamUser;
+import com.jeesite.modules.common.service.OperationLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +28,9 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
 
 	@Autowired
 	private IdentifyTecDetailService identifyTecDetailService;
-	
+	@Autowired
+	private OperationLogService operationLogService;
+
 	/**
 	 * 获取单条数据
 	 * @param identifyTec
@@ -107,6 +110,7 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
 				identifyTecDetailService.save(detail);
 			}
 		}
+		operationLogService.saveObj(examUser,"保存鉴定技术状况数据成功");
     }
 
     public IdentifyTec getByEntity(IdentifyTec identifyTec){ return dao.getByEntity(identifyTec); }

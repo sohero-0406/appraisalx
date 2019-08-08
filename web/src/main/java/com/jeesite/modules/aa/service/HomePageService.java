@@ -1,6 +1,7 @@
 package com.jeesite.modules.aa.service;
 
 import com.jeesite.common.lang.StringUtils;
+import com.jeesite.common.web.http.ServletUtils;
 import com.jeesite.modules.aa.entity.CarInfo;
 import com.jeesite.modules.aa.entity.Paper;
 import com.jeesite.modules.aa.entity.PictureUser;
@@ -24,7 +25,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-@Transactional(readOnly=true)
+@Transactional(readOnly = true)
 public class HomePageService {
 
     @Autowired
@@ -46,7 +47,7 @@ public class HomePageService {
      * 加载首页界面(学生)
      */
     public HomePageVO loadHomePageStu(HomePageVO homePageVO) {
-        if(StringUtils.isBlank(homePageVO.getSort())){
+        if (StringUtils.isBlank(homePageVO.getSort())) {
             //排序规则为空，默认降序
             homePageVO.setSort("2");
         }
@@ -56,9 +57,9 @@ public class HomePageService {
         carInfo.setExamUserId(examUser.getExamId());
         homePageVO.setCarInfo(carInfo);
         carInfo = carInfoService.findCarInfoBySortStu(homePageVO);
-        if(carInfo != null){
+        if (carInfo != null) {
             BigDecimal mileage = new BigDecimal(carInfo.getMileage());
-            carInfo.setMileage(mileage.divide(new BigDecimal("10000"),1,BigDecimal.ROUND_HALF_UP)+"万公里");
+            carInfo.setMileage(mileage.divide(new BigDecimal("10000"), 1, BigDecimal.ROUND_HALF_UP) + "万公里");
             if (StringUtils.isNotBlank(carInfo.getPurchaseDate())) {
                 String[] purchaseDate = carInfo.getPurchaseDate().substring(0, 10).split("-");
                 carInfo.setPurchaseDate(purchaseDate[0] + "年" + purchaseDate[1] + "月");
@@ -91,17 +92,17 @@ public class HomePageService {
      * 加载首页界面(教师)
      */
     public List<HomePageVO> loadHomePageTea(HomePageVO homePageVO) {
-        if(StringUtils.isBlank(homePageVO.getSort())){
+        if (StringUtils.isBlank(homePageVO.getSort())) {
             //排序规则为空，默认降序
             homePageVO.setSort("2");
         }
         List<HomePageVO> result = new ArrayList<HomePageVO>();
         List<CarInfo> carInfoList = paperService.loadHomePageTea(homePageVO);
-        if(carInfoList != null){
-            for(CarInfo carInfo: carInfoList){
+        if (carInfoList != null) {
+            for (CarInfo carInfo : carInfoList) {
                 HomePageVO temp = new HomePageVO();
                 BigDecimal mileage = new BigDecimal(carInfo.getMileage());
-                carInfo.setMileage(mileage.divide(new BigDecimal("10000"),1,BigDecimal.ROUND_HALF_UP)+"万公里");
+                carInfo.setMileage(mileage.divide(new BigDecimal("10000"), 1, BigDecimal.ROUND_HALF_UP) + "万公里");
                 if (StringUtils.isNotBlank(carInfo.getPurchaseDate())) {
                     String[] purchaseDate = carInfo.getPurchaseDate().substring(0, 10).split("-");
                     carInfo.setPurchaseDate(purchaseDate[0] + "年" + purchaseDate[1] + "月");
@@ -134,20 +135,19 @@ public class HomePageService {
     @Transactional
     public void newPaper() {
         ExamUser examUser = UserUtils.getExamUser();
-        if(StringUtils.isNotBlank(examUser.getExamId())){
+        if (StringUtils.isNotBlank(examUser.getId())) {
             //学生
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            try {
-                examUser.setStartTime(df.parse(df.format(new Date())));
-            } catch (ParseException e) {
-                e.printStackTrace();
+            if (null == examUser.getStartTime()) {
+                examUser.setStartTime(new Date());
+                examUserService.save(examUser);
+                //更新session
+                ServletUtils.getRequest().getSession().setAttribute("examUser", examUser);
             }
-            examUserService.insert(examUser);
-        }else {
+        } else {
             //教师
             Paper paper = new Paper();
             paper.setState("1");
-            paperService.insert(paper);
+            paperService.save(paper);
         }
     }
 }

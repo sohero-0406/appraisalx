@@ -14,6 +14,7 @@ import com.jeesite.modules.aa.vo.AppraisalReportVO;
 import com.jeesite.modules.aa.vo.DelegateLetterVO;
 import com.jeesite.modules.common.entity.*;
 import com.jeesite.modules.common.service.ExamService;
+import com.jeesite.modules.common.service.OperationLogService;
 import com.jeesite.modules.common.service.VehicleInfoService;
 import com.jeesite.modules.sys.utils.DictUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -61,7 +62,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
     @Autowired
     private ExamService examService;
 
-	/**
+    /**
 	 * 获取单条数据
 	 * @param delegateLetter
 	 * @return

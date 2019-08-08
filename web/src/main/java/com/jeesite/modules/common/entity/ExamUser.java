@@ -25,6 +25,7 @@ import java.util.Date;
 		@Column(name="score", attrName="score", label="分数"),
 		@Column(name="start_time", attrName="startTime", label="考试开始时间"),
 		@Column(name="end_time", attrName="endTime", label="考试结束时间"),
+		@Column(name="server_exam_user_id", attrName="serverExamUserId", label="大平台考生id（上传成绩用）"),
 		@Column(includeEntity=DataEntity.class),
 	}, orderBy="a.update_date DESC"
 )
@@ -35,12 +36,13 @@ public class ExamUser extends PreEntity<ExamUser> {
 	private String examId;		// 考试id
 	private String userNum;		// 用户名
 	private String password;		// 密码
+	private String score;		// 分数
 	private Date startTime;		//考试开始时间
 	private Date endTime;		//考试结束时间
+	private String serverExamUserId;		//大平台考生id（上传成绩用）
 
 	//非数据库字段
 	private String paperId;		//试卷id
-	private String score;		// 分数
 	private String duration;  //考试时长
 
 	public ExamUser() {
@@ -125,5 +127,13 @@ public class ExamUser extends PreEntity<ExamUser> {
 
 	public void setDuration(String duration) {
 		this.duration = duration;
+	}
+
+	public String getServerExamUserId() {
+		return serverExamUserId;
+	}
+
+	public void setServerExamUserId(String serverExamUserId) {
+		this.serverExamUserId = serverExamUserId;
 	}
 }

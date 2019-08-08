@@ -81,9 +81,7 @@ public class VehicleGradeAssessController extends BaseController {
 	@ResponseBody
 	public CommonResult save(@Validated VehicleGradeAssess vehicleGradeAssess) {
 		ExamUser examUser = UserUtils.getExamUser();
-		vehicleGradeAssess.setExamUserId(examUser.getId());
-		vehicleGradeAssess.setPaperId(examUser.getPaperId());
-		vehicleGradeAssessService.save(vehicleGradeAssess);
+		vehicleGradeAssessService.save(examUser,vehicleGradeAssess);
 		return new CommonResult();
 	}
 	

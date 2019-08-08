@@ -5,6 +5,7 @@ package com.jeesite.modules.common.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.jeesite.common.cache.CacheUtils;
 import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.service.CrudService;
@@ -14,6 +15,7 @@ import com.jeesite.modules.common.dao.ExamUserDao;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.Exam;
 import com.jeesite.modules.common.entity.ExamUser;
+import com.jeesite.modules.common.vo.TimingVO;
 import com.jeesite.modules.sys.utils.DictUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -1244,6 +1246,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 	@Transactional(readOnly = false)
 	public CommonResult examTiming(ExamUser examUser) {
         CommonResult comRes = new CommonResult();
+        TimingVO vo = new TimingVO();
         examUser = this.get(examUser);
         if (examUser == null) {
             comRes.setCode(CodeConstant.REQUEST_FAILED);
@@ -1258,20 +1261,23 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
             comRes.setMsg("未查询到考试信息！");
             return comRes;
         }
+		vo.setExamType(exam.getExamType());
+
+		SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+		df.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
+		BigDecimal nowTime = new BigDecimal(new Date().getTime());      //当前时间
+		BigDecimal startTime = new BigDecimal(examUser.getStartTime().getTime());       //考试开始时间
+		BigDecimal spentTime = nowTime.subtract(startTime);     //考生考试已用时长（nowTime-startTime）
 		if ("1".equals(exam.getExamType())) {
 			//倒计时
 			BigDecimal duration = new BigDecimal(exam.getDuration());       //考试总时长
 			duration = duration.multiply(new BigDecimal("60000"));      //换算毫秒值
-			BigDecimal startTime = new BigDecimal(examUser.getStartTime().getTime());       //考试开始时间
-			BigDecimal nowTime = new BigDecimal(new Date().getTime());      //当前时间
-			BigDecimal spentTime = nowTime.subtract(startTime);     //考生考试已用时长（nowTime-startTime）
 			BigDecimal surplusTime = duration.subtract(spentTime);      //本场考试剩余时长(duration-spentTime)
 
 			//对剩余时长进行校验，如果剩余时长小于零，则考试结束，返回状态码。
 			if (surplusTime.compareTo(new BigDecimal("0")) >= 0) {
-				SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
-				df.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
-				comRes.setData(df.format(new Date(surplusTime.longValue())));
+				vo.setTimer(df.format(new Date(surplusTime.longValue())));
+				comRes.setData(vo);
 			}else {
 				comRes.setCode(CodeConstant.EXAM_END);
 				comRes.setMsg("考试时间到，考试结束！");
@@ -1279,11 +1285,19 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 			}
 		}else {
 			//正计时
-			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			comRes.setData(df.format(new Date()));
+			vo.setTimer(df.format(new Date(spentTime.longValue())));
+			comRes.setData(vo);
 		}
 		return comRes;
 
 	}
 
+	/**
+	 * 学生登录 验证该学生是否存在考试中状态的考试
+	 * @param examUser
+	 * @return
+	 */
+    public ExamUser getAllowLogin(ExamUser examUser) {
+		return dao.getAllowLogin(examUser);
+    }
 }

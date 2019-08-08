@@ -12,7 +12,7 @@ public class FileLocalConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/image/**").addResourceLocations("file:D:/appraisalPic/");
+        registry.addResourceHandler("/**").addResourceLocations("file:D:/appraisalPic/");
     }
 
     @Override

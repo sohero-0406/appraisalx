@@ -29,6 +29,8 @@ public class CodeConstant {
     public static final String REFERENCES_EVALUATED_INCOMPLETE = "1012";
     //参照物不存在
     public static final String REFERENCE_NOT_EXIST = "1013";
+    //不存在正在进行的考试
+    public static final String EXAM_NO_ONGOING = "1014";
     //请求参数有误
     public static final String WRONG_REQUEST_PARAMETER = "1020";
 

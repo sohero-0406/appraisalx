@@ -14,6 +14,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.jeesite.modules.aa.entity.PictureUser;
 import com.jeesite.modules.aa.vo.VehicleDocumentInfoVO;
 import com.jeesite.modules.common.entity.ExamUser;
+import com.jeesite.modules.common.service.OperationLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +37,8 @@ public class VehicleDocumentInfoService extends CrudService<VehicleDocumentInfoD
 
     @Autowired
     private PictureUserService pictureUserService;
+    @Autowired
+    private OperationLogService operationLogService;
 
     /**
      * 获取单条数据
@@ -113,6 +116,7 @@ public class VehicleDocumentInfoService extends CrudService<VehicleDocumentInfoD
                 info.setValidity(object.getString("validity"));
                 super.save(info);
             }
+            operationLogService.saveObj(examUser,"保存车辆单证信息成功");
         }
     }
 
@@ -143,7 +147,7 @@ public class VehicleDocumentInfoService extends CrudService<VehicleDocumentInfoD
         String[] parentTypeIds = {"1143437059610071040"};
         String[] pictureTypeIds = {"1143432856340893696", "1143435061324763136", "1143435514869673984",
                 "1143435674886193152"};
-        List<PictureUser> pictureList = pictureUserService.findList(examUser, pictureTypeIds);
+        List<PictureUser> pictureList = pictureUserService.findPictureList(examUser, pictureTypeIds);
         pictureList.addAll(pictureUserService.findChildPicture(examUser, parentTypeIds));
         vo.setPictureList(pictureList);
         return vo;

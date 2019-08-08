@@ -10,6 +10,7 @@ import com.jeesite.modules.aa.entity.*;
 import com.jeesite.modules.aa.vo.CalculateVO;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.entity.VehicleInfo;
+import com.jeesite.modules.common.service.OperationLogService;
 import com.jeesite.modules.common.service.VehicleInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,8 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
     private VehicleInfoService vehicleInfoService;
     @Autowired
     private DelegateLetterService delegateLetterService;
+    @Autowired
+    private OperationLogService operationLogService;
 
     /**
      * 获取单条数据
@@ -192,6 +195,7 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
                 break;
         }
         delegateLetterService.createAppraisalReportNum(examUser);
+        operationLogService.saveObj(examUser,"保存计算车辆价值成功");
     }
 
     public Calculate getByEntity(Calculate calculate) {

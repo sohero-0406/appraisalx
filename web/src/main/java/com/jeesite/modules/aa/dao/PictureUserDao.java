@@ -24,7 +24,7 @@ public interface PictureUserDao extends CrudDao<PictureUser> {
      * @param pictureTypeIds 图片类型代号
      * @return 返回所有类型的图片信息
      */
-	List<PictureUser> findListByExamUserIdAndTypeId(ExamUser examUser, String[] pictureTypeIds);
+	List<PictureUser> findPictureList(ExamUser examUser, String[] pictureTypeIds);
 
 	/**
 	 * 根据考试id和父图片类型ids加载图片信息

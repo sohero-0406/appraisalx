@@ -5,6 +5,9 @@ package com.jeesite.modules.common.service;
 
 import java.util.List;
 
+import com.jeesite.common.network.IpUtils;
+import com.jeesite.common.web.http.ServletUtils;
+import com.jeesite.modules.common.entity.ExamUser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,4 +82,12 @@ public class OperationLogService extends CrudService<OperationLogDao, OperationL
 		return dao.getOperationLog(keyword);
 	}
 
+    public void saveObj(ExamUser examUser, String msg) {
+		OperationLog log = new OperationLog();
+		log.setLoginName(examUser.getUserNum());
+		log.setUserId(examUser.getUserId());
+		log.setRequestIp(IpUtils.getRemoteAddr(ServletUtils.getRequest()));
+		log.setOperatingContent(msg);
+		this.save(log);
+    }
 }
