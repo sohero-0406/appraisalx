@@ -108,7 +108,7 @@ public class VehicleDangerController extends BaseController {
     @RequestMapping(value = "findVehicleDanger")
     @ResponseBody
     public CommonResult findVehicleDanger(VehicleDangerTotal vehicleDangerTotal) {
-        if (vehicleDangerTotal.getId() == null) {
+        if (StringUtils.isBlank(vehicleDangerTotal.getId())) {
             return new CommonResult(CodeConstant.REQUEST_FAILED, "参数为空");
         }
         return vehicleDangerService.findVehicleDanger(vehicleDangerTotal);

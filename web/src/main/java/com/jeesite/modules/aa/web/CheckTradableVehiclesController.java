@@ -157,6 +157,9 @@ public class CheckTradableVehiclesController extends BaseController {
         carInfo.setPaperId(examUser.getPaperId());
         // 根据考生用户获取车辆信息的VIN码
         String vinCode = carInfoService.getByEntity(carInfo).getVinCode();
+        if (StringUtils.isBlank(vinCode)) {
+            return new CommonResult(CodeConstant.REQUEST_FAILED, "VIN码为空");
+        }
         MaintenanceTotal maintenanceTotal = new MaintenanceTotal();
         maintenanceTotal.setVinCode(vinCode);
         return maintenanceService.findMaintenance(maintenanceTotal);
@@ -173,7 +176,7 @@ public class CheckTradableVehiclesController extends BaseController {
     @RequestMapping(value = "findMaintenanceRecordDetail")
     @ResponseBody
     public CommonResult findMaintenanceRecordDetail(Maintenance maintenance) {
-        if (null == maintenance.getId()) {
+        if (StringUtils.isBlank(maintenance.getId())) {
             return new CommonResult(CodeConstant.REQUEST_FAILED, "参数为空");
         }
         return maintenanceService.findMaintenanceDetail(maintenance);
@@ -196,6 +199,9 @@ public class CheckTradableVehiclesController extends BaseController {
         carInfo.setPaperId(examUser.getPaperId());
         // 根据考生用户获取车辆信息的VIN码
         String vinCode = carInfoService.getByEntity(carInfo).getVinCode();
+        if (StringUtils.isBlank(vinCode)) {
+            return new CommonResult(CodeConstant.REQUEST_FAILED, "VIN码为空");
+        }
         VehicleDangerTotal vehicleDangerTotal = new VehicleDangerTotal();
         vehicleDangerTotal.setVinCode(vinCode);
         return vehicleDangerService.findVehicleDanger(vehicleDangerTotal);
@@ -213,7 +219,7 @@ public class CheckTradableVehiclesController extends BaseController {
     @ResponseBody
     public CommonResult findVehicleDangerRecordDetail(VehicleDanger vehicleDanger) {
         CommonResult commonResult = new CommonResult();
-        if (null == vehicleDanger.getId()) {
+        if (StringUtils.isBlank(vehicleDanger.getId())) {
             return new CommonResult(CodeConstant.REQUEST_FAILED, "参数为空");
         }
         commonResult.setData(vehicleDangerDetailService.findVehicleDangerDetail(vehicleDanger));

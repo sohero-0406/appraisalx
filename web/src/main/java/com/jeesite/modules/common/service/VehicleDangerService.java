@@ -5,6 +5,7 @@ package com.jeesite.modules.common.service;
 
 import java.util.List;
 
+import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.lang.StringUtils;
 import com.jeesite.modules.common.dao.VehicleDangerTotalDao;
 import com.jeesite.modules.common.entity.CommonResult;
@@ -107,15 +108,26 @@ public class VehicleDangerService extends CrudService<VehicleDangerDao, VehicleD
         CommonResult commonResult = new CommonResult();
         VehicleDanger vehicleDanger = new VehicleDanger();
         String vinCode = null;
-        if (null == vehicleDangerTotal.getId() && StringUtils.isNotBlank(vehicleDangerTotal.getVinCode())) {
+        if (StringUtils.isBlank(vehicleDangerTotal.getId()) && StringUtils.isNotBlank(vehicleDangerTotal.getVinCode())) {
             vinCode = vehicleDangerTotal.getVinCode();
             // 学生端调用查询出险记录 根据VIN码 获取总表id
-            vehicleDanger.setCommonVehicleDangerTotalId(vehicleDangerTotalDao.getByEntity(vehicleDangerTotal).getId());
+            VehicleDangerTotal totalStu = vehicleDangerTotalDao.getByEntity(vehicleDangerTotal);
+            if (null == totalStu) {
+                return new CommonResult(CodeConstant.REQUEST_FAILED, "空对象");
+            }
+            vehicleDanger.setCommonVehicleDangerTotalId(totalStu.getId());
         } else {
-            vinCode = vehicleDangerTotalService.get(vehicleDangerTotal.getId()).getVinCode();
+            VehicleDangerTotal totalTea = vehicleDangerTotalService.get(vehicleDangerTotal.getId());
+            if (null == totalTea) {
+                return new CommonResult(CodeConstant.REQUEST_FAILED, "空对象");
+            }
+            vinCode = totalTea.getVinCode();
             vehicleDanger.setCommonVehicleDangerTotalId(vehicleDangerTotal.getId());
         }
         List<VehicleDanger> vehicleDangers = dao.findList(vehicleDanger);
+        if (vehicleDangers.size() <= 0) {
+            return new CommonResult(CodeConstant.REQUEST_FAILED, "空列表");
+        }
         for (VehicleDanger danger : vehicleDangers) {
             if (StringUtils.isBlank(danger.getVin())) {
                 danger.setVin(vinCode);

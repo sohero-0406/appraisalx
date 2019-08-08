@@ -7,9 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.jeesite.common.constant.CodeConstant;
+import com.jeesite.common.lang.StringUtils;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.VehicleDanger;
-import com.jeesite.modules.sys.entity.DictData;
 import com.jeesite.modules.sys.utils.DictUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,8 +26,6 @@ import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.common.entity.VehicleDangerDetail;
 import com.jeesite.modules.common.service.VehicleDangerDetailService;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 出险记录详情表Controller
@@ -111,7 +109,7 @@ public class VehicleDangerDetailController extends BaseController {
     @ResponseBody
     public CommonResult findVehicleDangerDetail(VehicleDanger vehicleDanger) {
         CommonResult commonResult = new CommonResult();
-        if (null == vehicleDanger.getId()) {
+        if (StringUtils.isBlank(vehicleDanger.getId())) {
             commonResult.setCode(CodeConstant.REQUEST_FAILED);
             commonResult.setMsg("参数为空");
             return commonResult;

@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.jeesite.common.constant.CodeConstant;
+import com.jeesite.common.lang.StringUtils;
 import com.jeesite.modules.common.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -116,7 +117,7 @@ public class VehicleDangerTotalController extends BaseController {
     @RequestMapping(value = "findSavedVehicleDanger")
     @ResponseBody
     public CommonResult findSavedVehicleDanger(VehicleDangerTotal vehicleDangerTotal) {
-        if (null == vehicleDangerTotal.getId()) {
+        if (StringUtils.isBlank(vehicleDangerTotal.getId())) {
             return new CommonResult(CodeConstant.REQUEST_FAILED, "参数为空");
         }
         return vehicleDangerTotalService.findSavedVehicleDanger(vehicleDangerTotal);
@@ -133,7 +134,7 @@ public class VehicleDangerTotalController extends BaseController {
     @RequestMapping(value = "deleteVehicleDanger")
     @ResponseBody
     public CommonResult deleteVehicleDanger(VehicleDangerTotal vehicleDangerTotal) {
-        if (null == vehicleDangerTotal.getId()) {
+        if (StringUtils.isBlank(vehicleDangerTotal.getId())) {
             return new CommonResult(CodeConstant.REQUEST_FAILED, "参数为空");
         }
         return vehicleDangerTotalService.deleteVehicleDanger(vehicleDangerTotal, true);

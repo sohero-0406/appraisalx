@@ -113,16 +113,13 @@ public class MaintenanceTotalService extends CrudService<MaintenanceTotalDao, Ma
     @Transactional(readOnly = false)
     public CommonResult deleteMaintenance(MaintenanceTotal total, boolean flag) {
         CommonResult commonResult = new CommonResult();
-        // 根据维保记录总表获取关联的实体对象(列表)
-        MaintenanceTotal maintenanceTotal = null;
-        List<Maintenance> maintenances = null;
-        List<MaintenanceType> maintenanceTypes = null;
         try {
-            maintenanceTotal = this.get(total.getId());
+            // 根据维保记录总表获取关联的实体对象(列表)
+            MaintenanceTotal maintenanceTotal = this.get(total.getId());
             Maintenance maintenance = new Maintenance();
             maintenance.setMaintenanceTotalId(total.getId());
-            maintenances = maintenanceService.findList(maintenance);
-            maintenanceTypes = maintenanceTypeService.findListByMaintenances(maintenances);
+            List<Maintenance> maintenances = maintenanceService.findList(maintenance);
+            List<MaintenanceType> maintenanceTypes = maintenanceTypeService.findListByMaintenances(maintenances);
             // 依次删除数据记录 物理删除
             if (flag) {
                 dao.phyDelete(maintenanceTotal);
@@ -162,15 +159,18 @@ public class MaintenanceTotalService extends CrudService<MaintenanceTotalDao, Ma
         Maintenance maintenance = new Maintenance();
         maintenance.setMaintenanceTotalId(total.getId());
         List<Maintenance> maintenances = maintenanceService.findList(maintenance);
+        if (maintenances.size() <= 0) {
+            return new CommonResult(CodeConstant.REQUEST_FAILED, "空列表");
+        }
         // 获取并填充维修内容数据
         maintenances.forEach(m -> {
             MaintenanceRecord maintenanceRecord = new MaintenanceRecord();
             MaintenanceType maintenanceType = new MaintenanceType();
             maintenanceType.setMaintenanceId(m.getId());
             maintenanceRecord.setMaintenance(maintenanceDao.findMaintenanceDetail(m));
-            maintenanceRecord.setOutsideAnalyzeRepairRecords(maintenanceTypeDao.findRepairRecords(maintenanceType, DictUtils.getDictValue("aa_repairRecord_type", "外观覆盖件详细维修记录", "")));
-            maintenanceRecord.setComponentAnalyzeRepairRecords(maintenanceTypeDao.findRepairRecords(maintenanceType, DictUtils.getDictValue("aa_repairRecord_type", "重要组成部件详细维修记录", "")));
-            maintenanceRecord.setNormalRepairRecords(maintenanceTypeDao.findRepairRecords(maintenanceType, DictUtils.getDictValue("aa_repairRecord_type", "该车所有的详细维修记录", "")));
+            maintenanceRecord.setOutsideAnalyzeRepairRecords(maintenanceTypeDao.findRepairRecords(maintenanceType, "1"));
+            maintenanceRecord.setComponentAnalyzeRepairRecords(maintenanceTypeDao.findRepairRecords(maintenanceType, "2"));
+            maintenanceRecord.setNormalRepairRecords(maintenanceTypeDao.findRepairRecords(maintenanceType, "3"));
             maintenanceRecords.add(maintenanceRecord);
         });
         // 填充VO对象数据
