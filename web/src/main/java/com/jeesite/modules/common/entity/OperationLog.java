@@ -56,7 +56,7 @@ public class OperationLog extends PreEntity<OperationLog> {
 	}
 	
 	@Length(min=0, max=64, message="请求ip长度不能超过 64 个字符")
-    @ExcelField(title="请求IP长度", align=ExcelField.Align.CENTER, sort=1)
+    @ExcelField(title="请求IP长度", align=ExcelField.Align.CENTER, sort=2)
 	public String getRequestIp() {
 		return requestIp;
 	}
@@ -66,7 +66,7 @@ public class OperationLog extends PreEntity<OperationLog> {
 	}
 	
 	@Length(min=0, max=255, message="操作内容长度不能超过 255 个字符")
-    @ExcelField(title="操作内容", align=ExcelField.Align.CENTER, sort=1)
+    @ExcelField(title="操作内容", align=ExcelField.Align.CENTER, sort=3)
 	public String getOperatingContent() {
 		return operatingContent;
 	}
@@ -75,7 +75,7 @@ public class OperationLog extends PreEntity<OperationLog> {
 		this.operatingContent = operatingContent;
 	}
 
-	@ExcelField(title="操作时间", align=ExcelField.Align.CENTER, sort=1)
+	@ExcelField(title="操作时间", align=ExcelField.Align.CENTER, sort=4)
 	public String getOperatingTime() {
 		return operatingTime;
 	}
