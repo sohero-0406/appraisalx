@@ -2,7 +2,6 @@ package com.jeesite.modules.aa.vo;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jeesite.modules.aa.entity.*;
-import com.jeesite.modules.common.entity.VehicleInfo;
 
 import java.util.List;
 

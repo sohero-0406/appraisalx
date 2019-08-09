@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.jeesite.modules.aa.entity.CarInfo;
 import com.jeesite.modules.aa.entity.PictureUser;
 import com.jeesite.modules.aa.entity.VehicleGradeAssess;
-import com.jeesite.modules.common.entity.VehicleInfo;
 
 public class HomePageVO {
 
