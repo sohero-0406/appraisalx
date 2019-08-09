@@ -11,5 +11,42 @@
 		</where>
 		ORDER BY ${sqlMap.order.toSql()}
 	</select> -->
-	
+
+    <select id="findOtherDocuments" resultType="java.lang.String">
+        SELECT
+            ( SELECT dict_label FROM js_sys_dict_data jsdd WHERE dict_type = 'aa_vehicle_document_info' AND jsdd.dict_value = avdi.project ) AS project
+        FROM
+            aa_vehicle_document_info avdi
+        <where>
+            <if test="vehicleDocumentInfo.examUserId != null and vehicleDocumentInfo.examUserId != ''">
+                AND exam_user_id = #{vehicleDocumentInfo.examUserId}
+            </if>
+            <if test="vehicleDocumentInfo.paperId != null and vehicleDocumentInfo.paperId != ''">
+                AND paper_id = #{vehicleDocumentInfo.paperId}
+            </if>
+            AND state = 1
+            AND project NOT IN (3, 6, 8)
+        </where>
+    </select>
+
+    <select id="findExistedDocuments" resultType="com.jeesite.modules.aa.entity.VehicleDocumentInfo">
+        SELECT
+            id,
+            exam_user_id,
+            paper_id,
+            project,
+            validity
+        FROM
+            aa_vehicle_document_info
+        <where>
+            <if test="vehicleDocumentInfo.examUserId != null and vehicleDocumentInfo.examUserId != ''">
+                AND exam_user_id = #{vehicleDocumentInfo.examUserId}
+            </if>
+            <if test="vehicleDocumentInfo.paperId != null and vehicleDocumentInfo.paperId != ''">
+                AND paper_id = #{vehicleDocumentInfo.paperId}
+            </if>
+            AND state = 1
+            AND project IN (3, 4, 6, 8)
+        </where>
+    </select>
 </mapper>

@@ -197,4 +197,16 @@ public class CheckBodySkeletonService extends CrudService<CheckBodySkeletonDao, 
     public String getTechnologyInfo(CheckBodySkeleton checkBodySkeleton) {
         return checkBodySkeletonDao.getTechnologyInfo(checkBodySkeleton);
     }
+
+    /** 
+    * @description: 查询事故车辆核查项目结果
+    * @param: [checkBodySkeleton]
+    * @return: java.util.List<com.jeesite.modules.aa.entity.CheckBodySkeleton>
+    * @author: Jiangyf
+    * @date: 2019/8/9 
+    * @time: 11:18
+    */ 
+    public List<CheckBodySkeleton> findCheckProjectResults(CheckBodySkeleton checkBodySkeleton) {
+        return dao.findCheckProjectResults(checkBodySkeleton);
+    }
 }

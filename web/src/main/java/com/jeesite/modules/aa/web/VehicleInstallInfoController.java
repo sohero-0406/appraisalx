@@ -97,8 +97,11 @@ public class VehicleInstallInfoController extends BaseController {
 	@PostMapping(value="findList")
 	@ResponseBody
 	public CommonResult findList(){
+		CommonResult commonResult = new CommonResult();
 		ExamUser examUser = UserUtils.getExamUser();
-		return vehicleInstallInfoService.findList(examUser);
+		List<VehicleInstallVO> vehicleInstallInfoList = vehicleInstallInfoService.findList(examUser);
+		commonResult.setData(vehicleInstallInfoList);
+		return commonResult;
 	}
 
 	/**

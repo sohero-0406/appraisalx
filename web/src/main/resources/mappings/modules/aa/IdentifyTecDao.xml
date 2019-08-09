@@ -11,5 +11,21 @@
 		</where>
 		ORDER BY ${sqlMap.order.toSql()}
 	</select> -->
-	
+
+    <select id="findVehicleTecStatusResult" resultType="com.jeesite.modules.aa.entity.IdentifyTec">
+        SELECT
+            ( SELECT dict_label FROM js_sys_dict_data jsdd WHERE jsdd.dict_type = 'aa_module_type' AND jsdd.dict_value = ait.type ) AS type,
+            total_deduct,
+            description
+        FROM
+            aa_identify_tec ait
+        <where>
+            <if test="identifyTec.examUserId != null and identifyTec.examUserId != ''">
+                AND exam_user_id = #{identifyTec.examUserId}
+            </if>
+            <if test="identifyTec.paperId != null and identifyTec.paperId != ''">
+                AND paper_id = #{identifyTec.paperId}
+            </if>
+        </where>
+    </select>
 </mapper>

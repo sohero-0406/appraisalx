@@ -148,4 +148,28 @@ public class VehicleDocumentInfoService extends CrudService<VehicleDocumentInfoD
         vo.setPictureList(pictureList);
         return vo;
     }
+
+    /** 
+    * @description: 查询其他法定凭证、证明
+    * @param: [vehicleDocumentInfo]
+    * @return: void
+    * @author: Jiangyf
+    * @date: 2019/8/8 
+    * @time: 19:44
+    */ 
+    public List<String> findOtherDocuments(VehicleDocumentInfo vehicleDocumentInfo) {
+        return dao.findOtherDocuments(vehicleDocumentInfo);
+    }
+
+    /**
+    * @description: 查询已存在的法定凭证、证明
+    * @param: [vehicleDocumentInfo]
+    * @return: java.util.List<com.jeesite.modules.aa.entity.VehicleDocumentInfo>
+    * @author: Jiangyf
+    * @date: 2019/8/8
+    * @time: 19:58
+    */
+    public List<VehicleDocumentInfo> findExistedDocuments(VehicleDocumentInfo vehicleDocumentInfo) {
+        return dao.findExistedDocuments(vehicleDocumentInfo);
+    }
 }

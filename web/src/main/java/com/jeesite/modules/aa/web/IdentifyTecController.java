@@ -103,4 +103,20 @@ public class IdentifyTecController extends BaseController {
 		identifyTecService.saveData(examUser, itemJson);
 		return new CommonResult();
 	}
+
+	/** 
+	* @description: 加载二手车技术状况表
+	* @param: []
+	* @return: com.jeesite.modules.common.entity.CommonResult
+	* @author: Jiangyf
+	* @date: 2019/8/8 
+	* @time: 18:27
+	*/ 
+	@RequestMapping(value = "findTechnicalStatusTable")
+	@ResponseBody
+	public CommonResult findTechnicalStatusTable() {
+		ExamUser examUser = UserUtils.getExamUser();
+		return identifyTecService.findTechnicalStatusTable(examUser);
+	}
+
 }

@@ -34,4 +34,21 @@
 		where dict_value = #{technologyInfoId} and dict_type = 'aa_car_body_skeleton'
 	</select>
 
+    <select id="findCheckProjectResults" resultType="com.jeesite.modules.aa.entity.CheckBodySkeleton">
+		SELECT
+			( SELECT dict_label FROM js_sys_dict_data jsdd WHERE dict_type = 'aa_car_body_skeleton' AND jsdd.dict_value = acbs.technology_info_id ) AS technology_info_id,
+			( SELECT dict_label FROM js_sys_dict_data jsdd WHERE dict_type = 'aa_defect_status_code' AND jsdd.dict_value = acbs.state ) AS state,
+			description
+		FROM
+			aa_check_body_skeleton acbs
+		<where>
+			<if test="checkBodySkeleton.examUserId != null and checkBodySkeleton.examUserId != ''">
+				AND exam_user_id = #{checkBodySkeleton.examUserId}
+			</if>
+			<if test="checkBodySkeleton.paperId != null and checkBodySkeleton.paperId != ''">
+				AND paper_id = #{checkBodySkeleton.paperId}
+			</if>
+		</where>
+	</select>
+
 </mapper>

@@ -44,7 +44,7 @@ public class VehicleInstallInfoService extends CrudService<VehicleInstallInfoDao
 	 * @param examUser 考生
 	 * @return
 	 */
-	public CommonResult findList(ExamUser examUser){
+	public List<VehicleInstallVO> findList(ExamUser examUser){
 		List<DictData> ddList = DictUtils.getDictList("aa_vehicle_install_type");
 		VehicleInstallInfo vehicleInstallInfo = new VehicleInstallInfo();
 		vehicleInstallInfo.setExamUserId(examUser.getId());
@@ -69,9 +69,7 @@ public class VehicleInstallInfoService extends CrudService<VehicleInstallInfoDao
 			}
 			vehicleInstallVOList.add(vehicleInstallVO);
 		}
-		CommonResult comRes = new CommonResult();
-		comRes.setData(vehicleInstallVOList);
-		return comRes;
+		return vehicleInstallVOList;
 	}
 
     /**
