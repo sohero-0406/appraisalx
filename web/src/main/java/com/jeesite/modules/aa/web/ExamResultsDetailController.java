@@ -95,6 +95,11 @@ public class ExamResultsDetailController extends BaseController {
 		return renderResult(Global.TRUE, text("删除学生成绩详情表成功！"));
 	}
 
+	/**
+	 * 加载考生成绩详情
+	 * @param examUser
+	 * @return
+	 */
 	@RequestMapping(value = "getExamResultsDetail")
 	@ResponseBody
 	public CommonResult getExamResultsDetail(ExamUser examUser) {
@@ -104,6 +109,7 @@ public class ExamResultsDetailController extends BaseController {
 			comRes.setMsg("请求参数异常");
 			return comRes;
 		}
+
 		//首选验证 是否包含得分项 ture包含 false不包含
 		if(examResultsDetailService.validationData(examUser.getId())){
 			comRes.setData(examResultsDetailService.getExamResultsDetail(examUser));

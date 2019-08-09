@@ -139,11 +139,12 @@ public class ExamUserController extends BaseController {
 	@RequestMapping(value = "exportResults")
 	@ResponseBody
 	public void exportOperationLog(HttpServletResponse response,String examId) {
-		CommonResult comRes = new CommonResult();
+		if(StringUtils.isBlank(examId)){
+			logger.warn("考试id未传!");
+			return;
+		}
 		Exam exam = new Exam();
 		exam.setId(examId);
-
-
 		ExamUser examUser = new ExamUser();
 		examUser.setExamId(examId);
 		List<ExamUser> examUserList = examUserService.findList(examUser);
@@ -162,13 +163,16 @@ public class ExamUserController extends BaseController {
 			return;
 		}
 		JSONArray array = JSONArray.parseArray(loadStuListComRes.getData().toString());
-		List list = examUserService.getExamUserListByPlatfrom(array,examUserList,examId);
-		String fileName = "考试成绩" + DateUtils.getDate("yyyyMMddHHmmss") + ".xlsx";
-		try(ExcelExport ee = new ExcelExport(null,ExamUser.class)) {
-			ee.setDataList(list).write(response, fileName);
-		}catch (Exception e){
-			logger.warn("考试成绩导出异常!");
+		if(array.size()>0){
+			List list = examUserService.getExamUserListByPlatfrom(array,examUserList,examId);
+			String fileName = "学生成绩列表" + DateUtils.getDate("yyyyMMddHHmmss") + ".xlsx";
+			try(ExcelExport ee = new ExcelExport(null,ExamUser.class)) {
+				ee.setDataList(list).write(response, fileName);
+			}catch (Exception e){
+				logger.warn("考试成绩导出异常!");
+			}
 		}
+
 	}
 
 

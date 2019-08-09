@@ -710,11 +710,13 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 			carInfoCount = carInfoCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343664439297")))); //级别
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343664439297"),(String)examScoreMap.get("1151013343664439297"),
-					carInfoT.getLevel(),carInfoS.getLevel(),"0");
+					getDic("aa_vehicle_level",carInfoT.getLevel()),getDic("aa_vehicle_level",carInfoS.getLevel())
+					,"0");
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343664439297"),"0",
-					carInfoT.getLevel(),carInfoS==null?"":carInfoS.getLevel(),"1");
+					getDic("aa_vehicle_level",carInfoT.getLevel()),
+					carInfoS==null?"":getDic("aa_vehicle_level",carInfoS.getLevel()),"1");
 		}
 		if(StringUtils.isNotBlank(carInfoT.getManufactureDate()) &&(null!=carInfoS) &&carInfoT.getManufactureDate().equals(carInfoS.getManufactureDate())){
 			carInfoCount = carInfoCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343665321234")))); //出厂日期
@@ -740,11 +742,13 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 			carInfoCount = carInfoCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343663699964")))); //环保标准
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343663699964"),(String)examScoreMap.get("1151013343663699964"),
-					carInfoT.getEnvironmentalStandard(),carInfoS.getEnvironmentalStandard(),"0");
+					getDic("aa_environmental_standard",carInfoT.getEnvironmentalStandard()),
+					getDic("aa_environmental_standard",carInfoS.getEnvironmentalStandard()),"0");
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343663699964"),"0",
-					carInfoT.getEnvironmentalStandard(),carInfoS==null?"":carInfoS.getEnvironmentalStandard(),"1");
+					getDic("aa_environmental_standard",carInfoT.getEnvironmentalStandard()),
+					carInfoS==null?"":getDic("aa_environmental_standard",carInfoS.getEnvironmentalStandard()),"1");
 		}
 		if(StringUtils.isNotBlank(carInfoT.getCurbWeight()) &&(null!=carInfoS) &&carInfoT.getCurbWeight().equals(carInfoS.getCurbWeight())){
 			carInfoCount = carInfoCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343663931393")))); //整备质量
@@ -1066,15 +1070,17 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 					(String)examNameMap.get("1151013343666032641"),"0",
 					carInfoT.getLabelType(),carInfoS==null?"":carInfoS.getLabelType(),"1");
 		}
+		DictUtils.getDictLabel("aa_usage_type",carInfoT.getUsage(),"");
+
 		if(StringUtils.isNotBlank(carInfoT.getUsage()) &&(null!=carInfoS)&&carInfoT.getUsage().equals(carInfoS.getUsage())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343666728961"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343666728961"),(String)examScoreMap.get("1151013343666728961"),
-					carInfoT.getUsage(),carInfoS.getUsage(),"0");
+					getDic("aa_usage_type",carInfoT.getUsage()),getDic("aa_usage_type",carInfoS.getUsage()),"0");
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343666728961"),"0",
-					carInfoT.getUsage(),carInfoS==null?"":carInfoS.getUsage(),"1");
+					getDic("aa_usage_type",carInfoT.getUsage()),carInfoS==null?"":getDic("aa_usage_type",carInfoS.getUsage()),"1");
 		}
 		if(StringUtils.isNotBlank(carInfoT.getTotalQuality())&&(null!=carInfoS) &&carInfoT.getTotalQuality().equals(carInfoS.getTotalQuality())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343663927297"))));
@@ -1110,11 +1116,11 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343665344513"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343665344513"),(String)examScoreMap.get("1151013343665344513"),
-					carInfoT.getFuelType(),carInfoS.getFuelType(),"0");
+					getDic("aa_fuel_type",carInfoT.getFuelType()),getDic("aa_fuel_type",carInfoS.getFuelType()),"0");
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343665344513"),"0",
-					carInfoT.getFuelType(),carInfoS==null?"":carInfoS.getFuelType(),"1");
+					getDic("aa_fuel_type",carInfoT.getFuelType()),carInfoS==null?"":getDic("aa_fuel_type",carInfoS.getFuelType()),"1");
 		}
 		if(StringUtils.isNotBlank(carInfoT.getRegisterDate()) &&(null!=carInfoS)&&carInfoT.getRegisterDate().equals(carInfoS.getRegisterDate())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343662788609"))));
@@ -1130,15 +1136,15 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343664787457"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343664787457"),(String)examScoreMap.get("1151013343664787457"),
-					DictUtils.getDictLabel("aa_vehicle_color",carInfoT.getLevel(),""),
-					DictUtils.getDictLabel("aa_vehicle_color",carInfoS.getLevel(),""),
+					getDic("aa_vehicle_color",carInfoT.getColor()),
+					getDic("aa_vehicle_color",carInfoS.getColor()),
 					"0");
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343664787457"),"0",
-					DictUtils.getDictLabel("aa_vehicle_color",carInfoT.getLevel(),""),
+					getDic("aa_vehicle_color",carInfoT.getColor()),
 					carInfoS==null?"":
-							DictUtils.getDictLabel("aa_vehicle_color",carInfoS.getLevel(),""),"1");
+							getDic("aa_vehicle_color",carInfoS.getColor()),"");
 		}
 		if((null!=carInfoS) && carInfoT.getUseYear()==carInfoS.getUseYear()&&carInfoT.getUseMonth()==carInfoS.getUseMonth()) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343665397761"))));
@@ -1229,6 +1235,24 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 	}
 
 
+	//调用字典
+	public String getDic(String dicCode,String code){
+		switch(dicCode){
+			case "aa_usage_type" :      //使用用途
+				return DictUtils.getDictLabel(dicCode,code,"");
+			case "aa_fuel_type" :       //燃油种类
+				return DictUtils.getDictLabel(dicCode,code,"");
+			case "aa_vehicle_color" :   //车身颜色
+				return DictUtils.getDictLabel(dicCode,code,"");
+			case "aa_vehicle_level" :   //级别
+				return DictUtils.getDictLabel(dicCode,code,"");
+			case "aa_environmental_standard" :  //环保标准
+				return DictUtils.getDictLabel(dicCode,code,"");
+			default :
+		}
+		return "";
+	}
+
 
 	/**
 	 * //数据判断 如果为 null 则替换成 ""
@@ -1307,7 +1331,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
     }
 
 	/**
-	 *
+	 * 根据学生id 调用大平台获取学生详细信息
 	 * @return
 	 */
 	public CommonResult getLoadStuListByIds(String userIds){
@@ -1318,6 +1342,13 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 
 	}
 
+	/**
+	 *  根据大平台返回学生详细信息，转成对应的实体对象，批量导出
+	 * @param array
+	 * @param examUserList
+	 * @param examId
+	 * @return
+	 */
 	public List<ExamUser> getExamUserListByPlatfrom(JSONArray array, List<ExamUser> examUserList, String examId){
 		Exam exam = new Exam();
 		exam.setId(examId);
@@ -1340,10 +1371,10 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 			}
 			user.setExamName(examName);
 			list.add(user);
-
 		}
 		return list;
 	}
+
 
 
 }

@@ -142,7 +142,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
 		carInfo.setExamUserId(examUser.getExamId());
 		carInfo.setPaperId(examUser.getPaperId());
 		carInfo = carInfoService.getByEntity(carInfo);
-		carInfo.setColor(DictUtils.getDictLabel("aa_vehicle_color",carInfo.getLevel(),""));
+		carInfo.setColor(DictUtils.getDictLabel("aa_vehicle_color",carInfo.getColor(),""));
 		if(StringUtils.isNotBlank(carInfo.getRegisterDate())){
 			String[] registerDate = carInfo.getRegisterDate().split("-");
 			carInfo.setRegisterDate(registerDate[0] + "年" + registerDate[1] + "月" + registerDate[2] + "日");
@@ -249,7 +249,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         carInfo.setPaperId(examUser.getPaperId());
         carInfo = carInfoService.getByEntity(carInfo);
         if(StringUtils.isNotBlank(carInfo.getLevel())){
-            carInfo.setColor(DictUtils.getDictLabel("aa_vehicle_color",carInfo.getLevel(),""));
+            carInfo.setColor(DictUtils.getDictLabel("aa_vehicle_color",carInfo.getColor(),""));
         }
         if (StringUtils.isNotBlank(carInfo.getUsage())){
             carInfo.setUsage(DictUtils.getDictLabel("aa_usage_type",carInfo.getUsage(),""));

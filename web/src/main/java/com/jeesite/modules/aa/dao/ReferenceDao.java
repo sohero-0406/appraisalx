@@ -6,6 +6,7 @@ package com.jeesite.modules.aa.dao;
 import com.jeesite.common.dao.CrudDao;
 import com.jeesite.common.mybatis.annotation.MyBatisDao;
 import com.jeesite.modules.aa.entity.Reference;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -17,4 +18,5 @@ import java.util.List;
 @MyBatisDao
 public interface ReferenceDao extends CrudDao<Reference> {
 
+    void deleteReference(@Param("referenceIdList") String[] referenceIdList);
 }
