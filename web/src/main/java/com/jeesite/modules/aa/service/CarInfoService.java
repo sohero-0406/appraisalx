@@ -12,6 +12,7 @@ import com.jeesite.modules.aa.entity.PictureUser;
 import com.jeesite.modules.aa.vo.BaseInfoVO;
 import com.jeesite.modules.aa.vo.HomePageVO;
 import com.jeesite.modules.common.entity.ExamUser;
+import com.jeesite.modules.common.service.OperationLogService;
 import com.jeesite.modules.sys.entity.DictData;
 import com.jeesite.modules.sys.utils.DictUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,8 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
     private PictureUserService pictureUserService;
     @Autowired
     private CarInfoDao carInfoDao;
+    @Autowired
+    private OperationLogService operationLogService;
 
     /**
      * 获取单条数据
@@ -121,13 +124,14 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
         carInfo.setExamUserId(examUser.getId());
         carInfo.setPaperId(examUser.getPaperId());
         this.save(carInfo);
+        operationLogService.saveObj(examUser,"保存委托书及车辆基本信息成功");
     }
 
     /**
      * 加载车辆基本信息、委托方基本信息、图片信息、委托书类型列表、燃油种类列表、车身颜色列表
      *
      * @param examUser       考生用户
-     * @param pictureTypeIds 考生图片类型ids，多个id之间用“,”分隔
+     * @param pictureTypeIds 考生图片类型ids
      * @return
      */
     public BaseInfoVO getBaseInfo(ExamUser examUser, String[] pictureTypeIds) {
@@ -136,7 +140,7 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
         BaseInfoVO baseInfoVO = new BaseInfoVO();
 
         //加载证件列表
-        List<PictureUser> picList = pictureUserService.findList(examUser, pictureTypeIds);
+        List<PictureUser> picList = pictureUserService.findPictureList(examUser, pictureTypeIds);
         baseInfoVO.setPicList(picList);
 
         //加载车辆基本信息
@@ -162,6 +166,10 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
         //加载使用性质
         List<DictData> usageList = DictUtils.getDictList("aa_usage_type");
         baseInfoVO.setUsageList(usageList);
+
+        //加载生产方式
+        List<DictData> modeProductList = DictUtils.getDictList("aa_mode_product");
+        baseInfoVO.setModeProductList(modeProductList);
 
         //加载车身颜色
         List<DictData> colorList = DictUtils.getDictList("aa_vehicle_color");

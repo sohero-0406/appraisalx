@@ -14,6 +14,7 @@ import com.jeesite.modules.aa.entity.CheckTradableVehicles;
 import com.jeesite.modules.aa.entity.PictureUser;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.ExamUser;
+import com.jeesite.modules.common.service.OperationLogService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.ss.usermodel.Picture;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,9 @@ public class PlaceFileService extends CrudService<PlaceFileDao, PlaceFile> {
 
 	@Autowired
 	private CheckTradableVehiclesService checkTradableVehiclesService;
-	
+	@Autowired
+	private OperationLogService operationLogService;
+
 	/**
 	 * 获取单条数据
 	 * @param placeFile
@@ -50,7 +53,6 @@ public class PlaceFileService extends CrudService<PlaceFileDao, PlaceFile> {
 	/**
 	 * 查询分页数据
 	 * @param placeFile 查询条件
-	 * @param placeFile.page 分页对象
 	 * @return
 	 */
 	@Override
@@ -158,6 +160,6 @@ public class PlaceFileService extends CrudService<PlaceFileDao, PlaceFile> {
 			checkTradableVehicles.setFileDuring(fileDuring);
 			checkTradableVehiclesService.save(checkTradableVehicles);
 		}
-
+		operationLogService.saveObj(examUser,"保存归档成功");
 	}
 }

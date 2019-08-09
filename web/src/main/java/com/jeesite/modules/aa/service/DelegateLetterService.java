@@ -2,7 +2,10 @@
  * Copyright (c) 2013-Now http://jeesite.com All rights reserved.
  */
 package com.jeesite.modules.aa.service;
+
+import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.constant.CodeConstant;
+import com.jeesite.common.constant.ServiceConstant;
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.service.CrudService;
 import com.jeesite.common.utils.MoneyUtils;
@@ -12,9 +15,11 @@ import com.jeesite.modules.aa.dao.DelegateLetterDao;
 import com.jeesite.modules.aa.entity.*;
 import com.jeesite.modules.aa.vo.AppraisalReportVO;
 import com.jeesite.modules.aa.vo.DelegateLetterVO;
-import com.jeesite.modules.common.entity.*;
+import com.jeesite.modules.common.entity.CommonResult;
+import com.jeesite.modules.common.entity.Exam;
+import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.service.ExamService;
-import com.jeesite.modules.common.service.VehicleInfoService;
+import com.jeesite.modules.common.service.HttpClientService;
 import com.jeesite.modules.sys.utils.DictUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -57,11 +60,11 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
     @Autowired
     private DelegateLetterService delegateLetterService;
     @Autowired
-    private VehicleInfoService vehicleInfoService;
-    @Autowired
     private ExamService examService;
+    @Autowired
+    private HttpClientService httpClientService;
 
-	/**
+    /**
 	 * 获取单条数据
 	 * @param delegateLetter
 	 * @return
@@ -141,7 +144,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
 		carInfo.setExamUserId(examUser.getExamId());
 		carInfo.setPaperId(examUser.getPaperId());
 		carInfo = carInfoService.getByEntity(carInfo);
-		carInfo.setColor(DictUtils.getDictLabel("aa_vehicle_color",carInfo.getLevel(),""));
+		carInfo.setColor(DictUtils.getDictLabel("aa_vehicle_color",carInfo.getColor(),""));
 		if(StringUtils.isNotBlank(carInfo.getRegisterDate())){
 			String[] registerDate = carInfo.getRegisterDate().split("-");
 			carInfo.setRegisterDate(registerDate[0] + "年" + registerDate[1] + "月" + registerDate[2] + "日");
@@ -248,7 +251,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         carInfo.setPaperId(examUser.getPaperId());
         carInfo = carInfoService.getByEntity(carInfo);
         if(StringUtils.isNotBlank(carInfo.getLevel())){
-            carInfo.setColor(DictUtils.getDictLabel("aa_vehicle_color",carInfo.getLevel(),""));
+            carInfo.setColor(DictUtils.getDictLabel("aa_vehicle_color",carInfo.getColor(),""));
         }
         if (StringUtils.isNotBlank(carInfo.getUsage())){
             carInfo.setUsage(DictUtils.getDictLabel("aa_usage_type",carInfo.getUsage(),""));
@@ -327,8 +330,13 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         appraisalReportVO.setDelegateLetter(delegateLetter);
 
         //车辆配置全表
-        VehicleInfo vehicleInfo = vehicleInfoService.getCarModel(carInfo.getModel());
-        appraisalReportVO.setVehicleInfo(vehicleInfo);
+        Map<String, String> map = new HashMap<>();
+        map.put("chexingId", carInfo.getModel());
+        CommonResult result = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_CAR_MODEL, map);
+        if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
+            JSONObject vehicleInfo = JSONObject.parseObject(result.getData().toString());
+            appraisalReportVO.setVehicleInfo(vehicleInfo);
+        }
 
         return appraisalReportVO;
     }
@@ -433,7 +441,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         returnMap.put("usage",appraisalReportVO.getCarInfo().getUsage());
         //五、技术鉴定结果
         returnMap.put("defectDescription",appraisalReportVO.getDefectDescription());//技术状况缺陷描述
-        returnMap.put("chexingmingcheng",appraisalReportVO.getVehicleInfo().getChexingmingcheng());//重要配置及参数信息
+        returnMap.put("chexingmingcheng",appraisalReportVO.getVehicleInfo().getString("chexingmingcheng"));//重要配置及参数信息
         returnMap.put("technicalStatus",appraisalReportVO.getVehicleGradeAssess().getTechnicalStatus());//技术状况鉴定等级
         returnMap.put("score",appraisalReportVO.getVehicleGradeAssess().getScore());//等级描述
         // 六、价值评估

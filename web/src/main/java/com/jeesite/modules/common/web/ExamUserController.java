@@ -3,16 +3,21 @@
  */
 package com.jeesite.modules.common.web;
 
+import com.alibaba.fastjson.JSONArray;
 import com.jeesite.common.config.Global;
 import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.entity.Page;
+import com.jeesite.common.lang.DateUtils;
 import com.jeesite.common.lang.StringUtils;
+import com.jeesite.common.utils.excel.ExcelExport;
 import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.Exam;
 import com.jeesite.modules.common.entity.ExamUser;
+import com.jeesite.modules.common.entity.OperationLog;
 import com.jeesite.modules.common.service.ExamUserService;
 import com.jeesite.modules.common.utils.UserUtils;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -125,6 +131,48 @@ public class ExamUserController extends BaseController {
 		}
 		comRes.setData(examUserService.getExamUserScoreList(examId));
 		return comRes;
+	}
+
+	/**
+	 *  成绩批量导出
+	 */
+	@RequestMapping(value = "exportResults")
+	@ResponseBody
+	public void exportOperationLog(HttpServletResponse response,String examId) {
+		if(StringUtils.isBlank(examId)){
+			logger.warn("考试id未传!");
+			return;
+		}
+		Exam exam = new Exam();
+		exam.setId(examId);
+		ExamUser examUser = new ExamUser();
+		examUser.setExamId(examId);
+		List<ExamUser> examUserList = examUserService.findList(examUser);
+		StringBuilder stringBuilder = new StringBuilder();
+		int len = examUserList.size();
+		for(int i=0;i<len;i++){
+			if(i==len-1){
+				stringBuilder.append(examUserList.get(i).getUserId());
+			}else{
+				stringBuilder.append(examUserList.get(i).getUserId()+",");
+			}
+		}
+		CommonResult loadStuListComRes = examUserService.getLoadStuListByIds(stringBuilder.toString());
+		if(!CodeConstant.REQUEST_SUCCESSFUL.equals(loadStuListComRes.getCode())){
+			logger.error(loadStuListComRes.getMsg());
+			return;
+		}
+		JSONArray array = JSONArray.parseArray(loadStuListComRes.getData().toString());
+		if(array.size()>0){
+			List list = examUserService.getExamUserListByPlatfrom(array,examUserList,examId);
+			String fileName = "学生成绩列表" + DateUtils.getDate("yyyyMMddHHmmss") + ".xlsx";
+			try(ExcelExport ee = new ExcelExport(null,ExamUser.class)) {
+				ee.setDataList(list).write(response, fileName);
+			}catch (Exception e){
+				logger.warn("考试成绩导出异常!");
+			}
+		}
+
 	}
 
 

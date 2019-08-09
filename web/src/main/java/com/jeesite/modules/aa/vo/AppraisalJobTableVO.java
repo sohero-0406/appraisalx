@@ -1,5 +1,6 @@
 package com.jeesite.modules.aa.vo;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jeesite.modules.aa.entity.*;
 import com.jeesite.modules.common.entity.VehicleInfo;
 
@@ -10,7 +11,7 @@ public class AppraisalJobTableVO {
     private CarInfo carInfo;        //委托车辆信息
     private List<VehicleInstallInfo> vehicleInstallInfoList;      //车辆加装信息
     private List<VehicleDocumentInfo> vehicleDocumentInfoList;        //车辆单证信息
-    private VehicleInfo vehicleInfo;        //车辆配置全表
+    private JSONObject vehicleInfo;        //车辆配置全表
     private List<CheckBodySkeleton> checkBodySkeletonList;        //检查车体骨架
     private CheckTradableVehicles checkTradableVehicles;        //检查可交易车辆
     private List<IdentifyTec> identifyTecList;      //鉴定技术状况
@@ -43,11 +44,11 @@ public class AppraisalJobTableVO {
         this.vehicleDocumentInfoList = vehicleDocumentInfoList;
     }
 
-    public VehicleInfo getVehicleInfo() {
+    public JSONObject getVehicleInfo() {
         return vehicleInfo;
     }
 
-    public void setVehicleInfo(VehicleInfo vehicleInfo) {
+    public void setVehicleInfo(JSONObject vehicleInfo) {
         this.vehicleInfo = vehicleInfo;
     }
 

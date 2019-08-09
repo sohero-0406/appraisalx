@@ -13,4 +13,16 @@
 	</select> -->
 
 	<!-- 查询参照物 -->
+
+	<delete id="deleteReference">
+		delete from aa_reference
+		<where>
+			id in
+			<foreach collection="referenceIdList" item="referenceId" index="index" open="(" close=")" separator=",">
+				#{referenceId}
+			</foreach>
+		</where>
+
+
+	</delete>
 </mapper>

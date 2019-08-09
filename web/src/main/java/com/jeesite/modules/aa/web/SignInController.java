@@ -1,13 +1,17 @@
 package com.jeesite.modules.aa.web;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.cache.CacheUtils;
 import com.jeesite.common.constant.CodeConstant;
+import com.jeesite.common.constant.ServiceConstant;
+import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.web.http.ServletUtils;
 import com.jeesite.modules.aa.service.SignInService;
 import com.jeesite.modules.aa.vo.BaseVO;
 import com.jeesite.modules.aa.vo.LoginVO;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.ExamUser;
+import com.jeesite.modules.common.service.HttpClientService;
 import com.jeesite.modules.common.utils.UserUtils;
 import com.sun.javafx.collections.MappingChange;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +37,8 @@ public class SignInController {
 
     @Autowired
     private SignInService signInService;
+    @Autowired
+    private HttpClientService httpClientService;
 
     /**
      * 考生端登录
@@ -106,9 +113,33 @@ public class SignInController {
             comRes.setMsg("请求用户不存在!");
             return comRes;
         }
-        ServletUtils.getRequest().setAttribute("examUser",examUser);
+        ServletUtils.getRequest().getSession().setAttribute("examUser",examUser);
         return comRes;
 
+    }
+
+    /**
+     * 教师端登陆
+     * @param userName
+     * @param password
+     * @return
+     */
+    @RequestMapping(value = "teacherlogin")
+    @ResponseBody
+    public CommonResult login(String userName,String password) {
+        CommonResult comRes = new CommonResult();
+        Map<String, String> map = new HashMap<>();
+        map.put("userName",userName);
+        map.put("password",password);
+        CommonResult teacherSide= httpClientService.post(ServiceConstant.TEACHER_SIDE_LOGIN,map);
+        if(!CodeConstant.REQUEST_SUCCESSFUL.equals(teacherSide.getCode())){
+            return teacherSide;
+        }
+        ExamUser examUser = new ExamUser();
+        JSONObject json = JSONObject.parseObject(teacherSide.getData().toString());
+        examUser.setUserId(json.getString("id"));
+        ServletUtils.getRequest().getSession().setAttribute("examUser",examUser);
+        return comRes;
     }
 
 

@@ -16,6 +16,7 @@ import com.jeesite.common.lang.StringUtils;
 import com.jeesite.modules.aa.vo.VehicleInstallVO;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.ExamUser;
+import com.jeesite.modules.common.service.OperationLogService;
 import com.jeesite.modules.sys.entity.DictData;
 import com.jeesite.modules.sys.utils.DictUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,8 @@ public class VehicleInstallInfoService extends CrudService<VehicleInstallInfoDao
 
 	@Autowired
 	private VehicleInstallInfoDao vehicleInstallInfoDao;
+	@Autowired
+	private OperationLogService operationLogService;
 
 	/**
 	 * 根据考生id加载车辆加装信息
@@ -95,6 +98,7 @@ public class VehicleInstallInfoService extends CrudService<VehicleInstallInfoDao
                 vii.setProject(vivo.getProject());
                 this.save(vii);
             }
+            operationLogService.saveObj(examUser,"保存车辆加装信息成功");
         } else {
             return new CommonResult(CodeConstant.LOGIN_TIMEOUT,"登录人信息丢失，请重新登录！");
         }

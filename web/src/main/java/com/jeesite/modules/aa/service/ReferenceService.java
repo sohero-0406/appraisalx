@@ -4,10 +4,12 @@
 package com.jeesite.modules.aa.service;
 
 import com.jeesite.common.entity.Page;
+import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.service.CrudService;
 import com.jeesite.modules.aa.dao.ReferenceDao;
 import com.jeesite.modules.aa.entity.Reference;
 import com.jeesite.modules.aa.vo.ReferenceVO;
+import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.sys.entity.DictData;
 import com.jeesite.modules.sys.utils.DictUtils;
 import org.springframework.stereotype.Service;
@@ -116,10 +118,6 @@ public class ReferenceService extends CrudService<ReferenceDao, Reference> {
     @Transactional(readOnly = false)
     public void deleteReference(String referenceIdList) {
         String[] idList = referenceIdList.split(",");
-        Reference reference = new Reference();
-        for (String id : idList) {
-            reference.setId(id);
-            dao.phyDelete(reference);
-        }
+        dao.deleteReference(idList);
     }
 }

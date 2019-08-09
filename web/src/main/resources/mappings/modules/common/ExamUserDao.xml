@@ -33,6 +33,12 @@
       exam_id = #{examId}
 	</select>
 
+	<select id="getAllowLogin" resultType="ExamUser">
+	SELECT a.* FROM `common_exam_user` a
+	left join common_exam b on a.exam_id = b.id
+	where b.state = '3' and a.user_id = #{userId}
+	</select>
+
 	<delete id="deleteExamUser">
 		delete from common_exam_user where id = #{examUserId}
 	</delete>

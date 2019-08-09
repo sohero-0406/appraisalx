@@ -1,5 +1,6 @@
 package com.jeesite.modules.aa.vo;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jeesite.modules.aa.entity.*;
 import com.jeesite.modules.common.entity.VehicleInfo;
 
@@ -15,7 +16,7 @@ public class AppraisalReportVO {
     private VehicleGradeAssess vehicleGradeAssess;      //车辆等级评定
     private Calculate calculate;        //计算车辆价值
 
-    private VehicleInfo vehicleInfo;        //车辆配置全表
+    private JSONObject vehicleInfo;        //车辆配置全表
     private String carOwner;        //车主
     private String defectDescription;       //缺陷描述
     private String priceCapital;        //金额大写
@@ -77,11 +78,11 @@ public class AppraisalReportVO {
         this.delegateLetter = delegateLetter;
     }
 
-    public VehicleInfo getVehicleInfo() {
+    public JSONObject getVehicleInfo() {
         return vehicleInfo;
     }
 
-    public void setVehicleInfo(VehicleInfo vehicleInfo) {
+    public void setVehicleInfo(JSONObject vehicleInfo) {
         this.vehicleInfo = vehicleInfo;
     }
 

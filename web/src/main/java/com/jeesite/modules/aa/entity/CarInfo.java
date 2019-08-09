@@ -46,6 +46,7 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 		@Column(name="original_price", attrName="originalPrice", label="原始价格"),
 		@Column(name="note", attrName="note", label="备注"),
 		@Column(name="level", attrName="level", label="级别"),
+		@Column(name="mode_product", attrName="modeProduct", label="生产方式"),
 		@Column(name="manufacture_date", attrName="manufactureDate", label="出厂日期"),
 		@Column(name="change_num", attrName="changeNum", label="过户次数"),
 		@Column(name="environmental_standard", attrName="environmentalStandard", label="环保标准"),
@@ -91,6 +92,7 @@ public class CarInfo extends PreEntity<CarInfo> {
 	private String originalPrice;		// 原始价格
 	private String note;		// 备注
 	private String level;		// 级别
+	private String modeProduct;		//生产方式
 	private String manufactureDate;		// 出厂日期
 	private Integer changeNum;		// 过户次数
 	private String environmentalStandard;		// 环保标准
@@ -360,7 +362,16 @@ public class CarInfo extends PreEntity<CarInfo> {
 	public void setLevel(String level) {
 		this.level = level;
 	}
-	
+
+	@Length(min=0, max=10, message="生产方式不能超过 10 个字符")
+	public String getModeProduct() {
+		return modeProduct;
+	}
+
+	public void setModeProduct(String modeProduct) {
+		this.modeProduct = modeProduct;
+	}
+
 	@Length(min=0, max=64, message="出厂日期长度不能超过 64 个字符")
 	public String getManufactureDate() {
 		return manufactureDate;

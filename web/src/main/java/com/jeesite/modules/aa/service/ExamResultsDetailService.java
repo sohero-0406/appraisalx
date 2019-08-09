@@ -219,5 +219,4 @@ public class ExamResultsDetailService extends CrudService<ExamResultsDetailDao, 
 	}
 
 
-
 }

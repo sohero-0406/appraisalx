@@ -34,7 +34,6 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 public class DelegateLetter extends PreEntity<DelegateLetter> {
 	
 	private static final long serialVersionUID = 1L;
-	private String examUserId;		// 外键id
 	private String paperId;		// 试卷id
 	private String organizationName;		// 鉴定评估机构名称
 	private String idNum;

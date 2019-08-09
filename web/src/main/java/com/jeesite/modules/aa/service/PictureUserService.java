@@ -4,6 +4,7 @@
 package com.jeesite.modules.aa.service;
 
 import com.jeesite.common.entity.Page;
+import com.jeesite.common.idgen.IdWorker;
 import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.service.CrudService;
 import com.jeesite.common.utils.BaiDuAiUtil;
@@ -70,7 +71,7 @@ public class PictureUserService extends CrudService<PictureUserDao, PictureUser>
 
         String filePath = prefix + "exam/" + url + "/";
         PictureType pictureType = pictureTypeService.get(pictureTypeId);
-        String fileName = pictureType.getName();
+        String fileName = new IdWorker(-1, -1).nextId() + "";
         String originFileName = picFile.getOriginalFilename();
         String fileType = originFileName.substring(originFileName.length() - 4);
         File destFile = new File(filePath + fileName + fileType);
@@ -82,30 +83,13 @@ public class PictureUserService extends CrudService<PictureUserDao, PictureUser>
 
         //保存图片信息
         PictureUser pictureUser = new PictureUser();
-
-        //如果图片原id存在，则验证原图片是否存在，若存在，则删除
-//		String oldUrl = null;
-//		if(id != null && id.trim().length() > 0){
-//			pictureUser.setId(id);
-//			pictureUser = pictureUserDao.get(pictureUser);
-////			oldUrl = pictureUser.getUrl();
-//			pictureUser.setUrl(filePath + fileName + fileType);
-//			pictureUser.setName(fileName);
-//		}
         pictureUser.setId(id);
         pictureUser.setExamUserId(examUserId);
         pictureUser.setPaperId(paperId);
         pictureUser.setPictureTypeId(pictureTypeId);
         pictureUser.setUrl("exam/" + url + "/" + fileName + fileType);
-        pictureUser.setName(fileName);
+        pictureUser.setName(pictureType.getName());
         this.save(pictureUser);
-        //删除原图片（因为新图片的名字和老图片名字一致，不需要执行删除操作）
-//		if(oldUrl != null && oldUrl.trim().length()  > 0){
-//			File oldFile = new File(oldUrl);
-//			if(oldFile.exists()){
-//				oldFile.delete();
-//			}
-//		}
 
         PictureUserVO pictureUserVO = new PictureUserVO(pictureUser);
 
@@ -137,14 +121,11 @@ public class PictureUserService extends CrudService<PictureUserDao, PictureUser>
         }
         List<PictureType> picTypeList = pictureTypeService.findListByIds(parentTypeIds);
 
-
         List<PictureTypeAndUserVO> picTypeAndUserVOs = new ArrayList<>();
-        List<PictureUser> childPicUserList = null;
-        PictureTypeAndUserVO pictureTypeAndUserVO = null;
         for (PictureType picType : picTypeList) {
-            pictureTypeAndUserVO = new PictureTypeAndUserVO();
+            PictureTypeAndUserVO pictureTypeAndUserVO = new PictureTypeAndUserVO();
             pictureTypeAndUserVO.setParentPictureType(picType);
-            childPicUserList = new ArrayList<>();
+            List<PictureUser> childPicUserList = new ArrayList<>();
             for (PictureTypeAndUserVO picTypeAndUser : picTypeAndUserList) {
                 if (picTypeAndUser == null || picTypeAndUser.getPictureType() == null) {
                     continue;
@@ -180,8 +161,8 @@ public class PictureUserService extends CrudService<PictureUserDao, PictureUser>
      * @param pictureTypeIds 图片类型id
      * @return 如果examUserId为空，返回null，如果pictureTypeIds为空，返回所有类型的图片信息
      */
-    public List<PictureUser> findList(ExamUser examUser, String[] pictureTypeIds) {
-        return pictureUserDao.findListByExamUserIdAndTypeId(examUser, pictureTypeIds);
+    public List<PictureUser> findPictureList(ExamUser examUser, String[] pictureTypeIds) {
+        return pictureUserDao.findPictureList(examUser, pictureTypeIds);
     }
 
     /**

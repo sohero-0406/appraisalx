@@ -175,14 +175,14 @@ public class ExamController extends BaseController {
      */
     @RequestMapping(value = "downloadInformationModule")
     @ResponseBody
-    public Object downloadInformationModule(HttpServletRequest request, HttpServletResponse response) {
+    public void downloadInformationModule(HttpServletRequest request, HttpServletResponse response) {
         //修改考生状态
         //声明下载文件名称
         String name = "二手车鉴定评估情景描述";
         //声明路径
         String url = "E:/二手车鉴定评估情景描述.docx";
         //下载目标文件
-        return DownloadWordUtils.downloadWord(request,response,url,name,"docx");
+        DownloadWordUtils.downloadWord(request,response,url,name,"docx");
     }
 
 

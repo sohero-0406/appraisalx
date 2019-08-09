@@ -16,6 +16,7 @@ import com.jeesite.modules.aa.vo.CheckBodySkeletonVO;
 import com.jeesite.modules.common.entity.Exam;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.service.ExamService;
+import com.jeesite.modules.common.service.OperationLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +45,8 @@ public class CheckBodySkeletonService extends CrudService<CheckBodySkeletonDao, 
 
     @Autowired
     private ExamService examService;
+    @Autowired
+    private OperationLogService operationLogService;
 
     /**
      * 获取单条数据
@@ -115,6 +118,7 @@ public class CheckBodySkeletonService extends CrudService<CheckBodySkeletonDao, 
                 checkBodySkeleton.setDescription(object.getString("description"));
                 super.save(checkBodySkeleton);
             }
+            operationLogService.saveObj(examUser,"保存检查车体骨架数据成功");
         }
     }
 

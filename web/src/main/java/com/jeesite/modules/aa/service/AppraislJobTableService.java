@@ -1,18 +1,23 @@
 package com.jeesite.modules.aa.service;
 
 
+import com.alibaba.fastjson.JSONObject;
+import com.jeesite.common.constant.CodeConstant;
+import com.jeesite.common.constant.ServiceConstant;
 import com.jeesite.modules.aa.entity.*;
 import com.jeesite.modules.aa.vo.AppraisalJobTableVO;
+import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.ExamUser;
-import com.jeesite.modules.common.entity.VehicleInfo;
-import com.jeesite.modules.common.service.VehicleInfoService;
+import com.jeesite.modules.common.service.HttpClientService;
 import com.jeesite.modules.sys.utils.DictUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 二手车鉴定评估作业表Service
@@ -40,9 +45,9 @@ public class AppraislJobTableService {
     @Autowired
     private CheckBodySkeletonService checkBodySkeletonService;
     @Autowired
-    private VehicleInfoService vehicleInfoService;
-    @Autowired
     private CheckTradableVehiclesService checkTradableVehiclesService;
+    @Autowired
+    private HttpClientService httpClientService;
 
     /**
      * 生成鉴定评估作业表
@@ -115,19 +120,22 @@ public class AppraislJobTableService {
         appraisalJobTableVO.setVehicleDocumentInfoList(vehicleDocumentInfoList);
 
         //车辆配置全表
-        VehicleInfo vehicleInfo = new VehicleInfo();
-        vehicleInfo.setChexingId(carInfo.getModel());
-        vehicleInfo = vehicleInfoService.getByEntity(vehicleInfo);
-        //设置品牌
-        carInfo.setBrand(vehicleInfo.getPinpai());
-        appraisalJobTableVO.setVehicleInfo(vehicleInfo);
-        //设置年款型号
-        String[] chexingArr = vehicleInfo.getChexingmingcheng().split(" ");
-        StringBuilder sb = new StringBuilder();
-        for(int i = 1; i < chexingArr.length; i++){
-            sb.append(chexingArr[i]);
+        Map<String, String> map = new HashMap<>();
+        map.put("chexingId", carInfo.getModel());
+        CommonResult result = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_BY_ENTITY, map);
+        if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
+            JSONObject vehicleInfo = JSONObject.parseObject(result.getData().toString());
+            //设置品牌
+            carInfo.setBrand(vehicleInfo.getString("pinpai"));
+            appraisalJobTableVO.setVehicleInfo(vehicleInfo);
+            //设置年款型号
+            String[] chexingArr = vehicleInfo.getString("chexingmingcheng").split(" ");
+            StringBuilder sb = new StringBuilder();
+            for(int i = 1; i < chexingArr.length; i++){
+                sb.append(chexingArr[i]);
+            }
+            appraisalJobTableVO.setNiankuanxinghao(sb.toString());
         }
-        appraisalJobTableVO.setNiankuanxinghao(sb.toString());
 
         //检查车体骨架
         CheckBodySkeleton checkBodySkeleton = new CheckBodySkeleton();

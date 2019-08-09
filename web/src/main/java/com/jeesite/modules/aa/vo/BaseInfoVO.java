@@ -21,6 +21,8 @@ public class BaseInfoVO {
     private List<DictData> entrustTypeList;
     //燃油种类列表
     private List<DictData> fuelTypeList;
+    //生产方式
+    private List<DictData> modeProductList;
     //车身颜色
     private List<DictData> colorList;
     //使用性质
@@ -68,6 +70,14 @@ public class BaseInfoVO {
 
     public void setFuelTypeList(List<DictData> fuelTypeList) {
         this.fuelTypeList = fuelTypeList;
+    }
+
+    public List<DictData> getModeProductList() {
+        return modeProductList;
+    }
+
+    public void setModeProductList(List<DictData> modeProductList) {
+        this.modeProductList = modeProductList;
     }
 
     public List<DictData> getColorList() {

@@ -93,28 +93,26 @@ public class CheckTradableVehiclesController extends BaseController {
         return "modules/aa/checkTradableVehiclesForm";
     }
 
-    /**
-     * 保存检查可交易车辆
-     */
-    @PostMapping(value = "save")
-    @ResponseBody
-    public CommonResult save(@Validated CheckTradableVehicles checkTradableVehicles) {
-        ExamUser examUser = UserUtils.getExamUser();
-        checkTradableVehicles.setExamUserId(examUser.getId());
-        checkTradableVehicles.setPaperId(examUser.getPaperId());
-        checkTradableVehiclesService.save(checkTradableVehicles);
-        return new CommonResult();
-    }
-
-    /**
-     * 删除检查可交易车辆
-     */
-    @RequestMapping(value = "delete")
-    @ResponseBody
-    public String delete(CheckTradableVehicles checkTradableVehicles) {
-        checkTradableVehiclesService.delete(checkTradableVehicles);
-        return renderResult(Global.TRUE, text("删除检查可交易车辆成功！"));
-    }
+	/**
+	 * 保存检查可交易车辆
+	 */
+	@PostMapping(value = "save")
+	@ResponseBody
+	public CommonResult save(@Validated CheckTradableVehicles checkTradableVehicles) {
+		ExamUser examUser = UserUtils.getExamUser();
+		checkTradableVehiclesService.saveObj(examUser,checkTradableVehicles);
+		return new CommonResult();
+	}
+	
+	/**
+	 * 删除检查可交易车辆
+	 */
+	@RequestMapping(value = "delete")
+	@ResponseBody
+	public String delete(CheckTradableVehicles checkTradableVehicles) {
+		checkTradableVehiclesService.delete(checkTradableVehicles);
+		return renderResult(Global.TRUE, text("删除检查可交易车辆成功！"));
+	}
 
     /**
      * 加载可交易车辆判别信息
@@ -131,18 +129,16 @@ public class CheckTradableVehiclesController extends BaseController {
         return result;
     }
 
-    /**
-     * 保存事故车判定信息
-     */
-    @PostMapping(value = "saveIsAccident")
-    @ResponseBody
-    public CommonResult saveIsAccident(@Validated CheckTradableVehicles checkTradableVehicles) {
-        ExamUser examUser = UserUtils.getExamUser();
-        checkTradableVehicles.setExamUserId(examUser.getId());
-        checkTradableVehicles.setPaperId(examUser.getPaperId());
-        checkTradableVehiclesService.saveIsAccident(checkTradableVehicles);
-        return new CommonResult();
-    }
+	/**
+	 * 保存事故车判定信息
+	 */
+	@PostMapping(value = "saveIsAccident")
+	@ResponseBody
+	public CommonResult saveIsAccident(@Validated CheckTradableVehicles checkTradableVehicles) {
+		ExamUser examUser = UserUtils.getExamUser();
+		checkTradableVehiclesService.saveIsAccident(examUser,checkTradableVehicles);
+		return new CommonResult();
+	}
 
     /**
      * @description: 加载维保记录信息

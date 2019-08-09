@@ -3,18 +3,23 @@
  */
 package com.jeesite.modules.aa.service;
 
+import com.alibaba.fastjson.JSONObject;
+import com.jeesite.common.constant.CodeConstant;
+import com.jeesite.common.constant.ServiceConstant;
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.service.CrudService;
 import com.jeesite.modules.aa.dao.CalculateDao;
 import com.jeesite.modules.aa.entity.*;
 import com.jeesite.modules.aa.vo.CalculateVO;
+import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.ExamUser;
-import com.jeesite.modules.common.entity.VehicleInfo;
-import com.jeesite.modules.common.service.VehicleInfoService;
+import com.jeesite.modules.common.service.HttpClientService;
+import com.jeesite.modules.common.service.OperationLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -40,9 +45,11 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
     @Autowired
     private CarInfoService carInfoService;
     @Autowired
-    private VehicleInfoService vehicleInfoService;
-    @Autowired
     private DelegateLetterService delegateLetterService;
+    @Autowired
+    private OperationLogService operationLogService;
+    @Autowired
+    private HttpClientService httpClientService;
 
     /**
      * 获取单条数据
@@ -113,9 +120,12 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
         carInfo.setPaperId(examUser.getPaperId());
         carInfo = carInfoService.getByEntity(carInfo);
         if (null != carInfo) {
-            VehicleInfo vehicleInfo = vehicleInfoService.getCarModel(carInfo.getModel());
-            if (null != vehicleInfo) {
-                vo.setNewCarPrice(vehicleInfo.getChangshangzhidaojiaYuan());
+            Map<String, String> map = new HashMap<>();
+            map.put("chexingId", carInfo.getModel());
+            CommonResult result = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_CAR_MODEL, map);
+            if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
+                JSONObject vehicleInfo = JSONObject.parseObject(result.getData().toString());
+                vo.setNewCarPrice(vehicleInfo.getString("changshangzhidaojiaYuan"));
             }
         }
 
@@ -192,6 +202,7 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
                 break;
         }
         delegateLetterService.createAppraisalReportNum(examUser);
+        operationLogService.saveObj(examUser,"保存计算车辆价值成功");
     }
 
     public Calculate getByEntity(Calculate calculate) {

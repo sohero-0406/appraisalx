@@ -23,6 +23,7 @@ import javax.validation.Valid;
  */
 @Table(name="common_operation_log", alias="a", columns={
 		@Column(name="id", attrName="id", label="id", isPK=true),
+		@Column(name="user_id", attrName="userId", label="用户id"),
 		@Column(name="login_name", attrName="loginName", label="登录名", queryType=QueryType.LIKE),
 		@Column(name="request_ip", attrName="requestIp", label="请求ip"),
 		@Column(name="operating_content", attrName="operatingContent", label="操作内容"),
@@ -32,9 +33,12 @@ import javax.validation.Valid;
 public class OperationLog extends PreEntity<OperationLog> {
 	
 	private static final long serialVersionUID = 1L;
+	private String userId;		//用户id
 	private String loginName;		// 登录名
 	private String requestIp;		// 请求ip
 	private String operatingContent;		// 操作内容
+
+	//非数据库字段
 	private String operatingTime;
 	
 	public OperationLog() {
@@ -44,7 +48,16 @@ public class OperationLog extends PreEntity<OperationLog> {
 	public OperationLog(String id){
 		super(id);
 	}
-	
+
+	@Length(min=0, max=64, message="用户id长度不能超过 32 个字符")
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
 	@Length(min=0, max=32, message="登录名长度不能超过 32 个字符")
 	@ExcelField(title="登录名", align=ExcelField.Align.CENTER, sort=1)
 	public String getLoginName() {
