@@ -167,6 +167,10 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
         List<DictData> usageList = DictUtils.getDictList("aa_usage_type");
         baseInfoVO.setUsageList(usageList);
 
+        //加载生产方式
+        List<DictData> modeProductList = DictUtils.getDictList("aa_mode_product");
+        baseInfoVO.setModeProductList(modeProductList);
+
         //加载车身颜色
         List<DictData> colorList = DictUtils.getDictList("aa_vehicle_color");
         baseInfoVO.setColorList(colorList);

@@ -1,5 +1,8 @@
 package com.jeesite.modules.aa.service;
 
+import com.alibaba.fastjson.JSONObject;
+import com.jeesite.common.constant.CodeConstant;
+import com.jeesite.common.constant.ServiceConstant;
 import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.web.http.ServletUtils;
 import com.jeesite.modules.aa.entity.CarInfo;
@@ -7,22 +10,17 @@ import com.jeesite.modules.aa.entity.Paper;
 import com.jeesite.modules.aa.entity.PictureUser;
 import com.jeesite.modules.aa.entity.VehicleGradeAssess;
 import com.jeesite.modules.aa.vo.HomePageVO;
+import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.ExamUser;
-import com.jeesite.modules.common.entity.VehicleInfo;
 import com.jeesite.modules.common.service.ExamUserService;
 import com.jeesite.modules.common.service.HttpClientService;
-import com.jeesite.modules.common.service.VehicleInfoService;
 import com.jeesite.modules.common.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -34,8 +32,6 @@ public class HomePageService {
     private PictureUserService pictureUserService;
     @Autowired
     private VehicleGradeAssessService vehicleGradeAssessService;
-    @Autowired
-    private VehicleInfoService vehicleInfoService;
     @Autowired
     private PaperService paperService;
     @Autowired
@@ -52,7 +48,6 @@ public class HomePageService {
             homePageVO.setSort("2");
         }
         ExamUser examUser = UserUtils.getExamUser();
-        HomePageVO result = new HomePageVO();
         CarInfo carInfo = new CarInfo();
         carInfo.setExamUserId(examUser.getExamId());
         homePageVO.setCarInfo(carInfo);
@@ -64,27 +59,28 @@ public class HomePageService {
                 String[] purchaseDate = carInfo.getPurchaseDate().substring(0, 10).split("-");
                 carInfo.setPurchaseDate(purchaseDate[0] + "年" + purchaseDate[1] + "月");
             }
-            result.setCarInfo(carInfo);
 
             PictureUser pictureUser = new PictureUser();
             pictureUser.setExamUserId(examUser.getExamId());
             pictureUser.setPictureTypeId("1143439344920567808");
             pictureUser = pictureUserService.getByEntity(pictureUser);
             homePageVO.setPictureUser(pictureUser);
-            result.setPictureUser(pictureUser);
 
             VehicleGradeAssess vehicleGradeAssess = new VehicleGradeAssess();
             vehicleGradeAssess.setExamUserId(examUser.getExamId());
             vehicleGradeAssess = vehicleGradeAssessService.getByEntity(vehicleGradeAssess);
             homePageVO.setVehicleGradeAssess(vehicleGradeAssess);
-            result.setVehicleGradeAssess(vehicleGradeAssess);
 
-            VehicleInfo vehicleInfo = vehicleInfoService.getCarModel(carInfo.getModel());
-            homePageVO.setVehicleInfo(vehicleInfo);
-            result.setVehicleInfo(vehicleInfo);
+            Map<String, String> map = new HashMap<>();
+            map.put("chexingId", carInfo.getModel());
+            CommonResult result = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_CAR_MODEL, map);
+            if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
+                JSONObject vehicleInfo = JSONObject.parseObject(result.getData().toString());
+                homePageVO.setVehicleInfo(vehicleInfo);
+            }
         }
 
-        return result;
+        return homePageVO;
 
     }
 
@@ -96,7 +92,7 @@ public class HomePageService {
             //排序规则为空，默认降序
             homePageVO.setSort("2");
         }
-        List<HomePageVO> result = new ArrayList<HomePageVO>();
+        List<HomePageVO> list = new ArrayList<>();
         List<CarInfo> carInfoList = paperService.loadHomePageTea(homePageVO);
         if (carInfoList != null) {
             for (CarInfo carInfo : carInfoList) {
@@ -120,13 +116,17 @@ public class HomePageService {
                 vehicleGradeAssess = vehicleGradeAssessService.getByEntity(vehicleGradeAssess);
                 temp.setVehicleGradeAssess(vehicleGradeAssess);
 
-                VehicleInfo vehicleInfo = vehicleInfoService.getCarModel(carInfo.getModel());
-                temp.setVehicleInfo(vehicleInfo);
-
-                result.add(temp);
+                Map<String, String> map = new HashMap<>();
+                map.put("chexingId", carInfo.getModel());
+                CommonResult result = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_CAR_MODEL, map);
+                if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
+                    JSONObject vehicleInfo = JSONObject.parseObject(result.getData().toString());
+                    temp.setVehicleInfo(vehicleInfo);
+                }
+                list.add(temp);
             }
         }
-        return result;
+        return list;
     }
 
     /**

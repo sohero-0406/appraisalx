@@ -1,6 +1,5 @@
 package com.jeesite.modules.aa.service;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -16,11 +15,8 @@ import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.service.ExamUserService;
 import com.jeesite.modules.common.service.HttpClientService;
-import com.jeesite.modules.common.service.VehicleInfoService;
-import com.sun.org.apache.xml.internal.security.utils.Base64;
 import com.jeesite.modules.common.service.OperationLogService;
-import com.sun.org.apache.xml.internal.security.utils.Constants;
-import netscape.javascript.JSObject;
+import com.sun.org.apache.xml.internal.security.utils.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,7 +55,7 @@ public class SignInService {
         Map<String, String> map = new HashMap<>();
         map.put("userName", vo.getUserName());
         map.put("password", vo.getPassword());
-        CommonResult result = httpClientService.post(ServiceConstant.TEACHER_SIDE_LOGIN, map);
+        CommonResult result = httpClientService.post(ServiceConstant.COMMONUSER_TEACHER_SIDE_LOGIN, map);
         if (!CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
             return result;
         }

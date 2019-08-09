@@ -3,28 +3,27 @@
  */
 package com.jeesite.modules.aa.service;
 
-import java.math.BigDecimal;
-import java.util.List;
-
+import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.constant.CodeConstant;
+import com.jeesite.common.constant.ServiceConstant;
+import com.jeesite.common.entity.Page;
 import com.jeesite.common.lang.StringUtils;
+import com.jeesite.common.service.CrudService;
 import com.jeesite.common.utils.MathUtils;
+import com.jeesite.modules.aa.dao.CalculateCurrentDao;
 import com.jeesite.modules.aa.entity.*;
 import com.jeesite.modules.aa.vo.CalculateCurrentVO;
-import com.jeesite.modules.aa.vo.CalculateVO;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.ExamUser;
-import com.jeesite.modules.common.entity.VehicleInfo;
-import com.jeesite.modules.common.service.VehicleInfoService;
+import com.jeesite.modules.common.service.HttpClientService;
 import com.jeesite.modules.sys.utils.DictUtils;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jeesite.common.entity.Page;
-import com.jeesite.common.service.CrudService;
-import com.jeesite.modules.aa.dao.CalculateCurrentDao;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 现行市价法Service
@@ -45,7 +44,7 @@ public class CalculateCurrentService extends CrudService<CalculateCurrentDao, Ca
     @Autowired
     private CarInfoService carInfoService;
     @Autowired
-    private VehicleInfoService vehicleInfoService;
+    private HttpClientService httpClientService;
 
     /**
      * 获取单条数据
@@ -62,7 +61,6 @@ public class CalculateCurrentService extends CrudService<CalculateCurrentDao, Ca
      * 查询分页数据
      *
      * @param calculateCurrent      查询条件
-     * @param calculateCurrent.page 分页对象
      * @return
      */
     @Override
@@ -329,9 +327,12 @@ public class CalculateCurrentService extends CrudService<CalculateCurrentDao, Ca
         if (carInfo == null) {
             return vo;
         }
-        VehicleInfo vehicleInfo = vehicleInfoService.getCarModel(carInfo.getModel());
-        if (null != vehicleInfo) {
-            calculateCurrent.setModel(vehicleInfo.getChexingmingcheng());
+        Map<String, String> map = new HashMap<>();
+        map.put("chexingId", carInfo.getModel());
+        CommonResult result = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_CAR_MODEL, map);
+        if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
+            JSONObject vehicleInfo = JSONObject.parseObject(result.getData().toString());
+            calculateCurrent.setModel(vehicleInfo.getString("chexingmingcheng"));
         }
         calculateCurrent.setDisplacement(carInfo.getDisplacement());
         calculateCurrent.setEnvironmentalStandard(DictUtils.getDictLabel("aa_environmental_standard",
