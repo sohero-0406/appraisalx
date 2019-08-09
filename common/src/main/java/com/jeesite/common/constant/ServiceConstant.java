@@ -14,4 +14,7 @@ public class ServiceConstant {
     //查询车辆配置属性
     public static final String VEHICLEINFO_GET_BY_ENTITY ="/common/vehicleInfo/getByEntity";
 
+    //导出学生成绩
+    public static final String DERIVE_STUDENT_ACHIEVEMENT = "/common/commonUser/loadStuListByIds";
+
 }
