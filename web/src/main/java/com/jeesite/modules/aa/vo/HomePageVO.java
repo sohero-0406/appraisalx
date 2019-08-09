@@ -1,5 +1,6 @@
 package com.jeesite.modules.aa.vo;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jeesite.modules.aa.entity.CarInfo;
 import com.jeesite.modules.aa.entity.PictureUser;
 import com.jeesite.modules.aa.entity.VehicleGradeAssess;
@@ -10,7 +11,7 @@ public class HomePageVO {
     private CarInfo carInfo;        //委托车辆信息
     private PictureUser pictureUser;        //用户图片表
     private VehicleGradeAssess vehicleGradeAssess;      //车辆等级评定
-    private VehicleInfo vehicleInfo;        //车辆配置全表
+    private JSONObject vehicleInfo;        //车辆配置全表
     private String sort;        //排序方式
     private String queryCriteria;       //查询条件
 
@@ -38,11 +39,11 @@ public class HomePageVO {
         this.vehicleGradeAssess = vehicleGradeAssess;
     }
 
-    public VehicleInfo getVehicleInfo() {
+    public JSONObject getVehicleInfo() {
         return vehicleInfo;
     }
 
-    public void setVehicleInfo(VehicleInfo vehicleInfo) {
+    public void setVehicleInfo(JSONObject vehicleInfo) {
         this.vehicleInfo = vehicleInfo;
     }
 
