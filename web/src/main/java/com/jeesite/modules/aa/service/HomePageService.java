@@ -148,6 +148,9 @@ public class HomePageService {
             Paper paper = new Paper();
             paper.setState("1");
             paperService.save(paper);
+            examUser = (ExamUser)ServletUtils.getRequest().getSession().getAttribute("examUser");
+            examUser.setPaperId(paper.getId());
+            ServletUtils.getRequest().getSession().setAttribute("examUser", examUser);
         }
     }
 }

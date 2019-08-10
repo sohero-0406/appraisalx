@@ -1343,36 +1343,73 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 	}
 
 	/**
-	 *  根据大平台返回学生详细信息，转成对应的实体对象，批量导出
+	 *  根据大平台返回学生详细信息，转成对应的实体对象，批量导出 (并完成排序功能)
 	 * @param array
-	 * @param examUserList
 	 * @param examId
 	 * @return
 	 */
-	public List<ExamUser> getExamUserListByPlatfrom(JSONArray array, List<ExamUser> examUserList, String examId){
+	public List<ExamUser> getExamUserListByPlatfrom(JSONArray array, String examId){
 		Exam exam = new Exam();
 		exam.setId(examId);
 		String examName = examService.getByEntity(exam).getName();
-		List<ExamUser> list = new ArrayList<>();
-		for(Object platformExamUser:array){
-			JSONObject platformUser = (JSONObject)platformExamUser;
-			ExamUser user = new ExamUser();
-			user.setUserId(platformUser.getString("userName"));
-			user.setTrueName(platformUser.getString("trueName"));
-			user.setSchoolName(platformUser.getString("schoolName"));
-			user.setMajorName(platformUser.getString("majorName"));
-			user.setClassName(platformUser.getString("className"));
-			user.setGender(platformUser.getString("gender"));
-			for(ExamUser localExamUser : examUserList){
-				if(StringUtils.isNotBlank(localExamUser.getUserId())&&localExamUser.getUserId().equals(platformUser.getString("id"))){
-					user.setScore(localExamUser.getScore());
+		List<ExamUser> examUserList = dao.getExamUserListByOrder(examId);
+		for(ExamUser examUser:examUserList){
+			for(Object platformExamUser:array){
+				JSONObject platformUser = (JSONObject)platformExamUser;
+				if(examUser.getUserId().equals(platformUser.getString("id"))){
+					examUser.setUserNum(platformUser.getString("userName"));
+					examUser.setTrueName(platformUser.getString("trueName"));
+					examUser.setSchoolName(platformUser.getString("schoolName"));
+					examUser.setMajorName(platformUser.getString("majorName"));
+					examUser.setClassName(platformUser.getString("className"));
+					examUser.setGender(platformUser.getString("gender"));
+					examUser.setExamName(examName);
+				}
+			}
+		}
+		return examUserList;
+	}
+
+	/**
+	 * 根据学生userid 考试id 查询这些学生是否在其他考试内
+	 * @param userIdList
+	 * @param examId
+	 * @return
+	 */
+	public List<String> getExamStateByUserId(List<String> userIdList,String examId){
+		List<String> returnList = new ArrayList<>();
+		StringBuilder studentUserIds = new StringBuilder();
+		List<ExamUser> examUserList = dao.getExamStateByUserId(userIdList,examId);
+		int len = examUserList.size();
+		for(int i=0;i<len;i++){
+			if(i==len-1){
+				studentUserIds.append(examUserList.get(i).getUserId());
+			}else{
+				studentUserIds.append(examUserList.get(i).getUserId()+",");
+			}
+		}
+		Map<String,String> map = new HashMap();
+		map.put("ids",studentUserIds.toString());
+		//调取到平台 获取不符合规范的考生
+		JSONArray array = JSONArray.parseArray(httpClientService.post(ServiceConstant.DERIVE_STUDENT_ACHIEVEMENT,map).getData().toString());
+		if(CollectionUtils.isNotEmpty(array)){
+			int i=0;
+			for(Object o:array){
+				JSONObject loanuser = (JSONObject)o;
+				for(ExamUser user:examUserList){
+					if(loanuser.getString("id").equals(user.getUserId())){
+						returnList.add("用户名为"+loanuser.getString("trueName")+"的考生正在"+examUserList.get(i).getExamName()+"考试中");
+						i++;
+						break;
+					}
+				}
+				if(i>2){
+					returnList.add("....");
 					break;
 				}
 			}
-			user.setExamName(examName);
-			list.add(user);
 		}
-		return list;
+		return returnList;
 	}
 
 

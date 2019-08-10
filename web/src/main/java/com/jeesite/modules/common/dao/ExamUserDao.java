@@ -6,6 +6,7 @@ package com.jeesite.modules.common.dao;
 import com.jeesite.common.dao.CrudDao;
 import com.jeesite.common.mybatis.annotation.MyBatisDao;
 import com.jeesite.modules.common.entity.ExamUser;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -24,4 +25,16 @@ public interface ExamUserDao extends CrudDao<ExamUser> {
     void deleteExamUser(String examUserId);
 
     ExamUser getAllowLogin(ExamUser examUser);
+
+    /**
+     * 查询学生成绩 排序
+     */
+    List<ExamUser> getExamUserListByOrder(@Param("examId") String examId);
+
+
+
+    List<ExamUser> getExamStateByUserId(@Param("userIdList") List<String> userIdList,@Param("examId") String examId);
+
+
+
 }

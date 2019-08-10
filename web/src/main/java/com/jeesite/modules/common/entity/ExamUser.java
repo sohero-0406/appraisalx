@@ -64,7 +64,6 @@ public class ExamUser extends PreEntity<ExamUser> {
 	}
 	
 	@Length(min=0, max=64, message="用户id长度不能超过 64 个字符")
-	@ExcelField(title="登录名（身份证号）", align=ExcelField.Align.CENTER, sort=1,width = 25*256)
 	public String getUserId() {
 		return userId;
 	}
@@ -83,6 +82,7 @@ public class ExamUser extends PreEntity<ExamUser> {
 	}
 	
 	@Length(min=0, max=32, message="用户名长度不能超过 32 个字符")
+	@ExcelField(title="登录名（身份证号）", align=ExcelField.Align.CENTER, sort=1,width = 25*256)
 	public String getUserNum() {
 		return userNum;
 	}

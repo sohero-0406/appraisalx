@@ -43,4 +43,41 @@
 		delete from common_exam_user where id = #{examUserId}
 	</delete>
 
+	<select id="getExamUserListByOrder" resultType="ExamUser">
+		select
+		 id,
+		 user_id,
+		 score
+		from common_exam_user
+		<where>
+			<if test="examId != null and examId != ''">
+				and exam_id = #{examId}
+			</if>
+		</where>
+		ORDER BY
+		score DESC,(end_time-start_time)
+
+	</select>
+
+
+	<select id="getExamStateByUserId" resultType="ExamUser">
+		SELECT
+		user.user_id,
+		exam.name as examName
+		from
+		common_exam_user user
+		left join common_exam exam on exam.id = user.exam_id
+		<where>
+			user.user_id in
+			<foreach collection="userIdList" item="userId" index="index" open="(" close=")" separator=",">
+				#{userId}
+			</foreach>
+			<if test="examId != null and examId != ''">
+				and user.exam_id  &lt;&gt; #{examId}
+			</if>
+				and exam.state = '3'
+		</where>
+	</select>
+
 </mapper>
+

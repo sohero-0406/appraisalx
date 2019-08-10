@@ -157,6 +157,7 @@ public class ExamUserController extends BaseController {
 				stringBuilder.append(examUserList.get(i).getUserId()+",");
 			}
 		}
+
 		CommonResult loadStuListComRes = examUserService.getLoadStuListByIds(stringBuilder.toString());
 		if(!CodeConstant.REQUEST_SUCCESSFUL.equals(loadStuListComRes.getCode())){
 			logger.error(loadStuListComRes.getMsg());
@@ -164,7 +165,7 @@ public class ExamUserController extends BaseController {
 		}
 		JSONArray array = JSONArray.parseArray(loadStuListComRes.getData().toString());
 		if(array.size()>0){
-			List list = examUserService.getExamUserListByPlatfrom(array,examUserList,examId);
+			List list = examUserService.getExamUserListByPlatfrom(array,examId);
 			String fileName = "学生成绩列表" + DateUtils.getDate("yyyyMMddHHmmss") + ".xlsx";
 			try(ExcelExport ee = new ExcelExport(null,ExamUser.class)) {
 				ee.setDataList(list).write(response, fileName);

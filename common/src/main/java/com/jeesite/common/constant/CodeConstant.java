@@ -31,10 +31,13 @@ public class CodeConstant {
     public static final String REFERENCE_NOT_EXIST = "1013";
     //不存在正在进行的考试
     public static final String EXAM_NO_ONGOING = "1014";
+    //存在不合理的考生状态
+    public static final String UNREASONABLE_CANDIDATE_STATUS = "1015";
     //请求参数有误
     public static final String WRONG_REQUEST_PARAMETER = "1020";
 
     //登录超时
     public static final String LOGIN_TIMEOUT = "2000";
+
 
 }

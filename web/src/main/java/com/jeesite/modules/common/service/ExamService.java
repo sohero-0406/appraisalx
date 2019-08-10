@@ -16,6 +16,7 @@ import com.jeesite.modules.aa.vo.ExamVO;
 import com.jeesite.modules.common.dao.ExamDao;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.Exam;
+import com.jeesite.modules.common.entity.ExamUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -240,8 +241,16 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 		//考试状态 state '状态（1:未开始;3:考试中;5:未统计;7:已出分）
 		CommonResult comRes = new CommonResult();
 		Exam examUpdate = dao.getByEntity(exam);
-		switch(exam.getState()){
+		switch(examUpdate.getState()){
 			case "1" ://未开始
+				List<String> userIdList = dao.getUserByExamId(examUpdate.getId());
+				List<String> promptList = examUserService.getExamStateByUserId(userIdList,examUpdate.getId());
+				if(promptList.size()>0){
+					comRes.setCode(CodeConstant.UNREASONABLE_CANDIDATE_STATUS);
+					comRes.setMsg("存在不合理的考生状态");
+					comRes.setData(promptList);
+					return comRes;
+				}
 				examUpdate.setState("3");
 				examUpdate.setStartTime(new Date()); //记录考试开始时间
 				super.save(examUpdate);
@@ -265,6 +274,13 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 		}
 		return comRes;
 	}
+
+
+	/**
+	 * 判断考生是否在其他考试中出现
+	 */
+
+
 
 
 }

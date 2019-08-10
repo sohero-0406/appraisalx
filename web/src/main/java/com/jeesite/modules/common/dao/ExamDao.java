@@ -22,6 +22,7 @@ public interface ExamDao extends CrudDao<Exam> {
      * 批量获取考试数据
      * @return
      */
-    public List<Exam> getExamInfo(@Param("keyword") String keyword,@Param("type")String type);
+    List<Exam> getExamInfo(@Param("keyword") String keyword,@Param("type")String type);
 
+    List<String> getUserByExamId(String examId);
 }

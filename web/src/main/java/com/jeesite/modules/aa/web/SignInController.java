@@ -131,7 +131,7 @@ public class SignInController {
         Map<String, String> map = new HashMap<>();
         map.put("userName",userName);
         map.put("password",password);
-        CommonResult teacherSide= httpClientService.post(ServiceConstant.COMMONUSER_TEACHER_SIDE_LOGIN,map);
+        CommonResult teacherSide= signInService.commonuserTeacherSideLogin(ServiceConstant.COMMONUSER_TEACHER_SIDE_LOGIN,map);
         if(!CodeConstant.REQUEST_SUCCESSFUL.equals(teacherSide.getCode())){
             return teacherSide;
         }

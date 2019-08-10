@@ -162,4 +162,11 @@ public class SignInService {
     }
 
 
+    //教师登录
+    public CommonResult commonuserTeacherSideLogin(String client,Map<String, String> map){
+        CommonResult teacherSide= httpClientService.post(client,map);
+        return teacherSide;
+    }
+
+
 }
