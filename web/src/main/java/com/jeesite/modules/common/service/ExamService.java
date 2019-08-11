@@ -17,6 +17,7 @@ import com.jeesite.modules.common.dao.ExamDao;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.Exam;
 import com.jeesite.modules.common.entity.ExamUser;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -245,7 +246,7 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 			case "1" ://未开始
 				List<String> userIdList = dao.getUserByExamId(examUpdate.getId());
 				List<String> promptList = examUserService.getExamStateByUserId(userIdList,examUpdate.getId());
-				if(promptList.size()>0){
+				if(CollectionUtils.isNotEmpty(promptList)){
 					comRes.setCode(CodeConstant.UNREASONABLE_CANDIDATE_STATUS);
 					comRes.setMsg("存在不合理的考生状态");
 					comRes.setData(promptList);
