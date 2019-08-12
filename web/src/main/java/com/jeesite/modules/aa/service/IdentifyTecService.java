@@ -22,6 +22,7 @@ import com.jeesite.modules.common.service.OperationLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +30,7 @@ import java.util.Map;
 
 /**
  * 鉴定技术状况Service
+ *
  * @author lvchangwei
  * @version 2019-07-04
  */
@@ -63,91 +65,97 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
     @Autowired
     private DelegateLetterService delegateLetterService;
 
-	@Autowired
-	private OperationLogService operationLogService;
-	@Autowired
-	private HttpClientService httpClientService;
+    @Autowired
+    private OperationLogService operationLogService;
 
-	/**
-	 * 获取单条数据
-	 * @param identifyTec
-	 * @return
-	 */
-	@Override
-	public IdentifyTec get(IdentifyTec identifyTec) {
-		return super.get(identifyTec);
-	}
+    @Autowired
+    private HttpClientService httpClientService;
 
-	/**
-	 * 查询分页数据
-	 * @param identifyTec 查询条件
-	 * @return
-	 */
-	@Override
-	public Page<IdentifyTec> findPage(IdentifyTec identifyTec) {
-		return super.findPage(identifyTec);
-	}
+    /**
+     * 获取单条数据
+     *
+     * @param identifyTec
+     * @return
+     */
+    @Override
+    public IdentifyTec get(IdentifyTec identifyTec) {
+        return super.get(identifyTec);
+    }
 
-	/**
-	 * 保存数据（插入或更新）
-	 * @param identifyTec
-	 */
-	@Override
-	@Transactional(readOnly=false)
-	public void save(IdentifyTec identifyTec) {
-		super.save(identifyTec);
-	}
+    /**
+     * 查询分页数据
+     *
+     * @param identifyTec 查询条件
+     * @return
+     */
+    @Override
+    public Page<IdentifyTec> findPage(IdentifyTec identifyTec) {
+        return super.findPage(identifyTec);
+    }
 
-	/**
-	 * 更新状态
-	 * @param identifyTec
-	 */
-	@Override
-	@Transactional(readOnly=false)
-	public void updateStatus(IdentifyTec identifyTec) {
-		super.updateStatus(identifyTec);
-	}
+    /**
+     * 保存数据（插入或更新）
+     *
+     * @param identifyTec
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public void save(IdentifyTec identifyTec) {
+        super.save(identifyTec);
+    }
 
-	/**
-	 * 删除数据
-	 * @param identifyTec
-	 */
-	@Override
-	@Transactional(readOnly=false)
-	public void delete(IdentifyTec identifyTec) {
-		super.delete(identifyTec);
-	}
+    /**
+     * 更新状态
+     *
+     * @param identifyTec
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public void updateStatus(IdentifyTec identifyTec) {
+        super.updateStatus(identifyTec);
+    }
+
+    /**
+     * 删除数据
+     *
+     * @param identifyTec
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public void delete(IdentifyTec identifyTec) {
+        super.delete(identifyTec);
+    }
 
     /**
      * 保存鉴定技术状况数据
      */
     @Transactional
     public void saveData(ExamUser examUser, String itemJson) {
-    	IdentifyTec identifyTec = new IdentifyTec();
-		identifyTec.setExamUserId(examUser.getId());
-		identifyTec.setPaperId(examUser.getPaperId());
-		//业务开始
-    	JSONObject object = JSONObject.parseObject(itemJson);
-		identifyTec.setId(object.getString("id"));
-    	identifyTec.setType(object.getString("type"));
-    	identifyTec.setTotalDeduct(object.getString("totalDeduct"));
-    	identifyTec.setDescription(object.getString("description"));
-    	super.save(identifyTec);
-		JSONArray itemList = JSONObject.parseArray(object.getString("itemList"));
-		if (!CollectionUtils.isEmpty(itemList)) {
-			for (Object o : itemList) {
-				JSONObject item = (JSONObject) o;
-				IdentifyTecDetail detail = new IdentifyTecDetail();
-				detail.setId(item.getString("id"));
-				detail.setTechnologyInfoId(item.getString("technologyInfoId"));
-				detail.setCode(item.getString("code"));
-				detail.setDeductNum(item.getString("deductNum"));
-				detail.setDegree(item.getString("degree"));
-				detail.setIndentityTecId(identifyTec.getId());
-				identifyTecDetailService.save(detail);
-			}
-		}
-		operationLogService.saveObj(examUser,"保存鉴定技术状况数据成功");
+        IdentifyTec identifyTec = new IdentifyTec();
+        identifyTec.setExamUserId(examUser.getId());
+        identifyTec.setPaperId(examUser.getPaperId());
+        //业务开始
+        JSONObject object = JSONObject.parseObject(itemJson);
+        identifyTec.setId(object.getString("id"));
+        identifyTec.setType(object.getString("type"));
+        identifyTec.setTotalDeduct(object.getString("totalDeduct"));
+        identifyTec.setDescription(object.getString("description"));
+        super.save(identifyTec);
+        JSONArray itemList = JSONObject.parseArray(object.getString("itemList"));
+        if (!CollectionUtils.isEmpty(itemList)) {
+            for (Object o : itemList) {
+                JSONObject item = (JSONObject) o;
+                IdentifyTecDetail detail = new IdentifyTecDetail();
+                detail.setId(item.getString("id"));
+                detail.setTechnologyInfoId(item.getString("technologyInfoId"));
+                detail.setCode(item.getString("code"));
+                detail.setDeductNum(item.getString("deductNum"));
+                detail.setDegree(item.getString("degree"));
+                detail.setIndentityTecId(identifyTec.getId());
+                identifyTecDetailService.save(detail);
+            }
+        }
+        operationLogService.saveObj(examUser, "保存鉴定技术状况数据成功");
     }
 
     public IdentifyTec getByEntity(IdentifyTec identifyTec) {
@@ -179,16 +187,16 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
             return new CommonResult(CodeConstant.REQUEST_FAILED, "车辆信息对象为空");
         }
         // 车辆配置信息
-		Map<String, String> map = new HashMap<>();
-		map.put("chexingId", carInfo.getModel());
-		CommonResult result = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_CAR_MODEL, map);
-		JSONObject vehicleInfo = new JSONObject();
-		if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
-			if(StringUtils.isBlank(result.getData().toString())){
-				return new CommonResult(CodeConstant.REQUEST_FAILED, "车辆配置信息为空");
-			}
-			vehicleInfo = JSONObject.parseObject(result.getData().toString());
-		}
+        Map<String, String> map = new HashMap<>();
+        map.put("chexingId", carInfo.getModel());
+        CommonResult result = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_CAR_MODEL, map);
+        JSONObject vehicleInfo = new JSONObject();
+        if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
+            if (StringUtils.isBlank(result.getData().toString())) {
+                return new CommonResult(CodeConstant.REQUEST_FAILED, "车辆配置信息为空");
+            }
+            vehicleInfo = JSONObject.parseObject(result.getData().toString());
+        }
         VehicleDocumentInfo vehicleDocumentInfo = new VehicleDocumentInfo();
         vehicleDocumentInfo.setExamUserId(examUser.getExamId());
         vehicleDocumentInfo.setPaperId(examUser.getPaperId());
@@ -244,7 +252,7 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
                 vehicleBasicInfo.setProject4Validity("无");
             }
         });
-        vehicleBasicInfo.setUsage(DictUtils.getDictLabel("aa_usage_type",carInfo.getUsage(), ""));
+        vehicleBasicInfo.setUsage(DictUtils.getDictLabel("aa_usage_type", carInfo.getUsage(), ""));
         // 结合字典表，单证信息(state = 1)进行dict_label返回 上述设置过的除外(不包括强制保险单 project = 4)
         if (StringUtils.isNotBlank(carInfo.getLicensePlateNum())) {
             // 额外单证信息 机动车号牌

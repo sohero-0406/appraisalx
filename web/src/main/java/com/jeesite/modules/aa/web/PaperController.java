@@ -6,9 +6,13 @@ package com.jeesite.modules.aa.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.jeesite.common.constant.CodeConstant;
+import com.jeesite.common.lang.StringUtils;
+import com.jeesite.common.web.http.ServletUtils;
 import com.jeesite.modules.common.entity.CommonResult;
-import org.apache.ibatis.annotations.Param;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
+import com.jeesite.modules.common.entity.Exam;
+import com.jeesite.modules.common.entity.ExamUser;
+import com.jeesite.modules.common.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +28,6 @@ import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.aa.entity.Paper;
 import com.jeesite.modules.aa.service.PaperService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -125,5 +128,35 @@ public class PaperController extends BaseController {
 		return new CommonResult();
 	}
 
-	
+	/** 
+	* @description: 试卷编辑校验
+	* @param: [paperId]
+	* @return: com.jeesite.modules.common.entity.CommonResult
+	* @author: Jiangyf
+	* @date: 2019/8/10 
+	* @time: 17:41
+	*/
+	@RequestMapping(value = "paperEditCheck")
+	@ResponseBody
+	public CommonResult paperEditCheck(String paperId) {
+		ExamUser examUser = UserUtils.getExamUser();
+		if (StringUtils.isNotBlank(examUser.getId())) {
+			// 学生
+			examUser.setPaperId(paperId);
+			ServletUtils.getRequest().getSession().setAttribute("examUser", examUser);
+			return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "试卷编辑校验通过");
+		} else {
+			// 教师
+			Exam exam = new Exam();
+			exam.setPaperId(paperId);
+			exam = paperService.findExam(exam);
+			if ((StringUtils.isBlank(exam.toString())) || (StringUtils.isNotBlank(exam.toString()) && ("1").equals(exam.getState()))) {
+				// paperId 存入Session
+				ServletUtils.getRequest().getSession().setAttribute("paperId", paperId);
+				// 该试卷未添加进考试、该试卷添加进考试 但其状态为 1   以上两种情况均可以通过编辑校验
+				return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "试卷编辑校验通过");
+			}
+			return new CommonResult(CodeConstant.REQUEST_FAILED, "当前试卷被占用，不可进行编辑");
+		}
+	}
 }

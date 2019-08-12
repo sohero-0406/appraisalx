@@ -9,20 +9,19 @@ import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.service.CrudService;
 import com.jeesite.modules.aa.entity.ExamDetail;
 import com.jeesite.modules.aa.entity.ExamScoreClassify;
+import com.jeesite.modules.aa.entity.Paper;
 import com.jeesite.modules.aa.service.ExamDetailService;
 import com.jeesite.modules.aa.service.ExamScoreDetailService;
 import com.jeesite.modules.aa.service.ExamScoreInfoService;
+import com.jeesite.modules.aa.service.PaperService;
 import com.jeesite.modules.aa.vo.ExamVO;
 import com.jeesite.modules.common.dao.ExamDao;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.Exam;
-import com.jeesite.modules.common.entity.ExamUser;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -46,6 +45,8 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 	@Autowired
 	private ExamScoreInfoService examScoreInfoService;
 
+	@Autowired
+	private PaperService paperService;
 	/**
 	 * 获取单条数据
 	 * @param exam
@@ -242,16 +243,8 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 		//考试状态 state '状态（1:未开始;3:考试中;5:未统计;7:已出分）
 		CommonResult comRes = new CommonResult();
 		Exam examUpdate = dao.getByEntity(exam);
-		switch(examUpdate.getState()){
+		switch(exam.getState()){
 			case "1" ://未开始
-				List<String> userIdList = dao.getUserByExamId(examUpdate.getId());
-				List<String> promptList = examUserService.getExamStateByUserId(userIdList,examUpdate.getId());
-				if(CollectionUtils.isNotEmpty(promptList)){
-					comRes.setCode(CodeConstant.UNREASONABLE_CANDIDATE_STATUS);
-					comRes.setMsg("存在不合理的考生状态");
-					comRes.setData(promptList);
-					return comRes;
-				}
 				examUpdate.setState("3");
 				examUpdate.setStartTime(new Date()); //记录考试开始时间
 				super.save(examUpdate);
@@ -278,10 +271,14 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 
 
 	/**
-	 * 判断考生是否在其他考试中出现
-	 */
-
-
-
-
+	* @description: 结束考试 - 教师端
+	* @param: [paper]
+	* @return: void
+	* @author: Jiangyf
+	* @date: 2019/8/10
+	* @time: 16:09
+	*/
+	public void endExamTea(Paper paper) {
+		paperService.save(paper);
+	}
 }

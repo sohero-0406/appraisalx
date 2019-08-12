@@ -5,14 +5,19 @@ package com.jeesite.modules.common.web;
 
 import com.jeesite.common.config.Global;
 import com.jeesite.common.constant.CodeConstant;
+import com.jeesite.common.constant.ServiceConstant;
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.utils.download.DownloadWordUtils;
 import com.jeesite.common.web.BaseController;
+import com.jeesite.common.web.http.ServletUtils;
+import com.jeesite.modules.aa.entity.Paper;
 import com.jeesite.modules.aa.vo.ExamVO;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.Exam;
+import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.service.ExamService;
+import com.jeesite.modules.common.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,6 +44,7 @@ public class ExamController extends BaseController {
 
     @Autowired
     private ExamService examService;
+
 
     /**
      * 获取数据
@@ -185,5 +192,35 @@ public class ExamController extends BaseController {
         DownloadWordUtils.downloadWord(request,response,url,name,"docx");
     }
 
+    /** 
+    * @description: 结束考试 - 分为学生端和教师端
+    * @param: []
+    * @return: com.jeesite.modules.common.entity.CommonResult
+    * @author: Jiangyf
+    * @date: 2019/8/10 
+    * @time: 15:43
+    */
+    @RequestMapping(value = "endExam")
+    @ResponseBody
+    public CommonResult endExam() {
+        ExamUser examUser = UserUtils.getExamUser();
+        if (StringUtils.isNotBlank(examUser.getId())) {
+            // 学生 添加结束时间
+            Exam exam = new Exam();
+            exam.setId(examUser.getExamId());
+            exam.setEndTime(new Date());
+            examService.save(exam);
+            // 清除Session
+            ServletUtils.getRequest().getSession().removeAttribute("examUser");
+        } else {
+            // 教师
+            Paper paper = new Paper();
+            paper.setId(examUser.getPaperId());
+            // 修改试卷状态 教师端结束考试后 试卷可启用
+            paper.setState("0");
+            examService.endExamTea(paper);
+        }
+        return new CommonResult();
+    }
 
 }

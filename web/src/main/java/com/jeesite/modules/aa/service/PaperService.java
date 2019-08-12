@@ -9,6 +9,8 @@ import com.jeesite.modules.aa.dao.PaperDao;
 import com.jeesite.modules.aa.entity.CarInfo;
 import com.jeesite.modules.aa.entity.Paper;
 import com.jeesite.modules.aa.vo.HomePageVO;
+import com.jeesite.modules.common.entity.Exam;
+import com.jeesite.modules.common.service.ExamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +30,9 @@ public class PaperService extends CrudService<PaperDao, Paper> {
 
 	@Autowired
 	private PaperDao paperDao;
+
+	@Autowired
+	private ExamService examService;
 	
 	/**
 	 * 获取单条数据
@@ -96,4 +101,16 @@ public class PaperService extends CrudService<PaperDao, Paper> {
 		hs.put("sort",homePageVO.getSort());
 		return paperDao.findPaperBySortTea(hs);
 	}
+
+	/**
+	* @description: 加载考试信息
+	* @param: [exam]
+	* @return: com.jeesite.modules.common.entity.Exam
+	* @author: Jiangyf
+	* @date: 2019/8/10
+	* @time: 16:37
+	*/
+    public Exam findExam(Exam exam) {
+    	return examService.getByEntity(exam);
+    }
 }
