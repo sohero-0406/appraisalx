@@ -120,4 +120,18 @@ public class ReferenceService extends CrudService<ReferenceDao, Reference> {
         String[] idList = referenceIdList.split(",");
         dao.deleteReference(idList);
     }
+
+    /**
+    * @description: 查询参照物列表
+    * @param: [keyword]
+    * @return: java.lang.Object
+    * @author: Jiangyf
+    * @date: 2019/8/12
+    * @time: 10:41
+    */
+    public List<Reference> findReferenceList(String keyword) {
+        Reference reference = new Reference();
+        reference.setModel(keyword);
+        return dao.findReferenceListByKeyword(reference);
+    }
 }

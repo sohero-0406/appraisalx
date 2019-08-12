@@ -180,4 +180,16 @@ public class MaintenanceTotalService extends CrudService<MaintenanceTotalDao, Ma
         commonResult.setData(maintenanceInfoVO);
         return commonResult;
     }
+
+    /** 
+    * @description: 加载维保记录全表
+    * @param: [keyword]
+    * @return: java.util.List<com.jeesite.modules.common.entity.MaintenanceTotal>
+    * @author: Jiangyf
+    * @date: 2019/8/12 
+    * @time: 11:28
+    */ 
+    public List<MaintenanceTotal> findMaintenanceTotalList(String keyword) {
+        return dao.findMaintenanceTotalList(keyword);
+    }
 }

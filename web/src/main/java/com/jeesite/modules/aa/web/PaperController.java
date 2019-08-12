@@ -99,14 +99,19 @@ public class PaperController extends BaseController {
 		return renderResult(Global.TRUE, text("删除试卷成功！"));
 	}
 
-	/**
-	 * 查询试卷列表
-	 */
+	/** 
+	* @description: 查询试卷列表
+	* @param: [keyword]
+	* @return: com.jeesite.modules.common.entity.CommonResult
+	* @author: Jiangyf
+	* @date: 2019/8/12 
+	* @time: 13:37
+	*/ 
 	@RequestMapping(value = "getPaperList")
 	@ResponseBody
-	public CommonResult findPaper() {
+	public CommonResult findPaper(String keyword) {
 		CommonResult comRes = new CommonResult();
-		List<Paper> paperList = paperService.findPaper();
+		List<Paper> paperList = paperService.findPaper(keyword);
 		comRes.setData(paperList);
 		return comRes;
 	}

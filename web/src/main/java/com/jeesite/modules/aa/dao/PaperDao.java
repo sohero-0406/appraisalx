@@ -7,6 +7,7 @@ import com.jeesite.common.dao.CrudDao;
 import com.jeesite.common.mybatis.annotation.MyBatisDao;
 import com.jeesite.modules.aa.entity.CarInfo;
 import com.jeesite.modules.aa.entity.Paper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,7 @@ import java.util.Map;
 @MyBatisDao
 public interface PaperDao extends CrudDao<Paper> {
 
-    List<Paper> findPaper();
+    List<Paper> findPaper(@Param(value = "keyword") String keyword);
 
     List<CarInfo> findPaperBySortTea(Map<String,String> hs);
 }

@@ -8,6 +8,8 @@ import com.jeesite.common.mybatis.annotation.MyBatisDao;
 import com.jeesite.modules.common.entity.VehicleDangerTotal;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * 车辆出险总表DAO接口
  * @author liangtao
@@ -16,4 +18,5 @@ import org.apache.ibatis.annotations.Param;
 @MyBatisDao
 public interface VehicleDangerTotalDao extends CrudDao<VehicleDangerTotal> {
 
+    List<VehicleDangerTotal> findVehicleDangerTotalList(@Param(value = "keyword") String keyword);
 }

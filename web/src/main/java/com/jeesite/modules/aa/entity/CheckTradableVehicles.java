@@ -9,7 +9,6 @@ import org.hibernate.validator.constraints.Length;
 import com.jeesite.common.entity.DataEntity;
 import com.jeesite.common.mybatis.annotation.Column;
 import com.jeesite.common.mybatis.annotation.Table;
-import com.jeesite.common.mybatis.mapper.query.QueryType;
 
 /**
  * 检查可交易车辆Entity

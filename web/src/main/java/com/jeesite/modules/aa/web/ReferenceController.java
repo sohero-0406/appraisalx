@@ -15,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -131,14 +128,19 @@ public class ReferenceController extends BaseController {
 		return comRes;
 	}
 
-	/**
-	 * 查询参照物列表
-	 */
+	/** 
+	* @description: 查询参照物列表 搜索关键字为 车型名称、VIN码 模糊查询
+	* @param: [keyword]
+	* @return: com.jeesite.modules.common.entity.CommonResult
+	* @author: Jiangyf
+	* @date: 2019/8/12 
+	* @time: 10:40
+	*/ 
 	@RequestMapping(value = "findReferenceList")
 	@ResponseBody
-	public CommonResult findReferenceList() {
+	public CommonResult findReferenceList(String keyword) {
 		CommonResult comRes = new CommonResult();
-		comRes.setData(referenceService.findList(new Reference()));
+		comRes.setData(referenceService.findReferenceList(keyword));
 		return comRes;
 	}
 

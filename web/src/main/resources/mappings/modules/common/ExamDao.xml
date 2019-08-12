@@ -30,7 +30,6 @@
 		<if test="type != null and type != ''">
 			and exam.type = #{type}
 		</if>
-
 	</select>
 
 	<select id="getUserByExamId" resultType="String">

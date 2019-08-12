@@ -90,19 +90,19 @@ public class VehicleDangerTotalController extends BaseController {
         return renderResult(Global.TRUE, text("删除车辆出险总表成功！"));
     }
 
-    /**
-     * @description: 加载出险记录全表
-     * @param: []
-     * @return: com.jeesite.modules.common.entity.CommonResult
-     * @author: Jiangyf
-     * @date: 2019/8/6
-     * @time: 14:26
-     */
+    /** 
+    * @description: 加载出险记录全表 搜索条件 - 车型名称、VIN码
+    * @param: [keyword]
+    * @return: com.jeesite.modules.common.entity.CommonResult
+    * @author: Jiangyf
+    * @date: 2019/8/12 
+    * @time: 11:55
+    */ 
     @RequestMapping(value = "findVehicleDangerTotalList")
     @ResponseBody
-    public CommonResult findVehicleDangerTotalList() {
+    public CommonResult findVehicleDangerTotalList(String keyword) {
         CommonResult comRes = new CommonResult();
-        comRes.setData(vehicleDangerTotalService.findList(new VehicleDangerTotal()));
+        comRes.setData(vehicleDangerTotalService.findVehicleDangerTotalList(keyword));
         return comRes;
     }
 

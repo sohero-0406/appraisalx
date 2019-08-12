@@ -12,12 +12,32 @@
 		ORDER BY ${sqlMap.order.toSql()}
 	</select> -->
 
+	<resultMap id="paperResultMap" type="com.jeesite.modules.aa.entity.Paper">
+		<id property="id" column="id"/>
+		<result property="createBy" column="create_by"/>
+		<result property="createDate" column="create_date"/>
+		<result property="name" column="name"/>
+		<result property="state" column="state"/>
+		<association property="carInfo" javaType="com.jeesite.modules.aa.entity.CarInfo">
+			<result property="licensePlateNum" column="license_plate_num"/>
+			<result property="vinCode" column="vin_code"/>
+		</association>
+	</resultMap>
+
 	<!-- 查询试卷列表 -->
-	<select id="findPaper" resultType="Paper">
-		SELECT a.*,b.license_plate_num as "carInfo.licensePlateNum",b.vin_code as "carInfo.vinCode"
-		FROM aa_paper as a
-		LEFT JOIN aa_car_info as b on a.id = b.paper_id
-		where a.status = '0'
+	<select id="findPaper" resultMap="paperResultMap">
+		SELECT
+			a.*,
+			b.license_plate_num,
+			b.vin_code
+			FROM
+			aa_paper AS a
+			LEFT JOIN aa_car_info AS b ON a.id = b.paper_id
+		WHERE
+			a.STATUS = '0'
+		<if test="keyword != null and keyword != ''">
+			AND ( name LIKE CONCAT ('%', #{keyword}, '%') or vin_code LIKE CONCAT ('%', #{keyword}, '%') )
+		</if>
 	</select>
 
 	<!-- 加载首页界面(教师端) -->

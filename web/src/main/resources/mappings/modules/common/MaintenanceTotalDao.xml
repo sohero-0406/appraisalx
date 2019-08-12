@@ -11,5 +11,21 @@
 		</where>
 		ORDER BY ${sqlMap.order.toSql()}
 	</select> -->
-	
+
+    <select id="findMaintenanceTotalList" resultType="com.jeesite.modules.common.entity.MaintenanceTotal">
+        SELECT
+            id,
+            maintenance_count,
+            vin_code,
+            model_name,
+            create_date
+        FROM
+            common_maintenance_total
+        <where>
+            <if test="keyword != null and keyword != ''">
+                model_name LIKE CONCAT('%',#{keyword},'%')
+                or vin_code LIKE CONCAT('%',#{keyword},'%')
+            </if>
+        </where>
+    </select>
 </mapper>

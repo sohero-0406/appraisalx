@@ -93,19 +93,19 @@ public class MaintenanceTotalController extends BaseController {
         return renderResult(Global.TRUE, text("删除车辆维保总表成功！"));
     }
 
-    /**
-     * @description: 加载维保记录全表
-     * @param: []
-     * @return: com.jeesite.modules.common.entity.CommonResult
-     * @author: Jiangyf
-     * @date: 2019/8/6
-     * @time: 9:48
-     */
+    /** 
+    * @description: 加载维保记录全表
+    * @param: [keyword]
+    * @return: com.jeesite.modules.common.entity.CommonResult
+    * @author: Jiangyf
+    * @date: 2019/8/12 
+    * @time: 11:27
+    */
     @RequestMapping(value = "findMaintenanceTotalList")
     @ResponseBody
-    public CommonResult findMaintenanceTotalList() {
+    public CommonResult findMaintenanceTotalList(String keyword) {
         CommonResult comRes = new CommonResult();
-        List<MaintenanceTotal> maintenanceTotals = maintenanceTotalService.findList(new MaintenanceTotal());
+        List<MaintenanceTotal> maintenanceTotals = maintenanceTotalService.findMaintenanceTotalList(keyword);
         comRes.setData(maintenanceTotals);
         return comRes;
     }

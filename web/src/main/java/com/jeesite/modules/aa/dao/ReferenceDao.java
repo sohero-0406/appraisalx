@@ -19,4 +19,6 @@ import java.util.List;
 public interface ReferenceDao extends CrudDao<Reference> {
 
     void deleteReference(@Param("referenceIdList") String[] referenceIdList);
+
+    List<Reference> findReferenceListByKeyword(Reference reference);
 }

@@ -172,4 +172,16 @@ public class VehicleDangerTotalService extends CrudService<VehicleDangerTotalDao
         commonResult.setData(vehicleDangerInfoVO);
         return commonResult;
     }
+
+    /** 
+    * @description: 加载出险记录全表
+    * @param: [keyword]
+    * @return: java.util.List<com.jeesite.modules.common.entity.VehicleDangerTotal>
+    * @author: Jiangyf
+    * @date: 2019/8/12 
+    * @time: 11:56
+    */ 
+    public List<VehicleDangerTotal> findVehicleDangerTotalList(String keyword) {
+        return dao.findVehicleDangerTotalList(keyword);
+    }
 }

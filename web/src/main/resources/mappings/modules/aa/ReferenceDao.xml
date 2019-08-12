@@ -25,4 +25,33 @@
 
 
 	</delete>
+    <select id="findReferenceListByKeyword" resultType="com.jeesite.modules.aa.entity.Reference">
+		SELECT
+			id,
+			model,
+			( SELECT dict_label FROM js_sys_dict_data jsdd WHERE jsdd.dict_type = 'aa_vehicle_configuration_type' AND jsdd.dict_value = ar.configuration_type ) AS configuration_type,
+			( SELECT dict_label FROM js_sys_dict_data jsdd WHERE jsdd.dict_type = 'aa_engine_type' AND jsdd.dict_value = ar.engine_type ) AS engine_type,
+			engine_capacity,
+			( SELECT dict_label FROM js_sys_dict_data jsdd WHERE jsdd.dict_type = 'aa_gearbox_type' AND jsdd.dict_value = ar.transmission_type ) AS transmission_type,
+			( SELECT dict_label FROM js_sys_dict_data jsdd WHERE jsdd.dict_type = 'aa_environmental_standard' AND jsdd.dict_value = ar.exhaust_emission_standard ) AS exhaust_emission_standard,
+			sale_conditions,
+			trade_time,
+			use_year,
+			used_time,
+			appraisal_score,
+			new_rate,
+			trade_number,
+			( SELECT dict_label FROM js_sys_dict_data jsdd WHERE jsdd.dict_type = 'aa_payment_method' AND jsdd.dict_value = ar.payment_type ) AS payment_type,
+			trade_place,
+			price_index,
+			car_price,
+			new_registration
+		FROM
+			aa_reference ar
+		<where>
+			<if test="model != null and model != ''">
+				model LIKE CONCAT('%',#{model},'%')
+			</if>
+		</where>
+	</select>
 </mapper>

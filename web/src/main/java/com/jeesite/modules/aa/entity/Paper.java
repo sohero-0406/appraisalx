@@ -39,6 +39,17 @@ public class Paper extends PreEntity<Paper> {
 	private String createBy;		//创建者
 	private Timestamp createDate;		//创建时间
 
+	// 数据库不存在字段
+	private CarInfo carInfo;
+
+	public CarInfo getCarInfo() {
+		return carInfo;
+	}
+
+	public void setCarInfo(CarInfo carInfo) {
+		this.carInfo = carInfo;
+	}
+
 	public Paper() {
 		this(null);
 	}
