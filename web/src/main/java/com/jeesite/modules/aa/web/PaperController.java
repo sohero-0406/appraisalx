@@ -152,7 +152,8 @@ public class PaperController extends BaseController {
 			exam = paperService.findExam(exam);
 			if ((StringUtils.isBlank(exam.toString())) || (StringUtils.isNotBlank(exam.toString()) && ("1").equals(exam.getState()))) {
 				// paperId 存入Session
-				ServletUtils.getRequest().getSession().setAttribute("paperId", paperId);
+				examUser.setPaperId(paperId);
+				ServletUtils.getRequest().getSession().setAttribute("examUser", examUser);
 				// 该试卷未添加进考试、该试卷添加进考试 但其状态为 1   以上两种情况均可以通过编辑校验
 				return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "试卷编辑校验通过");
 			}

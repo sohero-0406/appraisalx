@@ -148,8 +148,9 @@ public class HomePageService {
             Paper paper = new Paper();
             paper.setState("1");
             paperService.save(paper);
-            // 0810 新建考试 教师端 新建完成后将 paperId 传入 session 存储
-            ServletUtils.getRequest().getSession().setAttribute("paperId", paperService.get(paper).getId());
+            examUser = (ExamUser)ServletUtils.getRequest().getSession().getAttribute("examUser");
+            examUser.setPaperId(paper.getId());
+            ServletUtils.getRequest().getSession().setAttribute("examUser", examUser);
         }
     }
 }
