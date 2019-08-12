@@ -223,7 +223,7 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
         vehicleBasicInfo.setRegisterDate(carInfo.getRegisterDate());
         vehicleBasicInfo.setMileage(carInfo.getMileage());
         vehicleBasicInfo.setBrandName(vehicleInfo.getString("chexingmingcheng"));
-        vehicleBasicInfo.setBrandType("");
+        vehicleBasicInfo.setBrandType(DictUtils.getDictLabel("aa_mode_product", carInfo.getModeProduct(), ""));
         vehicleBasicInfo.setColor(DictUtils.getDictLabel("aa_vehicle_color", carInfo.getColor(), ""));
         // 注: 状态(1是 0无) 若该单证存在且存在有效期, 便返回其有效期; 若不存在, 返回"无"
         vehicleDocumentInfos.forEach(v -> {
@@ -274,10 +274,10 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
         importantConfig.setFuelLabel(vehicleInfo.getString("ranyoubiaohao"));
         importantConfig.setDisplacement(carInfo.getDisplacement());
         importantConfig.setCylindersNum(vehicleInfo.getString("qigangshuGe"));
-        importantConfig.setEnginePower("");
+        importantConfig.setEnginePower(carInfo.getEnginePower());
         importantConfig.setEmissionStandards(vehicleInfo.getString("huanbaobiaozhun"));
         importantConfig.setTransmissionForm(vehicleInfo.getString("biansuxiangleixing"));
-        importantConfig.setAirbag("");
+        importantConfig.setAirbag(ariBagTotal(vehicleInfo));
         importantConfig.setDriveMode(vehicleInfo.getString("qudongfangshi"));
         // 数据库字段 ABSfangbaosi 对应的值为 "●"
         if (StringUtils.isEmpty(vehicleInfo.getString("absfangbaosi"))) {
@@ -368,5 +368,53 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
      */
     private List<IdentifyTec> findVehicleTecStatusResult(IdentifyTec identifyTec) {
         return dao.findVehicleTecStatusResult(identifyTec);
+    }
+
+    /**
+     * @description: 计算气囊个数 - 仅针对主/副驾驶座安全气囊、前/后排侧气囊、前/后排头部气囊(气帘)
+     * @param: [airBagType]
+     * @return: java.lang.String
+     * @author: Jiangyf
+     * @date: 2019/8/10
+     * @time: 10:07
+     */
+    public int airBagCount(String airBagType) {
+        int count = 0;
+        if (StringUtils.isNotBlank(airBagType)) {
+            char[] chars = airBagType.toCharArray();
+            for (int i = 0; i < chars.length; i++) {
+                if (chars[i] == '●') {
+                    count += 1;
+                }
+            }
+            return count;
+        }
+        return count;
+    }
+
+    /**
+     * @description: 计算气囊总数
+     * @param: [vehicleInfo]
+     * @return: java.lang.String
+     * @author: Jiangyf
+     * @date: 2019/8/10
+     * @time: 10:26
+     */
+    public String ariBagTotal(JSONObject vehicleInfo) {
+        int total = 0;
+        total += airBagCount(vehicleInfo.getString("zhu_fujiashizuoanquanqinang"));
+        total += airBagCount(vehicleInfo.getString("qian_houpaiceqinang"));
+        total += airBagCount(vehicleInfo.getString("qian_houpaitoubuqinang_qilian"));
+        // 其他三类气囊类型
+        if (StringUtils.isNotBlank(vehicleInfo.getString("xibuqinang")) && "●".equals(vehicleInfo.getString("xibuqinang"))) {
+            total += 2;
+        }
+        if (StringUtils.isNotBlank(vehicleInfo.getString("houpaianquandaishiqinang")) && "●".equals(vehicleInfo.getString("houpaianquandaishiqinang"))) {
+            total += 3;
+        }
+        if (StringUtils.isNotBlank(vehicleInfo.getString("houpaizhongyanganquanqinang")) && "●".equals(vehicleInfo.getString("houpaizhongyanganquanqinang"))) {
+            total += 1;
+        }
+        return String.valueOf(total);
     }
 }

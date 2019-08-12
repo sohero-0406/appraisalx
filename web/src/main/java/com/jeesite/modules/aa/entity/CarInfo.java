@@ -58,6 +58,7 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 		@Column(name="year_check_due", attrName="yearCheckDue", label="年检到期"),
 		@Column(name="insurance_due", attrName="insuranceDue", label="保险到期"),
 		@Column(name="vehicle_warranty", attrName="vehicleWarranty", label="整车质保"),
+		@Column(name="engine_power", attrName="enginePower", label="发动机功率"),
 		@Column(includeEntity=DataEntity.class),
 	}, orderBy="a.update_date DESC"
 )
@@ -104,6 +105,7 @@ public class CarInfo extends PreEntity<CarInfo> {
 	private String yearCheckDue;		// 年检到期
 	private String insuranceDue;		// 保险到期
 	private String vehicleWarranty;		// 整车质保
+	private String enginePower;         // 发动机功率
 	
 	public CarInfo() {
 		this(null);
@@ -469,5 +471,12 @@ public class CarInfo extends PreEntity<CarInfo> {
 	public void setVehicleWarranty(String vehicleWarranty) {
 		this.vehicleWarranty = vehicleWarranty;
 	}
-	
+
+	public String getEnginePower() {
+		return enginePower;
+	}
+
+	public void setEnginePower(String enginePower) {
+		this.enginePower = enginePower;
+	}
 }
