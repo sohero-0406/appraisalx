@@ -100,7 +100,7 @@ public class CarInfoController extends BaseController {
 	 * @param baseInfoVO
 	 * @return
 	 */
-	@PostMapping(value = "saveBaseInfo")
+    @RequestMapping(value = "saveBaseInfo")
 	@ResponseBody
 	public CommonResult saveBaseInfo(@Validated BaseInfoVO baseInfoVO){
 		ExamUser examUser = UserUtils.getExamUser();
@@ -112,7 +112,7 @@ public class CarInfoController extends BaseController {
 	 * 获取车辆基本信息和委托方基本信息
 	 * @return
 	 */
-	@PostMapping(value = "getBaseInfo")
+    @RequestMapping(value = "getBaseInfo")
 	@ResponseBody
 	public CommonResult getBaseInfo(String[] pictureTypeIds){
 		ExamUser examUser = UserUtils.getExamUser();

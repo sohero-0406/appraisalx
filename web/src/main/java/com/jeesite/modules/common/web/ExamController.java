@@ -17,6 +17,7 @@ import com.jeesite.modules.common.entity.Exam;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.service.ExamService;
 import com.jeesite.modules.common.utils.UserUtils;
+import com.jeesite.modules.common.vo.ExamUserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -221,4 +222,13 @@ public class ExamController extends BaseController {
         return new CommonResult();
     }
 
+    /**
+     * 考试/练习 添加学生 加载方法
+     */
+    @RequestMapping(value = "findExamUser")
+    @ResponseBody
+    public CommonResult findExamUser(ExamUserVO vo) {
+        ExamUser examUser = UserUtils.getExamUser();
+        return examService.findExamUser(examUser, vo);
+    }
 }

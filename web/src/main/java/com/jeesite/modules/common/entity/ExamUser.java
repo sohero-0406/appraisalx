@@ -21,8 +21,6 @@ import java.util.Date;
 		@Column(name="id", attrName="id", label="主键", isPK=true),
 		@Column(name="user_id", attrName="userId", label="用户id"),
 		@Column(name="exam_id", attrName="examId", label="考试id"),
-		@Column(name="user_num", attrName="userNum", label="用户名"),
-		@Column(name="password", attrName="password", label="密码"),
 		@Column(name="score", attrName="score", label="分数"),
 		@Column(name="start_time", attrName="startTime", label="考试开始时间"),
 		@Column(name="end_time", attrName="endTime", label="考试结束时间"),
@@ -35,14 +33,13 @@ public class ExamUser extends PreEntity<ExamUser> {
 	private static final long serialVersionUID = 1L;
 	private String userId;		// 用户id
 	private String examId;		// 考试id
-	private String userNum;		// 用户名
-	private String password;		// 密码
 	private String score;		// 分数
 	private Date startTime;		//考试开始时间
 	private Date endTime;		//考试结束时间
 	private String serverExamUserId;		//大平台考生id（上传成绩用）
 
 	//非数据库字段
+    private String userNum;        // 用户名
 	private String paperId;		//试卷id
 	private String duration;  //考试时长
     //成绩批量导出
@@ -89,15 +86,6 @@ public class ExamUser extends PreEntity<ExamUser> {
 
 	public void setUserNum(String userNum) {
 		this.userNum = userNum;
-	}
-	
-	@Length(min=0, max=32, message="密码长度不能超过 32 个字符")
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public Date getStartTime() {

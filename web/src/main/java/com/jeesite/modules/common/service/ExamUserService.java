@@ -163,7 +163,6 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 			JSONObject userJson = (JSONObject) o;
 			ExamUser examUser = new ExamUser();
 			examUser.setExamId(examId);
-			examUser.setPassword(userJson.getString("password"));
 			super.save(examUser);
 		}
 		return comRes;
@@ -1484,7 +1483,4 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		comRes.setData(returnList);
 		return comRes;
 	}
-
-
-
 }
