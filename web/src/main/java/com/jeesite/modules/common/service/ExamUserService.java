@@ -38,9 +38,6 @@ import java.util.*;
 @Transactional(readOnly=true)
 public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 
-
-	@Autowired
-	private ExamUserDao examUserDao;
 	@Autowired
 	private ExamService examService;
 
@@ -80,6 +77,8 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
     //调用大平台--学生数据
 	@Autowired
 	private HttpClientService httpClientService;
+	@Autowired
+	private PictureUserService pictureUserService;
 
 
 	/**
@@ -316,7 +315,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 			DelegateUser delegateUserS = delegateUserService.getByEntity(delegateUserStu);
 			carInfoStu.setExamUserId(user.getId());
 			CarInfo carInfoS = carInfoService.getByEntity(carInfoStu);
-			BigDecimal delegateCount = getDelegateInfo(delegateUserS,carInfoS,delegateUserT,carInfoT,examScoreMap,user,examNameMap);
+			BigDecimal delegateCount = getDelegateInfo(delegateUserS,carInfoS,delegateUserT,carInfoT,examScoreMap,user,examNameMap,paperId);
 
 			//二、判别可交易车辆
 			vehicleDocumentInfoStu.setExamUserId(user.getId());
@@ -412,23 +411,32 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		if(StringUtils.isNotBlank(checkTradableVehiclesT.getCheck3())&& checkTradableVehiclesS!=null&&checkTradableVehiclesT.getCheck3().equals(checkTradableVehiclesS.getCheck3()) ){
 			calculateCount = calculateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343663128577"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
-					(String)examNameMap.get("1151013343663128577"),(String)examScoreMap.get("1151013343663128577"),
-					checkTradableVehiclesT.getCheck3(),checkTradableVehiclesS.getCheck3(),"0");
+					(String)examNameMap.get("1151013343663128577"),
+					(String)examScoreMap.get("1151013343663128577"),
+					getYesOrNo(checkTradableVehiclesT.getCheck3()),
+					getYesOrNo(checkTradableVehiclesS.getCheck3()),
+					"0");
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
 					(String)examNameMap.get("1151013343663128577"),"0",
-					checkTradableVehiclesT.getCheck3(),checkTradableVehiclesS==null?"":checkTradableVehiclesS.getCheck3(),"1");
+					getYesOrNo(checkTradableVehiclesT.getCheck3()),
+					checkTradableVehiclesS==null?"":getYesOrNo(checkTradableVehiclesS.getCheck3()),
+					"1");
 		}
 		//未接受处理的交通违法记录：
 		if(StringUtils.isNotBlank(checkTradableVehiclesT.getTrafficIllegalRecord())&& checkTradableVehiclesS!=null&& checkTradableVehiclesT.getTrafficIllegalRecord().equals(checkTradableVehiclesS.getTrafficIllegalRecord())){
 			calculateCount = calculateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343662706689"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
 					(String)examNameMap.get("1151013343662706689"),(String)examScoreMap.get("1151013343662706689"),
-					checkTradableVehiclesT.getTrafficIllegalRecord(),checkTradableVehiclesS.getTrafficIllegalRecord(),"0");
+					getYesOrNo(checkTradableVehiclesT.getTrafficIllegalRecord()),
+					getYesOrNo(checkTradableVehiclesS.getTrafficIllegalRecord()),
+					"0");
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180615860225",
 					(String)examNameMap.get("1151013343662706689"),"0",
-					checkTradableVehiclesT.getTrafficIllegalRecord(),checkTradableVehiclesS==null?"":checkTradableVehiclesS.getTrafficIllegalRecord(),"1");
+					getYesOrNo(checkTradableVehiclesT.getTrafficIllegalRecord()),
+					checkTradableVehiclesS==null?"":getYesOrNo(checkTradableVehiclesS.getTrafficIllegalRecord()),
+					"1");
 		}
 		//车辆鉴定评估价值为人民币（元）   1151013343665739992
 
@@ -680,13 +688,23 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 	}
 
 
+	//根据车辆信息调取大平台数据 (品牌 成型id)  Brand Model
+	public String getCarModelByPlatform(String id){
+		Map<String, String> map = new HashMap<>();
+		map.put("chexingId",id);
+		Map<String,String> data = (Map<String,String>)httpClientService.post(ServiceConstant.VEHICLEINFO_GET_CAR_MODEL,map).getData();
+		return data.get("chexingmingcheng");
+	}
+
 
 
 	//三、记录车辆基本信息
 	public BigDecimal getCarInfo(CarInfo carInfoT,CarInfo carInfoS,Map<String,Object> examScoreMap,List<VehicleInstallInfo> vehicleInstallInfoListT,
 								 List<VehicleInstallInfo> vehicleInstallInfoListS,ExamUser user,Map<String,Object> examNameMap,String paperId){
 		BigDecimal carInfoCount = new BigDecimal(0);
-		if(StringUtils.isNotBlank(carInfoT.getBrand()) &&(null!=carInfoS) && carInfoT.getBrand().equals(carInfoS.getBrand())){
+		//品牌加车系
+		if(StringUtils.isNotBlank(carInfoT.getBrand()) &&StringUtils.isNotBlank(carInfoT.getSeries()) &&(null!=carInfoS) &&
+				carInfoT.getBrand().equals(carInfoS.getBrand())&& carInfoT.equals(carInfoS.getSeries()) ){
 			carInfoCount = carInfoCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343664197633")))); //品牌
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343664197633"),(String)examScoreMap.get("1151013343664197633"),
@@ -696,15 +714,18 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 					(String)examNameMap.get("1151013343664197633"),"0",
 					carInfoT.getBrand(),carInfoS==null?"":carInfoS.getBrand(),"1");
 		}
+
+
+
 		if(StringUtils.isNotBlank(carInfoT.getModel()) &&(null!=carInfoS) && carInfoT.getModel().equals(carInfoS.getModel())){
 			carInfoCount = carInfoCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343664799745")))); //车型
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343664799745"),(String)examScoreMap.get("1151013343664799745"),
-					carInfoT.getModel(),carInfoS.getModel(),"0");
+                    getCarModelByPlatform(carInfoT.getModel()),getCarModelByPlatform(carInfoS.getModel()),"0");
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343664799745"),"0",
-					carInfoT.getModel(),carInfoS==null?"":carInfoS.getModel(),"1");
+                    getCarModelByPlatform(carInfoT.getModel()),carInfoS==null?"":getCarModelByPlatform(carInfoS.getModel()),"1");
 		}
 		if(StringUtils.isNotBlank(carInfoT.getLevel()) &&(null!=carInfoS) && carInfoT.getLevel().equals(carInfoS.getLevel())){
 			carInfoCount = carInfoCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343664439297")))); //级别
@@ -974,7 +995,8 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 	 * @return
 	 */
 	public BigDecimal getDelegateInfo(DelegateUser delegateUserS,CarInfo carInfoS,DelegateUser delegateUserT,
-									  CarInfo carInfoT,Map<String, Object> examScoreMap,ExamUser user,Map<String,Object> examNameMap){
+									  CarInfo carInfoT,Map<String, Object> examScoreMap,ExamUser user,
+									  Map<String,Object> examNameMap,String paperId){
 		BigDecimal delegateCount = new BigDecimal(0);
 		//一、委托人
 
@@ -1039,13 +1061,13 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 					delegateUserT.getApplyReason(),delegateUserS==null?"":delegateUserS.getApplyReason(),"1");
 		}
 		if(StringUtils.isNotBlank(delegateUserT.getCompleteDate())&&(null!=delegateUserS) &&delegateUserT.getCompleteDate().equals(delegateUserS.getCompleteDate())) {
-			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343663427585"))));
+			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343665516545"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
-					(String)examNameMap.get("1151013343663427585"),(String)examScoreMap.get("1151013343663427585"),
+					(String)examNameMap.get("1151013343665516545"),(String)examScoreMap.get("1151013343665516545"),
 					delegateUserT.getCompleteDate(),delegateUserS.getCompleteDate(),"0");
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
-					(String)examNameMap.get("1151013343663427585"),"0",
+					(String)examNameMap.get("1151013343665516545"),"0",
 					delegateUserT.getCompleteDate(),delegateUserS==null?"":delegateUserS.getCompleteDate(),"1");
 		}
 
@@ -1164,7 +1186,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 					(String)examNameMap.get("1151013343664787457"),"0",
 					getDic("aa_vehicle_color",carInfoT.getColor()),
 					carInfoS==null?"":
-							getDic("aa_vehicle_color",carInfoS.getColor()),"");
+							getDic("aa_vehicle_color",carInfoS.getColor()),"1");
 		}
 		if((null!=carInfoS) && carInfoT.getUseYear().equals(carInfoS.getUseYear())&&carInfoT.getUseMonth().equals(carInfoS.getUseMonth())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343665397761"))));
@@ -1250,7 +1272,28 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 					(String)examNameMap.get("1151013343663955969"),"0",
 					carInfoT.getOriginalPrice(),carInfoS==null?"":carInfoS.getOriginalPrice(),"1");
 		}
+
 		//盖章
+		PictureUser pictureUserS = new PictureUser();
+		pictureUserS.setExamUserId(user.getId());
+		pictureUserS.setPictureTypeId("1143436249238634496");  //手动签字
+		pictureUserS = pictureUserService.getByEntity(pictureUserS);
+
+		PictureUser pictureUserT = new PictureUser();
+		pictureUserT.setPaperId(paperId);
+		pictureUserT.setPictureTypeId("1143436249238634496");  //手动签字
+		pictureUserT = pictureUserService.getByEntity(pictureUserT);
+		if(null!=pictureUserT && null!=pictureUserS ) {
+			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343666032621"))));
+			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
+					(String)examNameMap.get("1151013343666032621"),(String)examScoreMap.get("1151013343666032621"),
+					"已签","已签","0");
+		}else{
+			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
+					(String)examNameMap.get("1151013343666032621"),"0",
+					null==pictureUserT?"未签":"已签",pictureUserS==null?"未签":"已签","1");
+		}
+
 		return delegateCount;
 	}
 
@@ -1396,12 +1439,13 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 	 * @param examId
 	 * @return
 	 */
-	public List<String> getExamStateByUserId(List<String> userIdList,String examId){
+	public CommonResult getExamStateByUserId(List<String> userIdList,String examId){
+		CommonResult comRes = new CommonResult();
 		List<String> returnList = new ArrayList<>();
 		StringBuilder studentUserIds = new StringBuilder();
 		List<ExamUser> examUserList = dao.getExamStateByUserId(userIdList,examId);
 		if(CollectionUtils.isEmpty(examUserList)){
-			return returnList;
+			return comRes;
 		}
 		int len = examUserList.size();
 		for(int i=0;i<len;i++){
@@ -1413,7 +1457,10 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}
 		Map<String,String> map = new HashMap();
 		map.put("ids",studentUserIds.toString());
-		//调取到平台 获取不符合规范的考生
+		comRes = httpClientService.post(ServiceConstant.DERIVE_STUDENT_ACHIEVEMENT,map);
+		if(!CodeConstant.REQUEST_SUCCESSFUL.equals(comRes.getCode())){
+			return comRes;
+		}
 		JSONArray array = JSONArray.parseArray(httpClientService.post(ServiceConstant.DERIVE_STUDENT_ACHIEVEMENT,map).getData().toString());
 		if(CollectionUtils.isNotEmpty(array)){
 			int i=0;
@@ -1432,7 +1479,10 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 				}
 			}
 		}
-		return returnList;
+		comRes.setCode(CodeConstant.UNREASONABLE_CANDIDATE_STATUS);
+		comRes.setMsg("存在不合理的考生状态");
+		comRes.setData(returnList);
+		return comRes;
 	}
 
 

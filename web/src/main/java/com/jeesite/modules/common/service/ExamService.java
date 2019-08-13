@@ -18,6 +18,7 @@ import com.jeesite.modules.aa.vo.ExamVO;
 import com.jeesite.modules.common.dao.ExamDao;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.Exam;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -119,7 +120,11 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 			return comRes;
 		}
 		//如果考试类型为空 或者考试类型参数不符合规范 都定义为保存考试失败
-		if(StringUtils.isBlank(exam.getType()) && ((!("1".equals(exam.getType()))) || (!("2".equals(exam.getType()))))){
+		if(StringUtils.isBlank(exam.getType())){
+			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);//请求参数有误
+			comRes.setMsg("请求参数异常");
+			return comRes;
+		}else if(  !("1".equals(exam.getType())||"2".equals(exam.getType())) ){
 			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);//请求参数有误
 			comRes.setMsg("请求参数异常");
 			return comRes;
@@ -243,11 +248,15 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 		//考试状态 state '状态（1:未开始;3:考试中;5:未统计;7:已出分）
 		CommonResult comRes = new CommonResult();
 		Exam examUpdate = dao.getByEntity(exam);
-		switch(exam.getState()){
+		switch(examUpdate.getState()){
 			case "1" ://未开始
-				examUpdate.setState("3");
-				examUpdate.setStartTime(new Date()); //记录考试开始时间
-				super.save(examUpdate);
+				List<String> userIdList = dao.getUserByExamId(examUpdate.getId());
+				comRes = examUserService.getExamStateByUserId(userIdList,examUpdate.getId());
+				if(CodeConstant.REQUEST_SUCCESSFUL.equals(comRes.getCode())){
+					examUpdate.setState("3");
+					examUpdate.setStartTime(new Date());  //记录考试结束时
+					super.save(examUpdate);
+				}
 				break;
 			case "3" ://考试中
 				examUpdate.setState("5");
