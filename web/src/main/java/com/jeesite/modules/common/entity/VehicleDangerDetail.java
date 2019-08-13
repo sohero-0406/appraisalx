@@ -21,6 +21,7 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 		@Column(name="danger_single_type", attrName="dangerSingleType", label="理赔项类型", comment="理赔项类型（更换，维修，材料）"),
 		@Column(name="danger_single_name", attrName="dangerSingleName", label="理赔名称", queryType=QueryType.LIKE),
 		@Column(name="danger_single_money", attrName="dangerSingleMoney", label="理赔金额", comment="理赔金额（单位：分）"),
+		@Column(includeEntity=DataEntity.class),
 	}, orderBy="a.id DESC"
 )
 public class VehicleDangerDetail extends PreEntity<VehicleDangerDetail> {

@@ -106,7 +106,7 @@ public class ReferenceController extends BaseController {
 	 */
 	@RequestMapping(value = "deleteReference")
 	@ResponseBody
-	public CommonResult deleteReference(@Validated String referenceIdList) {
+	public CommonResult deleteReference(@RequestParam(value = "id") String referenceIdList) {
 		CommonResult comRes = new CommonResult();
 		if(StringUtils.isBlank(referenceIdList)){
 			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);

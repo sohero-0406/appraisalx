@@ -20,6 +20,7 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 		@Column(name="common_vehicle_danger_total_id", attrName="commonVehicleDangerTotalId", label="车辆出险总记录表id"),
 		@Column(name="danger_date", attrName="dangerDate", label="出险日期"),
 		@Column(name="service_money", attrName="serviceMoney", label="维修金额", comment="维修金额（单位：分）"),
+		@Column(includeEntity=DataEntity.class),
 	}, orderBy="a.id DESC"
 )
 public class VehicleDanger extends PreEntity<VehicleDanger> {

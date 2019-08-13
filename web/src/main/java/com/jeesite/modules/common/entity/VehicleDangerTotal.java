@@ -21,6 +21,7 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 		@Column(name="service_sum_money", attrName="serviceSumMoney", label="出险总金额", comment="出险总金额（单位：分）"),
 		@Column(name="vin_code", attrName="vinCode", label="VIN码"),
 		@Column(name="vehicle_type", attrName="vehicleType", label="车辆类型"),
+		@Column(includeEntity=DataEntity.class)
 	}, orderBy="a.id DESC"
 )
 public class VehicleDangerTotal extends PreEntity<VehicleDangerTotal> {

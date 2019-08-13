@@ -28,7 +28,7 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 		@Column(includeEntity=DataEntity.class),
 	}, orderBy="a.update_date DESC"
 )
-public class MaintenanceType extends DataEntity<MaintenanceType> {
+public class MaintenanceType extends PreEntity<MaintenanceType> {
 	
 	private static final long serialVersionUID = 1L;
 	private String maintenanceId;		// 维保记录主键
