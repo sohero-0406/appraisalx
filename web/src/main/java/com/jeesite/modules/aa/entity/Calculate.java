@@ -21,6 +21,7 @@ import org.hibernate.validator.constraints.Length;
 		@Column(name="type", attrName="type", label="算法类型"),
 		@Column(name="begin_price", attrName="beginPrice", label="得分价格开始值"),
 		@Column(name="end_price", attrName="endPrice", label="得分价格结束值"),
+		@Column(name="second_car_price", attrName="secondCarPrice", label="二手车市场参考价格(万元)"),
 		@Column(includeEntity=DataEntity.class),
 	}, orderBy="a.update_date DESC"
 )
@@ -32,6 +33,7 @@ public class Calculate extends PreEntity<Calculate> {
 	private String type;		// 算法类型（1-折旧率估值法 2-公里数估值法 3-重置成本法 4-现行市价法）
 	private Double beginPrice;		// 得分价格开始值
 	private Double endPrice;		// 得分价格结束值
+	private String secondCarPrice;  // 二手车市场参考价格
 	
 	public Calculate() {
 		this(null);
@@ -83,5 +85,13 @@ public class Calculate extends PreEntity<Calculate> {
 	public void setEndPrice(Double endPrice) {
 		this.endPrice = endPrice;
 	}
-	
+
+	@Length(min=0, max=10, message="二手车市场参考价格长度不能超过 10 个字符")
+	public String getSecondCarPrice() {
+		return secondCarPrice;
+	}
+
+	public void setSecondCarPrice(String secondCarPrice) {
+		this.secondCarPrice = secondCarPrice;
+	}
 }
