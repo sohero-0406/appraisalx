@@ -402,9 +402,9 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
      */
     public String ariBagTotal(JSONObject vehicleInfo) {
         int total = 0;
-        total += airBagCount(vehicleInfo.getString("zhu_fujiashizuoanquanqinang"));
-        total += airBagCount(vehicleInfo.getString("qian_houpaiceqinang"));
-        total += airBagCount(vehicleInfo.getString("qian_houpaitoubuqinang_qilian"));
+        total += airBagCount(vehicleInfo.getString("zhuFujiashizuoanquanqinang"));
+        total += airBagCount(vehicleInfo.getString("qianHoupaiceqinang"));
+        total += airBagCount(vehicleInfo.getString("qianHoupaitoubuqinangQilian"));
         // 其他三类气囊类型
         if (StringUtils.isNotBlank(vehicleInfo.getString("xibuqinang")) && "●".equals(vehicleInfo.getString("xibuqinang"))) {
             total += 2;
