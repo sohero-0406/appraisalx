@@ -307,6 +307,12 @@
 			<artifactId>swagger2markup</artifactId>
 			<version>${swagger2markup.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.ini4j</groupId>
+			<artifactId>ini4j</artifactId>
+			<version>${ini4j.version}</version>
+		</dependency>
 		<!--<dependency>-->
 			<!--<groupId>org.apache.poi</groupId>-->
 			<!--<artifactId>poi-ooxml</artifactId>-->

@@ -52,7 +52,8 @@
 		<beetl.version>2.9-SNAPSHOT</beetl.version>
 		<swagger.version>1.5.20</swagger.version>
 		<swagger2markup.version>1.3.3</swagger2markup.version>
-		
+		<ini4j.version>0.5.4</ini4j.version>
+
 		<!-- environment setting -->
 		<java.version>1.8</java.version>
 		<maven.test.skip>true</maven.test.skip>

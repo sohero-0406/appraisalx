@@ -140,13 +140,6 @@ public class CalculateKmService extends CrudService<CalculateKmDao, CalculateKm>
         return calculateKm;
     }
 
-    public static void main(String[] args) {
-        BigDecimal a = new BigDecimal("300001");
-
-//		BigDecimal b = new BigDecimal("60000");
-        System.out.println(a.compareTo(new BigDecimal("300000")));
-    }
-
     public void phyDeleteByEntity(CalculateKm calculateKm) {
         dao.phyDeleteByEntity(calculateKm);
     }

@@ -18,14 +18,13 @@ import com.jeesite.modules.aa.vo.ExamVO;
 import com.jeesite.modules.common.dao.ExamDao;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.Exam;
+import com.jeesite.modules.common.entity.ExamUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * common_examService
@@ -44,10 +43,12 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 	private ExamUserService examUserService;
 	@Autowired
 	private ExamScoreInfoService examScoreInfoService;
-
+    @Autowired
+    private HttpClientService httpClientService;
 	@Autowired
 	private PaperService paperService;
-	/**
+
+    /**
 	 * 获取单条数据
 	 * @param exam
 	 * @return
@@ -56,7 +57,7 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 	public Exam get(Exam exam) {
 		return super.get(exam);
 	}
-	
+
 	/**
 	 * 查询分页数据
 	 * @param exam 查询条件
@@ -66,7 +67,7 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 	public Page<Exam> findPage(Exam exam) {
 		return super.findPage(exam);
 	}
-	
+
 	/**
 	 * 保存数据（插入或更新）
 	 * @param exam
@@ -76,7 +77,7 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 	public void save(Exam exam) {
 		super.save(exam);
 	}
-	
+
 	/**
 	 * 更新状态
 	 * @param exam
@@ -86,7 +87,7 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 	public void updateStatus(Exam exam) {
 		super.updateStatus(exam);
 	}
-	
+
 	/**
 	 * 删除数据
 	 * @param exam
@@ -186,7 +187,7 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 	}
 
 	//新建/修改考试
-	@Transactional(readOnly=false)
+	@Transactional
 	public CommonResult addOrUpdateExam(String examId){
 		CommonResult comRes = new CommonResult();
 		//考试评分项
@@ -197,6 +198,8 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 		if(StringUtils.isNotBlank(examId)){
 			exam.setId(examId);
 			exam = dao.getByEntity(exam);
+			List<ExamUser> examUserList = new ArrayList<>();
+			if("1".equals(exam.))
 		}
 		Map<String,Object> returnMap = new HashMap();
 		returnMap.put("examScoreJson",examScoreInfoList);

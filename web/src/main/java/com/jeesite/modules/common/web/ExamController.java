@@ -135,9 +135,8 @@ public class ExamController extends BaseController {
      */
     @RequestMapping(value = "addOrUpdateExam")
     @ResponseBody
-    public CommonResult addExam(String examId) {
-        CommonResult comRes =  examService.addOrUpdateExam(examId);
-        return comRes;
+    public CommonResult addOrUpdateExam(String examId) {
+        return examService.addOrUpdateExam(examId);
     }
 
     /**

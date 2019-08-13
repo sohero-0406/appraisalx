@@ -53,5 +53,4 @@ public class HomePageController {
         homePageService.newPaper();
         return comRes;
     }
-
 }
