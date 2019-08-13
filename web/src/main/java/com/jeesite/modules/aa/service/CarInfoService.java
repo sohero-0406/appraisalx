@@ -3,6 +3,7 @@
  */
 package com.jeesite.modules.aa.service;
 
+import com.jeesite.common.constant.ServiceConstant;
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.service.CrudService;
 import com.jeesite.modules.aa.dao.CarInfoDao;
@@ -11,7 +12,9 @@ import com.jeesite.modules.aa.entity.DelegateUser;
 import com.jeesite.modules.aa.entity.PictureUser;
 import com.jeesite.modules.aa.vo.BaseInfoVO;
 import com.jeesite.modules.aa.vo.HomePageVO;
+import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.ExamUser;
+import com.jeesite.modules.common.service.HttpClientService;
 import com.jeesite.modules.common.service.OperationLogService;
 import com.jeesite.modules.sys.entity.DictData;
 import com.jeesite.modules.sys.utils.DictUtils;
@@ -19,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +44,8 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
     private CarInfoDao carInfoDao;
     @Autowired
     private OperationLogService operationLogService;
+    @Autowired
+    private HttpClientService httpClientService;
 
     /**
      * 获取单条数据
@@ -201,5 +207,14 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
         hs.put("queryCriteria", homePageVO.getQueryCriteria());
         hs.put("sort", homePageVO.getSort());
         return carInfoDao.findCarInfoBySortStu(hs);
+    }
+
+    /**
+     * 根据车型id获取车型数据
+     */
+    public CommonResult getVehicleFunctionalInfo(String model){
+        Map<String, String> map = new HashMap<>();
+        map.put("chexingId",model);
+        return httpClientService.post(ServiceConstant.VEHICLEINFO_GET_BY_ENTITY,map);
     }
 }

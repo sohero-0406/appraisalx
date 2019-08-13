@@ -59,6 +59,7 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 		@Column(name="insurance_due", attrName="insuranceDue", label="保险到期"),
 		@Column(name="vehicle_warranty", attrName="vehicleWarranty", label="整车质保"),
 		@Column(name="engine_power", attrName="enginePower", label="发动机功率"),
+		@Column(name="vehicle_brand", attrName="vehicleBrand", label="品牌名称"),
 		@Column(includeEntity=DataEntity.class),
 	}, orderBy="a.update_date DESC"
 )
@@ -106,7 +107,8 @@ public class CarInfo extends PreEntity<CarInfo> {
 	private String insuranceDue;		// 保险到期
 	private String vehicleWarranty;		// 整车质保
 	private String enginePower;         // 发动机功率
-	
+	private String vehicleBrand;        //品牌名称
+
 	public CarInfo() {
 		this(null);
 	}
@@ -478,5 +480,13 @@ public class CarInfo extends PreEntity<CarInfo> {
 
 	public void setEnginePower(String enginePower) {
 		this.enginePower = enginePower;
+	}
+	@Length(min=0, max=64, message="品牌名称长度不能超过 64 个字符")
+	public String getVehicleBrand() {
+		return vehicleBrand;
+	}
+
+	public void setVehicleBrand(String vehicleBrand) {
+		this.vehicleBrand = vehicleBrand;
 	}
 }

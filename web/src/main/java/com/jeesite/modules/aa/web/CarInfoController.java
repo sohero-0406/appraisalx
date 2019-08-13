@@ -4,7 +4,10 @@
 package com.jeesite.modules.aa.web;
 
 import com.jeesite.common.config.Global;
+import com.jeesite.common.constant.CodeConstant;
+import com.jeesite.common.constant.ServiceConstant;
 import com.jeesite.common.entity.Page;
+import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.aa.entity.CarInfo;
 import com.jeesite.modules.aa.service.CarInfoService;
@@ -117,4 +120,29 @@ public class CarInfoController extends BaseController {
 		comRes.setData(carInfoService.getBaseInfo(examUser, pictureTypeIds));
 		return comRes;
 	}
+
+	/**
+	 *  根据车型id 获取车辆功能性配置
+	 */
+	@PostMapping(value = "getVehicleFunctionalConfiguration")
+	@ResponseBody
+	public CommonResult getVehicleFunctionalConfiguration(){
+		CommonResult comRes = new CommonResult();
+		ExamUser examUser = UserUtils.getExamUser();
+		CarInfo carInfo = new CarInfo();
+		carInfo.setPaperId(examUser.getPaperId());
+		carInfo.setExamUserId(examUser.getId());
+		carInfo = carInfoService.getByEntity(carInfo);
+		//如果车型id为空 用户可能未保存，可能数据存在异常
+		if(StringUtils.isBlank(carInfo.getModel())){
+			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+			comRes.setMsg("车型尚未保存!");
+			return comRes;
+		}
+		comRes = carInfoService.getVehicleFunctionalInfo(carInfo.getModel());
+		return comRes;
+	}
+
+
+
 }
