@@ -14,10 +14,12 @@ public class ServiceConstant {
     //查询车辆配置属性
     public static final String VEHICLEINFO_GET_BY_ENTITY ="/common/vehicleInfo/getByEntity";
 
-    //导出学生成绩
+    //通过userid 查询学生信息
     public static final String DERIVE_STUDENT_ACHIEVEMENT = "/common/commonUser/loadStuListByIds";
 
     //添加学生，查询学生列表
     public static final String COMMONUSER_LOAD_STU_LIST_IN_PLATFORM = "/common/commonUser/loadStuListInPlatform";
 
+    //通过server_exam_user_id 查询考生信息
+    public static final String COMMONUSER_LOAD_STU_LIST_BY_EXAM_USER_IDS = "/common/commonUser/loadStuListByExamUserIds";
 }

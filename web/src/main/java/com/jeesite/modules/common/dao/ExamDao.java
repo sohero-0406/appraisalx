@@ -6,6 +6,7 @@ package com.jeesite.modules.common.dao;
 import com.jeesite.common.dao.CrudDao;
 import com.jeesite.common.mybatis.annotation.MyBatisDao;
 import com.jeesite.modules.common.entity.Exam;
+import com.jeesite.modules.common.entity.ExamUser;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

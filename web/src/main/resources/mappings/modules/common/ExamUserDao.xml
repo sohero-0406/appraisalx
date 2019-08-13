@@ -25,7 +25,6 @@
 	select
 	  id,
 	  exam_id,
-      user_num,
       score,
       CEILING((( UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(start_time) )/60)) as duration
       from common_exam_user

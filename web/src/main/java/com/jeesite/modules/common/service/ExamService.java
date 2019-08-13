@@ -151,7 +151,11 @@ public class ExamService extends CrudService<ExamDao, Exam> {
             comRes.setMsg("名称不能为空");
             return comRes;
         }
-
+        if (StringUtils.isBlank(exam.getExamType())) {
+            comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);//请求参数有误
+            comRes.setMsg("练习计时不能为空!");
+            return comRes;
+        }
         //内容模块选择不能为空
         if (null == examVO.getExamDetail()) {
             comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);//请求参数有误
@@ -305,10 +309,15 @@ public class ExamService extends CrudService<ExamDao, Exam> {
         //考试状态 state '状态（1:未开始;3:考试中;5:未统计;7:已出分）
         CommonResult comRes = new CommonResult();
         Exam examUpdate = dao.getByEntity(exam);
+        if(null==examUpdate){
+            comRes.setCode(CodeConstant.DATA_NOT_FOUND);
+            comRes.setMsg("您所查询的考试不存在!");
+            return comRes;
+        }
         switch (examUpdate.getState()) {
             case "1"://未开始
                 List<String> userIdList = dao.getUserByExamId(examUpdate.getId());
-                comRes = examUserService.getExamStateByUserId(userIdList, examUpdate.getId());
+                comRes = examUserService.getExamStateByUserId(userIdList, examUpdate);
                 if (CodeConstant.REQUEST_SUCCESSFUL.equals(comRes.getCode())) {
                     examUpdate.setState("3");
                     examUpdate.setStartTime(new Date());  //记录考试结束时

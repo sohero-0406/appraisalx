@@ -689,10 +689,21 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 
 	//根据车辆信息调取大平台数据 (品牌 成型id)  Brand Model
 	public String getCarModelByPlatform(String id){
+		String chexingmingcheng = "";
+		if(StringUtils.isBlank(id)){
+			return chexingmingcheng;
+		}
 		Map<String, String> map = new HashMap<>();
 		map.put("chexingId",id);
-		Map<String,String> data = (Map<String,String>)httpClientService.post(ServiceConstant.VEHICLEINFO_GET_CAR_MODEL,map).getData();
-		return data.get("chexingmingcheng");
+		CommonResult comRes = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_CAR_MODEL,map);
+		if(!CodeConstant.REQUEST_SUCCESSFUL.equals(comRes.getCode())){
+			return chexingmingcheng;
+		}
+		if(null==comRes.getData()){
+			return chexingmingcheng;
+		}
+		chexingmingcheng = ((JSONObject) comRes.getData()).getString("chexingmingcheng");
+		return chexingmingcheng;
 	}
 
 
@@ -713,9 +724,6 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 					(String)examNameMap.get("1151013343664197633"),"0",
 					carInfoT.getBrand(),carInfoS==null?"":carInfoS.getBrand(),"1");
 		}
-
-
-
 		if(StringUtils.isNotBlank(carInfoT.getModel()) &&(null!=carInfoS) && carInfoT.getModel().equals(carInfoS.getModel())){
 			carInfoCount = carInfoCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343664799745")))); //车型
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
@@ -1187,7 +1195,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 					carInfoS==null?"":
 							getDic("aa_vehicle_color",carInfoS.getColor()),"1");
 		}
-		if((null!=carInfoS) && carInfoT.getUseYear().equals(carInfoS.getUseYear())&&carInfoT.getUseMonth().equals(carInfoS.getUseMonth())) {
+		if(null!=carInfoT.getUseYear()&&null!=carInfoT.getUseMonth()&&(null!=carInfoS) && carInfoT.getUseYear().equals(carInfoS.getUseYear())&&carInfoT.getUseMonth().equals(carInfoS.getUseMonth())) {
 			delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343665397761"))));
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617777153",
 					(String)examNameMap.get("1151013343665397761"),(String)examScoreMap.get("1151013343665397761"),
@@ -1438,11 +1446,11 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 	 * @param examId
 	 * @return
 	 */
-	public CommonResult getExamStateByUserId(List<String> userIdList,String examId){
+	public CommonResult getExamStateByUserId(List<String> userIdList,Exam exam){
 		CommonResult comRes = new CommonResult();
 		List<String> returnList = new ArrayList<>();
 		StringBuilder studentUserIds = new StringBuilder();
-		List<ExamUser> examUserList = dao.getExamStateByUserId(userIdList,examId);
+		List<ExamUser> examUserList = dao.getExamStateByUserId(userIdList,exam.getId());
 		if(CollectionUtils.isEmpty(examUserList)){
 			return comRes;
 		}
@@ -1456,6 +1464,8 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		}
 		Map<String,String> map = new HashMap();
 		map.put("ids",studentUserIds.toString());
+
+
 		comRes = httpClientService.post(ServiceConstant.DERIVE_STUDENT_ACHIEVEMENT,map);
 		if(!CodeConstant.REQUEST_SUCCESSFUL.equals(comRes.getCode())){
 			return comRes;
