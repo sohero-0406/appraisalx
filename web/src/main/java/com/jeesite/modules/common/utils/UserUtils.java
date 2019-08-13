@@ -16,18 +16,18 @@ public class UserUtils {
         HttpServletRequest request = ServletUtils.getRequest();
         ExamUser examUser = (ExamUser) request.getSession().getAttribute("examUser");
 //      学生
-//        if (null == examUser) {
-//            examUser = new ExamUser();
-//            examUser.setId("1");
-//            examUser.setUserId("1");
-//            examUser.setExamId("1");
-//            request.getSession().setAttribute("examUser",examUser);
-//        }
         if (null == examUser) {
             examUser = new ExamUser();
-//            examUser.setPaperId("1");
-            examUser.setUserId("667");
+            examUser.setId("1");
+            examUser.setUserId("1");
+            examUser.setExamId("1");
+            request.getSession().setAttribute("examUser", examUser);
         }
+//        if (null == examUser) {
+//            examUser = new ExamUser();
+////            examUser.setPaperId("1");
+//            examUser.setUserId("667");
+//        }
         return examUser;
     }
 }
