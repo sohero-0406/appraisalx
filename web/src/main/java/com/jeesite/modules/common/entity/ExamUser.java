@@ -49,6 +49,7 @@ public class ExamUser extends PreEntity<ExamUser> {
 	private String className;   //班级
 	private String gender;      //性别
 	private String examName;    //考试名称
+	private Boolean isSelect;    //是否选中
 
 
 
@@ -182,5 +183,13 @@ public class ExamUser extends PreEntity<ExamUser> {
 
 	public void setExamName(String examName) {
 		this.examName = examName;
+	}
+
+	public Boolean getIsSelect() {
+		return isSelect;
+	}
+
+	public void setIsSelect(Boolean select) {
+		isSelect = select;
 	}
 }

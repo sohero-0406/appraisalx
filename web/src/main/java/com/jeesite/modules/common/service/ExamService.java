@@ -378,25 +378,39 @@ public class ExamService extends CrudService<ExamDao, Exam> {
         if (!CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
             return result;
         }
-        List<ExamUser> list = new ArrayList<>();
+        List<ExamUser> platFormUserlist = new ArrayList<>();
         JSONArray array = JSONArray.parseArray(result.getData().toString());
         for (Object object : array) {
             JSONObject platformUser = (JSONObject) object;
             ExamUser user = new ExamUser();
+            user.setUserId(platformUser.getString("id"));
             user.setUserNum(platformUser.getString("userName"));
             user.setTrueName(platformUser.getString("trueName"));
             user.setMajorName(platformUser.getString("majorName"));
             user.setClassName(platformUser.getString("className"));
             user.setGender(platformUser.getString("gender"));
-            user.setUserId(platformUser.getString("id"));
+            user.setIsSelect(false);
             if ("1".equals(type)) {
                 user.setSchoolName(platformUser.getString("schoolName"));
-                user.setUserId(platformUser.getString("commonAssessmentStuId"));
+                user.setServerExamUserId(platformUser.getString("commonAssessmentStuId"));
             }
-            list.add(user);
+            platFormUserlist.add(user);
         }
 
-
-        return null;
+        //对已有学生做勾选
+        if (StringUtils.isNotBlank(examId)) {
+            ExamUser examUser1 = new ExamUser();
+            examUser1.setExamId(examId);
+            List<ExamUser> examUserList = examUserService.findList(examUser1);
+            for (ExamUser user : examUserList) {
+                for (ExamUser platformUser : platFormUserlist) {
+                    if (platformUser.getUserId().equals(user.getUserId())) {
+                        platformUser.setIsSelect(true);
+                        break;
+                    }
+                }
+            }
+        }
+        return new CommonResult(platFormUserlist);
     }
 }

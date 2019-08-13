@@ -32,6 +32,10 @@ public class CommonResult<T> {
         this.msg = msg;
     }
 
+    public CommonResult(T data) {
+        this.data = data;
+    }
+
     public String getCode() {
         return code;
     }
