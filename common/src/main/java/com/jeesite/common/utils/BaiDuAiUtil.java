@@ -17,7 +17,7 @@ import com.baidu.aip.ocr.AipOcr;
  */
 public class BaiDuAiUtil {
 	/**身份证正面类型id*/
-	public static final String PICTURE_TYPE_ID_ID_FRONT = "1143431602191151104";
+	private static final String PICTURE_TYPE_ID_ID_FRONT = "1143431602191151104";
 	/**车牌照类型id*/
 	private static final String PICTURE_TYPE_ID_PLATE_LICENSE = "1143431962274000896";
 	/**vin类型id*/

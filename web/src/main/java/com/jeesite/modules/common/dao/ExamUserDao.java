@@ -20,7 +20,7 @@ public interface ExamUserDao extends CrudDao<ExamUser> {
 
     void updateExamUserEndTime(String examId);
 
-    List<ExamUser> getExamUserScoreList(String examId);
+    List<ExamUser> getExamUserScoreList(@Param("examId")String examId);
 
     void deleteExamUser(String examUserId);
 

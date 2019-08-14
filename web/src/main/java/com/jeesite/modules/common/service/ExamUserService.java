@@ -5,7 +5,6 @@ package com.jeesite.modules.common.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.jeesite.common.cache.CacheUtils;
 import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.constant.ServiceConstant;
 import com.jeesite.common.entity.Page;
@@ -136,40 +135,59 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 
     //查看 考试成绩列表依据考试id
 	@Transactional(readOnly=false)
-	public List<ExamUser> getExamUserScoreList(String examId){
+	public CommonResult getExamUserScoreList(String examId){
 		List<ExamUser> examUserList = dao.getExamUserScoreList(examId);
-		return examUserList;
+		CommonResult comRes = new CommonResult();
+		if(CollectionUtils.isNotEmpty(examUserList)){
+			StringBuilder stringBuilder = new StringBuilder();
+			int len = examUserList.size();
+			for (int i = 0; i < len; i++) {
+				if (i == len - 1) {
+					stringBuilder.append(examUserList.get(i).getUserId());
+				} else {
+					stringBuilder.append(examUserList.get(i).getUserId() + ",");
+				}
+			}
+			Map<String,String> map = new HashMap<>();
+			map.put("ids",stringBuilder.toString());
+			comRes = httpClientService.post(ServiceConstant.DERIVE_STUDENT_ACHIEVEMENT,map);
+			//请求成功
+			if(CodeConstant.REQUEST_SUCCESSFUL.equals(comRes.getCode())){
+				JSONArray array = JSONArray.parseArray(httpClientService.post(ServiceConstant.DERIVE_STUDENT_ACHIEVEMENT,map).getData().toString());
+				if(CollectionUtils.isNotEmpty(array)) {
+					for(ExamUser user:examUserList){
+						for(Object o:array){
+							JSONObject userJson = (JSONObject)o;
+							//如果考生的userid等于大平台的学生id 数据匹配
+							if(user.getUserId().equals(userJson.getString("id"))){
+								user.setUserNum(userJson.getString("userName"));
+								user.setTrueName(userJson.getString("trueName"));
+								break;
+							}
+
+						}
+					}
+					comRes.setData(examUserList);
+				}
+			}
+
+
+		}
+
+
+		return comRes;
 	}
 
-	@Transactional(readOnly=false)
+	@Transactional
 	public void saveExamEndTime(String examId){
 		//依据考试id 在考试结束时 给未结束考试的考生添加结束考试时间
 		dao.updateExamUserEndTime(examId);
 	}
 
-	/**
-	 * 保存考生信息
-	 * @param examUserJson
-	 * @param examId
-	 * @return
-	 */
-	@Transactional(readOnly=false)
-	public CommonResult saveExamUser(String examUserJson,String examId){
-		CommonResult comRes = new CommonResult();
-		examUserJson = examUserJson.replace("\n","");
-		examUserJson = examUserJson.replace(" ","");
-		JSONArray jsonArray = JSONObject.parseArray(examUserJson);
-		for(Object o:jsonArray){
-			JSONObject userJson = (JSONObject) o;
-			ExamUser examUser = new ExamUser();
-			examUser.setExamId(examId);
-			super.save(examUser);
-		}
-		return comRes;
-	}
+
 
 	//考生删除
-	@Transactional(readOnly=false)
+	@Transactional
 	public CommonResult deletExamUser(String examUserIdListJson){
 		CommonResult comRes = new CommonResult();
 		examUserIdListJson = examUserIdListJson.replace("\n","");
@@ -689,21 +707,42 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 
 	//根据车辆信息调取大平台数据 (品牌 成型id)  Brand Model
 	public String getCarModelByPlatform(String id){
-		String chexingmingcheng = "";
+		String name = "";
 		if(StringUtils.isBlank(id)){
-			return chexingmingcheng;
+			return name;
 		}
 		Map<String, String> map = new HashMap<>();
 		map.put("chexingId",id);
 		CommonResult comRes = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_CAR_MODEL,map);
 		if(!CodeConstant.REQUEST_SUCCESSFUL.equals(comRes.getCode())){
-			return chexingmingcheng;
+			return name;
 		}
 		if(null==comRes.getData()){
-			return chexingmingcheng;
+			return name;
 		}
-		chexingmingcheng = ((JSONObject) comRes.getData()).getString("chexingmingcheng");
-		return chexingmingcheng;
+		name = ((JSONObject) comRes.getData()).getString("chexingmingcheng");
+		return name;
+	}
+
+
+
+	//根据车辆信息调取大平台数据 (品牌 成型id)  Brand Model
+	public String getCarModelByPlatform(String id,String pathName,String inParameter,String outParameter){
+		String name = "";
+		if(StringUtils.isBlank(id)){
+			return name;
+		}
+		Map<String, String> map = new HashMap<>();
+		map.put(inParameter,id);
+		CommonResult comRes = httpClientService.post(pathName,map);
+		if(!CodeConstant.REQUEST_SUCCESSFUL.equals(comRes.getCode())){
+			return name;
+		}
+		if(null==comRes.getData()){
+			return name;
+		}
+		name = ((JSONObject) comRes.getData()).getString(outParameter);
+		return name;
 	}
 
 
@@ -718,21 +757,35 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 			carInfoCount = carInfoCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343664197633")))); //品牌
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343664197633"),(String)examScoreMap.get("1151013343664197633"),
-					carInfoT.getBrand(),carInfoS.getBrand(),"0");
+					getCarModelByPlatform(carInfoT.getBrand(),ServiceConstant.COMMON_VEHICLE_BRAND_GET_BY_ENTITY,"pinpaiId","pinpai")+
+							getCarModelByPlatform(carInfoT.getSeries(),ServiceConstant.COMMON_VEHICLE_SERIES_GET_BY_ENTITY,"chexiId","chexi"),
+					getCarModelByPlatform(carInfoS.getBrand(),ServiceConstant.COMMON_VEHICLE_BRAND_GET_BY_ENTITY,"pinpaiId","pinpai")+
+							getCarModelByPlatform(carInfoS.getSeries(),ServiceConstant.COMMON_VEHICLE_SERIES_GET_BY_ENTITY,"chexiId","chexi"),
+					"0");
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343664197633"),"0",
-					carInfoT.getBrand(),carInfoS==null?"":carInfoS.getBrand(),"1");
+					getCarModelByPlatform(carInfoT.getBrand(),ServiceConstant.COMMON_VEHICLE_BRAND_GET_BY_ENTITY,"pinpaiId","pinpai")+
+							getCarModelByPlatform(carInfoT.getSeries(),ServiceConstant.COMMON_VEHICLE_SERIES_GET_BY_ENTITY,"chexiId","chexi"),
+					carInfoS==null?"":
+							getCarModelByPlatform(carInfoS.getBrand(),ServiceConstant.COMMON_VEHICLE_BRAND_GET_BY_ENTITY,"pinpaiId","pinpai")+
+									getCarModelByPlatform(carInfoS.getSeries(),ServiceConstant.COMMON_VEHICLE_SERIES_GET_BY_ENTITY,"chexiId","chexi"),
+					"1");
 		}
 		if(StringUtils.isNotBlank(carInfoT.getModel()) &&(null!=carInfoS) && carInfoT.getModel().equals(carInfoS.getModel())){
 			carInfoCount = carInfoCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343664799745")))); //车型
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343664799745"),(String)examScoreMap.get("1151013343664799745"),
-                    getCarModelByPlatform(carInfoT.getModel()),getCarModelByPlatform(carInfoS.getModel()),"0");
+					getCarModelByPlatform(carInfoT.getModel(),ServiceConstant.VEHICLEINFO_GET_CAR_MODEL,"chexingId","chexingmingcheng"),
+					getCarModelByPlatform(carInfoS.getModel(),ServiceConstant.VEHICLEINFO_GET_CAR_MODEL,"chexingId","chexingmingcheng"),
+					"0");
 		}else{
 			saveExamDetail(user.getId(),user.getExamId(),"1151028180617760769",
 					(String)examNameMap.get("1151013343664799745"),"0",
-                    getCarModelByPlatform(carInfoT.getModel()),carInfoS==null?"":getCarModelByPlatform(carInfoS.getModel()),"1");
+					getCarModelByPlatform(carInfoT.getModel(),ServiceConstant.VEHICLEINFO_GET_CAR_MODEL,"chexingId","chexingmingcheng"),
+					carInfoS==null?"":
+							getCarModelByPlatform(carInfoS.getModel(),ServiceConstant.VEHICLEINFO_GET_CAR_MODEL,"chexingId","chexingmingcheng"),
+					"1");
 		}
 		if(StringUtils.isNotBlank(carInfoT.getLevel()) &&(null!=carInfoS) && carInfoT.getLevel().equals(carInfoS.getLevel())){
 			carInfoCount = carInfoCount.add(BigDecimal.valueOf(Integer.valueOf((String)examScoreMap.get("1151013343664439297")))); //级别
@@ -1443,7 +1496,6 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 	/**
 	 * 根据学生userid 考试id 查询这些学生是否在其他考试内
 	 * @param userIdList
-	 * @param examId
 	 * @return
 	 */
 	public CommonResult getExamStateByUserId(List<String> userIdList,Exam exam){
@@ -1470,7 +1522,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		if(!CodeConstant.REQUEST_SUCCESSFUL.equals(comRes.getCode())){
 			return comRes;
 		}
-		JSONArray array = JSONArray.parseArray(httpClientService.post(ServiceConstant.DERIVE_STUDENT_ACHIEVEMENT,map).getData().toString());
+		JSONArray array = JSONArray.parseArray(comRes.getData().toString());
 		if(CollectionUtils.isNotEmpty(array)){
 			int i=0;
 			for(Object o:array){
@@ -1493,4 +1545,35 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		comRes.setData(returnList);
 		return comRes;
 	}
+
+	/**
+	 * 保存考生信息  先删在增
+	 * @param examUserJson
+	 * @return
+	 */
+	@Transactional
+	public Object saveExamUser(String examUserJson,String examId){
+		CommonResult comRes = new CommonResult();
+		examUserJson = examUserJson.replace("\n","");
+		examUserJson = examUserJson.replace(" ","");
+		//判断该考试、练习是否存在考试生
+		if(StringUtils.isNotBlank(examId)){
+			ExamUser examUser = new ExamUser();
+			examUser.setExamId(examId);
+			super.dao.phyDeleteByEntity(examUser);
+		}else{
+			return "考试id不能为空!";
+		}
+		JSONArray jsonArray = JSONObject.parseArray(examUserJson);
+		for(Object o:jsonArray){
+			JSONObject userJson = (JSONObject) o;
+			ExamUser examUser = new ExamUser();
+			examUser.setUserId(userJson.getString("userId"));
+			examUser.setServerExamUserId(userJson.getString("serverExamUserId"));
+			examUser.setExamId(examId);
+			super.save(examUser);
+		}
+		return comRes;
+	}
+
 }

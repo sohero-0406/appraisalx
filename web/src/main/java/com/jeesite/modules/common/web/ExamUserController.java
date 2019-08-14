@@ -105,13 +105,13 @@ public class ExamUserController extends BaseController {
         return renderResult(Global.TRUE, text("删除common_exam_user成功！"));
     }
 
-    //保存考生
-    @RequestMapping(value = "saveExamUser")
-    @ResponseBody
-    public CommonResult saveExamUser(@Validated String examUserJson, String examUserId) {
-        CommonResult comRes = examUserService.saveExamUser(examUserJson, examUserId);
-        return comRes;
-    }
+//    //保存考生
+//    @RequestMapping(value = "saveExamUser")
+//    @ResponseBody
+//    public CommonResult saveExamUser(@Validated String examUserJson, String examUserId) {
+//        CommonResult comRes = examUserService.saveExamUser(examUserJson, examUserId);
+//        return comRes;
+//    }
 
     //批量删除考生
     @RequestMapping(value = "deleteExamUser")
@@ -189,6 +189,9 @@ public class ExamUserController extends BaseController {
         ExamUser examUser = UserUtils.getExamUser();
         return examUserService.examTiming(examUser);
     }
+
+
+
 }
 
 

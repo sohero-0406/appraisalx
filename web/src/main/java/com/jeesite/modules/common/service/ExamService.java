@@ -123,7 +123,7 @@ public class ExamService extends CrudService<ExamDao, Exam> {
      * 保存、修改  考试/练习功能
      */
     @Transactional(readOnly = false)
-    public CommonResult saveExamInfo(ExamVO examVO, String examScoreJson) {
+    public CommonResult saveExamInfo(ExamVO examVO, String examScoreJson,String studentJson) {
         CommonResult comRes = new CommonResult();
         Exam exam = examVO.getExam();
         if (null == exam) {
@@ -168,6 +168,13 @@ public class ExamService extends CrudService<ExamDao, Exam> {
             comRes.setMsg("分值设定不能为空");
             return comRes;
         }
+        //考试学生不能为空
+        if (StringUtils.isBlank(studentJson)) {
+            comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);//请求参数有误
+            comRes.setMsg("考试学生不能为空");
+            return comRes;
+        }
+
         //考试id
         String examId = exam.getId();
         //判断新建/修改
@@ -203,6 +210,9 @@ public class ExamService extends CrudService<ExamDao, Exam> {
         }
         //保存--分值设定
         examScoreDetailService.saveExamScoreInfo(examScoreJson, saveExamId);
+        //保存--学生
+        examUserService.saveExamUser(studentJson,saveExamId);
+
         return comRes;
     }
 
@@ -228,6 +238,15 @@ public class ExamService extends CrudService<ExamDao, Exam> {
             int len = examUserList.size();
             if (CollectionUtils.isNotEmpty(examUserList)) {
                 if ("1".equals(exam.getType())) {
+                    for (int i = 0; i < len; i++) {
+                        if (i == len - 1) {
+                            studentUserIds.append(examUserList.get(i).getServerExamUserId());
+                        } else {
+                            studentUserIds.append(examUserList.get(i).getServerExamUserId()).append(",");
+                        }
+                    }
+                    returnMap.put("examUserList",
+                            this.getExamUserList(studentUserIds,examUserList,ServiceConstant.COMMONUSER_LOAD_STU_LIST_BY_EXAM_USER_IDS,"examUserIds"));
 
                 }
                 if ("2".equals(exam.getType())) {
@@ -238,28 +257,9 @@ public class ExamService extends CrudService<ExamDao, Exam> {
                             studentUserIds.append(examUserList.get(i).getUserId()).append(",");
                         }
                     }
-                    Map<String, String> map = new HashMap<>();
-                    map.put("ids", studentUserIds.toString());
-                    //调取到平台 获取不符合规范的考生
-                    CommonResult result = httpClientService.post(ServiceConstant.DERIVE_STUDENT_ACHIEVEMENT, map);
-                    if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
-                        JSONArray array = JSONArray.parseArray(result.getData().toString());
-                        for (ExamUser user : examUserList) {
-                            for (Object object : array) {
-                                JSONObject platformUser = (JSONObject) object;
-                                if (platformUser.getString("id").equals(user.getUserId())) {
-                                    user.setUserNum(platformUser.getString("userName"));
-                                    user.setTrueName(platformUser.getString("trueName"));
-                                    user.setSchoolName(platformUser.getString("schoolName"));
-                                    user.setMajorName(platformUser.getString("majorName"));
-                                    user.setClassName(platformUser.getString("className"));
-                                    user.setGender(platformUser.getString("gender"));
-                                    break;
-                                }
-                            }
-                        }
-                        returnMap.put("examUserList", examUserList);
-                    }
+                    returnMap.put("examUserList",
+                            this.getExamUserList(studentUserIds,examUserList,ServiceConstant.DERIVE_STUDENT_ACHIEVEMENT,"ids"));
+
                 }
             }
         }
@@ -269,6 +269,38 @@ public class ExamService extends CrudService<ExamDao, Exam> {
         comRes.setData(returnMap);
         return comRes;
     }
+
+
+    /**
+     * 获取考生信息
+     * @return
+     */
+    public Object getExamUserList(StringBuilder studentUserIds,List<ExamUser> examUserList,String connectionPath,String parameter){
+        Map<String, String> map = new HashMap<>();
+        map.put(parameter, studentUserIds.toString());
+        //调取到平台 获取不符合规范的考生
+        CommonResult result = httpClientService.post(connectionPath, map);
+        if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
+            JSONArray array = JSONArray.parseArray(result.getData().toString());
+            for (ExamUser user : examUserList) {
+                for (Object object : array) {
+                    JSONObject platformUser = (JSONObject) object;
+                    if (platformUser.getString("id").equals(user.getUserId())) {
+                        user.setUserNum(platformUser.getString("userName"));
+                        user.setTrueName(platformUser.getString("trueName"));
+                        user.setSchoolName(platformUser.getString("schoolName"));
+                        user.setMajorName(platformUser.getString("majorName"));
+                        user.setClassName(platformUser.getString("className"));
+                        user.setGender(platformUser.getString("gender"));
+                        break;
+                    }
+                }
+            }
+        }
+        return examUserList;
+    }
+
+
 
     //删除考试 (考试id，考试状态)
     @Transactional(readOnly = false)
@@ -365,7 +397,7 @@ public class ExamService extends CrudService<ExamDao, Exam> {
      * @return
      */
     public CommonResult findExamUser(ExamUser examUser, ExamUserVO vo) {
-        String userId = examUser.getUserId();
+        String userId = "667";
         String examId = vo.getExamId();
         String type = vo.getType();
         Map<String, String> map = new HashMap<>();

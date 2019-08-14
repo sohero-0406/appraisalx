@@ -106,14 +106,14 @@ public class ReferenceController extends BaseController {
 	 */
 	@RequestMapping(value = "deleteReference")
 	@ResponseBody
-	public CommonResult deleteReference(@RequestParam(value = "id") String referenceIdList) {
+	public CommonResult deleteReference(String id) {
 		CommonResult comRes = new CommonResult();
-		if(StringUtils.isBlank(referenceIdList)){
+		if(StringUtils.isBlank(id)){
 			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
 			comRes.setMsg("请先选择数据!");
 			return comRes;
 		}
-		referenceService.deleteReference(referenceIdList);
+		referenceService.deleteReference(id);
 		return comRes;
 	}
 

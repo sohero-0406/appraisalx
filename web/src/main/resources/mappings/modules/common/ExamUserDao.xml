@@ -25,11 +25,17 @@
 	select
 	  id,
 	  exam_id,
+	  user_id,
       score,
       CEILING((( UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(start_time) )/60)) as duration
       from common_exam_user
-      where
-      exam_id = #{examId}
+		<where>
+			<if test="examId != null and examId != ''">
+				and exam_id = #{examId}
+			</if>
+		</where>
+ 		ORDER BY
+		score DESC,(end_time-start_time)
 	</select>
 
 	<select id="getAllowLogin" resultType="ExamUser">
