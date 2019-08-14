@@ -226,6 +226,9 @@ public class ExamService extends CrudService<ExamDao, Exam> {
         //内容模板选择
         ExamDetail examDetail = examDetailService.getExamInfoDetail(examId);
         Exam exam = new Exam();
+        //学生
+        List<ExamUser> examUserList = new ArrayList<>();
+        returnMap.put("examUserList",examUserList);
         if (StringUtils.isNotBlank(examId)) {
             exam.setId(examId);
             exam = dao.getByEntity(exam);
@@ -234,7 +237,7 @@ public class ExamService extends CrudService<ExamDao, Exam> {
             examUser.setExamId(exam.getId());
 
             StringBuilder studentUserIds = new StringBuilder();
-            List<ExamUser> examUserList = examUserService.findList(examUser);
+            examUserList = examUserService.findList(examUser);
             int len = examUserList.size();
             if (CollectionUtils.isNotEmpty(examUserList)) {
                 if ("1".equals(exam.getType())) {
@@ -245,7 +248,7 @@ public class ExamService extends CrudService<ExamDao, Exam> {
                             studentUserIds.append(examUserList.get(i).getServerExamUserId()).append(",");
                         }
                     }
-                    returnMap.put("examUserList",
+                    returnMap.replace("examUserList",
                             this.getExamUserList(studentUserIds,examUserList,ServiceConstant.COMMONUSER_LOAD_STU_LIST_BY_EXAM_USER_IDS,"examUserIds"));
 
                 }
@@ -257,7 +260,7 @@ public class ExamService extends CrudService<ExamDao, Exam> {
                             studentUserIds.append(examUserList.get(i).getUserId()).append(",");
                         }
                     }
-                    returnMap.put("examUserList",
+                    returnMap.replace("examUserList",
                             this.getExamUserList(studentUserIds,examUserList,ServiceConstant.DERIVE_STUDENT_ACHIEVEMENT,"ids"));
 
                 }
@@ -397,7 +400,7 @@ public class ExamService extends CrudService<ExamDao, Exam> {
      * @return
      */
     public CommonResult findExamUser(ExamUser examUser, ExamUserVO vo) {
-        String userId = "667";
+        String userId = examUser.getUserId();
         String examId = vo.getExamId();
         String type = vo.getType();
         Map<String, String> map = new HashMap<>();
