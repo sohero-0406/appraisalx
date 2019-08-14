@@ -37,8 +37,6 @@ public class SignInController {
 
     @Autowired
     private SignInService signInService;
-    @Autowired
-    private HttpClientService httpClientService;
 
     /**
      * 考生端登录
@@ -135,12 +133,25 @@ public class SignInController {
         if(!CodeConstant.REQUEST_SUCCESSFUL.equals(teacherSide.getCode())){
             return teacherSide;
         }
+
         ExamUser examUser = new ExamUser();
         JSONObject json = JSONObject.parseObject(teacherSide.getData().toString());
+        if(StringUtils.isBlank(json.toString())){
+            comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+            comRes.setMsg("用户不存在!");
+            return comRes;
+        }
+        if("3".equals(json.getString("roleId"))){
+            comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+            comRes.setMsg("考生不允许登录!");
+            return comRes;
+        }
         examUser.setUserId(json.getString("id"));
         ServletUtils.getRequest().getSession().setAttribute("examUser",examUser);
+        Map<String,Object> returnMap = new HashMap();
+        returnMap.put("roleType",json.getString("isExamRight"));
+        comRes.setData(returnMap);
         return comRes;
     }
-
 
 }

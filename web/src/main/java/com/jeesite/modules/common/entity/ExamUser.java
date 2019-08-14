@@ -42,7 +42,7 @@ public class ExamUser extends PreEntity<ExamUser> {
     private String userNum;        // 用户名
 	private String paperId;		//试卷id
 	private String duration;  //考试时长
-    //成绩批量导出
+    //大平台--成绩批量导出
 	private String 	trueName;    //真名
 	private String schoolName;  //学校名
 	private String majorName;   //专业
@@ -50,7 +50,8 @@ public class ExamUser extends PreEntity<ExamUser> {
 	private String gender;      //性别
 	private String examName;    //考试名称
 	private Boolean isSelect;    //是否选中
-
+	//大平台--教师角色
+	private String roleType;
 
 
 	public ExamUser() {
@@ -191,5 +192,21 @@ public class ExamUser extends PreEntity<ExamUser> {
 
 	public void setIsSelect(Boolean select) {
 		isSelect = select;
+	}
+
+	public Boolean getSelect() {
+		return isSelect;
+	}
+
+	public void setSelect(Boolean select) {
+		isSelect = select;
+	}
+
+	public String getRoleType() {
+		return roleType;
+	}
+
+	public void setRoleType(String roleType) {
+		this.roleType = roleType;
 	}
 }
