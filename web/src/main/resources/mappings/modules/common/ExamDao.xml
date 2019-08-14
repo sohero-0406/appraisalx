@@ -38,7 +38,7 @@
 		from
 		common_exam exam
 		left join common_exam_user user on user.exam_id = exam.id
-		where user.exam_id = #{examId};
+		where user.exam_id = #{examId} and  exam.status = '0';
 	</select>
 
 
