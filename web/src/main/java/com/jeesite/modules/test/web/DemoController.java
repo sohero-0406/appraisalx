@@ -1,6 +1,3 @@
-/**
- * Copyright (c) 2013-Now http://jeesite.com All rights reserved.
- */
 package com.jeesite.modules.test.web;
 
 import com.jeesite.common.lang.StringUtils;
@@ -18,6 +15,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+/**
+ * Copyright (c) 2013-Now http://jeesite.com All rights reserved.
+ */
 
 /**
  * 演示实例Controller
