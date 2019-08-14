@@ -145,6 +145,9 @@ public class PaperController extends BaseController {
 	@ResponseBody
 	public CommonResult paperEditCheck(String paperId) {
 		ExamUser examUser = UserUtils.getExamUser();
+		if (StringUtils.isBlank(paperId)) {
+			return new CommonResult(CodeConstant.REQUEST_FAILED, "试卷Id为空");
+		}
 		if (StringUtils.isNotBlank(examUser.getId())) {
 			// 学生
 			examUser.setPaperId(paperId);
