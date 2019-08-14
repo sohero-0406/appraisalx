@@ -10,21 +10,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
- * 车辆品牌表Service
+ * 车辆配置全表Service
  *
  * @author chenlitao
  * @version 2019-07-04
  */
 @Service
 @Transactional(readOnly = true)
-public class VehicleBrandService {
+public class VehicleInfoService {
 
     @Autowired
     private HttpClientService httpClientService;
 
-    public CommonResult findList() {
-        return httpClientService.post(ServiceConstant.VEHICLEBRAND_FIND_LIST, new HashMap<>());
+    public CommonResult findList(String chexiId) {
+        Map<String, String> map = new HashMap<>();
+        map.put("chexiId", chexiId);
+        return httpClientService.post(ServiceConstant.VEHICLEINFO_FIND_LIST, map);
     }
 }

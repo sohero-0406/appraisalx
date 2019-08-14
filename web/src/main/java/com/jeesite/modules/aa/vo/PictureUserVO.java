@@ -9,15 +9,13 @@ public class PictureUserVO {
     private String name;
     private String detail;
 
-    public PictureUserVO(){
-
-    }
     public PictureUserVO(PictureUser pictureUser){
         this.id = pictureUser.getId();
         this.url = pictureUser.getUrl();
         this.pictureTypeId = pictureUser.getPictureTypeId();
         this.name = pictureUser.getName();
     }
+
     public String getUrl() {
         return url;
     }

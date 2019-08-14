@@ -1,12 +1,14 @@
 package com.jeesite.modules.common.vo;
 
+import com.alibaba.fastjson.JSONArray;
+
 public class ExamUserVO {
 
     private String examId;
     private String type;        //考试类型
     private String majorName;   //专业
     private String className;   //班级
-    private String assessmentId;    //考核id
+    private String assessmentName;    //考核名称
     private String assessmentDate;      //考核日期
     private String assessmentTime;      //考核时间
 
@@ -42,12 +44,12 @@ public class ExamUserVO {
         this.className = className;
     }
 
-    public String getAssessmentId() {
-        return assessmentId;
+    public String getAssessmentName() {
+        return assessmentName;
     }
 
-    public void setAssessmentId(String assessmentId) {
-        this.assessmentId = assessmentId;
+    public void setAssessmentName(String assessmentName) {
+        this.assessmentName = assessmentName;
     }
 
     public String getAssessmentDate() {

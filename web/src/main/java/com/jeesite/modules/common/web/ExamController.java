@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 
@@ -223,12 +224,21 @@ public class ExamController extends BaseController {
     }
 
     /**
-     * 考试/练习 添加学生 加载方法
+     * 考试/练习 添加学生-筛选
      */
     @RequestMapping(value = "findExamUser")
     @ResponseBody
     public CommonResult findExamUser(ExamUserVO vo) {
         ExamUser examUser = UserUtils.getExamUser();
         return examService.findExamUser(examUser, vo);
+    }
+
+    /**
+     * 上传成绩
+     */
+    @RequestMapping(value = "uploadScore")
+    @ResponseBody
+    public CommonResult uploadScore(String examId) {
+        return examService.uploadScore(examId);
     }
 }

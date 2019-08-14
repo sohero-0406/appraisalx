@@ -28,4 +28,27 @@ public class ServiceConstant {
 
     //根据车型id查部分车辆配置属性
     public static final String VEHICLEINFO_GET_CAR_MODEL ="/common/vehicleInfo/getCarModel";
+    //上传成绩
+    public static final String COMMONASSESSMENT_UPLOAD_SCORES = "/common/commonAssessment/uploadScores";
+
+    //加载车辆品牌数据
+    public static final String VEHICLEBRAND_FIND_LIST = "/common/vehicleBrand/findList";
+
+    //加载车辆品牌车系数据
+    public static final String VEHICLESERIES_FIND_LIST = "/common/vehicleSeries/findList";
+
+    //加载车辆年款型号数据
+    public static final String VEHICLEINFO_FIND_LIST = "/common/vehicleInfo/findList";
+
+    //加载考核名称
+    public static final String COMMONASSESSMENT_LOAD_ASSESSMENT_NAME_LIST = "/common/commonAssessment/loadAssessmentNameList";
+
+    //加载考核日期
+    public static final String COMMONASSESSMENTSTU_LOAD_ASSESSMENT_DATE_LIST = "/common/commonAssessmentStu/loadAssessmentDateList";
+
+    //加载考核时间
+    public static final String COMMONASSESSMENTSTU_LOAD_ASSESSMENT_TIME_LIST = "/common/commonAssessmentStu/loadAssessmentTimeList";
+
+    //根据考生id返回信息
+    public static final String COMMONASSESSMENTSTU_LOAD_ONE_EXAM_STU = "/common/commonAssessmentStu/loadOneExamStu";
 }

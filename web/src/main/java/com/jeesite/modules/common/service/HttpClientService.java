@@ -5,20 +5,11 @@ package com.jeesite.modules.common.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.cache.CacheUtils;
-import com.jeesite.common.constant.CodeConstant;
-import com.jeesite.common.entity.Page;
-import com.jeesite.common.service.CrudService;
 import com.jeesite.common.web.http.HttpClientUtils;
-import com.jeesite.common.web.http.ServletUtils;
-import com.jeesite.modules.aa.vo.LoginVO;
-import com.jeesite.modules.common.dao.CommonUserDao;
 import com.jeesite.modules.common.entity.CommonResult;
-import com.jeesite.modules.common.entity.CommonUser;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpSession;
 import java.util.Map;
 
 /**

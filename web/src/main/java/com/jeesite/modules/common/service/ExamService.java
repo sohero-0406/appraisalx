@@ -21,15 +21,16 @@ import com.jeesite.modules.aa.vo.ExamVO;
 import com.jeesite.modules.common.dao.ExamDao;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.Exam;
-import org.apache.commons.collections.CollectionUtils;
 import com.jeesite.modules.common.entity.ExamUser;
+import com.jeesite.modules.common.vo.AddStudentReturnVO;
 import com.jeesite.modules.common.vo.ExamUserVO;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
-import java.text.SimpleDateFormat;
+import javax.validation.Valid;
 import java.util.*;
 
 /**
@@ -123,7 +124,7 @@ public class ExamService extends CrudService<ExamDao, Exam> {
      * 保存、修改  考试/练习功能
      */
     @Transactional(readOnly = false)
-    public CommonResult saveExamInfo(ExamVO examVO, String examScoreJson,String studentJson) {
+    public CommonResult saveExamInfo(ExamVO examVO, String examScoreJson, String studentJson) {
         CommonResult comRes = new CommonResult();
         Exam exam = examVO.getExam();
         if (null == exam) {
@@ -211,7 +212,7 @@ public class ExamService extends CrudService<ExamDao, Exam> {
         //保存--分值设定
         examScoreDetailService.saveExamScoreInfo(examScoreJson, saveExamId);
         //保存--学生
-        examUserService.saveExamUser(studentJson,saveExamId);
+        examUserService.saveExamUser(studentJson, saveExamId);
 
         return comRes;
     }
@@ -227,8 +228,6 @@ public class ExamService extends CrudService<ExamDao, Exam> {
         ExamDetail examDetail = examDetailService.getExamInfoDetail(examId);
         Exam exam = new Exam();
         //学生
-        List<ExamUser> examUserList = new ArrayList<>();
-        returnMap.put("examUserList",examUserList);
         if (StringUtils.isNotBlank(examId)) {
             exam.setId(examId);
             exam = dao.getByEntity(exam);
@@ -237,9 +236,10 @@ public class ExamService extends CrudService<ExamDao, Exam> {
             examUser.setExamId(exam.getId());
 
             StringBuilder studentUserIds = new StringBuilder();
-            examUserList = examUserService.findList(examUser);
+            List<ExamUser> examUserList = examUserService.findList(examUser);
             int len = examUserList.size();
             if (CollectionUtils.isNotEmpty(examUserList)) {
+                Map<String, String> map = new HashMap<>();
                 if ("1".equals(exam.getType())) {
                     for (int i = 0; i < len; i++) {
                         if (i == len - 1) {
@@ -248,8 +248,17 @@ public class ExamService extends CrudService<ExamDao, Exam> {
                             studentUserIds.append(examUserList.get(i).getServerExamUserId()).append(",");
                         }
                     }
-                    returnMap.replace("examUserList",
-                            this.getExamUserList(studentUserIds,examUserList,ServiceConstant.COMMONUSER_LOAD_STU_LIST_BY_EXAM_USER_IDS,"examUserIds"));
+                    map.put("serverExamStuId", examUserList.get(0).getServerExamUserId());
+                    CommonResult result = httpClientService.post(ServiceConstant.COMMONASSESSMENTSTU_LOAD_ONE_EXAM_STU, map);
+                    if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
+                        JSONObject object = JSONObject.parseObject(result.getData().toString());
+                        returnMap.put("assessmentName", object.getString("assessmentName"));
+                        returnMap.put("assessmentDate", object.getString("assessmentDate"));
+                        returnMap.put("assessmentTime", object.getString("assessmentTime"));
+                    }
+
+                    returnMap.put("examUserList",
+                            this.getExamUserList(studentUserIds, examUserList, ServiceConstant.COMMONUSER_LOAD_STU_LIST_BY_EXAM_USER_IDS, "examUserIds"));
 
                 }
                 if ("2".equals(exam.getType())) {
@@ -260,8 +269,8 @@ public class ExamService extends CrudService<ExamDao, Exam> {
                             studentUserIds.append(examUserList.get(i).getUserId()).append(",");
                         }
                     }
-                    returnMap.replace("examUserList",
-                            this.getExamUserList(studentUserIds,examUserList,ServiceConstant.DERIVE_STUDENT_ACHIEVEMENT,"ids"));
+                    returnMap.put("examUserList",
+                            this.getExamUserList(studentUserIds, examUserList, ServiceConstant.DERIVE_STUDENT_ACHIEVEMENT, "ids"));
 
                 }
             }
@@ -276,9 +285,10 @@ public class ExamService extends CrudService<ExamDao, Exam> {
 
     /**
      * 获取考生信息
+     *
      * @return
      */
-    public Object getExamUserList(StringBuilder studentUserIds,List<ExamUser> examUserList,String connectionPath,String parameter){
+    public Object getExamUserList(StringBuilder studentUserIds, List<ExamUser> examUserList, String connectionPath, String parameter) {
         Map<String, String> map = new HashMap<>();
         map.put(parameter, studentUserIds.toString());
         //调取到平台 获取不符合规范的考生
@@ -302,7 +312,6 @@ public class ExamService extends CrudService<ExamDao, Exam> {
         }
         return examUserList;
     }
-
 
 
     //删除考试 (考试id，考试状态)
@@ -344,7 +353,7 @@ public class ExamService extends CrudService<ExamDao, Exam> {
         //考试状态 state '状态（1:未开始;3:考试中;5:未统计;7:已出分）
         CommonResult comRes = new CommonResult();
         Exam examUpdate = dao.getByEntity(exam);
-        if(null==examUpdate){
+        if (null == examUpdate) {
             comRes.setCode(CodeConstant.DATA_NOT_FOUND);
             comRes.setMsg("您所查询的考试不存在!");
             return comRes;
@@ -392,13 +401,27 @@ public class ExamService extends CrudService<ExamDao, Exam> {
         paperService.save(paper);
     }
 
-    /**
-     * 考试/练习 添加学生 加载方法
-     *
-     * @param examUser
-     * @param vo
-     * @return
-     */
+    public CommonResult uploadScore(String examId) {
+        ExamUser examUser = new ExamUser();
+        examUser.setExamId(examId);
+        List<ExamUser> list = examUserService.findList(examUser);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("softwareId", "7");
+        JSONArray jsonArray = new JSONArray();
+        for (ExamUser user : list) {
+            JSONObject object = new JSONObject();
+            object.put("serverExamStuId", user.getServerExamUserId());
+            object.put("commonUserId", user.getUserId());
+            object.put("score", user.getScore());
+            jsonArray.add(object);
+        }
+        jsonObject.put("scores", jsonArray);
+        Map<String, String> map = new HashMap<>();
+        map.put("scoreInfo", jsonObject.toString());
+        CommonResult result = httpClientService.post(ServiceConstant.COMMONASSESSMENT_UPLOAD_SCORES, map);
+        return result;
+    }
+
     public CommonResult findExamUser(ExamUser examUser, ExamUserVO vo) {
         String userId = examUser.getUserId();
         String examId = vo.getExamId();
@@ -407,8 +430,13 @@ public class ExamService extends CrudService<ExamDao, Exam> {
         map.put("commonUserId", userId);
         //考试
         if ("1".equals(type)) {
+            if (StringUtils.isBlank(vo.getAssessmentName()) ||
+                    StringUtils.isBlank(vo.getAssessmentDate()) ||
+                    StringUtils.isBlank(vo.getAssessmentTime())) {
+                return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "请求参数不全！");
+            }
             map.put("examOrPractice", "exam");
-            map.put("assessmentId", vo.getAssessmentId());
+            map.put("assessmentName", vo.getAssessmentName());
             map.put("assessmentDate", vo.getAssessmentDate());
             map.put("assessmentTime", vo.getAssessmentTime());
         }
