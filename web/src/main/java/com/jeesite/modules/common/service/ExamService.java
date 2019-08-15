@@ -485,4 +485,74 @@ public class ExamService extends CrudService<ExamDao, Exam> {
         }
         return new CommonResult(platFormUserlist);
     }
+
+    /**
+     * 加载考核名称
+     */
+    public CommonResult findAssessmentNameList(ExamUser examUser) {
+        Map<String, String> map = new HashMap<>();
+        map.put("commonUserId", examUser.getUserId());
+        return httpClientService.post(ServiceConstant.COMMONASSESSMENT_LOAD_ASSESSMENT_NAME_LIST, map);
+    }
+
+    /**
+     * 加载考核日期
+     *
+     * @param examUser
+     * @param vo
+     * @return
+     */
+    public CommonResult findAssessmentDateList(ExamUser examUser, ExamUserVO vo) {
+        String assessmentName = vo.getAssessmentName();
+        if (StringUtils.isBlank(assessmentName)) {
+            return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "请求参数不全！");
+        }
+        Map<String, String> map = new HashMap<>();
+        map.put("commonUserId", examUser.getUserId());
+        map.put("assessmentName", assessmentName);
+        return httpClientService.post(ServiceConstant.COMMONASSESSMENTSTU_LOAD_ASSESSMENT_DATE_LIST, map);
+    }
+
+    /**
+     * 加载考核时间
+     *
+     * @param examUser
+     * @param vo
+     * @return
+     */
+    public CommonResult findAssessmentTimeList(ExamUser examUser, ExamUserVO vo) {
+        String assessmentName = vo.getAssessmentName();
+        String assessmentDate = vo.getAssessmentDate();
+        if (StringUtils.isBlank(assessmentName) || StringUtils.isBlank(assessmentDate)) {
+            return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "请求参数不全！");
+        }
+        Map<String, String> map = new HashMap<>();
+        map.put("commonUserId", examUser.getUserId());
+        map.put("assessmentName", assessmentName);
+        map.put("assessmentDate", assessmentDate);
+        return httpClientService.post(ServiceConstant.COMMONASSESSMENTSTU_LOAD_ASSESSMENT_TIME_LIST, map);
+    }
+
+    /**
+     * 加载专业
+     */
+    public CommonResult findMajorList(ExamUser examUser) {
+        Map<String, String> map = new HashMap<>();
+        map.put("commonUserId", examUser.getUserId());
+        return httpClientService.post(ServiceConstant.COMMONUSER_LOAD_MAJOR_LIST, map);
+    }
+
+    /**
+     * 加载班级
+     */
+    public CommonResult findClassList(ExamUser examUser, ExamUserVO vo) {
+        String majorName = vo.getMajorName();
+        if (StringUtils.isBlank(majorName)) {
+            return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "请求参数不全！");
+        }
+        Map<String, String> map = new HashMap<>();
+        map.put("commonUserId", examUser.getUserId());
+        map.put("majorName", majorName);
+        return httpClientService.post(ServiceConstant.COMMONUSER_LOAD_CLASS_LIST, map);
+    }
 }
