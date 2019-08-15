@@ -1,5 +1,6 @@
 package com.jeesite.modules.aa.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.constant.ServiceConstant;
@@ -15,6 +16,7 @@ import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.service.ExamUserService;
 import com.jeesite.modules.common.service.HttpClientService;
 import com.jeesite.modules.common.utils.UserUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,7 +61,7 @@ public class HomePageService {
                 String[] purchaseDate = carInfo.getPurchaseDate().substring(0, 10).split("-");
                 carInfo.setPurchaseDate(purchaseDate[0] + "年" + purchaseDate[1] + "月");
             }
-
+            homePageVO.setCarInfo(carInfo);
             PictureUser pictureUser = new PictureUser();
             pictureUser.setExamUserId(examUser.getExamId());
             pictureUser.setPictureTypeId("1143439344920567808");
@@ -78,6 +80,9 @@ public class HomePageService {
                 JSONObject vehicleInfo = JSONObject.parseObject(result.getData().toString());
                 homePageVO.setVehicleInfo(vehicleInfo);
             }
+            //添加登录人姓名
+            homePageVO.setTrueName(this.getNameByUserId(examUser.getUserId()));
+
         }
 
         return homePageVO;
@@ -85,9 +90,29 @@ public class HomePageService {
     }
 
     /**
+     *  根据userId查询人员姓名
+     */
+    public String getNameByUserId(String userId){
+        Map<String,String> stuMap = new HashMap<>();
+        stuMap.put("ids",userId);
+        CommonResult resultStuName = httpClientService.post(ServiceConstant.DERIVE_STUDENT_ACHIEVEMENT, stuMap);
+        if(CodeConstant.REQUEST_SUCCESSFUL.equals(resultStuName.getCode())){
+            JSONArray array = (JSONArray)resultStuName.getData();
+            if(CollectionUtils.isNotEmpty(array) && array.size()==1){
+                //返回学生信息
+                return ((JSONObject)array.get(0)).getString("trueName");
+            }
+        }
+        return "";
+    }
+
+
+    /**
      * 加载首页界面(教师)
      */
-    public List<HomePageVO> loadHomePageTea(HomePageVO homePageVO) {
+    public Map<String,Object> loadHomePageTea(HomePageVO homePageVO) {
+        Map<String,Object> returnMap = new HashMap<>();
+        ExamUser examUser =  UserUtils.getExamUser();
         if (StringUtils.isBlank(homePageVO.getSort())) {
             //排序规则为空，默认降序
             homePageVO.setSort("2");
@@ -124,9 +149,13 @@ public class HomePageService {
                     temp.setVehicleInfo(vehicleInfo);
                 }
                 list.add(temp);
+
+                //添加登录人姓名
             }
+            returnMap.put("homePagelist",list);
+            returnMap.put("trueName",this.getNameByUserId(examUser.getUserId()));
         }
-        return list;
+        return returnMap;
     }
 
     /**

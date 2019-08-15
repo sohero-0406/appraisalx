@@ -331,6 +331,8 @@ public class ExamService extends CrudService<ExamDao, Exam> {
         examScoreDetailService.deleteExamScoreInfo(exam.getId());
         //删除内容模板
         examDetailService.deleteExamDetail(exam.getId());
+        //删除学生
+        examUserService.deleteByExamUser(exam.getId());
         return comRes;
     }
 

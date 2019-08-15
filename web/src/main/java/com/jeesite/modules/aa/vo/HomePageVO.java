@@ -13,6 +13,7 @@ public class HomePageVO {
     private JSONObject vehicleInfo;        //车辆配置全表
     private String sort;        //排序方式
     private String queryCriteria;       //查询条件
+    private String trueName;
 
     public CarInfo getCarInfo() {
         return carInfo;
@@ -60,5 +61,13 @@ public class HomePageVO {
 
     public void setQueryCriteria(String queryCriteria) {
         this.queryCriteria = queryCriteria;
+    }
+
+    public String getTrueName() {
+        return trueName;
+    }
+
+    public void setTrueName(String trueName) {
+        this.trueName = trueName;
     }
 }
