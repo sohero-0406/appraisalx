@@ -1576,4 +1576,15 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 		return comRes;
 	}
 
+	/**
+	 * 逻辑删除学生
+	 */
+	public void deleteByExamUser(String examId){
+		if(StringUtils.isNotBlank(examId)){
+			ExamUser examUser = new ExamUser();
+			examUser.setExamId(examId);
+			dao.deleteByEntity(examUser);
+		}
+	}
+
 }

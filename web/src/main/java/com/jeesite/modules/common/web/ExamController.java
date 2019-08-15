@@ -109,14 +109,14 @@ public class ExamController extends BaseController {
      */
     @RequestMapping(value = "getExamInfo")
     @ResponseBody
-    public CommonResult getExamInfo(String keyword,String type) {
+    public CommonResult getExamInfo(String keyword, String type) {
         CommonResult comRes = new CommonResult();
-        if(StringUtils.isBlank(type)){
+        if (StringUtils.isBlank(type)) {
             comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
             comRes.setMsg("请求参数异常!");
             return comRes;
         }
-        List<Exam> examList = examService.getExamInfo(keyword,type);
+        List<Exam> examList = examService.getExamInfo(keyword, type);
         comRes.setData(examList);
         return comRes;
     }
@@ -126,8 +126,8 @@ public class ExamController extends BaseController {
      */
     @RequestMapping(value = "saveExamInfo")
     @ResponseBody
-    public CommonResult saveExamInfo(ExamVO examVO, String examScoreJson,String studentJson) {
-        CommonResult comRes = examService.saveExamInfo(examVO,examScoreJson,studentJson);
+    public CommonResult saveExamInfo(ExamVO examVO, String examScoreJson, String studentJson) {
+        CommonResult comRes = examService.saveExamInfo(examVO, examScoreJson, studentJson);
         return comRes;
     }
 
@@ -142,7 +142,8 @@ public class ExamController extends BaseController {
     }
 
     /**
-     *  依据考试删除考试
+     * 依据考试删除考试
+     *
      * @param
      * @return
      */
@@ -178,7 +179,7 @@ public class ExamController extends BaseController {
     }
 
     /**
-     *  下载情景信息模板
+     * 下载情景信息模板
      */
     @RequestMapping(value = "downloadInformationModule")
     @ResponseBody
@@ -189,17 +190,17 @@ public class ExamController extends BaseController {
         //声明路径
         String url = "E:/二手车鉴定评估情景描述.docx";
         //下载目标文件
-        DownloadWordUtils.downloadWord(request,response,url,name,"docx");
+        DownloadWordUtils.downloadWord(request, response, url, name, "docx");
     }
 
-    /** 
-    * @description: 结束考试 - 分为学生端和教师端
-    * @param: []
-    * @return: com.jeesite.modules.common.entity.CommonResult
-    * @author: Jiangyf
-    * @date: 2019/8/10 
-    * @time: 15:43
-    */
+    /**
+     * @description: 结束考试 - 分为学生端和教师端
+     * @param: []
+     * @return: com.jeesite.modules.common.entity.CommonResult
+     * @author: Jiangyf
+     * @date: 2019/8/10
+     * @time: 15:43
+     */
     @RequestMapping(value = "endExam")
     @ResponseBody
     public CommonResult endExam() {
@@ -241,4 +242,55 @@ public class ExamController extends BaseController {
     public CommonResult uploadScore(String examId) {
         return examService.uploadScore(examId);
     }
+
+    /**
+     * 加载考核名称
+     */
+    @RequestMapping(value = "findAssessmentNameList")
+    @ResponseBody
+    public CommonResult findAssessmentNameList() {
+        ExamUser examUser = UserUtils.getExamUser();
+        return examService.findAssessmentNameList(examUser);
+    }
+
+    /**
+     * 加载考核日期
+     */
+    @RequestMapping(value = "findAssessmentDateList")
+    @ResponseBody
+    public CommonResult findAssessmentList(ExamUserVO vo) {
+        ExamUser examUser = UserUtils.getExamUser();
+        return examService.findAssessmentDateList(examUser, vo);
+    }
+
+    /**
+     * 加载考核时间
+     */
+    @RequestMapping(value = "findAssessmentTimeList")
+    @ResponseBody
+    public CommonResult findAssessmentTimeList(ExamUserVO vo) {
+        ExamUser examUser = UserUtils.getExamUser();
+        return examService.findAssessmentTimeList(examUser, vo);
+    }
+
+    /**
+     * 加载专业
+     */
+    @RequestMapping(value = "findMajorList")
+    @ResponseBody
+    public CommonResult findMajorList() {
+        ExamUser examUser = UserUtils.getExamUser();
+        return examService.findMajorList(examUser);
+    }
+
+    /**
+     * 加载班级
+     */
+    @RequestMapping(value = "findClassList")
+    @ResponseBody
+    public CommonResult findClassList(ExamUserVO vo) {
+        ExamUser examUser = UserUtils.getExamUser();
+        return examService.findClassList(examUser, vo);
+    }
+
 }

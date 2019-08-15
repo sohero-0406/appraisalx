@@ -28,6 +28,7 @@ public class ServiceConstant {
 
     //根据车型id查部分车辆配置属性
     public static final String VEHICLEINFO_GET_CAR_MODEL ="/common/vehicleInfo/getCarModel";
+
     //上传成绩
     public static final String COMMONASSESSMENT_UPLOAD_SCORES = "/common/commonAssessment/uploadScores";
 
@@ -48,6 +49,12 @@ public class ServiceConstant {
 
     //加载考核时间
     public static final String COMMONASSESSMENTSTU_LOAD_ASSESSMENT_TIME_LIST = "/common/commonAssessmentStu/loadAssessmentTimeList";
+
+    //加载专业
+    public static final String COMMONUSER_LOAD_MAJOR_LIST = "/common/commonUser/loadMajorList";
+
+    //加载班级
+    public static final String COMMONUSER_LOAD_CLASS_LIST = "/common/commonUser/loadClassList";
 
     //根据考生id返回信息
     public static final String COMMONASSESSMENTSTU_LOAD_ONE_EXAM_STU = "/common/commonAssessmentStu/loadOneExamStu";
