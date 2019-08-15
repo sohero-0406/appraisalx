@@ -65,10 +65,9 @@ public class PictureUserService extends CrudService<PictureUserDao, PictureUser>
         if (picFile == null || picFile.isEmpty()) {
             return new CommonResult("1003", "上传失败，请选择文件！");
         }
-        //图片默认存储路径，首先读取picture.properties，如果值不存在，那么储存图片至项目中
+        //图片默认存储路径，读取picture.properties
         ResourceBundle bundle = PropertyResourceBundle.getBundle("config/picture");
         String prefix = bundle.getString("url");
-
         String filePath = prefix + "exam/" + url + "/";
         PictureType pictureType = pictureTypeService.get(pictureTypeId);
         String fileName = new IdWorker(-1, -1).nextId() + "";
