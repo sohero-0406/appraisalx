@@ -2,6 +2,7 @@ package com.jeesite.common.utils;
 
 import java.util.HashMap;
 
+import com.jeesite.common.constant.CodeConstant;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -80,7 +81,14 @@ public class BaiDuAiUtil {
 	public JSONObject vinCode(String imagePath) {
 		JSONObject jsonObj = client.vinCode(imagePath, new HashMap<String, String>());
 		JSONObject result = new JSONObject();
-		result.put("vinCode", jsonObj.optJSONArray("words_result").optJSONObject(0).optString("words"));
+		if(jsonObj.optJSONArray("words_result").length()>0){
+			result.put("code", CodeConstant.IDENTIFY_THE_SUCCESSFUL);
+			result.put("msg", "识别成功");
+			result.put("vinCode", jsonObj.optJSONArray("words_result").optJSONObject(0).optString("words"));
+		}else{
+			result.put("code", CodeConstant.FAILED_TO_IDENTIFY_UNKNOWN_STATE);
+			result.put("msg", "未知状态");
+		}
 		return result;
 	}
 	/**
@@ -95,7 +103,7 @@ public class BaiDuAiUtil {
 		JSONObject result = new JSONObject();
 		switch (jsonObj.optString("image_status")){
 			case "normal"://识别正常
-				result.put("code", "1002");
+				result.put("code", CodeConstant.WRONG_REQUEST_PARAMETER);
 				result.put("msg", "识别成功");
 				result.put("name", jsonObj.optJSONObject("words_result").optJSONObject("姓名").optString("words"));
 				result.put("national", jsonObj.optJSONObject("words_result").optJSONObject("民族").optString("words"));
@@ -105,23 +113,23 @@ public class BaiDuAiUtil {
 				result.put("gender", jsonObj.optJSONObject("words_result").optJSONObject("性别").optString("words"));
 				break;
 			case "reversed_side":
-				result.put("code", "1003");
+				result.put("code", CodeConstant.FAILED_TO_IDENTIFY_PICTURE_NOT_ALIGNED);
 				result.put("msg", "未摆正身份证");
 				break;
 			case "non_idcard":
-				result.put("code", "1004");
+				result.put("code", CodeConstant.FAILED_TO_IDENTIFY_UPLOADED_IMAGE_NOT_CONTAIN_INFORMATION);
 				result.put("msg", "上传的图片中不包含身份证");
 				break;
 			case "blurred":
-				result.put("code", "1005");
+				result.put("code", CodeConstant.FAILED_TO_IDENTIFY_PICTURE_FUZZY);
 				result.put("msg", "身份证模糊");
 				break;
 			case "over_exposure":
-				result.put("code", "1006");
+				result.put("code", CodeConstant.FAILED_TO_IDENTIFY_REFLECTIVE_OR_OVEREXPOSED_ON_IMAGE);
 				result.put("msg", "身份证关键字段反光或过曝");
 				break;
 			case "unknown":
-				result.put("code", "1007");
+				result.put("code", CodeConstant.FAILED_TO_IDENTIFY_UNKNOWN_STATE);
 				result.put("msg", "未知状态");
 				break;
 		}
@@ -135,8 +143,15 @@ public class BaiDuAiUtil {
 	private JSONObject vehicleLicense(String imagePath) {
 		JSONObject jsonObj = client.vehicleLicense(imagePath, new HashMap<String, String>());
 		JSONObject result = new JSONObject();
-		result.put("usage",jsonObj.optJSONObject("data").optJSONObject("words_result").optJSONObject("使用性质").optString("words"));
-		result.put("vehicleType",jsonObj.optJSONObject("data").optJSONObject("words_result").optJSONObject("车辆类型").optString("words"));
+		if(jsonObj.optJSONArray("words_result").length()>0){
+			result.put("code",CodeConstant.IDENTIFY_THE_SUCCESSFUL);
+			result.put("msg", "识别成功");
+			result.put("usage",jsonObj.optJSONObject("data").optJSONObject("words_result").optJSONObject("使用性质").optString("words"));
+			result.put("vehicleType",jsonObj.optJSONObject("data").optJSONObject("words_result").optJSONObject("车辆类型").optString("words"));
+		}else{
+			result.put("code", CodeConstant.FAILED_TO_IDENTIFY_UNKNOWN_STATE);
+			result.put("msg", "未知状态");
+		}
 		return result;
 	}
 	/**
@@ -155,8 +170,15 @@ public class BaiDuAiUtil {
 	private JSONObject plateLicense(String imagePath) {
 		JSONObject jsonObj = client.plateLicense(imagePath, new HashMap<String, String>());
 		JSONObject result = new JSONObject();
-		result.put("color", jsonObj.optJSONObject("words_result").optString("color"));
-		result.put("number", jsonObj.optJSONObject("words_result").optString("number"));
+		if(null!=jsonObj.optJSONObject("words_result")){
+			result.put("code",CodeConstant.IDENTIFY_THE_SUCCESSFUL);
+			result.put("msg", "识别成功");
+			result.put("color", jsonObj.optJSONObject("words_result").optString("color"));
+			result.put("number", jsonObj.optJSONObject("words_result").optString("number"));
+		}else{
+			result.put("code", CodeConstant.FAILED_TO_IDENTIFY_UNKNOWN_STATE);
+			result.put("msg", "未知状态");
+		}
 		return result;
 	}
 	/**
@@ -182,20 +204,18 @@ public class BaiDuAiUtil {
 		JSONObject result = new JSONObject();
 
 		JSONArray jsonArr = jsonObj.optJSONObject("data").optJSONArray("ret");
-		JSONObject childJsonObj = null;
-		for(int i = 0; i < jsonArr.length(); i++){
-			childJsonObj = jsonArr.optJSONObject(i);
-			result.put(childJsonObj.optString("word_name"),childJsonObj.optString("word"));
-//			switch (childJsonObj.optString("word_name")){
-//				case "厂牌型号":
-//					result.put("labelType", childJsonObj.optString("word"));
-//					break;
-//				case "小写":
-//					result.put("originalPrice", childJsonObj.optString("word"));
-//					break;
-//			}
+		if(null==jsonArr){
+			result.put("code", CodeConstant.FAILED_TO_IDENTIFY_UNKNOWN_STATE);
+			result.put("msg", "未知状态");
+		}else{
+			JSONObject childJsonObj = null;
+			result.put("code",CodeConstant.IDENTIFY_THE_SUCCESSFUL);
+			result.put("msg", "识别成功");
+			for(int i = 0; i < jsonArr.length(); i++){
+				childJsonObj = jsonArr.optJSONObject(i);
+				result.put(childJsonObj.optString("word_name"),childJsonObj.optString("word"));
+			}
 		}
-
 		return result;
 	}
 	/**
@@ -216,29 +236,18 @@ public class BaiDuAiUtil {
 		JSONObject result = new JSONObject();
 
 		JSONArray jsonArr = jsonObj.optJSONObject("data").optJSONArray("ret");
-		JSONObject childJsonObj = null;
-		for(int i = 0; i < jsonArr.length(); i++){
-			childJsonObj = jsonArr.optJSONObject(i);
-			result.put(childJsonObj.optString("word_name"),childJsonObj.optString("word"));
-//			switch (){
-//				case "车身颜色":
-//					result.put("color", );
-//					break;
-//				case "燃料种类":
-//					result.put("fuelType", childJsonObj.optString("word"));
-//					break;
-//                case "总质量":
-//                    result.put("totalQuality", childJsonObj.optString("word"));
-//                    break;
-//                case "登记日期":
-//                    result.put("registerDate", childJsonObj.optString("word"));
-//                    break;
-//                case "排量":
-//                    result.put("displacement", childJsonObj.optString("word"));
-//                    break;
-//			}
+		if(null==jsonArr){
+			result.put("code", CodeConstant.FAILED_TO_IDENTIFY_UNKNOWN_STATE);
+			result.put("msg", "未知状态");
+		}else{
+			result.put("code",CodeConstant.IDENTIFY_THE_SUCCESSFUL);
+			result.put("msg", "识别成功");
+			JSONObject childJsonObj = null;
+			for(int i = 0; i < jsonArr.length(); i++){
+				childJsonObj = jsonArr.optJSONObject(i);
+				result.put(childJsonObj.optString("word_name"),childJsonObj.optString("word"));
+			}
 		}
-
 		return result;
 	}
 }
