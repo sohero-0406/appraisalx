@@ -44,10 +44,6 @@ public class UrlFilter implements Filter {
             }
             req.getRequestDispatcher("/aa/signIn/timeout").forward(req, response);
         }
-
-//        RequestDispatcher requestDispatcher = request.getRequestDispatcher(uri);
-//        requestDispatcher.forward(req, resp);
-
     }
 
     @Override

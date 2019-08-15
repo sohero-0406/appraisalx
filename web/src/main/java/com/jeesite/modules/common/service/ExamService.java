@@ -198,7 +198,8 @@ public class ExamService extends CrudService<ExamDao, Exam> {
                 examVO.getExamDetail().setId(examDetailService.getByEntity(detail).getId());
             }
         } else {
-            examVO.getExam().setState("1");
+            exam.setState("1");
+            exam.setUploadScore("0");
         }
         super.save(exam);
         String saveExamId = exam.getId();
@@ -327,17 +328,14 @@ public class ExamService extends CrudService<ExamDao, Exam> {
         }
         //删除考试
         dao.delete(exam);
-        //删除 评分项
-        examScoreDetailService.deleteExamScoreInfo(exam.getId());
-        //删除内容模板
-        examDetailService.deleteExamDetail(exam.getId());
-        //删除学生
-        examUserService.deleteByExamUser(exam.getId());
+//        //删除 评分项
+//        examScoreDetailService.deleteExamScoreInfo(exam.getId());
+//        //删除内容模板
+//        examDetailService.deleteExamDetail(exam.getId());
+//        //删除学生
+//        examUserService.deleteByExamUser(exam.getId());
         return comRes;
     }
-
-    ;
-
 
     @Transactional(readOnly = false)
     public Exam getByEntity(Exam exam) {
@@ -404,6 +402,9 @@ public class ExamService extends CrudService<ExamDao, Exam> {
     }
 
     public CommonResult uploadScore(String examId) {
+        if (StringUtils.isBlank(examId)) {
+            return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "请求参数不全！");
+        }
         ExamUser examUser = new ExamUser();
         examUser.setExamId(examId);
         List<ExamUser> list = examUserService.findList(examUser);
@@ -421,6 +422,14 @@ public class ExamService extends CrudService<ExamDao, Exam> {
         Map<String, String> map = new HashMap<>();
         map.put("scoreInfo", jsonObject.toString());
         CommonResult result = httpClientService.post(ServiceConstant.COMMONASSESSMENT_UPLOAD_SCORES, map);
+        if (!CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
+            return result;
+        }
+        //更新上传成绩状态
+        Exam exam = new Exam();
+        exam.setId(examId);
+        exam.setUploadScore("1");
+        this.save(exam);
         return result;
     }
 
