@@ -143,7 +143,7 @@ public class BaiDuAiUtil {
 	private JSONObject vehicleLicense(String imagePath) {
 		JSONObject jsonObj = client.vehicleLicense(imagePath, new HashMap<String, String>());
 		JSONObject result = new JSONObject();
-		if(jsonObj.optJSONArray("words_result").length()>0){
+		if(null!=jsonObj.optJSONArray("words_result")){
 			result.put("code",CodeConstant.IDENTIFY_THE_SUCCESSFUL);
 			result.put("msg", "识别成功");
 			result.put("usage",jsonObj.optJSONObject("data").optJSONObject("words_result").optJSONObject("使用性质").optString("words"));
