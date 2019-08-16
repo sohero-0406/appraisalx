@@ -15,6 +15,7 @@ import com.jeesite.modules.aa.dao.DelegateLetterDao;
 import com.jeesite.modules.aa.entity.*;
 import com.jeesite.modules.aa.vo.AppraisalReportVO;
 import com.jeesite.modules.aa.vo.DelegateLetterVO;
+import com.jeesite.modules.aa.word.Nb;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.Exam;
 import com.jeesite.modules.common.entity.ExamUser;
@@ -29,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -356,9 +358,9 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
     /**
      * 整理报告内容
      */
-    public Map appraisalReportInfo(ExamUser examUser) throws ParseException {
+    public Map<String, String> appraisalReportInfo(ExamUser examUser) throws ParseException {
 
-        Map<String, Object> returnMap = new HashMap<>();
+        Map<String, String> returnMap = new HashMap<>();
         AppraisalReportVO appraisalReportVO = this.findAppraisalReport(examUser);
 //        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 //        SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy年MM月dd日");
@@ -532,16 +534,12 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
     @Transactional
     public void generateLetter(ExamUser examUser) throws ParseException {
         Map<String, String> reportMap = this.appraisalReportInfo(examUser);
-        DelegateUser delegateUser = new DelegateUser();
-        delegateUser.setExamUserId(examUser.getId());
-        delegateUser.setPaperId(examUser.getPaperId());
-        delegateUser = delegateUserService.getByEntity(delegateUser);
-
         try {
             WordExport changer = new WordExport();
-            String fileName = "E:/word.docx";
+            String fileName = Nb.class.getResource("二手车鉴定评估报告.docx").getFile();
+            fileName = URLDecoder.decode(fileName, "UTF-8");
             changer.setTemplate(fileName);
-            Map<String, String> content = new HashMap<String, String>();
+            Map<String, String> content = new HashMap<>();
 
             content.put("appraisalNum", reportMap.get("appraisalNum"));// //评报字-数字（8位
             content.put("appraisalDate", reportMap.get("appraisalDate")); //评报字-时间

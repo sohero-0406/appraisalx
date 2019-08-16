@@ -16,6 +16,7 @@ import com.jeesite.modules.aa.vo.CalculateCurrentVO;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.service.HttpClientService;
+import com.jeesite.modules.sys.entity.DictData;
 import com.jeesite.modules.sys.utils.DictUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -361,6 +363,18 @@ public class CalculateCurrentService extends CrudService<CalculateCurrentDao, Ca
             vo.setReference2(referenceService.get(p2Id));
         }
         vo.setReferenceList(referenceService.findList(new Reference()));
+        //车辆配置类型
+        List<DictData> vehicleConfigTypeList = DictUtils.getDictList("aa_vehicle_configuration_type");
+        vo.setVehicleConfigTypeList(vehicleConfigTypeList);
+        //发动机类别
+        List<DictData> engineTypeList = DictUtils.getDictList("aa_engine_type");
+        vo.setEngineTypeList(engineTypeList);
+        //变速箱类型
+        List<DictData> gearboxTypeList = DictUtils.getDictList("aa_gearbox_type");
+        vo.setGearboxTypeList(gearboxTypeList);
+        //付款方式
+        List<DictData> paymentMethodList = DictUtils.getDictList("aa_payment_method");
+        vo.setPaymentMethodList(paymentMethodList);
         return vo;
     }
 }

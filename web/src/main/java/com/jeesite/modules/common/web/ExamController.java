@@ -10,8 +10,10 @@ import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.utils.download.DownloadWordUtils;
 import com.jeesite.common.web.BaseController;
 import com.jeesite.common.web.http.ServletUtils;
+import com.jeesite.modules.Application;
 import com.jeesite.modules.aa.entity.Paper;
 import com.jeesite.modules.aa.vo.ExamVO;
+import com.jeesite.modules.aa.word.Nb;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.Exam;
 import com.jeesite.modules.common.entity.ExamUser;
@@ -21,6 +23,7 @@ import com.jeesite.modules.common.vo.ExamUserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.ClassUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -188,7 +191,7 @@ public class ExamController extends BaseController {
         //声明下载文件名称
         String name = "二手车鉴定评估情景描述";
         //声明路径
-        String url = "E:/二手车鉴定评估情景描述.docx";
+        String url = Nb.class.getResource("二手车鉴定评估情景描述.docx").getFile();
         //下载目标文件
         DownloadWordUtils.downloadWord(request, response, url, name, "docx");
     }

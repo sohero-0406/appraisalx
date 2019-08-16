@@ -2,6 +2,7 @@ package com.jeesite.modules.aa.vo;
 
 import com.jeesite.modules.aa.entity.CalculateCurrent;
 import com.jeesite.modules.aa.entity.Reference;
+import com.jeesite.modules.sys.entity.DictData;
 
 import java.util.List;
 
@@ -11,6 +12,10 @@ public class CalculateCurrentVO {
     private Reference reference2;       //参照物2
     private List<Reference> referenceList;      //参照物列表
     private CalculateCurrent calculateCurrent;      //被评估车辆
+    private List<DictData> vehicleConfigTypeList;       //车辆配置类型列表
+    private List<DictData> engineTypeList;       //发动机类别列表
+    private List<DictData> gearboxTypeList;       //变速箱类型列表
+    private List<DictData> paymentMethodList;       //付款方式列表
 
     public Reference getReference1() {
         return reference1;
@@ -42,5 +47,37 @@ public class CalculateCurrentVO {
 
     public void setCalculateCurrent(CalculateCurrent calculateCurrent) {
         this.calculateCurrent = calculateCurrent;
+    }
+
+    public List<DictData> getVehicleConfigTypeList() {
+        return vehicleConfigTypeList;
+    }
+
+    public void setVehicleConfigTypeList(List<DictData> vehicleConfigTypeList) {
+        this.vehicleConfigTypeList = vehicleConfigTypeList;
+    }
+
+    public List<DictData> getEngineTypeList() {
+        return engineTypeList;
+    }
+
+    public void setEngineTypeList(List<DictData> engineTypeList) {
+        this.engineTypeList = engineTypeList;
+    }
+
+    public List<DictData> getGearboxTypeList() {
+        return gearboxTypeList;
+    }
+
+    public void setGearboxTypeList(List<DictData> gearboxTypeList) {
+        this.gearboxTypeList = gearboxTypeList;
+    }
+
+    public List<DictData> getPaymentMethodList() {
+        return paymentMethodList;
+    }
+
+    public void setPaymentMethodList(List<DictData> paymentMethodList) {
+        this.paymentMethodList = paymentMethodList;
     }
 }
