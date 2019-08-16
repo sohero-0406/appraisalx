@@ -175,10 +175,8 @@ public class DelegateLetterController extends BaseController {
 	 */
 	@RequestMapping(value = "downloadAppraisalReport")
 	@ResponseBody
-	public CommonResult getWord(HttpServletRequest request, HttpServletResponse response){
+	public void getWord(HttpServletRequest request, HttpServletResponse response) {
 		ExamUser examUser = UserUtils.getExamUser();
-		CommonResult comRes = new CommonResult();
 		delegateLetterService.getWord(request,response,examUser);
-		return comRes;
 	}
 }

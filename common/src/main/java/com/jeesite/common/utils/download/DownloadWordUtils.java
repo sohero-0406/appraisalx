@@ -19,8 +19,7 @@ public class DownloadWordUtils {
      * @param name 下载文件名称
      * @return
      */
-    public static Object downloadWord(HttpServletRequest request, HttpServletResponse response,String url,String name,String fileType)  {
-
+    public static void downloadWord(HttpServletRequest request, HttpServletResponse response, String url, String name, String fileType) {
         File fileurl = new File(url);
         //浏览器下载后的文件名称showValue,从url中截取到源文件名称以及，以及文件类型，如board.docx;
         String showValue = name+"."+fileType;
@@ -54,8 +53,6 @@ public class DownloadWordUtils {
         }catch(Exception e) {
             e.printStackTrace();
         }
-        return "";
-
     }
 
 
