@@ -305,7 +305,10 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         vehicleGradeAssess.setPaperId(examUser.getPaperId());
         vehicleGradeAssess = vehicleGradeAssessService.getByEntity(vehicleGradeAssess);
         //设置技术状况
-        vehicleGradeAssess.setTechnicalStatus(vehicleGradeAssessService.getTechnicalStatus(vehicleGradeAssess));
+        if(StringUtils.isNotBlank(vehicleGradeAssess.getTechnicalStatus())){
+            vehicleGradeAssess.setTechnicalStatus(DictUtils.getDictLabel("aa_technical_status", vehicleGradeAssess.getTechnicalStatus(), ""));
+        }
+
         appraisalReportVO.setVehicleGradeAssess(vehicleGradeAssess);
         defectDescription.append(StringUtils.isNotBlank(vehicleGradeAssess.getDescription()) ? "," + vehicleGradeAssess.getDescription() : "");
         //填入缺陷描述

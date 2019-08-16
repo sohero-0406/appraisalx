@@ -319,15 +319,29 @@ public class ExamService extends CrudService<ExamDao, Exam> {
     @Transactional(readOnly = false)
     public CommonResult deleteExam(Exam exam) {
         CommonResult comRes = new CommonResult();
+        exam = dao.getByEntity(exam);
         if (null == exam && StringUtils.isBlank(exam.getId())) {
+            comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
             comRes.setMsg("请先选择考试!");
             return comRes;
-        } else if ("".equals(exam.getState()) || null == exam.getState() || (!"1".equals(exam.getState()))) {
+        } else if ("".equals(exam.getState()) || null == exam.getState() ) {
+            comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
             comRes.setMsg("此状态下的考试不能被删除!");
             return comRes;
         }
-        //删除考试
-        dao.delete(exam);
+
+        if ("1".equals(exam.getState())){
+            //删除考试
+            dao.delete(exam);
+        }else if("7".equals(exam.getState()) && "1".equals(exam.getUploadScore())&&"1".equals(exam.getType())){
+            //删除考试
+            dao.delete(exam);
+        }else{
+            comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+            comRes.setMsg("参数异常");
+            return comRes;
+        }
+
 //        //删除 评分项
 //        examScoreDetailService.deleteExamScoreInfo(exam.getId());
 //        //删除内容模板
@@ -405,6 +419,18 @@ public class ExamService extends CrudService<ExamDao, Exam> {
         if (StringUtils.isBlank(examId)) {
             return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "请求参数不全！");
         }
+        Exam exam = new Exam();
+        exam.setId(examId);
+        exam = dao.getByEntity(exam);
+        if(null==exam){
+            return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "请求参数异常！");
+        }
+        if(!"7".equals(exam.getState())){
+            return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "该状态下考试不允许上传！");
+        }
+        if("1".equals(exam.getUploadScore())){
+            return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "该考试成绩已上传成功！");
+        }
         ExamUser examUser = new ExamUser();
         examUser.setExamId(examId);
         List<ExamUser> list = examUserService.findList(examUser);
@@ -426,8 +452,6 @@ public class ExamService extends CrudService<ExamDao, Exam> {
             return result;
         }
         //更新上传成绩状态
-        Exam exam = new Exam();
-        exam.setId(examId);
         exam.setUploadScore("1");
         this.save(exam);
         return result;
