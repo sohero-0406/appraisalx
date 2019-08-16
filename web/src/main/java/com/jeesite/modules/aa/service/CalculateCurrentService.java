@@ -331,8 +331,10 @@ public class CalculateCurrentService extends CrudService<CalculateCurrentDao, Ca
         map.put("chexingId", carInfo.getModel());
         CommonResult result = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_CAR_MODEL, map);
         if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
-            JSONObject vehicleInfo = JSONObject.parseObject(result.getData().toString());
-            calculateCurrent.setModel(vehicleInfo.getString("chexingmingcheng"));
+            if(null!=result.getData()){
+                JSONObject vehicleInfo = JSONObject.parseObject(result.getData().toString());
+                calculateCurrent.setModel(vehicleInfo.getString("chexingmingcheng"));
+            }
         }
         calculateCurrent.setDisplacement(carInfo.getDisplacement());
         calculateCurrent.setEnvironmentalStandard(DictUtils.getDictLabel("aa_environmental_standard",
