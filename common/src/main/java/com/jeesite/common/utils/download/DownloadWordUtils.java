@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 public class DownloadWordUtils {
@@ -20,10 +21,11 @@ public class DownloadWordUtils {
      * @return
      */
     public static void downloadWord(HttpServletRequest request, HttpServletResponse response, String url, String name, String fileType) {
-        File fileurl = new File(url);
-        //浏览器下载后的文件名称showValue,从url中截取到源文件名称以及，以及文件类型，如board.docx;
-        String showValue = name+"."+fileType;
-        try{
+        try {
+            url = URLDecoder.decode(url, "UTF-8");
+            File fileurl = new File(url);
+            //浏览器下载后的文件名称showValue,从url中截取到源文件名称以及，以及文件类型，如board.docx;
+            String showValue = name + "." + fileType;
             //将文件读入文件流
             InputStream inStream = new FileInputStream(fileurl);
             //获得浏览器代理信息

@@ -224,8 +224,8 @@ public class WordExport {
 	public static void main(String[] args) throws Exception{
 		long startTime = System.currentTimeMillis();
 		WordExport changer = new WordExport();
-//		String fileName = WordExport.class.getResource("Word模版.docx").getFile();
-		String fileName = "E:/word.docx";
+		String fileName = WordExport.class.getResource("Word模版.docx").getFile();
+//		String fileName = "E:/word.docx";
 //		fileName = EncodeUtils.decodeUrl(fileName.substring(1));
 		System.out.println(fileName);
 
