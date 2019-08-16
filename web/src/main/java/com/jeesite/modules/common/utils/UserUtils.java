@@ -25,9 +25,10 @@ public class UserUtils {
         }
 //        if (null == examUser) {
 //            examUser = new ExamUser();
-////            examUser.setPaperId("1");
-//            examUser.setUserId("667");
+//            examUser.setPaperId("1");
+//        examUser.setUserId("667");
 //        }
         return examUser;
     }
+
 }
