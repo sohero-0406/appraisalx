@@ -322,10 +322,10 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         calculate.setPaperId(examUser.getPaperId());
         calculate = calculateService.getByEntity(calculate);
         //设置算法类型
-        calculate.setType(calculateService.getType(calculate));
-
-
-        appraisalReportVO.setCalculate(calculate);
+        if(calculate!=null){
+            calculate.setType(calculateService.getType(calculate));
+            appraisalReportVO.setCalculate(calculate);
+        }
         appraisalReportVO.setPriceCapital(priceCapital);
 
         //教师手动输入数据
@@ -462,9 +462,12 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         // 六、价值评估
         returnMap.put("type", appraisalReportVO.getCalculate().getType());//价值估算方法
         Map<String, String> calculateMap = calculateService.getEstimateByType(examUser.getUserId(), examUser.getPaperId());
-        returnMap.put("price", calculateMap.get("price"));  //价格
-        returnMap.put("process", calculateMap.get("process"));//计算过程
-        returnMap.put("bigPrice", MoneyUtils.change(Double.valueOf(calculateMap.get("price"))));
+        if(null!=calculateMap){
+            returnMap.put("price", calculateMap.get("price"));  //价格
+            returnMap.put("process", calculateMap.get("process"));//计算过程
+            returnMap.put("bigPrice",calculateMap.get("price")==null?"":MoneyUtils.change(Double.valueOf(calculateMap.get("price"))));
+        }
+
         //计算过程
         returnMap.put("yearCheckDueYear", "");
         returnMap.put("yearCheckDueMonth", "");
