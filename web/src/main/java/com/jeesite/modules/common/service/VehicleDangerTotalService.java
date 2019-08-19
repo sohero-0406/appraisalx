@@ -110,10 +110,14 @@ public class VehicleDangerTotalService extends CrudService<VehicleDangerTotalDao
     @Transactional(readOnly = false)
     public CommonResult deleteVehicleDanger(String ids, boolean flag) {
         CommonResult commonResult = new CommonResult();
+        // 获取出险总表List以及其关联对象(列表)
+        String[] split = ids.split(",");
+        List<VehicleDangerTotal> vehicleDangerTotals = this.findVehicleDangerTotalById(split);
+        if (vehicleDangerTotals.size() <= 0) {
+            commonResult.setCode(CodeConstant.REQUEST_SUCCESSFUL);
+            commonResult.setMsg("空列表");
+        }
         try {
-            // 获取出险总表List以及其关联对象(列表)
-            String[] split = ids.split(",");
-            List<VehicleDangerTotal> vehicleDangerTotals = this.findVehicleDangerTotalById(split);
             vehicleDangerTotals.forEach(total -> {
                 VehicleDangerTotal vehicleDangerTotal = this.get(total.getId());
                 VehicleDanger vehicleDanger = new VehicleDanger();

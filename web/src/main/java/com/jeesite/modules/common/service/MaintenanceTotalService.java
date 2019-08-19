@@ -111,10 +111,14 @@ public class MaintenanceTotalService extends CrudService<MaintenanceTotalDao, Ma
     @Transactional(readOnly = false)
     public CommonResult deleteMaintenance(String ids, boolean flag) {
         CommonResult commonResult = new CommonResult();
+        // 根据维保记录总表list获取关联的实体对象(列表)
+        String[] split = ids.split(",");
+        List<MaintenanceTotal> maintenanceTotals = this.findMaintenanceTotalById(split);
+        if (maintenanceTotals.size() <= 0) {
+            commonResult.setCode(CodeConstant.REQUEST_SUCCESSFUL);
+            commonResult.setMsg("空列表");
+        }
         try {
-            // 根据维保记录总表list获取关联的实体对象(列表)
-            String[] split = ids.split(",");
-            List<MaintenanceTotal> maintenanceTotals = this.findMaintenanceTotalById(split);
             maintenanceTotals.forEach(total -> {
                 MaintenanceTotal maintenanceTotal = this.get(total.getId());
                 Maintenance maintenance = new Maintenance();
