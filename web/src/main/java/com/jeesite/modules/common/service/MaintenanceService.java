@@ -4,23 +4,21 @@
 package com.jeesite.modules.common.service;
 
 import com.jeesite.common.constant.CodeConstant;
+import com.jeesite.common.entity.Page;
 import com.jeesite.common.lang.StringUtils;
+import com.jeesite.common.service.CrudService;
+import com.jeesite.modules.common.dao.MaintenanceDao;
 import com.jeesite.modules.common.dao.MaintenanceTotalDao;
 import com.jeesite.modules.common.dao.MaintenanceTypeDao;
 import com.jeesite.modules.common.entity.CommonResult;
+import com.jeesite.modules.common.entity.Maintenance;
 import com.jeesite.modules.common.entity.MaintenanceTotal;
 import com.jeesite.modules.common.entity.MaintenanceType;
 import com.jeesite.modules.common.vo.MaintenanceInfoVO;
 import com.jeesite.modules.common.vo.MaintenanceRecord;
-import com.jeesite.modules.sys.utils.DictUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.jeesite.common.entity.Page;
-import com.jeesite.common.service.CrudService;
-import com.jeesite.modules.common.entity.Maintenance;
-import com.jeesite.modules.common.dao.MaintenanceDao;
 
 import java.util.List;
 
@@ -116,7 +114,7 @@ public class MaintenanceService extends CrudService<MaintenanceDao, Maintenance>
             // 学生端调用查询维保记录
             MaintenanceTotal total = maintenanceTotalDao.getByEntity(maintenanceTotal);
             if (null == total) {
-                return new CommonResult(CodeConstant.REQUEST_FAILED, "空对象");
+                return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "空对象");
             }
             maintenance.setMaintenanceTotalId(total.getId());
         } else {
@@ -124,7 +122,7 @@ public class MaintenanceService extends CrudService<MaintenanceDao, Maintenance>
         }
         List<Maintenance> maintenances = dao.findMaintenance(maintenance);
         if (maintenances.size() <= 0) {
-            return new CommonResult(CodeConstant.REQUEST_FAILED, "空列表");
+            return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "空列表");
         }
         commonResult.setData(maintenances);
         return commonResult;

@@ -3,12 +3,14 @@
  */
 package com.jeesite.modules.common.service;
 
-import java.util.List;
-
 import com.jeesite.common.constant.CodeConstant;
+import com.jeesite.common.entity.Page;
 import com.jeesite.common.lang.StringUtils;
+import com.jeesite.common.service.CrudService;
+import com.jeesite.modules.common.dao.VehicleDangerDao;
 import com.jeesite.modules.common.dao.VehicleDangerTotalDao;
 import com.jeesite.modules.common.entity.CommonResult;
+import com.jeesite.modules.common.entity.VehicleDanger;
 import com.jeesite.modules.common.entity.VehicleDangerDetail;
 import com.jeesite.modules.common.entity.VehicleDangerTotal;
 import com.jeesite.modules.common.vo.VehicleDangerInfoVO;
@@ -17,10 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jeesite.common.entity.Page;
-import com.jeesite.common.service.CrudService;
-import com.jeesite.modules.common.entity.VehicleDanger;
-import com.jeesite.modules.common.dao.VehicleDangerDao;
+import java.util.List;
 
 /**
  * 车辆出险记录表Service
@@ -113,20 +112,20 @@ public class VehicleDangerService extends CrudService<VehicleDangerDao, VehicleD
             // 学生端调用查询出险记录 根据VIN码 获取总表id
             VehicleDangerTotal totalStu = vehicleDangerTotalDao.getByEntity(vehicleDangerTotal);
             if (null == totalStu) {
-                return new CommonResult(CodeConstant.REQUEST_FAILED, "空对象");
+                return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "空对象");
             }
             vehicleDanger.setCommonVehicleDangerTotalId(totalStu.getId());
         } else {
             VehicleDangerTotal totalTea = vehicleDangerTotalService.get(vehicleDangerTotal.getId());
             if (null == totalTea) {
-                return new CommonResult(CodeConstant.REQUEST_FAILED, "空对象");
+                return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "空对象");
             }
             vinCode = totalTea.getVinCode();
             vehicleDanger.setCommonVehicleDangerTotalId(vehicleDangerTotal.getId());
         }
         List<VehicleDanger> vehicleDangers = dao.findList(vehicleDanger);
         if (vehicleDangers.size() <= 0) {
-            return new CommonResult(CodeConstant.REQUEST_FAILED, "空列表");
+            return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "空列表");
         }
         for (VehicleDanger danger : vehicleDangers) {
             if (StringUtils.isBlank(danger.getVin())) {
