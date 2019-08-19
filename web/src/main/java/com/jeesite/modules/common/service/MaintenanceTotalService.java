@@ -5,22 +5,20 @@ package com.jeesite.modules.common.service;
 
 
 import com.jeesite.common.constant.CodeConstant;
+import com.jeesite.common.entity.Page;
+import com.jeesite.common.service.CrudService;
 import com.jeesite.modules.common.dao.MaintenanceDao;
+import com.jeesite.modules.common.dao.MaintenanceTotalDao;
 import com.jeesite.modules.common.dao.MaintenanceTypeDao;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.Maintenance;
+import com.jeesite.modules.common.entity.MaintenanceTotal;
 import com.jeesite.modules.common.entity.MaintenanceType;
 import com.jeesite.modules.common.vo.MaintenanceInfoVO;
 import com.jeesite.modules.common.vo.MaintenanceRecord;
-import com.jeesite.modules.sys.utils.DictUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.jeesite.common.entity.Page;
-import com.jeesite.common.service.CrudService;
-import com.jeesite.modules.common.entity.MaintenanceTotal;
-import com.jeesite.modules.common.dao.MaintenanceTotalDao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,27 +109,43 @@ public class MaintenanceTotalService extends CrudService<MaintenanceTotalDao, Ma
      * @time: 16:56
      */
     @Transactional(readOnly = false)
-    public CommonResult deleteMaintenance(MaintenanceTotal total, boolean flag) {
+    public CommonResult deleteMaintenance(String ids, boolean flag) {
         CommonResult commonResult = new CommonResult();
         try {
-            // 根据维保记录总表获取关联的实体对象(列表)
-            MaintenanceTotal maintenanceTotal = this.get(total.getId());
-            Maintenance maintenance = new Maintenance();
-            maintenance.setMaintenanceTotalId(total.getId());
-            List<Maintenance> maintenances = maintenanceService.findList(maintenance);
-            List<MaintenanceType> maintenanceTypes = maintenanceTypeService.findListByMaintenances(maintenances);
-            // 依次删除数据记录 物理删除
-            if (flag) {
-                dao.phyDelete(maintenanceTotal);
-            }
-            maintenances.forEach(x -> maintenanceDao.phyDelete(x));
-            maintenanceTypes.forEach(x -> maintenanceTypeDao.phyDelete(x));
+            // 根据维保记录总表list获取关联的实体对象(列表)
+            String[] split = ids.split(",");
+            List<MaintenanceTotal> maintenanceTotals = this.findMaintenanceTotalById(split);
+            maintenanceTotals.forEach(total -> {
+                MaintenanceTotal maintenanceTotal = this.get(total.getId());
+                Maintenance maintenance = new Maintenance();
+                maintenance.setMaintenanceTotalId(total.getId());
+                List<Maintenance> maintenances = maintenanceService.findList(maintenance);
+                List<MaintenanceType> maintenanceTypes = maintenanceTypeService.findListByMaintenances(maintenances);
+                // 依次删除数据记录 物理删除
+                if (flag) {
+                    dao.phyDelete(maintenanceTotal);
+                }
+                maintenances.forEach(x -> maintenanceDao.phyDelete(x));
+                maintenanceTypes.forEach(x -> maintenanceTypeDao.phyDelete(x));
+            });
         } catch (Exception e) {
             commonResult.setMsg("空对象");
             commonResult.setCode(CodeConstant.REQUEST_FAILED);
             commonResult.setData(e.getMessage());
         }
         return commonResult;
+    }
+
+    /** 
+    * @description: 查询选中的维保记录列表
+    * @param: [split]
+    * @return: java.util.List<com.jeesite.modules.common.entity.MaintenanceTotal>
+    * @author: Jiangyf
+    * @date: 2019/8/19 
+    * @time: 19:02
+    */ 
+    private List<MaintenanceTotal> findMaintenanceTotalById(String[] split) {
+        return dao.findMaintenanceTotalById(split);
     }
 
     /**

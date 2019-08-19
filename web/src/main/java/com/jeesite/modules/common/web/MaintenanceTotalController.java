@@ -3,24 +3,22 @@
  */
 package com.jeesite.modules.common.web;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.jeesite.common.config.Global;
 import com.jeesite.common.constant.CodeConstant;
+import com.jeesite.common.entity.Page;
 import com.jeesite.common.lang.StringUtils;
+import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.common.entity.CommonResult;
+import com.jeesite.modules.common.entity.MaintenanceTotal;
+import com.jeesite.modules.common.service.MaintenanceTotalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import com.jeesite.common.config.Global;
-import com.jeesite.common.entity.Page;
-import com.jeesite.common.web.BaseController;
-import com.jeesite.modules.common.entity.MaintenanceTotal;
-import com.jeesite.modules.common.service.MaintenanceTotalService;
-
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -137,10 +135,10 @@ public class MaintenanceTotalController extends BaseController {
     */ 
     @RequestMapping(value = "deleteMaintenance")
     @ResponseBody
-    public CommonResult deleteMaintenance(MaintenanceTotal maintenanceTotal) {
-        if (StringUtils.isBlank(maintenanceTotal.getId())) {
+    public CommonResult deleteMaintenance(@RequestParam(value = "id") String ids) {
+        if (StringUtils.isBlank(ids)) {
             return new CommonResult(CodeConstant.REQUEST_FAILED, "参数为空");
         }
-        return maintenanceTotalService.deleteMaintenance(maintenanceTotal, true);
+        return maintenanceTotalService.deleteMaintenance(ids, true);
     }
 }

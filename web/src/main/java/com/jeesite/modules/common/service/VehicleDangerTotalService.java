@@ -4,18 +4,20 @@
 package com.jeesite.modules.common.service;
 
 import com.jeesite.common.constant.CodeConstant;
+import com.jeesite.common.entity.Page;
+import com.jeesite.common.service.CrudService;
 import com.jeesite.modules.common.dao.VehicleDangerDao;
 import com.jeesite.modules.common.dao.VehicleDangerDetailDao;
-import com.jeesite.modules.common.entity.*;
+import com.jeesite.modules.common.dao.VehicleDangerTotalDao;
+import com.jeesite.modules.common.entity.CommonResult;
+import com.jeesite.modules.common.entity.VehicleDanger;
+import com.jeesite.modules.common.entity.VehicleDangerDetail;
+import com.jeesite.modules.common.entity.VehicleDangerTotal;
 import com.jeesite.modules.common.vo.VehicleDangerInfoVO;
 import com.jeesite.modules.common.vo.VehicleDangerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.jeesite.common.entity.Page;
-import com.jeesite.common.service.CrudService;
-import com.jeesite.modules.common.dao.VehicleDangerTotalDao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,27 +108,43 @@ public class VehicleDangerTotalService extends CrudService<VehicleDangerTotalDao
      * @time: 17:32
      */
     @Transactional(readOnly = false)
-    public CommonResult deleteVehicleDanger(VehicleDangerTotal total, boolean flag) {
+    public CommonResult deleteVehicleDanger(String ids, boolean flag) {
         CommonResult commonResult = new CommonResult();
         try {
-            // 获取出险总表以及其关联对象(列表)
-            VehicleDangerTotal vehicleDangerTotal = this.get(total.getId());
-            VehicleDanger vehicleDanger = new VehicleDanger();
-            vehicleDanger.setCommonVehicleDangerTotalId(total.getId());
-            List<VehicleDanger> vehicleDangers = vehicleDangerService.findList(vehicleDanger);
-            List<VehicleDangerDetail> vehicleDangerDetails = vehicleDangerDetailService.findListByVehicleDangers(vehicleDangers);
-            // 依次执行数据删除
-            if (flag) {
-                dao.phyDelete(vehicleDangerTotal);
-            }
-            vehicleDangers.forEach(x -> vehicleDangerDao.phyDelete(x));
-            vehicleDangerDetails.forEach(x -> vehicleDangerDetailDao.phyDelete(x));
+            // 获取出险总表List以及其关联对象(列表)
+            String[] split = ids.split(",");
+            List<VehicleDangerTotal> vehicleDangerTotals = this.findVehicleDangerTotalById(split);
+            vehicleDangerTotals.forEach(total -> {
+                VehicleDangerTotal vehicleDangerTotal = this.get(total.getId());
+                VehicleDanger vehicleDanger = new VehicleDanger();
+                vehicleDanger.setCommonVehicleDangerTotalId(total.getId());
+                List<VehicleDanger> vehicleDangers = vehicleDangerService.findList(vehicleDanger);
+                List<VehicleDangerDetail> vehicleDangerDetails = vehicleDangerDetailService.findListByVehicleDangers(vehicleDangers);
+                // 依次执行数据删除
+                if (flag) {
+                    dao.phyDelete(vehicleDangerTotal);
+                }
+                vehicleDangers.forEach(x -> vehicleDangerDao.phyDelete(x));
+                vehicleDangerDetails.forEach(x -> vehicleDangerDetailDao.phyDelete(x));
+            });
         } catch (Exception e) {
             commonResult.setMsg("空对象");
             commonResult.setCode(CodeConstant.REQUEST_FAILED);
             commonResult.setData(e.getMessage());
         }
         return commonResult;
+    }
+
+    /**
+    * @description: 查询选中出险记录列表
+    * @param: [split]
+    * @return: java.util.List<com.jeesite.modules.common.entity.VehicleDangerTotal>
+    * @author: Jiangyf
+    * @date: 2019/8/19
+    * @time: 17:42
+    */
+    private List<VehicleDangerTotal> findVehicleDangerTotalById(String[] split) {
+        return dao.findVehicleDangerTotalById(split);
     }
 
     /**

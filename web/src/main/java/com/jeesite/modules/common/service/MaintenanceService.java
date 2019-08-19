@@ -183,7 +183,7 @@ public class MaintenanceService extends CrudService<MaintenanceDao, Maintenance>
             // 更新维保记录总表对象
             maintenanceTotalService.update(total);
             // 删除关联记录
-            maintenanceTotalService.deleteMaintenance(maintenanceTotalService.get(totalId), false);
+            maintenanceTotalService.deleteMaintenance(maintenanceTotalService.get(totalId).getId(), false);
         }
 
         for (MaintenanceRecord maintenanceRecord : maintenanceRecords) {

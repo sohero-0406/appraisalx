@@ -28,4 +28,18 @@
             </if>
         </where>
     </select>
+    <select id="findMaintenanceTotalById" resultType="com.jeesite.modules.common.entity.MaintenanceTotal">
+        SELECT
+            id,
+            maintenance_count,
+            vin_code,
+            model_name,
+            create_date
+        FROM
+            common_maintenance_total
+        WHERE id in
+        <foreach collection="split" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
 </mapper>

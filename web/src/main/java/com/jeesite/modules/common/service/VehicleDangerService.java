@@ -164,7 +164,7 @@ public class VehicleDangerService extends CrudService<VehicleDangerDao, VehicleD
             vehicleDangerTotalService.update(total);
             totalId = total.getId();
             // 删除关联记录
-            vehicleDangerTotalService.deleteVehicleDanger(vehicleDangerTotalService.get(total.getId()), false);
+            vehicleDangerTotalService.deleteVehicleDanger(vehicleDangerTotalService.get(totalId).getId(), false);
         }
         // 根据上述处理 获取总表最终Total对象
         VehicleDangerTotal vehicleDangerTotal = vehicleDangerTotalService.get(totalId);

@@ -19,4 +19,6 @@ import java.util.List;
 public interface MaintenanceTotalDao extends CrudDao<MaintenanceTotal> {
 
     List<MaintenanceTotal> findMaintenanceTotalList(@Param("keyword") String keyword);
+
+    List<MaintenanceTotal> findMaintenanceTotalById(@Param(value = "split") String[] split);
 }
