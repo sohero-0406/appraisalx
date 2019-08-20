@@ -135,7 +135,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 
     //查看 考试成绩列表依据考试id
 	@Transactional(readOnly=false)
-	public CommonResult getExamUserScoreList(String examId){
+	public List<ExamUser> getExamUserScoreList(String examId){
 		List<ExamUser> examUserList = dao.getExamUserScoreList(examId);
 		CommonResult comRes = new CommonResult();
 		if(CollectionUtils.isNotEmpty(examUserList)){
@@ -167,15 +167,12 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 
 						}
 					}
-					comRes.setData(examUserList);
 				}
 			}
 
 
 		}
-
-
-		return comRes;
+		return examUserList;
 	}
 
 	@Transactional
@@ -1500,7 +1497,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 	/**
 	 * 根据学生userid 考试id 查询这些学生是否在其他考试内
 	 * @param userIdList
-	 * @return
+	 * @returnuploadScore
 	 */
 	public CommonResult getExamStateByUserId(List<String> userIdList,Exam exam){
 		CommonResult comRes = new CommonResult();
