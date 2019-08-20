@@ -20,8 +20,9 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 		@Column(name="id", attrName="id", label="id", isPK=true),
 		@Column(name="score_classify_id", attrName="scoreClassifyId", label="外键id"),
 		@Column(name="exam_user_id", attrName="examUserId", label="外键id"),
+		@Column(name="score_info", attrName="scoreInfo", label="评分点分值"),
 		@Column(name="score_points", attrName="scorePoints", label="评分点"),
-		@Column(name="score", attrName="score", label="分值项-分值"),
+		@Column(name="score", attrName="score", label="所得分数"),
 		@Column(name="student_answer", attrName="studentAnswer", label="学生答案"),
 		@Column(name="teacher_answer", attrName="teacherAnswer", label="老师答案"),
 		@Column(name="right_or_wrong", attrName="rightOrWrong", label="学生回答是否正确", comment="学生回答是否正确（0正确 1错误 2未答）"),
@@ -33,6 +34,7 @@ public class ExamResultsDetail extends PreEntity<ExamResultsDetail> {
 	private static final long serialVersionUID = 1L;
 	private String scoreClassifyId;		// 外键id
 	private String examUserId;		// 外键id
+	private String scoreInfo;
 	private String scorePoints;		// 评分点
 	private String score;		// 分值项-分值
 	private String studentAnswer;		// 学生答案
@@ -73,7 +75,7 @@ public class ExamResultsDetail extends PreEntity<ExamResultsDetail> {
 		this.scorePoints = scorePoints;
 	}
 	
-	@Length(min=0, max=10, message="分值项-分值长度不能超过 10 个字符")
+	@Length(min=0, max=10, message="得分不能超过 10 个字符")
 	public String getScore() {
 		return score;
 	}
@@ -108,5 +110,13 @@ public class ExamResultsDetail extends PreEntity<ExamResultsDetail> {
 	public void setRightOrWrong(String rightOrWrong) {
 		this.rightOrWrong = rightOrWrong;
 	}
-	
+
+	@Length(min=0, max=10, message="分值项分值长度不能超过 10 个字符")
+	public String getScoreInfo() {
+		return scoreInfo;
+	}
+
+	public void setScoreInfo(String scoreInfo) {
+		this.scoreInfo = scoreInfo;
+	}
 }
