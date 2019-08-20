@@ -20,7 +20,8 @@
 		paper.name as paperName,
 		Date_Format(exam.create_date,'%Y%m%d') as createTime,
 		exam.state,
-		exam.paper_id
+		exam.paper_id,
+		exam.upload_score
 		from common_Exam as exam
 		left join aa_paper paper on exam.paper_id = paper.id
 		where exam.status = '0'

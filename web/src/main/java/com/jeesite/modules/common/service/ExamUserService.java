@@ -1545,8 +1545,8 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 			}
 		}
 		comRes.setCode(CodeConstant.UNREASONABLE_CANDIDATE_STATUS);
-		comRes.setMsg("存在不合理的考生状态");
-		comRes.setData(returnList);
+		comRes.setMsg(returnList.toString());
+		comRes.setData("");
 		return comRes;
 	}
 
