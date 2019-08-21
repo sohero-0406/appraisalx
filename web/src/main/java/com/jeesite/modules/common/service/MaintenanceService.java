@@ -114,7 +114,7 @@ public class MaintenanceService extends CrudService<MaintenanceDao, Maintenance>
             // 学生端调用查询维保记录
             MaintenanceTotal total = maintenanceTotalDao.getByEntity(maintenanceTotal);
             if (null == total) {
-                return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "空对象");
+                return new CommonResult();
             }
             maintenance.setMaintenanceTotalId(total.getId());
         } else {
@@ -122,7 +122,7 @@ public class MaintenanceService extends CrudService<MaintenanceDao, Maintenance>
         }
         List<Maintenance> maintenances = dao.findMaintenance(maintenance);
         if (maintenances.size() <= 0) {
-            return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "空列表");
+            return new CommonResult();
         }
         commonResult.setData(maintenances);
         return commonResult;

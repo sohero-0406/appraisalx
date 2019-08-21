@@ -465,11 +465,11 @@ public class ExamService extends CrudService<ExamDao, Exam> {
         map.put("commonUserId", userId);
         //考试
         if ("1".equals(type)) {
-            if (StringUtils.isBlank(vo.getAssessmentName()) ||
-                    StringUtils.isBlank(vo.getAssessmentDate()) ||
-                    StringUtils.isBlank(vo.getAssessmentTime())) {
-                return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "请求参数不全！");
-            }
+//            if (StringUtils.isBlank(vo.getAssessmentName()) ||
+//                    StringUtils.isBlank(vo.getAssessmentDate()) ||
+//                    StringUtils.isBlank(vo.getAssessmentTime())) {
+//                return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "请求参数不全！");
+//            }
             map.put("examOrPractice", "exam");
             map.put("assessmentName", vo.getAssessmentName());
             map.put("assessmentDate", vo.getAssessmentDate());

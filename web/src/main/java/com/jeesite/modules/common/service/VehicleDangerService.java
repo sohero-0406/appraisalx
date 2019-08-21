@@ -112,20 +112,20 @@ public class VehicleDangerService extends CrudService<VehicleDangerDao, VehicleD
             // 学生端调用查询出险记录 根据VIN码 获取总表id
             VehicleDangerTotal totalStu = vehicleDangerTotalDao.getByEntity(vehicleDangerTotal);
             if (null == totalStu) {
-                return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "空对象");
+                return new CommonResult();
             }
             vehicleDanger.setCommonVehicleDangerTotalId(totalStu.getId());
         } else {
             VehicleDangerTotal totalTea = vehicleDangerTotalService.get(vehicleDangerTotal.getId());
             if (null == totalTea) {
-                return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "空对象");
+                return new CommonResult();
             }
             vinCode = totalTea.getVinCode();
             vehicleDanger.setCommonVehicleDangerTotalId(vehicleDangerTotal.getId());
         }
         List<VehicleDanger> vehicleDangers = dao.findList(vehicleDanger);
         if (vehicleDangers.size() <= 0) {
-            return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "空列表");
+            return new CommonResult();
         }
         for (VehicleDanger danger : vehicleDangers) {
             if (StringUtils.isBlank(danger.getVin())) {

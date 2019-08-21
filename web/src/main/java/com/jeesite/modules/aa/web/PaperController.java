@@ -6,6 +6,7 @@ package com.jeesite.modules.aa.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.jeesite.common.cache.CacheUtils;
 import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.web.http.ServletUtils;
@@ -149,9 +150,6 @@ public class PaperController extends BaseController {
 			return new CommonResult(CodeConstant.REQUEST_FAILED, "试卷Id为空");
 		}
 		if (StringUtils.isNotBlank(examUser.getId())) {
-			// 学生
-			examUser.setPaperId(paperId);
-			ServletUtils.getRequest().getSession().setAttribute("examUser", examUser);
 			return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "试卷编辑校验通过");
 		} else {
 			// 教师
@@ -159,9 +157,9 @@ public class PaperController extends BaseController {
 			exam.setPaperId(paperId);
 			exam = paperService.findExam(exam);
 			if ((StringUtils.isBlank(exam.toString())) || (StringUtils.isNotBlank(exam.toString()) && ("1").equals(exam.getState()))) {
-				// paperId 存入Session
+				// paperId 存入缓存
 				examUser.setPaperId(paperId);
-				ServletUtils.getRequest().getSession().setAttribute("examUser", examUser);
+				CacheUtils.put("examUser", examUser.getUserId(), examUser);
 				// 该试卷未添加进考试、该试卷添加进考试 但其状态为 1   以上两种情况均可以通过编辑校验
 				return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "试卷编辑校验通过");
 			}

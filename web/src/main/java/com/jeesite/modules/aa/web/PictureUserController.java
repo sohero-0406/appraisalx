@@ -96,7 +96,7 @@ public class PictureUserController extends BaseController {
     /**
      * 查看照片
      */
-    @PostMapping(value = "findPicture")
+    @RequestMapping(value = "findPicture")
     @ResponseBody
     public CommonResult findPicture(String pictureTypeId) {
         ExamUser examUser = UserUtils.getExamUser();
@@ -112,6 +112,16 @@ public class PictureUserController extends BaseController {
         comRes.setData(pictureUserList);
         return comRes;
     }
+
+    /**
+     * 删除照片
+     */
+    @RequestMapping(value = "deletePicture")
+    @ResponseBody
+    public CommonResult deletePicture(String id) {
+        return pictureUserService.phyDelete(id);
+    }
+
 
     /**
      * 查询列表

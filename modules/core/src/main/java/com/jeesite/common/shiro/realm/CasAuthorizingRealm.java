@@ -184,10 +184,8 @@ public class CasAuthorizingRealm extends BaseAuthorizingRealm  {
 		// 单点登录登出句柄（登录时注入session），在这之前必须获取下授权信息
 		String ticket = loginInfo.getParam("ticket");
 		casOutHandler.recordSession(request, ticket);
-		//System.out.print("__sid: "+request.getSession().getId());
-		//System.out.println(" == "+UserUtils.getSession().getId());
-		
-		// 更新登录IP、时间、会话ID等
+
+        // 更新登录IP、时间、会话ID等
 		User user = UserUtils.get(loginInfo.getId());
 		getUserService().updateUserLoginInfo(user);
 		

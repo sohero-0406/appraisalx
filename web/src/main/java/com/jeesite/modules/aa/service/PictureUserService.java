@@ -3,6 +3,7 @@
  */
 package com.jeesite.modules.aa.service;
 
+import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.idgen.IdWorker;
 import com.jeesite.common.lang.StringUtils;
@@ -15,6 +16,7 @@ import com.jeesite.modules.aa.vo.PictureTypeAndUserVO;
 import com.jeesite.modules.aa.vo.PictureUserVO;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.ExamUser;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,6 +60,18 @@ public class PictureUserService extends CrudService<PictureUserDao, PictureUser>
     public CommonResult saveAndDiscernPicture(ExamUser examUser, MultipartFile picFile, String id, String pictureTypeId, String needDiscern) throws IOException {
         String examUserId = examUser.getId();
         String paperId = examUser.getPaperId();
+        //校验最多传三张图片
+        if (StringUtils.isBlank(id)) {
+            PictureUser pictureUser = new PictureUser();
+            pictureUser.setExamUserId(examUserId);
+            pictureUser.setPaperId(paperId);
+            pictureUser.setPictureTypeId(pictureTypeId);
+            List<PictureUser> list = dao.findList(pictureUser);
+            if (CollectionUtils.isNotEmpty(list) && list.size() >= 3) {
+                return new CommonResult(CodeConstant.UPLOAD_FAIL_THREE, "上传失败，图片不可多于三张！");
+            }
+        }
+
         String url = examUserId;
         if (StringUtils.isBlank(examUserId)) {
             url = paperId;
@@ -223,4 +237,19 @@ public class PictureUserService extends CrudService<PictureUserDao, PictureUser>
         return dao.getByEntity(pictureUser);
     }
 
+    /**
+     * 删除照片
+     *
+     * @param id
+     */
+    @Transactional
+    public CommonResult phyDelete(String id) {
+        if (StringUtils.isBlank(id)) {
+            return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "请求参数不全！");
+        }
+        PictureUser pictureUser = new PictureUser();
+        pictureUser.setId(id);
+        dao.phyDelete(pictureUser);
+        return new CommonResult();
+    }
 }

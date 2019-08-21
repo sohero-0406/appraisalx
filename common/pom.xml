@@ -313,6 +313,12 @@
 			<artifactId>ini4j</artifactId>
 			<version>${ini4j.version}</version>
 		</dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${jsonwebtoken.version}</version>
+        </dependency>
 		<!--<dependency>-->
 			<!--<groupId>org.apache.poi</groupId>-->
 			<!--<artifactId>poi-ooxml</artifactId>-->

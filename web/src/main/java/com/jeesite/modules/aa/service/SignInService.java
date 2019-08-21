@@ -7,8 +7,10 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import com.jeesite.common.cache.CacheUtils;
 import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.constant.ServiceConstant;
+import com.jeesite.common.utils.jwt.JwtUtils;
 import com.jeesite.common.web.http.ServletUtils;
 import com.jeesite.modules.aa.vo.LoginVO;
 import com.jeesite.modules.common.entity.CommonResult;
@@ -53,28 +55,34 @@ public class SignInService {
         String userName = vo.getUserName();
         String password = vo.getPassword();
         Map<String, String> map = new HashMap<>();
-        map.put("userName", vo.getUserName());
-        map.put("password", vo.getPassword());
+        map.put("userName", userName);
+        map.put("password", password);
         CommonResult result = httpClientService.post(ServiceConstant.COMMONUSER_TEACHER_SIDE_LOGIN, map);
         if (!CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
             return result;
         }
         JSONObject data = JSONObject.parseObject(result.getData().toString());
         String userId = data.getString("id");
+        String roleType = data.getString("roleId");
         ExamUser examUser = new ExamUser();
         examUser.setUserId(userId);
         examUser = examUserService.getAllowLogin(examUser);
         if (null == examUser) {
-            return new CommonResult(CodeConstant.EXAM_NO_ONGOING,"不存在正在进行的考试");
+            return new CommonResult(CodeConstant.EXAM_NO_ONGOING, "不存在正在进行的考试");
         }
         ExamUser sessionUser = new ExamUser();
         sessionUser.setId(examUser.getId());
         sessionUser.setUserId(examUser.getUserId());
         sessionUser.setExamId(examUser.getExamId());
         sessionUser.setStartTime(examUser.getStartTime());
-        ServletUtils.getRequest().getSession().setAttribute("examUser", sessionUser);
+        sessionUser.setRoleType(roleType);
+        String token = JwtUtils.generateToken(examUser.getUserId());
+        sessionUser.setToken(token);
+        CacheUtils.put("examUser", examUser.getUserId(), sessionUser);
         operationLogService.saveObj(sessionUser, "登录成功");
-        return new CommonResult();
+        Map<String, Object> returnMap = new HashMap<>();
+        returnMap.put("token", token);
+        return new CommonResult(returnMap);
     }
 
 
@@ -169,8 +177,8 @@ public class SignInService {
 
 
     //教师登录
-    public CommonResult commonuserTeacherSideLogin(String client,Map<String, String> map){
-        CommonResult teacherSide= httpClientService.post(client,map);
+    public CommonResult commonuserTeacherSideLogin(String client, Map<String, String> map) {
+        CommonResult teacherSide = httpClientService.post(client, map);
         return teacherSide;
     }
 

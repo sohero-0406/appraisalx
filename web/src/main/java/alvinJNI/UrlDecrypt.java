@@ -1,5 +1,7 @@
 package alvinJNI;
 
+import com.jeesite.modules.common.entity.CommonResult;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -18,7 +20,7 @@ public class UrlDecrypt {
     /**
      */
     static {
-        map.put("firstUrl", "manageMain");
+        map.put("getTex", "getTex");
         map.put("secondUrl", "manageMain");
         map.put("thirdUrl", "manageMain");
         map.put("fourUrl", "manageMain");
@@ -96,7 +98,7 @@ public class UrlDecrypt {
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public static String test2(String urlKey1, Object o, Class c, HttpServletRequest request, Class<?>[] classes, Object[] obs) {
+    public static CommonResult test2(String urlKey1, Object o, Class c, HttpServletRequest request, Class<?>[] classes, Object[] obs) {
         String urlVal1 = "";
         if (map.size() > 0) {
             urlVal1 = map.get(urlKey1);
@@ -112,15 +114,15 @@ public class UrlDecrypt {
                 }
             }
         }
-        String re = null;
+        CommonResult re;
         try {
             urlVal1 = urlVal1.substring(0, 1).toLowerCase() + urlVal1.substring(1);
             if (classes != null && classes.length > 0) {
                 Method m = c.getMethod(urlVal1, classes);
-                re = m.invoke(o, obs).toString();
+                re = (CommonResult) m.invoke(o, obs);
             } else {
                 Method m = c.getMethod(urlVal1);
-                re = m.invoke(o).toString();
+                re = (CommonResult) m.invoke(o);
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,7 +1,7 @@
 package com.jeesite.common.constant;
 
 /**
- *  接口返回状态码
+ * 接口返回状态码
  */
 public class CodeConstant {
 
@@ -35,10 +35,12 @@ public class CodeConstant {
     public static final String UNREASONABLE_CANDIDATE_STATUS = "1015";
     //所查数据不存在
     public static final String DATA_NOT_FOUND = "1016";
+    //上传失败，图片不可多于三张
+    public static final String UPLOAD_FAIL_THREE = "1017";
     //请求参数有误
     public static final String WRONG_REQUEST_PARAMETER = "1020";
     //登录超时
     public static final String LOGIN_TIMEOUT = "2000";
-
-
+    //您未注册或者系统没有检测到硬件信息，或者您破坏了注册信息
+    public static final String REGISTE_INFO_ERROR = "3000";
 }

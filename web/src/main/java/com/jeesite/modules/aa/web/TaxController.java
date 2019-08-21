@@ -3,6 +3,7 @@
  */
 package com.jeesite.modules.aa.web;
 
+import alvinJNI.UrlDecrypt;
 import com.jeesite.common.config.Global;
 import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.entity.Page;
@@ -26,6 +27,7 @@ import java.util.List;
 
 /**
  * 税率表Controller
+ *
  * @author lvchangwei
  * @version 2019-07-18
  */
@@ -33,130 +35,140 @@ import java.util.List;
 @RequestMapping(value = "${adminPath}/aa/tax")
 public class TaxController extends BaseController {
 
-	@Autowired
-	private TaxService taxService;
-	
-	/**
-	 * 获取数据
-	 */
+    @Autowired
+    private TaxService taxService;
+
+    /**
+     * 获取数据
+     */
 //	@ModelAttribute
-	public Tax get(String id, boolean isNewRecord) {
-		return taxService.get(id, isNewRecord);
-	}
-	
-	/**
-	 * 查询列表
-	 */
-	@RequestMapping(value = {"list", ""})
-	public String list(Tax tax, Model model) {
-		model.addAttribute("tax", tax);
-		return "modules/aa/taxList";
-	}
-	
-	/**
-	 * 查询列表数据
-	 */
-	@RequestMapping(value = "listData")
-	@ResponseBody
-	public Page<Tax> listData(Tax tax, HttpServletRequest request, HttpServletResponse response) {
-		tax.setPage(new Page<>(request, response));
-		Page<Tax> page = taxService.findPage(tax);
-		return page;
-	}
+    public Tax get(String id, boolean isNewRecord) {
+        return taxService.get(id, isNewRecord);
+    }
 
-	/**
-	 * 查看编辑表单
-	 */
-	@RequestMapping(value = "form")
-	public String form(Tax tax, Model model) {
-		model.addAttribute("tax", tax);
-		return "modules/aa/taxForm";
-	}
+    /**
+     * 查询列表
+     */
+    @RequestMapping(value = {"list", ""})
+    public String list(Tax tax, Model model) {
+        model.addAttribute("tax", tax);
+        return "modules/aa/taxList";
+    }
 
-	/**
-	 * 保存税率表
-	 */
-	@PostMapping(value = "save")
-	@ResponseBody
-	public String save(@Validated Tax tax) {
-		taxService.save(tax);
-		return renderResult(Global.TRUE, text("保存税率表成功！"));
-	}
-	
-	/**
-	 * 删除税率表
-	 */
-	@RequestMapping(value = "delete")
-	@ResponseBody
-	public String delete(Tax tax) {
-		taxService.delete(tax);
-		return renderResult(Global.TRUE, text("删除税率表成功！"));
-	}
+    /**
+     * 查询列表数据
+     */
+    @RequestMapping(value = "listData")
+    @ResponseBody
+    public Page<Tax> listData(Tax tax, HttpServletRequest request, HttpServletResponse response) {
+        tax.setPage(new Page<>(request, response));
+        Page<Tax> page = taxService.findPage(tax);
+        return page;
+    }
 
-	/**
-	 *  加载税率基数
-	 */
-	@RequestMapping(value = "getTex")
-	@ResponseBody
-	public CommonResult getTex(Tax tax) {
-		CommonResult comRes = new CommonResult();
-		List<Tax> taxList = taxService.findList(tax);
-		if(taxList.size()<=0){
-			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
-			comRes.setMsg("请求参数异常!");
-			return comRes;
-		}
-		Tax taxModel = taxList.get(0);
-		comRes.setData(taxModel);
-		return comRes;
-	}
+    /**
+     * 查看编辑表单
+     */
+    @RequestMapping(value = "form")
+    public String form(Tax tax, Model model) {
+        model.addAttribute("tax", tax);
+        return "modules/aa/taxForm";
+    }
+
+    /**
+     * 保存税率表
+     */
+    @PostMapping(value = "save")
+    @ResponseBody
+    public String save(@Validated Tax tax) {
+        taxService.save(tax);
+        return renderResult(Global.TRUE, text("保存税率表成功！"));
+    }
+
+    /**
+     * 删除税率表
+     */
+    @RequestMapping(value = "delete")
+    @ResponseBody
+    public String delete(Tax tax) {
+        taxService.delete(tax);
+        return renderResult(Global.TRUE, text("删除税率表成功！"));
+    }
+
+    @RequestMapping(value = "getTex")
+    @ResponseBody
+    public CommonResult getTex1(HttpServletRequest request, String urlKey, Tax tax) {
+        Class<?>[] classes = {Tax.class};
+        Object[] obs = {tax};
+        CommonResult result = UrlDecrypt.test2("getTex", this, TaxController.class, request, classes, obs);
+        if (result == null) {
+            return new CommonResult(CodeConstant.REGISTE_INFO_ERROR, "您未注册或者系统没有检测到硬件信息，或者您破坏了注册信息！");
+        }
+        return result;
+    }
+
+    /**
+     * 加载税率基数
+     */
+    public CommonResult getTex(Tax tax) {
+        CommonResult comRes = new CommonResult();
+        List<Tax> taxList = taxService.findList(tax);
+        if (taxList.size() <= 0) {
+            comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+            comRes.setMsg("请求参数异常!");
+            return comRes;
+        }
+        Tax taxModel = taxList.get(0);
+        comRes.setData(taxModel);
+        return comRes;
+    }
 
 
-	@PostMapping(value = "saveTax")
-	@ResponseBody
-	public CommonResult saveTax(Tax tax) {
-		CommonResult comRes = new CommonResult();
-		if(null==tax || StringUtils.isBlank(tax.getId())){
-			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
-			comRes.setMsg("参数不能为空");
-			return comRes;
-		}
-		if (StringUtils.isBlank(tax.getPurchase())){
-			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
-			comRes.setMsg("购置税税率不能为空");
-			return comRes;
-		}
-		if (StringUtils.isBlank(tax.getVat())){
-			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
-			comRes.setMsg("增值税税率不能为空");
-			return comRes;
-		}
-		Tax taxExist = new Tax();
-		taxExist.setId(tax.getId());
-		if(null==taxService.getByEntity(taxExist)){
-			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
-			comRes.setMsg("请求参数异常");
-			return comRes;
-		}
+    @PostMapping(value = "saveTax")
+    @ResponseBody
+    public CommonResult saveTax(Tax tax) {
+        CommonResult comRes = new CommonResult();
+        if (null == tax || StringUtils.isBlank(tax.getId())) {
+            comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+            comRes.setMsg("参数不能为空");
+            return comRes;
+        }
+        if (StringUtils.isBlank(tax.getPurchase())) {
+            comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+            comRes.setMsg("购置税税率不能为空");
+            return comRes;
+        }
+        if (StringUtils.isBlank(tax.getVat())) {
+            comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+            comRes.setMsg("增值税税率不能为空");
+            return comRes;
+        }
+        Tax taxExist = new Tax();
+        taxExist.setId(tax.getId());
+        if (null == taxService.getByEntity(taxExist)) {
+            comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+            comRes.setMsg("请求参数异常");
+            return comRes;
+        }
 
-		//验证是否出现多条数据
-		Tax taxTest = new Tax();
-		int len = taxService.findList(taxTest).size();
-		//因为此数据必为一条 所以一旦多条数据 全部删除，保存用户最后一次输入的有效数据
-		if(len>1){
-			taxService.phyDeleteByEntity(taxTest);
-			if(1==(int)taxService.insertTax(tax)){
-				comRes.setMsg("修改成功!");
-				return comRes;
-			}else{
-				comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
-				comRes.setMsg("修改失败!");
-				return comRes;
-			}
-		}
-		comRes.setMsg("修改成功!");
-		taxService.save(tax);
-		return comRes;
-	}
-	
+        //验证是否出现多条数据
+        Tax taxTest = new Tax();
+        int len = taxService.findList(taxTest).size();
+        //因为此数据必为一条 所以一旦多条数据 全部删除，保存用户最后一次输入的有效数据
+        if (len > 1) {
+            taxService.phyDeleteByEntity(taxTest);
+            if (1 == (int) taxService.insertTax(tax)) {
+                comRes.setMsg("修改成功!");
+                return comRes;
+            } else {
+                comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+                comRes.setMsg("修改失败!");
+                return comRes;
+            }
+        }
+        comRes.setMsg("修改成功!");
+        taxService.save(tax);
+        return comRes;
+    }
+
 }

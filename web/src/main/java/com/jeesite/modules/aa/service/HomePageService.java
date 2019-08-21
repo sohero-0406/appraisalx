@@ -2,6 +2,7 @@ package com.jeesite.modules.aa.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.jeesite.common.cache.CacheUtils;
 import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.constant.ServiceConstant;
 import com.jeesite.common.lang.StringUtils;
@@ -169,17 +170,16 @@ public class HomePageService {
             if (null == examUser.getStartTime()) {
                 examUser.setStartTime(new Date());
                 examUserService.save(examUser);
-                //更新session
-                ServletUtils.getRequest().getSession().setAttribute("examUser", examUser);
+                //更新缓存
+                CacheUtils.put("examUser", examUser.getUserId(), examUser);
             }
         } else {
             //教师
             Paper paper = new Paper();
             paper.setState("1");
             paperService.save(paper);
-            examUser = (ExamUser)ServletUtils.getRequest().getSession().getAttribute("examUser");
             examUser.setPaperId(paper.getId());
-            ServletUtils.getRequest().getSession().setAttribute("examUser", examUser);
+            CacheUtils.put("examUser", examUser.getUserId(), examUser);
         }
     }
 }

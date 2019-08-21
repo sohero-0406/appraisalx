@@ -52,6 +52,7 @@ public class ExamUser extends PreEntity<ExamUser> {
 	private Boolean isSelect;    //是否选中
 	//大平台--教师角色
 	private String roleType;
+	private String token;        //token
 
 
 	public ExamUser() {
@@ -208,5 +209,13 @@ public class ExamUser extends PreEntity<ExamUser> {
 
 	public void setRoleType(String roleType) {
 		this.roleType = roleType;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 }

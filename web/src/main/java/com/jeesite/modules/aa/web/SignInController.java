@@ -5,6 +5,7 @@ import com.jeesite.common.cache.CacheUtils;
 import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.constant.ServiceConstant;
 import com.jeesite.common.lang.StringUtils;
+import com.jeesite.common.utils.jwt.JwtUtils;
 import com.jeesite.common.web.http.ServletUtils;
 import com.jeesite.modules.aa.service.SignInService;
 import com.jeesite.modules.aa.vo.BaseVO;
@@ -53,7 +54,7 @@ public class SignInController {
     @RequestMapping(value = "timeout")
     @ResponseBody
     public CommonResult timeout() {
-        return new CommonResult(CodeConstant.LOGIN_TIMEOUT,"登录超时");
+        return new CommonResult(CodeConstant.LOGIN_TIMEOUT, "登录超时");
     }
 
 
@@ -62,15 +63,15 @@ public class SignInController {
      */
     @RequestMapping(value = "generateQrCode")
     @ResponseBody
-    public CommonResult generateQrCode(){
+    public CommonResult generateQrCode() {
         CommonResult comRes = new CommonResult();
         String uuid = UUID.randomUUID().toString();
-        String url = "localhost:8980/appraisal/test/testData/getDate3"+"?uuid="+uuid;
+        String url = "localhost:8980/appraisal/test/testData/getDate3" + "?uuid=" + uuid;
         int width = 300;
         int height = 300;
         String logoPath = "E:/ray.jpg";
         BaseVO baseVO = new BaseVO();
-        baseVO.setBase(signInService.generateQrCode(url,width,height,logoPath).replaceAll("\r|\n", ""));
+        baseVO.setBase(signInService.generateQrCode(url, width, height, logoPath).replaceAll("\r|\n", ""));
         baseVO.setUuid(uuid);
         comRes.setData(baseVO);
         return comRes;
@@ -79,77 +80,86 @@ public class SignInController {
 
     /**
      * 扫码
+     *
      * @param uuid
      * @return
      */
     @RequestMapping(value = "sweepTheYard")
     @ResponseBody
-    public CommonResult  sweepTheYard(String uuid) {
+    public CommonResult sweepTheYard(String uuid) {
         ExamUser examUser = UserUtils.getExamUser();
-        CacheUtils.put(uuid,examUser);
+        CacheUtils.put(uuid, examUser);
         return new CommonResult();
     }
 
     /**
      * 二维码请求登陆
+     *
      * @param uuid
      * @return
      */
     @RequestMapping(value = "sweepCodeLanding")
     @ResponseBody
-    public CommonResult  getUUid(String uuid) {
+    public CommonResult getUUid(String uuid) {
         CommonResult comRes = new CommonResult();
         ExamUser examUser = CacheUtils.get(uuid);
         //判断是否为空，并判断是否存在
-        if(null==examUser){
+        if (null == examUser) {
             comRes.setCode(CodeConstant.REQUEST_FAILED);
             comRes.setMsg("请扫码登录!");
             return comRes;
         }
-        if(signInService.judgmentExist(examUser)){
+        if (signInService.judgmentExist(examUser)) {
             comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
             comRes.setMsg("请求用户不存在!");
             return comRes;
         }
-        ServletUtils.getRequest().getSession().setAttribute("examUser",examUser);
+        Map<String, Object> returnMap = new HashMap<>();
+        returnMap.put("token", examUser.getToken());
+        comRes.setData(returnMap);
         return comRes;
 
     }
 
     /**
      * 教师端登陆
+     *
      * @param userName
      * @param password
      * @return
      */
     @RequestMapping(value = "teacherlogin")
     @ResponseBody
-    public CommonResult login(String userName,String password) {
+    public CommonResult login(String userName, String password) {
         CommonResult comRes = new CommonResult();
         Map<String, String> map = new HashMap<>();
-        map.put("userName",userName);
-        map.put("password",password);
-        CommonResult teacherSide= signInService.commonuserTeacherSideLogin(ServiceConstant.COMMONUSER_TEACHER_SIDE_LOGIN,map);
-        if(!CodeConstant.REQUEST_SUCCESSFUL.equals(teacherSide.getCode())){
+        map.put("userName", userName);
+        map.put("password", password);
+        CommonResult teacherSide = signInService.commonuserTeacherSideLogin(ServiceConstant.COMMONUSER_TEACHER_SIDE_LOGIN, map);
+        if (!CodeConstant.REQUEST_SUCCESSFUL.equals(teacherSide.getCode())) {
             return teacherSide;
         }
 
         ExamUser examUser = new ExamUser();
         JSONObject json = JSONObject.parseObject(teacherSide.getData().toString());
-        if(StringUtils.isBlank(json.toString())){
+        if (StringUtils.isBlank(json.toString())) {
             comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
             comRes.setMsg("用户不存在!");
             return comRes;
         }
-        if("3".equals(json.getString("roleId"))){
+        if ("3".equals(json.getString("roleId"))) {
             comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
             comRes.setMsg("考生不允许登录!");
             return comRes;
         }
         examUser.setUserId(json.getString("id"));
-        ServletUtils.getRequest().getSession().setAttribute("examUser",examUser);
-        Map<String,Object> returnMap = new HashMap();
-        returnMap.put("roleType",json.getString("isExamRight"));
+        examUser.setRoleType(json.getString("roleId"));
+        String token = JwtUtils.generateToken(examUser.getUserId());
+        examUser.setToken(token);
+        CacheUtils.put("examUser", examUser.getUserId(), examUser);
+        Map<String, Object> returnMap = new HashMap<>();
+        returnMap.put("roleType", json.getString("isExamRight"));
+        returnMap.put("token", token);
         comRes.setData(returnMap);
         return comRes;
     }
