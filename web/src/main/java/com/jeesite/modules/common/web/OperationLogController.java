@@ -104,13 +104,13 @@ public class OperationLogController extends BaseController {
 	 */
 	@RequestMapping(value = "getOperationLog")
 	@ResponseBody
-	public CommonResult getOperationLog(String keyword,HttpServletResponse response) {
+	public CommonResult getOperationLog(String keyword) {
 		CommonResult comRes = new CommonResult();
 		//判断数据是否为空
 		if(StringUtils.isNotBlank(keyword)){
 			keyword = keyword.replace(".","-");
 		}
-		comRes.setData(operationLogService.getOperationLog(keyword));
+		comRes.setData(operationLogService.getOperationLog(keyword,null));
 		return comRes;
 	}
 
@@ -119,13 +119,18 @@ public class OperationLogController extends BaseController {
 	 */
 	@RequestMapping(value = "exportOperationLog")
 	@ResponseBody
-	public void exportOperationLog(String keyword,HttpServletResponse response) {
+	public void exportOperationLog(String keyword,String operationLogIds,HttpServletResponse response) {
 		CommonResult comRes = new CommonResult();
+		if(StringUtils.isBlank(operationLogIds)){
+			comRes.setMsg("请先在左侧选择需要导出的日志!");
+			return;
+		}
+		String[] idList = operationLogIds.split(",");
 		//判断数据是否为空
 		if(StringUtils.isNotBlank(keyword)){
 			keyword = keyword.replace(".","-");
 		}
-		List<OperationLog> list = operationLogService.getOperationLog(keyword);
+		List<OperationLog> list = operationLogService.getOperationLog(keyword,idList);
 		String fileName = "操作日志" + DateUtils.getDate("yyyyMMddHHmmss") + ".xlsx";
 		try(ExcelExport ee = new ExcelExport("操作日志", OperationLog.class)) {
 			ee.setDataList(list).write(response, fileName);

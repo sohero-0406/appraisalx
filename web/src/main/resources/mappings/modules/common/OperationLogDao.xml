@@ -14,6 +14,7 @@
 
 	<select id="getOperationLog" resultType="OperationLog">
 		select
+		id,
 		login_name,
 		request_ip,
 		DATE_FORMAT(create_date,'%Y.%m.%d %H:%i') operatingTime,
@@ -24,6 +25,13 @@
 			<if test="keyword != null and keyword!= ''">
 				AND CONCAT(login_name, request_ip,operating_content,create_date) LIKE CONCAT('%',#{keyword},'%')
 			</if>
+			<if test="idList != null and idList.length > 0">
+				and id in
+				<foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+					#{id}
+				</foreach>
+			</if>
+
 		</where>
 	</select>
 

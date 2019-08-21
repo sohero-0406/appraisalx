@@ -78,8 +78,8 @@ public class OperationLogService extends CrudService<OperationLogDao, OperationL
 
 	//查询操作日志（包含模糊查询）
 	@Transactional(readOnly=false)
-	public List<OperationLog> getOperationLog(String keyword) {
-		return dao.getOperationLog(keyword);
+	public List<OperationLog> getOperationLog(String keyword,String[] idList) {
+		return dao.getOperationLog(keyword,idList);
 	}
 
     public void saveObj(ExamUser examUser, String msg) {

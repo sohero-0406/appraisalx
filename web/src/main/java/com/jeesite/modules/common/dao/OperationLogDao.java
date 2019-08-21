@@ -17,5 +17,5 @@ import java.util.List;
  */
 @MyBatisDao
 public interface OperationLogDao extends CrudDao<OperationLog> {
-	List<OperationLog> getOperationLog(@Param("keyword") String keyword);
+	List<OperationLog> getOperationLog(@Param("keyword") String keyword,@Param("idList")String[] idList);
 }
