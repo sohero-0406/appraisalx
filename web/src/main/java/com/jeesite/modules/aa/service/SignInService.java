@@ -97,10 +97,16 @@ public class SignInService {
         BitMatrix bitMatrix = null;
         try {
             bitMatrix = new MultiFormatWriter().encode(url, BarcodeFormat.QR_CODE, width, height, hints);
+            BufferedImage image = toBufferedImage(bitMatrix);
+            ImageIO.write(image, "png", os);
+            resultImage = new String("data:image/png;base64," + Base64.encode(os.toByteArray()));
         } catch (WriterException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        resultImage = writeToFile(bitMatrix, logoPath, os);
+//        resultImage = writeToFile(bitMatrix, logoPath, os);
+
         return resultImage;
     }
 
