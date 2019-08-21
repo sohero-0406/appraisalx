@@ -43,7 +43,7 @@ public class DownloadWordUtils {
             response.reset();//重置 响应头
             response.setContentType("application/x-download");//告知浏览器下载文件，而不是直接打开，浏览器默认为打开
             response.addHeader("Content-Disposition" ,"attachment;filename=\"" +finalFileName+ "\"");//下载文件的名称
-
+            response.setHeader("Access-Control-Allow-Origin","");
             // 循环取出流中的数据
             byte[] b = new byte[1024];
             int len;
