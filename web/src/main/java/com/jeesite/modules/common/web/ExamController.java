@@ -3,6 +3,7 @@
  */
 package com.jeesite.modules.common.web;
 
+import com.jeesite.common.cache.CacheUtils;
 import com.jeesite.common.config.Global;
 import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.entity.Page;
@@ -214,8 +215,8 @@ public class ExamController extends BaseController {
             exam.setId(examUser.getExamId());
             exam.setEndTime(new Date());
             examService.save(exam);
-            // 清除Session
-            ServletUtils.getRequest().getSession().removeAttribute("examUser");
+            // 清除缓存
+            CacheUtils.remove("examUser", examUser.getUserId());
         } else {
             // 教师
             Paper paper = new Paper();
