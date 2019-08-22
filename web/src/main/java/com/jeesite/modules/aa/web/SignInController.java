@@ -88,7 +88,7 @@ public class SignInController {
     @ResponseBody
     public CommonResult sweepTheYard(String uuid) {
         ExamUser examUser = UserUtils.getExamUser();
-        CacheUtils.put(uuid, examUser);
+        CacheUtils.put("uuid",uuid, examUser);
         return new CommonResult();
     }
 
@@ -98,11 +98,11 @@ public class SignInController {
      * @param uuid
      * @return
      */
-    @RequestMapping(value = "sweepCodeLanding")
+    @RequestMapping(value = "sweepCodeLandingStu")
     @ResponseBody
-    public CommonResult getUUid(String uuid) {
+    public CommonResult sweepCodeLandingStu(String uuid) {
         CommonResult comRes = new CommonResult();
-        ExamUser examUser = CacheUtils.get(uuid);
+        ExamUser examUser = CacheUtils.get("uuid",uuid);
         //判断是否为空，并判断是否存在
         if (null == examUser) {
             comRes.setCode(CodeConstant.REQUEST_FAILED);
@@ -116,10 +116,13 @@ public class SignInController {
         }
         Map<String, Object> returnMap = new HashMap<>();
         returnMap.put("token", examUser.getToken());
+        returnMap.put("roleType",examUser.getRoleType()); //教师登录才有
         comRes.setData(returnMap);
+        CacheUtils.remove("uuid",uuid);
         return comRes;
 
     }
+
 
     /**
      * 教师端登陆
@@ -139,7 +142,6 @@ public class SignInController {
         if (!CodeConstant.REQUEST_SUCCESSFUL.equals(teacherSide.getCode())) {
             return teacherSide;
         }
-
         ExamUser examUser = new ExamUser();
         JSONObject json = JSONObject.parseObject(teacherSide.getData().toString());
         if (StringUtils.isBlank(json.toString())) {
