@@ -14,6 +14,9 @@ public class ServiceConstant {
     //通过userid 查询学生信息
     public static final String DERIVE_STUDENT_ACHIEVEMENT = "/common/commonUser/loadStuListByIds";
 
+    //通过userid 查询人员信息
+    public static final String DERIVE_STUDENT_LOADCOMMONUSER = "/common/commonUser/loadCommonUser";
+
     //添加学生，查询学生列表
     public static final String COMMONUSER_LOAD_STU_LIST_IN_PLATFORM = "/common/commonUser/loadStuListInPlatform";
 

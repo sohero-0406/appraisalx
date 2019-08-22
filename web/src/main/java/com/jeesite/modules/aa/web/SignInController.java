@@ -1,5 +1,6 @@
 package com.jeesite.modules.aa.web;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.cache.CacheUtils;
 import com.jeesite.common.constant.CodeConstant;
@@ -98,9 +99,9 @@ public class SignInController {
      * @param uuid
      * @return
      */
-    @RequestMapping(value = "sweepCodeLandingStu")
+    @RequestMapping(value = "sweepCodeLanding")
     @ResponseBody
-    public CommonResult sweepCodeLandingStu(String uuid) {
+    public CommonResult sweepCodeLanding(String uuid) {
         CommonResult comRes = new CommonResult();
         ExamUser examUser = CacheUtils.get("uuid",uuid);
         //判断是否为空，并判断是否存在
@@ -109,14 +110,25 @@ public class SignInController {
             comRes.setMsg("请扫码登录!");
             return comRes;
         }
-        if (signInService.judgmentExist(examUser)) {
+        if (StringUtils.isBlank(examUser.getUserId())) {
+            comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+            comRes.setMsg("请求用户不存在!");
+            return comRes;
+        }
+
+        CommonResult result = signInService.judgmentExist(examUser.getUserId());
+        if(!CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())){
+            return result;
+        }
+        if(null==result.getData()){
             comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
             comRes.setMsg("请求用户不存在!");
             return comRes;
         }
         Map<String, Object> returnMap = new HashMap<>();
         returnMap.put("token", examUser.getToken());
-        returnMap.put("roleType",examUser.getRoleType()); //教师登录才有
+        returnMap.put("roleType",((JSONObject)result.getData()).getString("isExamRight")); //教师登录才有
+        returnMap.put("roleId",((JSONObject)result.getData()).getString("roleId")); //教师登录才有
         comRes.setData(returnMap);
         CacheUtils.remove("uuid",uuid);
         return comRes;

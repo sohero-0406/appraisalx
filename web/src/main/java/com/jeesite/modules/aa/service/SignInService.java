@@ -168,19 +168,11 @@ public class SignInService {
     }
 
     //判断考生是否存在 type 判断学生、老师
-    public Boolean judgmentExist(ExamUser examUser) {
-
-        if(StringUtils.isBlank(examUser.getUserId()) || examUser.getUserId().split(",").length>1){
-            return true;
-        }
+    public CommonResult judgmentExist(String userId) {
         Map<String,String> map = new HashMap<>();
-        map.put("ids",examUser.getUserId());
-        CommonResult result = httpClientService.post(ServiceConstant.DERIVE_STUDENT_ACHIEVEMENT, map);
-        if(CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode()) &&  ((JSONArray)result.getData()).size()!=0){
-            return false;
-        }else{
-            return true;
-        }
+        map.put("id",userId);
+        CommonResult result = httpClientService.post(ServiceConstant.DERIVE_STUDENT_LOADCOMMONUSER, map);
+        return result;
     }
 
 
