@@ -223,7 +223,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
             } else {
                 appraisalNum = 1;
             }
-            delegateUser.setAppraisalNum(String.format("%8d", appraisalNum).replace(" ", "0"));
+            delegateUser.setAppraisalNum(String.format("%08d", appraisalNum));
             delegateUserService.save(delegateUser);
         }
     }
