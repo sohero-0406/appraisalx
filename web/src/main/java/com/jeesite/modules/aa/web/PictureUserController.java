@@ -114,6 +114,15 @@ public class PictureUserController extends BaseController {
     }
 
     /**
+     * 查看照片通过 PictureUserId
+     */
+    @RequestMapping(value = "findPictureByPictureUserId")
+    @ResponseBody
+    public CommonResult findPictureByPictureUserId(String pictureUserId) {
+        return new CommonResult(pictureUserService.get(pictureUserId));
+    }
+
+    /**
      * 删除照片
      */
     @RequestMapping(value = "deletePicture")
