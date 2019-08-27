@@ -131,6 +131,7 @@ public class SignInController {
         returnMap.put("roleId",((JSONObject)result.getData()).getString("roleId")); //教师登录才有
         comRes.setData(returnMap);
         CacheUtils.remove("uuid",uuid);
+
         return comRes;
 
     }
@@ -168,6 +169,7 @@ public class SignInController {
         }
         examUser.setUserId(json.getString("id"));
         examUser.setRoleType(json.getString("roleId"));
+        examUser.setUserNum(userName);
         String token = JwtUtils.generateToken(examUser.getUserId());
         examUser.setToken(token);
         CacheUtils.put("examUser", examUser.getUserId(), examUser);

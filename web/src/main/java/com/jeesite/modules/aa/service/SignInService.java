@@ -78,6 +78,7 @@ public class SignInService {
         sessionUser.setExamId(examUser.getExamId());
         sessionUser.setStartTime(examUser.getStartTime());
         sessionUser.setRoleType(roleType);
+        sessionUser.setUserNum(userName);
         String token = JwtUtils.generateToken(examUser.getUserId());
         sessionUser.setToken(token);
         CacheUtils.put("examUser", examUser.getUserId(), sessionUser);
