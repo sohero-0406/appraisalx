@@ -5,6 +5,7 @@ package com.jeesite.modules.aa.web;
 
 import com.jeesite.common.config.Global;
 import com.jeesite.common.entity.Page;
+import com.jeesite.common.utils.BASE64DecodedMultipartFile;
 import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.aa.entity.PictureUser;
 import com.jeesite.modules.aa.service.PictureUserService;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import sun.misc.BASE64Decoder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -62,6 +64,27 @@ public class PictureUserController extends BaseController {
         ExamUser examUser = UserUtils.getExamUser();
         return pictureUserService.saveAndDiscernPicture(examUser, picFile, id, pictureTypeId, needDiscern);
     }
+
+    @RequestMapping(value = "uploadPictureByBase")
+    @ResponseBody
+    public CommonResult uploadPictureByBase(String base64,String pictureUserId) throws IOException {
+        ExamUser examUser = UserUtils.getExamUser();
+
+        String[] baseStr = base64.split(",");
+
+        BASE64Decoder decoder = new BASE64Decoder();
+        byte[] b = new byte[0];
+        b = decoder.decodeBuffer(baseStr[1]);
+
+        for(int i = 0; i < b.length; ++i) {
+            if (b[i] < 0) {
+                b[i] += 256;
+            }
+        }
+        MultipartFile multipartFile =new BASE64DecodedMultipartFile(b, baseStr[0]);
+        return pictureUserService.saveAndDiscernPicture(examUser, multipartFile, pictureUserId, "1143436249238634496", "0");
+   }
+
 
     /**
      * 加载图库数据
