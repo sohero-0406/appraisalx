@@ -6,6 +6,7 @@ package com.jeesite.modules.aa.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import alvinJNI.UrlDecrypt;
 import com.jeesite.common.cache.CacheUtils;
 import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.lang.StringUtils;
@@ -14,6 +15,7 @@ import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.Exam;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.utils.UserUtils;
+import com.jeesite.modules.common.web.MaintenanceTotalController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -100,6 +102,18 @@ public class PaperController extends BaseController {
 		return renderResult(Global.TRUE, text("删除试卷成功！"));
 	}
 
+    @RequestMapping(value = "getPaperList")
+    @ResponseBody
+    public CommonResult getPaperList1(HttpServletRequest request, String keyword) {
+        Class<?>[] classes = {String.class};
+        Object[] obs = {keyword};
+        CommonResult result = UrlDecrypt.test2("getPaperList", this, PaperController.class, request, classes, obs);
+        if (result == null) {
+            return new CommonResult(CodeConstant.REGISTE_INFO_ERROR, "您未注册或者系统没有检测到硬件信息，或者您破坏了注册信息！");
+        }
+        return result;
+    }
+
 	/** 
 	* @description: 查询试卷列表
 	* @param: [keyword]
@@ -107,10 +121,8 @@ public class PaperController extends BaseController {
 	* @author: Jiangyf
 	* @date: 2019/8/12 
 	* @time: 13:37
-	*/ 
-	@RequestMapping(value = "getPaperList")
-	@ResponseBody
-	public CommonResult findPaper(String keyword) {
+	*/
+    public CommonResult getPaperList(String keyword) {
 		CommonResult comRes = new CommonResult();
 		List<Paper> paperList = paperService.findPaper(keyword);
 		comRes.setData(paperList);

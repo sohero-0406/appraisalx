@@ -3,11 +3,13 @@
  */
 package com.jeesite.modules.common.web;
 
+import alvinJNI.UrlDecrypt;
 import com.jeesite.common.config.Global;
 import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.web.BaseController;
+import com.jeesite.modules.aa.web.ReferenceController;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.MaintenanceTotal;
 import com.jeesite.modules.common.service.MaintenanceTotalService;
@@ -91,6 +93,18 @@ public class MaintenanceTotalController extends BaseController {
         return renderResult(Global.TRUE, text("删除车辆维保总表成功！"));
     }
 
+    @RequestMapping(value = "findMaintenanceTotalList")
+    @ResponseBody
+    public CommonResult findMaintenanceTotalList1(HttpServletRequest request, String keyword) {
+        Class<?>[] classes = {String.class};
+        Object[] obs = {keyword};
+        CommonResult result = UrlDecrypt.test2("findMaintenanceTotalList", this, MaintenanceTotalController.class, request, classes, obs);
+        if (result == null) {
+            return new CommonResult(CodeConstant.REGISTE_INFO_ERROR, "您未注册或者系统没有检测到硬件信息，或者您破坏了注册信息！");
+        }
+        return result;
+    }
+
     /** 
     * @description: 加载维保记录全表
     * @param: [keyword]
@@ -99,8 +113,6 @@ public class MaintenanceTotalController extends BaseController {
     * @date: 2019/8/12 
     * @time: 11:27
     */
-    @RequestMapping(value = "findMaintenanceTotalList")
-    @ResponseBody
     public CommonResult findMaintenanceTotalList(String keyword) {
         CommonResult comRes = new CommonResult();
         List<MaintenanceTotal> maintenanceTotals = maintenanceTotalService.findMaintenanceTotalList(keyword);

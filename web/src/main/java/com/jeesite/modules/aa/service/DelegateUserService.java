@@ -17,91 +17,97 @@ import java.util.Date;
 
 /**
  * 委托方信息Service
+ *
  * @author chenlitao
  * @version 2019-06-29
  */
 @Service
-@Transactional(readOnly=true)
+@Transactional(readOnly = true)
 public class DelegateUserService extends CrudService<DelegateUserDao, DelegateUser> {
 
-	@Autowired
-	private DelegateUserDao delegateUserDao;
-	
-	/**
-	 * 获取单条数据
-	 * @param delegateUser
-	 * @return
-	 */
-	@Override
-	public DelegateUser get(DelegateUser delegateUser) {
-		return super.get(delegateUser);
-	}
-	
-	/**
-	 * 查询分页数据
-	 * @param delegateUser 查询条件
-	 * @return
-	 */
-	@Override
-	public Page<DelegateUser> findPage(DelegateUser delegateUser) {
-		return super.findPage(delegateUser);
-	}
-	
-	/**
-	 * 保存数据（插入或更新）
-	 * @param delegateUser
-	 */
-	@Override
-	@Transactional(readOnly=false)
-	public void save(DelegateUser delegateUser) {
-		super.save(delegateUser);
-	}
-	
-	/**
-	 * 更新状态
-	 * @param delegateUser
-	 */
-	@Override
-	@Transactional(readOnly=false)
-	public void updateStatus(DelegateUser delegateUser) {
-		super.updateStatus(delegateUser);
-	}
-	
-	/**
-	 * 删除数据
-	 * @param delegateUser
-	 */
-	@Override
-	@Transactional(readOnly=false)
-	public void delete(DelegateUser delegateUser) {
-		super.delete(delegateUser);
-	}
+    @Autowired
+    private DelegateUserDao delegateUserDao;
+
+    /**
+     * 获取单条数据
+     *
+     * @param delegateUser
+     * @return
+     */
+    @Override
+    public DelegateUser get(DelegateUser delegateUser) {
+        return super.get(delegateUser);
+    }
+
+    /**
+     * 查询分页数据
+     *
+     * @param delegateUser 查询条件
+     * @return
+     */
+    @Override
+    public Page<DelegateUser> findPage(DelegateUser delegateUser) {
+        return super.findPage(delegateUser);
+    }
+
+    /**
+     * 保存数据（插入或更新）
+     *
+     * @param delegateUser
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public void save(DelegateUser delegateUser) {
+        super.save(delegateUser);
+    }
+
+    /**
+     * 更新状态
+     *
+     * @param delegateUser
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public void updateStatus(DelegateUser delegateUser) {
+        super.updateStatus(delegateUser);
+    }
+
+    /**
+     * 删除数据
+     *
+     * @param delegateUser
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public void delete(DelegateUser delegateUser) {
+        super.delete(delegateUser);
+    }
 
 
-	public DelegateUser getByEntity(DelegateUser delegateUser) {
-		return dao.getByEntity(delegateUser);
-	}
+    public DelegateUser getByEntity(DelegateUser delegateUser) {
+        return dao.getByEntity(delegateUser);
+    }
 
-	/**
-	 * 查询最大委托书编号
-	 */
-	public String findEntrustNumMAX(DelegateUser delegateUser){
-		return delegateUserDao.findEntrustNumMAX(delegateUser);
-	}
+    /**
+     * 查询最大委托书编号
+     */
+    public String findEntrustNumMAX(DelegateUser delegateUser) {
+        return delegateUserDao.findEntrustNumMAX(delegateUser);
+    }
 
-	/**
-	 * 生成委托书编号
-	 */
-	@Transactional(readOnly=false)
+    /**
+     * 生成委托书编号
+     */
+    @Transactional(readOnly = false)
     public void createDelegateLetterNum(DelegateUser delegateUser) {
-		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
-		delegateUser.setEntrustDay(df.format(new Date()));
-		Integer entrustNum;
-		if(StringUtils.isNotBlank(findEntrustNumMAX(delegateUser))){
-			entrustNum = Integer.parseInt(findEntrustNumMAX(delegateUser)) + 1;
-		}else{
-			entrustNum = 1;
-		}
-		delegateUser.setEntrustNum(String.format("%08d", entrustNum));
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+        delegateUser.setEntrustDay(df.format(new Date()));
+        Integer entrustNum;
+        if (StringUtils.isNotBlank(findEntrustNumMAX(delegateUser))) {
+            entrustNum = Integer.parseInt(findEntrustNumMAX(delegateUser)) + 1;
+        } else {
+            entrustNum = 1;
+        }
+        delegateUser.setEntrustNum(String.format("%08d", entrustNum));
     }
 }

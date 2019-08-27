@@ -21,10 +21,11 @@ public class UrlDecrypt {
      */
     static {
         map.put("getTex", "getTex");
-        map.put("secondUrl", "manageMain");
-        map.put("thirdUrl", "manageMain");
-        map.put("fourUrl", "manageMain");
-        map.put("fiveUrl", "manageMain");
+        map.put("findReferenceList", "findReferenceList");
+        map.put("findMaintenanceTotalList", "findMaintenanceTotalList");
+        map.put("findVehicleDangerTotalList", "findVehicleDangerTotalList");
+        map.put("getPaperList", "getPaperList");
+        map.put("getExamInfo", "getExamInfo");
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})

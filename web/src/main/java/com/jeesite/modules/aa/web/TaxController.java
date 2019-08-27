@@ -97,7 +97,7 @@ public class TaxController extends BaseController {
 
     @RequestMapping(value = "getTex")
     @ResponseBody
-    public CommonResult getTex1(HttpServletRequest request, String urlKey, Tax tax) {
+    public CommonResult getTex1(HttpServletRequest request, Tax tax) {
         Class<?>[] classes = {Tax.class};
         Object[] obs = {tax};
         CommonResult result = UrlDecrypt.test2("getTex", this, TaxController.class, request, classes, obs);

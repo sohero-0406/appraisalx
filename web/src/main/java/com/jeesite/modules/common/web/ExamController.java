@@ -3,6 +3,7 @@
  */
 package com.jeesite.modules.common.web;
 
+import alvinJNI.UrlDecrypt;
 import com.jeesite.common.cache.CacheUtils;
 import com.jeesite.common.config.Global;
 import com.jeesite.common.constant.CodeConstant;
@@ -14,6 +15,7 @@ import com.jeesite.common.web.http.ServletUtils;
 import com.jeesite.modules.Application;
 import com.jeesite.modules.aa.entity.Paper;
 import com.jeesite.modules.aa.vo.ExamVO;
+import com.jeesite.modules.aa.web.PaperController;
 import com.jeesite.modules.aa.word.Nb;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.Exam;
@@ -108,11 +110,21 @@ public class ExamController extends BaseController {
         return renderResult(Global.TRUE, text("删除common_exam成功！"));
     }
 
+    @RequestMapping(value = "getExamInfo")
+    @ResponseBody
+    public CommonResult getExamInfo1(HttpServletRequest request, String keyword, String type) {
+        Class<?>[] classes = {String.class, String.class};
+        Object[] obs = {keyword, type};
+        CommonResult result = UrlDecrypt.test2("getExamInfo", this, ExamController.class, request, classes, obs);
+        if (result == null) {
+            return new CommonResult(CodeConstant.REGISTE_INFO_ERROR, "您未注册或者系统没有检测到硬件信息，或者您破坏了注册信息！");
+        }
+        return result;
+    }
+
     /**
      * 获取考试信息 (type 1考试 2练习)
      */
-    @RequestMapping(value = "getExamInfo")
-    @ResponseBody
     public CommonResult getExamInfo(String keyword, String type) {
         CommonResult comRes = new CommonResult();
         if (StringUtils.isBlank(type)) {
@@ -222,7 +234,7 @@ public class ExamController extends BaseController {
             Paper paper = new Paper();
             paper.setId(examUser.getPaperId());
             // 修改试卷状态 教师端结束考试后 试卷可启用
-            paper.setState("0");
+            paper.setStatus("0");
             examService.endExamTea(paper);
         }
         return new CommonResult();

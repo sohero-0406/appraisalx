@@ -1,7 +1,9 @@
 package com.jeesite.modules.common.filter;
 
+import com.jeesite.common.cache.CacheUtils;
 import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.utils.jwt.JwtUtils;
+import com.jeesite.modules.common.entity.ExamUser;
 import io.jsonwebtoken.Claims;
 import org.springframework.stereotype.Component;
 
@@ -46,7 +48,13 @@ public class TokenFilter implements Filter {
             if (claims == null || JwtUtils.isTokenExpired(claims.getExpiration())) {
                 httpServletRequest.getRequestDispatcher("/aa/signIn/timeout").forward(httpServletRequest, httpServletResponse);
             } else {
-                filterChain.doFilter(servletRequest, servletResponse);
+                String userId = claims.getSubject();
+                ExamUser examUser = CacheUtils.get("examUser", userId);
+                if (null == examUser) {
+                    httpServletRequest.getRequestDispatcher("/aa/signIn/timeout").forward(httpServletRequest, httpServletResponse);
+                } else {
+                    filterChain.doFilter(servletRequest, servletResponse);
+                }
             }
         }
     }
