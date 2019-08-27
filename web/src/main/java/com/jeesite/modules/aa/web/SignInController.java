@@ -178,4 +178,18 @@ public class SignInController {
         return comRes;
     }
 
+
+    /**
+     * 教师 注销登录
+     */
+    @RequestMapping(value = "cancellation")
+    @ResponseBody
+    public CommonResult cancellation(){
+        ExamUser examUser = UserUtils.getExamUser();
+        String userId = examUser.getUserId();
+        CacheUtils.remove("examUser",userId);
+        return new CommonResult();
+    }
+
+
 }
