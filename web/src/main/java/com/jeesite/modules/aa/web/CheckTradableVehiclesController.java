@@ -123,6 +123,7 @@ public class CheckTradableVehiclesController extends BaseController {
         ExamUser examUser = UserUtils.getExamUser();
         CheckTradableVehicles checkTradableVehicles = new CheckTradableVehicles();
         checkTradableVehicles.setExamUserId(examUser.getId());
+        checkTradableVehicles.setPaperId(examUser.getPaperId());
         checkTradableVehicles = checkTradableVehiclesService.getByEntity(checkTradableVehicles);
         CommonResult result = new CommonResult();
         result.setData(checkTradableVehicles);
