@@ -187,7 +187,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         delegateLetterVO.setCarInfo(carInfo);
 
         PictureUser pictureUser = new PictureUser();
-        pictureUser.setExamUserId(examUser.getExamId());
+        pictureUser.setExamUserId(examUser.getId());
         pictureUser.setPaperId(examUser.getPaperId());
         pictureUser.setPictureTypeId("1143436249238634496");
         pictureUser = pictureUserService.getByEntity(pictureUser);
