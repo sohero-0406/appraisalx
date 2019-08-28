@@ -143,11 +143,13 @@ public class HomePageService {
                 temp.setVehicleGradeAssess(vehicleGradeAssess);
 
                 Map<String, String> map = new HashMap<>();
-                map.put("chexingId", carInfo.getModel());
-                CommonResult result = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_CAR_MODEL, map);
-                if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
-                    JSONObject vehicleInfo = JSONObject.parseObject(result.getData().toString());
-                    temp.setVehicleInfo(vehicleInfo);
+                if(StringUtils.isNotBlank(carInfo.getModel())){
+                    map.put("chexingId", carInfo.getModel());
+                    CommonResult result = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_CAR_MODEL, map);
+                    if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
+                        JSONObject vehicleInfo = JSONObject.parseObject(result.getData().toString());
+                        temp.setVehicleInfo(vehicleInfo);
+                    }
                 }
                 list.add(temp);
 

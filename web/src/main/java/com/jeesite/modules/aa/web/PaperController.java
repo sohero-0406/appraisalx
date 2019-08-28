@@ -168,7 +168,7 @@ public class PaperController extends BaseController {
 			Exam exam = new Exam();
 			exam.setPaperId(paperId);
 			exam = paperService.findExam(exam);
-			if ((StringUtils.isBlank(exam.toString())) || (StringUtils.isNotBlank(exam.toString()) && ("1").equals(exam.getState()))) {
+			if ( null==exam ||(StringUtils.isBlank(exam.toString())) || (StringUtils.isNotBlank(exam.toString()) && ("1").equals(exam.getState()))) {
 				// paperId 存入缓存
 				examUser.setPaperId(paperId);
 				CacheUtils.put("examUser", examUser.getUserId(), examUser);

@@ -145,7 +145,6 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
      */
     public CommonResult findDelegateLetter(ExamUser examUser) {
         DelegateLetterVO delegateLetterVO = new DelegateLetterVO();
-
         DelegateLetter delegateLetter = new DelegateLetter();
         //考生
         if (StringUtils.isNotBlank(examUser.getExamId())) {
