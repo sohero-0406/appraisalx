@@ -114,6 +114,7 @@ public class DelegateLetterController extends BaseController {
 		ExamUser examUser = UserUtils.getExamUser();
 		delegateLetter.setPaperId(examUser.getPaperId());
 		delegateLetterService.save(delegateLetter);
+		delegateLetterService.savePivture(examUser);
 		return new CommonResult();
 	}
 

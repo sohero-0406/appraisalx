@@ -42,6 +42,7 @@
 			<id property="id" column="userId"></id>
 			<result property="name" column="userName"></result>
 			<result property="choose" column="choose"></result>
+			<result property="pictureTypeId" column="typeId"></result>
 		</collection>
 	</resultMap>
 
@@ -80,11 +81,12 @@
 		select
 			user.id,
 			user.name,
+		    user.picture_type_id,
 			 IF(file.id IS NOT NULL,1,0) as choose
 			from
 			aa_picture_user user
 			left join aa_place_file file on file.picture_user_id = user.id
-			where user.picture_type_id  in ('1152466716125380608','1152467065519292416','1152467158926442496')
+			where user.picture_type_id  in ('1152466716125380608','1152467065519292416','1152467158926442496','1152467158926442434')
 			<if test="id != null and id != ''">
 				and user.exam_user_id = #{id}
 			</if>

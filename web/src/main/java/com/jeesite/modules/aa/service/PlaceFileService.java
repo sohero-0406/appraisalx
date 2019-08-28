@@ -114,10 +114,11 @@ public class PlaceFileService extends CrudService<PlaceFileDao, PlaceFile> {
 		pictureUser.setPictureId("1143446339264172032"); //鉴定技术状况
 		pictureUser.setName("鉴定技术状况");
 		pictureUser.setItemList(pictureUserListIdentification);
-		//报告
+		//报告 文件预览
 		List<PictureUser> pictureUserPlace = dao.selectPlace(examUser);
 		pictureUserList.add(pictureUser);
 		pictureUserList.addAll(pictureUserPlace);
+
 
 		CheckTradableVehicles checkTradableVehicles = new CheckTradableVehicles();
 		checkTradableVehicles.setExamUserId(examUser.getId());
