@@ -123,18 +123,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         super.delete(delegateLetter);
     }
 
-    /**
-     * 保存委托书图片类型
-     * @return
-     */
-    @Transactional(readOnly = false)
-    public void savePivture(ExamUser examUser) {
-        PictureUser pictureUser = new PictureUser();
-        pictureUser.setPaperId(examUser.getPaperId());
-        pictureUser.setExamUserId(examUser.getId());
-        pictureUser.setPictureTypeId("1152466716125380608");
-        pictureUserService.save(pictureUser);
-    }
+
 
     public DelegateLetter getByEntity(DelegateLetter delegateLetter) {
         return dao.getByEntity(delegateLetter);
