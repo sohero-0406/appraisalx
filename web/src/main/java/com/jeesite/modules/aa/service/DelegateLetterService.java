@@ -171,7 +171,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         delegateLetterVO.setDelegateUser(delegateUser);
 
         CarInfo carInfo = new CarInfo();
-        carInfo.setExamUserId(examUser.getExamId());
+        carInfo.setExamUserId(examUser.getId());
         carInfo.setPaperId(examUser.getPaperId());
         carInfo = carInfoService.getByEntity(carInfo);
         carInfo.setColor(DictUtils.getDictLabel("aa_vehicle_color", carInfo.getColor(), ""));

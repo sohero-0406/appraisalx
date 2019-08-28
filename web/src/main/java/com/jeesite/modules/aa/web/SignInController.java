@@ -182,7 +182,7 @@ public class SignInController {
 
 
     /**
-     * 教师 注销登录
+     * 注销登录
      */
     @RequestMapping(value = "cancellation")
     @ResponseBody
