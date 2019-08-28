@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.constant.ServiceConstant;
 import com.jeesite.common.entity.Page;
+import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.service.CrudService;
 import com.jeesite.common.utils.MoneyUtils;
 import com.jeesite.common.utils.download.DownloadWordUtils;
@@ -22,7 +23,6 @@ import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.service.ExamService;
 import com.jeesite.modules.common.service.HttpClientService;
 import com.jeesite.modules.sys.utils.DictUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -130,12 +130,20 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
     /**
      * 查询单个委托书信息
      */
-    public DelegateLetterVO findDelegateLetter(ExamUser examUser) {
-
+    public CommonResult findDelegateLetter(ExamUser examUser) {
         DelegateLetterVO delegateLetterVO = new DelegateLetterVO();
 
         DelegateLetter delegateLetter = new DelegateLetter();
-        delegateLetter.setPaperId(examUser.getPaperId());
+        //考生
+        if (StringUtils.isNotBlank(examUser.getExamId())) {
+            Exam exam = examService.get(examUser.getExamId());
+            if (null == exam) {
+                return new CommonResult(CodeConstant.DATA_NOT_FOUND, "您所查询的考试不存在!");
+            }
+            delegateLetter.setPaperId(exam.getPaperId());
+        } else {
+            delegateLetter.setPaperId(examUser.getPaperId());
+        }
         delegateLetter = this.getByEntity(delegateLetter);
         delegateLetterVO.setDelegateLetter(delegateLetter);
 
@@ -172,7 +180,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         pictureUser = pictureUserService.getByEntity(pictureUser);
         delegateLetterVO.setPictureUser(pictureUser);
 
-        return delegateLetterVO;
+        return new CommonResult(delegateLetterVO);
     }
 
     /**
@@ -307,7 +315,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         vehicleGradeAssess.setPaperId(examUser.getPaperId());
         vehicleGradeAssess = vehicleGradeAssessService.getByEntity(vehicleGradeAssess);
         //设置技术状况
-        if(StringUtils.isNotBlank(vehicleGradeAssess.getTechnicalStatus())){
+        if (StringUtils.isNotBlank(vehicleGradeAssess.getTechnicalStatus())) {
             vehicleGradeAssess.setTechnicalStatus(DictUtils.getDictLabel("aa_technical_status", vehicleGradeAssess.getTechnicalStatus(), ""));
         }
 
@@ -322,7 +330,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         calculate.setPaperId(examUser.getPaperId());
         calculate = calculateService.getByEntity(calculate);
         //设置算法类型
-        if(calculate!=null){
+        if (calculate != null) {
             calculate.setType(calculateService.getType(calculate));
             appraisalReportVO.setCalculate(calculate);
         }
@@ -462,10 +470,10 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         // 六、价值评估
         returnMap.put("type", appraisalReportVO.getCalculate().getType());//价值估算方法
         Map<String, String> calculateMap = calculateService.getEstimateByType(examUser.getUserId(), examUser.getPaperId());
-        if(null!=calculateMap){
+        if (null != calculateMap) {
             returnMap.put("price", calculateMap.get("price"));  //价格
             returnMap.put("process", calculateMap.get("process"));//计算过程
-            returnMap.put("bigPrice",calculateMap.get("price")==null?"":MoneyUtils.change(Double.valueOf(calculateMap.get("price"))));
+            returnMap.put("bigPrice", calculateMap.get("price") == null ? "" : MoneyUtils.change(Double.valueOf(calculateMap.get("price"))));
         }
 
         //计算过程

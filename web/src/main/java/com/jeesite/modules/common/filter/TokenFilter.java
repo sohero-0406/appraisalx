@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-//@Component
-//@WebFilter(urlPatterns = "/*", filterName = "tokenFilter")
+@Component
+@WebFilter(urlPatterns = "/*", filterName = "tokenFilter")
 public class TokenFilter implements Filter {
 
     @Override

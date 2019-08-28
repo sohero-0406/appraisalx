@@ -24,23 +24,22 @@ public class UserUtils {
             token = request.getParameter(JwtUtils.getHeader());
         }
         if (StringUtils.isEmpty(token)) {
-            //学生
-            ExamUser examUser = new ExamUser();
-            examUser.setId("1");
-            examUser.setUserId("667");
-            examUser.setExamId("1");
-            //教师
-//            examUser.setPaperId("1");
+//            //学生
+//            ExamUser examUser = new ExamUser();
+//            examUser.setId("1");
 //            examUser.setUserId("667");
-            return examUser;
+//            examUser.setExamId("1");
+//            //教师
+////            examUser.setPaperId("1");
+////            examUser.setUserId("667");
+//            return examUser;
 
             //todo
-//            return null;
+            return null;
         }
         Claims claims = JwtUtils.getClaimByToken(token);
         String userId = claims.getSubject();
-        ExamUser examUser = CacheUtils.get("examUser", userId);
-        return examUser;
+        return CacheUtils.get("examUser", userId);
     }
 
 }

@@ -28,12 +28,12 @@ public class RegisterUtil {
 
     // 运华科技：汽车智能化设备安装调试虚拟训练平台
     public static String outsideProductSerialNumber = "YHKJ1974D19V1.0";// 外部产品序列号(明文)-程序打包之前公司服务器端提供
-    public static String insideProductSerialNumber = "13FECAC0EBD1A8F4C9DC99AAED54011BDAFD0A479F27A6B5DC822423E8948DCD";// 内部产品序列号(密文)-程序打包之前公司服务器端提供
-    public static String insideKey = "DIQHTLNZ";// 内部序列号解密密钥-程序打包之前公司服务器端提供
+    public static String insideProductSerialNumber = "D3F80AEDF21848DF0373A538A4DA7F3A54804731BDA233BC21540286BE865E3F";// 内部产品序列号(密文)-程序打包之前公司服务器端提供
+    public static String insideKey = "RLM4XS1X";// 内部序列号解密密钥-程序打包之前公司服务器端提供
     public static Integer DevID = 1497912136;// 加密锁开发商ID
     public static Integer ProID = 0xFFFFFFFF;// 加密锁产品ID
     public static String userpwd = "b8v6n7x9";// 加密锁登录密码
-    public static String filename = "DIQHTLNZ.evx";// 加密锁内部文件名称
+    public static String filename = "RLM4XS1X.evx";// 加密锁内部文件名称
     public static Integer devindex = 0;// 加密锁顺序号
 
     /**

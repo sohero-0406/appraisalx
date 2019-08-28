@@ -102,9 +102,7 @@ public class DelegateLetterController extends BaseController {
 	@ResponseBody
 	public CommonResult findDelegateLetter() {
 		ExamUser examUser = UserUtils.getExamUser();
-		CommonResult comRes = new CommonResult();
-		comRes.setData(delegateLetterService.findDelegateLetter(examUser));
-		return comRes;
+		return new CommonResult(delegateLetterService.findDelegateLetter(examUser));
 	}
 
 	/**
