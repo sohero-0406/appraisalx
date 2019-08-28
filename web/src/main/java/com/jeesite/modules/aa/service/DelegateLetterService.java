@@ -161,7 +161,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         delegateLetterVO.setDelegateLetter(delegateLetter);
 
         DelegateUser delegateUser = new DelegateUser();
-        delegateUser.setExamUserId(examUser.getExamId());
+        delegateUser.setExamUserId(examUser.getId());
         delegateUser.setPaperId(examUser.getPaperId());
         delegateUser = delegateUserService.getByEntity(delegateUser);
         if (StringUtils.isNotBlank(delegateUser.getCompleteDate())) {
