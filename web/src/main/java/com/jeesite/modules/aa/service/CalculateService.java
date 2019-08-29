@@ -141,25 +141,27 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
         CalculateKm calculateKm = new CalculateKm();
         CalculateReplaceCost calculateReplaceCost = new CalculateReplaceCost();
         CalculateCurrent calculateCurrent = new CalculateCurrent();
-        switch (calculate.getType()) {
-            case "1"://折旧率估值法
-                calculateDepreciation.setCalculateId(calculate.getId());
-                vo.setCalculateDepreciation(calculateDepreciationService.getByEntity(calculateDepreciation));
-                break;
-            case "2"://公里数估值法
-                calculateKm.setCalculateId(calculate.getId());
-                vo.setCalculateKm(calculateKmService.getByEntity(calculateKm));
-                break;
-            case "3"://重置成本法
-                calculateReplaceCost.setCalculateId(calculate.getId());
-                vo.setCalculateReplaceCost(calculateReplaceCostService.getByEntity(calculateReplaceCost));
-                break;
-            case "4"://现行市价法
-                calculateCurrent.setCalculateId(calculate.getId());
-                vo.setCalculateCurrent(calculateCurrentService.getByEntity(calculateCurrent));
-                break;
+        if(null!=calculate){
+            switch (calculate.getType()) {
+                case "1"://折旧率估值法
+                    calculateDepreciation.setCalculateId(calculate.getId());
+                    vo.setCalculateDepreciation(calculateDepreciationService.getByEntity(calculateDepreciation));
+                    break;
+                case "2"://公里数估值法
+                    calculateKm.setCalculateId(calculate.getId());
+                    vo.setCalculateKm(calculateKmService.getByEntity(calculateKm));
+                    break;
+                case "3"://重置成本法
+                    calculateReplaceCost.setCalculateId(calculate.getId());
+                    vo.setCalculateReplaceCost(calculateReplaceCostService.getByEntity(calculateReplaceCost));
+                    break;
+                case "4"://现行市价法
+                    calculateCurrent.setCalculateId(calculate.getId());
+                    vo.setCalculateCurrent(calculateCurrentService.getByEntity(calculateCurrent));
+                    break;
+            }
         }
-        return vo;
+      return vo;
     }
 
     /**
