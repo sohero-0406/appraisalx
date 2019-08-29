@@ -411,10 +411,11 @@ public class ExamService extends CrudService<ExamDao, Exam> {
      * @date: 2019/8/10
      * @time: 16:09
      */
+    @Transactional(readOnly = false)
     public void endExamTea(Paper paper) {
         paperService.save(paper);
     }
-
+    @Transactional(readOnly = false)
     public CommonResult uploadScore(String examId) {
         if (StringUtils.isBlank(examId)) {
             return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "请求参数不全！");
