@@ -204,10 +204,9 @@ public class PaperController extends BaseController {
         }
         if ("1".equals(paper.getState())) {
             paper.setState("0");
-        }
-        if ("0".equals(paper.getState())) {
-            paper.setState("1");
-        }
+        }else{
+			paper.setState("1");
+		}
         paperService.save(paper);
         return new CommonResult(paper.getState());
     }
