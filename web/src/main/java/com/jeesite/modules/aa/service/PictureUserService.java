@@ -238,6 +238,16 @@ public class PictureUserService extends CrudService<PictureUserDao, PictureUser>
     }
 
     /**
+     * 批量删除
+     */
+    @Transactional(readOnly = false)
+    public CommonResult deletePictureUseIds(String ids){
+        String [] pictureIds = ids.split(",");
+        dao.deletePictureUseIds(pictureIds);
+        return new CommonResult();
+    }
+
+    /**
      * 删除照片
      *
      * @param id

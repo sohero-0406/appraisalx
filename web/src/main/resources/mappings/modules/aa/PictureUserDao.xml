@@ -70,4 +70,16 @@
 			</if>
 		</where>
 	</select>
+	
+	<delete id="deletePictureUseIds">
+		delete from aa_picture_user
+		<where>
+			<if test="ids != null and ids.length > 0">
+				and id in
+				<foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+					#{id}
+				</foreach>
+			</if>
+		</where>
+	</delete>
 </mapper>

@@ -8,6 +8,7 @@ import com.jeesite.common.mybatis.annotation.MyBatisDao;
 import com.jeesite.modules.aa.entity.PictureUser;
 import com.jeesite.modules.aa.vo.PictureTypeAndUserVO;
 import com.jeesite.modules.common.entity.ExamUser;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public interface PictureUserDao extends CrudDao<PictureUser> {
      * @param pictureTypeIds 图片类型代号
      * @return 返回所有类型的图片信息
      */
-	List<PictureUser> findPictureList(ExamUser examUser, String[] pictureTypeIds);
+	List<PictureUser> findPictureList(@Param("examUser") ExamUser examUser, @Param("pictureTypeIds") String[] pictureTypeIds);
 
 	/**
 	 * 根据考试id和父图片类型ids加载图片信息
@@ -41,4 +42,9 @@ public interface PictureUserDao extends CrudDao<PictureUser> {
 	 * @return
 	 */
 	List<PictureUser> findListByExamUserIdAndParentTypeId(ExamUser examUser, String[] parentTypeIds);
+
+	/**
+	 * 批量删除
+	 */
+	void deletePictureUseIds(@Param("ids") String[] ids);
 }

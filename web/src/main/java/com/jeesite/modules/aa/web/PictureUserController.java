@@ -4,7 +4,9 @@
 package com.jeesite.modules.aa.web;
 
 import com.jeesite.common.config.Global;
+import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.entity.Page;
+import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.utils.BASE64DecodedMultipartFile;
 import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.aa.entity.PictureUser;
@@ -152,6 +154,20 @@ public class PictureUserController extends BaseController {
     @ResponseBody
     public CommonResult deletePicture(String id) {
         return pictureUserService.phyDelete(id);
+    }
+
+    /**
+     * 批量删
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "deletePictures")
+    @ResponseBody
+    public CommonResult deletePictures(String ids) {
+       if(StringUtils.isBlank(ids)){
+           return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER,"请选择需要删除的图片!");
+       }
+       return pictureUserService.deletePictureUseIds(ids);
     }
 
 
