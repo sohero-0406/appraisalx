@@ -45,8 +45,6 @@ public class ExamUserController extends BaseController {
 
     @Autowired
     private ExamUserService examUserService;
-    @Autowired
-    private ExamService examService;
 
     /**
      * 获取数据
