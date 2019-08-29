@@ -35,6 +35,7 @@ import java.util.List;
 
 /**
  * 试卷Controller
+ *
  * @author lvchangwei
  * @version 2019-07-16
  */
@@ -42,65 +43,65 @@ import java.util.List;
 @RequestMapping(value = "${adminPath}/aa/paper")
 public class PaperController extends BaseController {
 
-	@Autowired
-	private PaperService paperService;
-	
-	/**
-	 * 获取数据
-	 */
-	@ModelAttribute
-	public Paper get(String id, boolean isNewRecord) {
-		return paperService.get(id, isNewRecord);
-	}
-	
-	/**
-	 * 查询列表
-	 */
-	@RequestMapping(value = {"list", ""})
-	public String list(Paper paper, Model model) {
-		model.addAttribute("paper", paper);
-		return "modules/aa/paperList";
-	}
-	
-	/**
-	 * 查询列表数据
-	 */
-	@RequestMapping(value = "listData")
-	@ResponseBody
-	public Page<Paper> listData(Paper paper, HttpServletRequest request, HttpServletResponse response) {
-		paper.setPage(new Page<>(request, response));
-		Page<Paper> page = paperService.findPage(paper);
-		return page;
-	}
+    @Autowired
+    private PaperService paperService;
 
-	/**
-	 * 查看编辑表单
-	 */
-	@RequestMapping(value = "form")
-	public String form(Paper paper, Model model) {
-		model.addAttribute("paper", paper);
-		return "modules/aa/paperForm";
-	}
+    /**
+     * 获取数据
+     */
+    @ModelAttribute
+    public Paper get(String id, boolean isNewRecord) {
+        return paperService.get(id, isNewRecord);
+    }
 
-	/**
-	 * 保存试卷
-	 */
-	@PostMapping(value = "save")
-	@ResponseBody
-	public String save(@Validated Paper paper) {
-		paperService.save(paper);
-		return renderResult(Global.TRUE, text("保存试卷成功！"));
-	}
-	
-	/**
-	 * 删除试卷
-	 */
-	@RequestMapping(value = "delete")
-	@ResponseBody
-	public String delete(Paper paper) {
-		paperService.delete(paper);
-		return renderResult(Global.TRUE, text("删除试卷成功！"));
-	}
+    /**
+     * 查询列表
+     */
+    @RequestMapping(value = {"list", ""})
+    public String list(Paper paper, Model model) {
+        model.addAttribute("paper", paper);
+        return "modules/aa/paperList";
+    }
+
+    /**
+     * 查询列表数据
+     */
+    @RequestMapping(value = "listData")
+    @ResponseBody
+    public Page<Paper> listData(Paper paper, HttpServletRequest request, HttpServletResponse response) {
+        paper.setPage(new Page<>(request, response));
+        Page<Paper> page = paperService.findPage(paper);
+        return page;
+    }
+
+    /**
+     * 查看编辑表单
+     */
+    @RequestMapping(value = "form")
+    public String form(Paper paper, Model model) {
+        model.addAttribute("paper", paper);
+        return "modules/aa/paperForm";
+    }
+
+    /**
+     * 保存试卷
+     */
+    @PostMapping(value = "save")
+    @ResponseBody
+    public String save(@Validated Paper paper) {
+        paperService.save(paper);
+        return renderResult(Global.TRUE, text("保存试卷成功！"));
+    }
+
+    /**
+     * 删除试卷
+     */
+    @RequestMapping(value = "delete")
+    @ResponseBody
+    public String delete(Paper paper) {
+        paperService.delete(paper);
+        return renderResult(Global.TRUE, text("删除试卷成功！"));
+    }
 
     @RequestMapping(value = "getPaperList")
     @ResponseBody
@@ -114,68 +115,88 @@ public class PaperController extends BaseController {
         return result;
     }
 
-	/** 
-	* @description: 查询试卷列表
-	* @param: [keyword]
-	* @return: com.jeesite.modules.common.entity.CommonResult
-	* @author: Jiangyf
-	* @date: 2019/8/12 
-	* @time: 13:37
-	*/
+    /**
+     * @description: 查询试卷列表
+     * @param: [keyword]
+     * @return: com.jeesite.modules.common.entity.CommonResult
+     * @author: Jiangyf
+     * @date: 2019/8/12
+     * @time: 13:37
+     */
     public CommonResult getPaperList(String keyword) {
-		CommonResult comRes = new CommonResult();
-		List<Paper> paperList = paperService.findPaper(keyword);
-		comRes.setData(paperList);
-		return comRes;
-	}
+        CommonResult comRes = new CommonResult();
+        List<Paper> paperList = paperService.findPaper(keyword);
+        comRes.setData(paperList);
+        return comRes;
+    }
 
 
-	/**
-	 * 删除试卷
-	 */
-	@RequestMapping(value = "deletePaper")
-	@ResponseBody
-	public CommonResult deletePaper(Paper paper) {
-		if(paper.getId().isEmpty()){
-			CommonResult comRes = new CommonResult();
-			comRes.setCode("1010");
-			comRes.setMsg("未传入ID");
-			return comRes;
-		}
-		paperService.delete(paper);
-		return new CommonResult();
-	}
+    /**
+     * 删除试卷
+     */
+    @RequestMapping(value = "deletePaper")
+    @ResponseBody
+    public CommonResult deletePaper(Paper paper) {
+        if (paper.getId().isEmpty()) {
+            CommonResult comRes = new CommonResult();
+            comRes.setCode("1010");
+            comRes.setMsg("未传入ID");
+            return comRes;
+        }
+        paperService.delete(paper);
+        return new CommonResult();
+    }
 
-	/** 
-	* @description: 试卷编辑校验
-	* @param: [paperId]
-	* @return: com.jeesite.modules.common.entity.CommonResult
-	* @author: Jiangyf
-	* @date: 2019/8/10 
-	* @time: 17:41
-	*/
-	@RequestMapping(value = "paperEditCheck")
-	@ResponseBody
-	public CommonResult paperEditCheck(String paperId) {
-		ExamUser examUser = UserUtils.getExamUser();
-		if (StringUtils.isBlank(paperId)) {
-			return new CommonResult(CodeConstant.REQUEST_FAILED, "试卷Id为空");
-		}
-		if (StringUtils.isNotBlank(examUser.getId())) {
-			return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "试卷编辑校验通过");
-		} else {
-			// 教师
-			Exam exam = new Exam();
-			exam.setPaperId(paperId);
-			exam = paperService.findExam(exam);
-			if ( null==exam ||(StringUtils.isBlank(exam.toString())) || (StringUtils.isNotBlank(exam.toString()) && ("1").equals(exam.getState()))) {
-				// paperId 存入缓存
-				examUser.setPaperId(paperId);
-				CacheUtils.put("examUser", examUser.getUserId(), examUser);
-				// 该试卷未添加进考试、该试卷添加进考试 但其状态为 1   以上两种情况均可以通过编辑校验
-				return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "试卷编辑校验通过");
-			}
-			return new CommonResult(CodeConstant.REQUEST_FAILED, "当前试卷被占用，不可进行编辑");
-		}
-	}
+    /**
+     * @description: 试卷编辑校验
+     * @param: [paperId]
+     * @return: com.jeesite.modules.common.entity.CommonResult
+     * @author: Jiangyf
+     * @date: 2019/8/10
+     * @time: 17:41
+     */
+    @RequestMapping(value = "paperEditCheck")
+    @ResponseBody
+    public CommonResult paperEditCheck(String paperId) {
+        ExamUser examUser = UserUtils.getExamUser();
+        if (StringUtils.isBlank(paperId)) {
+            return new CommonResult(CodeConstant.REQUEST_FAILED, "试卷Id为空");
+        }
+        if (StringUtils.isNotBlank(examUser.getId())) {
+            return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "试卷编辑校验通过");
+        } else {
+            // 教师
+            Exam exam = new Exam();
+            exam.setPaperId(paperId);
+            exam = paperService.findExam(exam);
+            if (null == exam || (StringUtils.isBlank(exam.toString())) || (StringUtils.isNotBlank(exam.toString()) && ("1").equals(exam.getState()))) {
+                // paperId 存入缓存
+                examUser.setPaperId(paperId);
+                CacheUtils.put("examUser", examUser.getUserId(), examUser);
+                // 该试卷未添加进考试、该试卷添加进考试 但其状态为 1   以上两种情况均可以通过编辑校验
+                return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "试卷编辑校验通过");
+            }
+            return new CommonResult(CodeConstant.REQUEST_FAILED, "当前试卷被占用，不可进行编辑");
+        }
+    }
+
+    /**
+     * 修改试卷状态
+     */
+    @RequestMapping(value = "updatePaperState")
+    @ResponseBody
+    public CommonResult updatePaperState(String paperId) {
+        Paper paper = paperService.get(paperId);
+        if (null == paper) {
+            return new CommonResult(CodeConstant.DATA_NOT_FOUND, "试卷不存在!");
+        }
+        if ("1".equals(paper.getState())) {
+            paper.setState("0");
+        }
+        if ("0".equals(paper.getState())) {
+            paper.setState("1");
+        }
+        paperService.save(paper);
+        return new CommonResult(paper.getState());
+    }
 }

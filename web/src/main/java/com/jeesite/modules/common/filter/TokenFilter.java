@@ -27,7 +27,7 @@ public class TokenFilter implements Filter {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         String uri = httpServletRequest.getServletPath();
         boolean flag = false;
-        String[] IGNORE_URI = {"/signIn"};
+        String[] IGNORE_URI = {"/signIn", ".js", ".css", ".ico", ".jpg", ".png", ".html", ".jpeg"};
         for (String s : IGNORE_URI) {
             if (uri.contains(s)) { // 如果是登陆页面的请求 则放过
                 flag = true;
