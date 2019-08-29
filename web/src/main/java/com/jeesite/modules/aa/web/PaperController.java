@@ -148,7 +148,7 @@ public class PaperController extends BaseController {
     }
 
     /**
-     * @description: 试卷编辑校验
+     * @description: 试卷编辑校验--试卷修改
      * @param: [paperId]
      * @return: com.jeesite.modules.common.entity.CommonResult
      * @author: Jiangyf
