@@ -48,9 +48,9 @@ public class HomePageController {
      */
     @PostMapping(value = "newPaper")
     @ResponseBody
-    public CommonResult newPaper(){
+    public CommonResult newPaper(String id){
         CommonResult comRes = new CommonResult();
-        homePageService.newPaper();
+        homePageService.newPaper(id);
         return comRes;
     }
 }

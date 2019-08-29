@@ -170,7 +170,7 @@ public class HomePageService {
      * 新建试卷
      */
     @Transactional
-    public void newPaper() {
+    public void newPaper(String id) {
         ExamUser examUser = UserUtils.getExamUser();
         if (StringUtils.isNotBlank(examUser.getId())) {
             //学生
@@ -183,9 +183,13 @@ public class HomePageService {
         } else {
             //教师
             Paper paper = new Paper();
-            paper.setStatus("1");
-            paper.setState("1");
-            paperService.save(paper);
+            if(StringUtils.isBlank(id)){
+                paper.setStatus("1");
+                paper.setState("1");
+                paperService.save(paper);
+            }else{
+                paper.setId(id);
+            }
             examUser.setPaperId(paper.getId());
             CacheUtils.put("examUser", examUser.getUserId(), examUser);
         }
