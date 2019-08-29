@@ -178,4 +178,20 @@ public class PaperController extends BaseController {
 			return new CommonResult(CodeConstant.REQUEST_FAILED, "当前试卷被占用，不可进行编辑");
 		}
 	}
+
+	/**
+	 * 查询添加考试 试卷列表
+	 */
+	@RequestMapping(value = "selectExamPaperList")
+	@ResponseBody
+	public CommonResult selectExamPaperList(){
+		Paper paper = new Paper();
+		paper.setState("0");
+		List<Paper> paperList = paperService.findList(paper);
+		return new CommonResult(paperList);
+	}
+
+
+
+
 }
