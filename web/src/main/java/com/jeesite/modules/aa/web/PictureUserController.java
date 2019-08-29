@@ -138,6 +138,19 @@ public class PictureUserController extends BaseController {
         return comRes;
     }
 
+    @RequestMapping(value = "getPictureUrlWorker")
+    @ResponseBody
+    public CommonResult getPictureUrlWorker(){
+        ExamUser examUser = UserUtils.getExamUser();
+        String pictureType = "1152467158926442496"; //评估报告
+        PictureUser pictureUser = new PictureUser();
+        pictureUser.setPictureTypeId(pictureType);
+        pictureUser.setExamUserId(examUser.getId());
+        pictureUser.setPaperId(examUser.getPaperId());
+        pictureUserService.getByEntity(pictureUser);
+        return new CommonResult(pictureUser);
+    }
+
     /**
      * 查看照片通过 PictureUserId
      */
