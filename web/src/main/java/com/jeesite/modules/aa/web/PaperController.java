@@ -181,6 +181,18 @@ public class PaperController extends BaseController {
     }
 
     /**
+     * 查询添加考试 试卷列表
+     */
+    @RequestMapping(value = "selectExamPaperList")
+    @ResponseBody
+    public CommonResult selectExamPaperList(){
+        Paper paper = new Paper();
+        paper.setState("0");
+        List<Paper> paperList = paperService.findList(paper);
+        return new CommonResult(paperList);
+    }
+
+    /**
      * 修改试卷状态
      */
     @RequestMapping(value = "updatePaperState")

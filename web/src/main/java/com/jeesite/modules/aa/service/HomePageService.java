@@ -122,9 +122,14 @@ public class HomePageService {
         List<CarInfo> carInfoList = paperService.loadHomePageTea(homePageVO);
         if (carInfoList != null) {
             for (CarInfo carInfo : carInfoList) {
+                if(null==carInfo){
+                    continue;
+                }
                 HomePageVO temp = new HomePageVO();
-                BigDecimal mileage = new BigDecimal(carInfo.getMileage());
-                carInfo.setMileage(mileage.divide(new BigDecimal("10000"), 1, BigDecimal.ROUND_HALF_UP) + "万公里");
+                if(StringUtils.isNotBlank(carInfo.getMileage())){
+                    BigDecimal mileage = new BigDecimal(carInfo.getMileage());
+                    carInfo.setMileage(mileage.divide(new BigDecimal("10000"), 1, BigDecimal.ROUND_HALF_UP) + "万公里");
+                }
                 if (StringUtils.isNotBlank(carInfo.getPurchaseDate())) {
                     String[] purchaseDate = carInfo.getPurchaseDate().substring(0, 10).split("-");
                     carInfo.setPurchaseDate(purchaseDate[0] + "年" + purchaseDate[1] + "月");
@@ -178,6 +183,7 @@ public class HomePageService {
         } else {
             //教师
             Paper paper = new Paper();
+            paper.setStatus("1");
             paper.setState("1");
             paperService.save(paper);
             examUser.setPaperId(paper.getId());
