@@ -469,7 +469,9 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         returnMap.put("technicalStatus", appraisalReportVO.getVehicleGradeAssess().getTechnicalStatus());//技术状况鉴定等级
         returnMap.put("score", appraisalReportVO.getVehicleGradeAssess().getScore());//等级描述
         // 六、价值评估
-        returnMap.put("type", appraisalReportVO.getCalculate().getType());//价值估算方法
+        if(null!=appraisalReportVO.getCalculate()){
+            returnMap.put("type", appraisalReportVO.getCalculate().getType());//价值估算方法
+        }
         Map<String, String> calculateMap = calculateService.getEstimateByType(examUser.getUserId(), examUser.getPaperId());
         if (null != calculateMap) {
             returnMap.put("price", calculateMap.get("price"));  //价格
