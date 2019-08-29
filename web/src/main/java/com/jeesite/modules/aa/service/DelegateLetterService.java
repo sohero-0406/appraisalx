@@ -406,7 +406,11 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
             returnMap.replace("registerDateMonth", registerDate[1]);
             returnMap.replace("registerDateDay", registerDate[2]);
         }
-        returnMap.put("check3", appraisalReportVO.getCheckTradableVehicles().getCheck3());//是否查封、抵押车辆
+        if(null!=appraisalReportVO.getCheckTradableVehicles()){
+            returnMap.put("check3", appraisalReportVO.getCheckTradableVehicles().getCheck3());//是否查封、抵押车辆
+            returnMap.put("trafficIllegalRecord", appraisalReportVO.getCheckTradableVehicles().getTrafficIllegalRecord());//未接受处理的交通违法记录
+        }
+
 
 
         //车船税截止日期
@@ -458,7 +462,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
                 continue;
             }
         }
-        returnMap.put("trafficIllegalRecord", appraisalReportVO.getCheckTradableVehicles().getTrafficIllegalRecord());//未接受处理的交通违法记录
+
         //使用性质
         returnMap.put("usage", appraisalReportVO.getCarInfo().getUsage());
         //五、技术鉴定结果
