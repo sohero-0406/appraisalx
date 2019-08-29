@@ -5,6 +5,7 @@ package com.jeesite.modules.aa.service;
 
 import com.jeesite.common.constant.ServiceConstant;
 import com.jeesite.common.entity.Page;
+import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.service.CrudService;
 import com.jeesite.modules.aa.dao.CarInfoDao;
 import com.jeesite.modules.aa.entity.CarInfo;
@@ -153,6 +154,14 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
         CarInfo carInfo = new CarInfo();
         carInfo.setExamUserId(examUserId);
         carInfo.setPaperId(paperId);
+        //品牌 車系
+        if(StringUtils.isNotBlank(carInfo.getBrand())){
+            Map<String,String> map = new HashMap<>();
+//            map.put("pingpaixing","")
+          // httpClientService.post(ServiceConstant.COMMON_VEHICLE_BRAND_GET_BY_ENTITY)
+        }
+
+
         baseInfoVO.setCarInfo(this.getByEntity(carInfo));
 
         //加载委托方基本信息

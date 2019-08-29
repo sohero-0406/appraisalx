@@ -50,8 +50,7 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
     private OperationLogService operationLogService;
     @Autowired
     private HttpClientService httpClientService;
-    @Autowired
-    private PictureUserService pictureUserService;
+
 
     /**
      * 获取单条数据
@@ -206,13 +205,6 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
                 break;
         }
         delegateLetterService.createAppraisalReportNum(examUser);
-        PictureUser pictureUser = new PictureUser();
-        pictureUser.setExamUserId(examUser.getId());
-        pictureUser.setPaperId(examUser.getPaperId());
-        pictureUser.setPictureTypeId("1152467158926442434");//二手车技术状况表
-        pictureUserService.save(pictureUser);
-        pictureUser.setPictureTypeId("1152467065519292416");//二手车鉴定评估作业表
-        pictureUserService.save(pictureUser);
         operationLogService.saveObj(examUser,"保存计算车辆价值成功");
     }
 

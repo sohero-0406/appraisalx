@@ -147,7 +147,7 @@ public class PictureUserController extends BaseController {
         pictureUser.setPictureTypeId(pictureType);
         pictureUser.setExamUserId(examUser.getId());
         pictureUser.setPaperId(examUser.getPaperId());
-        pictureUserService.getByEntity(pictureUser);
+        pictureUser = pictureUserService.getByEntity(pictureUser);
         return new CommonResult(pictureUser);
     }
 
