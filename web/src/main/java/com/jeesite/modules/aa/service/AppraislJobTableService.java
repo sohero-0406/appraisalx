@@ -118,24 +118,28 @@ public class AppraislJobTableService {
             }
         }
         appraisalJobTableVO.setVehicleDocumentInfoList(vehicleDocumentInfoList);
-
-        //车辆配置全表
-        Map<String, String> map = new HashMap<>();
-        map.put("chexingId", carInfo.getModel());
-        CommonResult result = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_BY_ENTITY, map);
-        if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
-            JSONObject vehicleInfo = JSONObject.parseObject(result.getData().toString());
-            //设置品牌
-            carInfo.setBrand(vehicleInfo.getString("pinpai"));
-            appraisalJobTableVO.setVehicleInfo(vehicleInfo);
-            //设置年款型号
-            String[] chexingArr = vehicleInfo.getString("chexingmingcheng").split(" ");
-            StringBuilder sb = new StringBuilder();
-            for(int i = 1; i < chexingArr.length; i++){
-                sb.append(chexingArr[i]);
+        if(StringUtils.isNotBlank(carInfo.getModel())){
+            //车辆配置全表
+            Map<String, String> map = new HashMap<>();
+            map.put("chexingId", carInfo.getModel());
+            CommonResult result = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_BY_ENTITY, map);
+            if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
+                if(null!=result.getData()){
+                    JSONObject vehicleInfo = JSONObject.parseObject(result.getData().toString());
+                    //设置品牌
+                    carInfo.setBrand(vehicleInfo.getString("pinpai"));
+                    appraisalJobTableVO.setVehicleInfo(vehicleInfo);
+                    //设置年款型号
+                    String[] chexingArr = vehicleInfo.getString("chexingmingcheng").split(" ");
+                    StringBuilder sb = new StringBuilder();
+                    for(int i = 1; i < chexingArr.length; i++){
+                        sb.append(chexingArr[i]);
+                    }
+                    appraisalJobTableVO.setNiankuanxinghao(sb.toString());
+                }
             }
-            appraisalJobTableVO.setNiankuanxinghao(sb.toString());
         }
+
 
         //检查车体骨架
         CheckBodySkeleton checkBodySkeleton = new CheckBodySkeleton();
