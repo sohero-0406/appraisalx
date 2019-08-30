@@ -104,7 +104,6 @@ public class IdentifyTecDetailService extends CrudService<IdentifyTecDetailDao, 
 
     public IdentifyTec findData(IdentifyTec identifyTec, ExamUser examUser) {
         String type = identifyTec.getType();
-
         //查询启用项
         ExamDetail examDetail = new ExamDetail();
         //路试项

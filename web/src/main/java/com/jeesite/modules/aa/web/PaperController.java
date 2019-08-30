@@ -199,14 +199,16 @@ public class PaperController extends BaseController {
     @ResponseBody
     public CommonResult updatePaperState(String paperId) {
         Paper paper = paperService.get(paperId);
+        String state = paper.getState();
         if (null == paper) {
             return new CommonResult(CodeConstant.DATA_NOT_FOUND, "试卷不存在!");
         }
-        if ("1".equals(paper.getState())) {
+        if ("1".equals(state)) {
             paper.setState("0");
-        }else{
-			paper.setState("1");
-		}
+        }
+        if ("0".equals(state)) {
+            paper.setState("1");
+        }
         paperService.save(paper);
         return new CommonResult(paper.getState());
     }

@@ -1,17 +1,10 @@
 package com.jeesite.modules;
 
-import alvinJNI.HardwareTime;
 import com.jeesite.common.cache.CacheUtils;
-import com.jeesite.common.web.http.ServletUtils;
-import com.jeesite.modules.aa.entity.SystemSetting;
-import com.jeesite.modules.aa.service.SystemSettingService;
-import com.jeesite.modules.common.entity.ExamUser;
 import org.ini4j.Wini;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 

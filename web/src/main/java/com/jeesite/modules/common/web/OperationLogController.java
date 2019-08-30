@@ -100,7 +100,7 @@ public class OperationLogController extends BaseController {
 	}
 
 	/**
-	 * 日志搜索查询  (导出)
+     * 日志搜索查询
 	 */
 	@RequestMapping(value = "getOperationLog")
 	@ResponseBody

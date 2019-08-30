@@ -30,8 +30,8 @@ public class UserUtils {
 //            examUser.setUserId("667");
 //            examUser.setExamId("1");
 //            //教师
-////            examUser.setPaperId("1");
-////            examUser.setUserId("667");
+//            examUser.setPaperId("1167062391406493696");
+//            examUser.setUserId("667");
 //            return examUser;
 
             //todo

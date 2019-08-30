@@ -319,7 +319,7 @@ public class CalculateCurrentService extends CrudService<CalculateCurrentDao, Ca
         calculate.setPaperId(examUser.getPaperId());
         CalculateCurrent calculateCurrent = this.getByCalculate(calculate);
         if (null == calculateCurrent) {
-            return vo;
+            calculateCurrent = new CalculateCurrent();
         }
         //查询不在该算法中的值
         CarInfo carInfo = new CarInfo();
@@ -342,7 +342,15 @@ public class CalculateCurrentService extends CrudService<CalculateCurrentDao, Ca
         calculateCurrent.setEnvironmentalStandard(DictUtils.getDictLabel("aa_environmental_standard",
                 carInfo.getEnvironmentalStandard(), ""));
         calculateCurrent.setRegisterDate(carInfo.getRegisterDate());
-        calculateCurrent.setUsedYear(carInfo.getUseYear() + "年" + carInfo.getUseMonth() + "个月");
+        Integer useYear = carInfo.getUseYear();
+        Integer useMonth = carInfo.getUseMonth();
+        if (useYear == null) {
+            useYear = 0;
+        }
+        if (useMonth == null) {
+            useMonth = 0;
+        }
+        calculateCurrent.setUsedYear(useYear + "年" + useMonth + "个月");
 
         //查询技术鉴定分值
         VehicleGradeAssess vehicleGradeAssess = new VehicleGradeAssess();
