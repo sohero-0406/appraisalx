@@ -183,7 +183,7 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
                 }
             }
         }
-        carInfo.setBrand(pinpaichexi);
+        carInfo.setBrandName(pinpaichexi);
         baseInfoVO.setCarInfo(carInfo);
 
         //加载委托方基本信息

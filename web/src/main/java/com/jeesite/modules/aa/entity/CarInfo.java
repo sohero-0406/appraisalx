@@ -109,6 +109,9 @@ public class CarInfo extends PreEntity<CarInfo> {
 	private String enginePower;         // 发动机功率
 	private String vehicleBrand;        //品牌名称
 
+	//非数据库字段
+	private String brandName;
+
 	public CarInfo() {
 		this(null);
 	}
@@ -488,5 +491,13 @@ public class CarInfo extends PreEntity<CarInfo> {
 
 	public void setVehicleBrand(String vehicleBrand) {
 		this.vehicleBrand = vehicleBrand;
+	}
+
+	public String getBrandName() {
+		return brandName;
+	}
+
+	public void setBrandName(String brandName) {
+		this.brandName = brandName;
 	}
 }
