@@ -15,7 +15,9 @@ import com.jeesite.modules.aa.entity.PictureUser;
 import com.jeesite.modules.aa.vo.PictureTypeAndUserVO;
 import com.jeesite.modules.aa.vo.PictureUserVO;
 import com.jeesite.modules.common.entity.CommonResult;
+import com.jeesite.modules.common.entity.Exam;
 import com.jeesite.modules.common.entity.ExamUser;
+import com.jeesite.modules.common.utils.UserUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -262,4 +264,22 @@ public class PictureUserService extends CrudService<PictureUserDao, PictureUser>
         dao.phyDelete(pictureUser);
         return new CommonResult();
     }
+
+    /**
+     * 保存报告类型
+     */
+    @Transactional
+    public void savePictureWorker(ExamUser examUser,String pictureTypeId,String name){
+        PictureUser pictureUser = new PictureUser();
+        pictureUser.setPaperId(examUser.getPaperId());
+        pictureUser.setExamUserId(examUser.getId());
+        pictureUser.setPictureTypeId(pictureTypeId);
+        pictureUser.setName(name);
+        if(null==super.dao.getByEntity(pictureUser)){
+            this.save(pictureUser);
+        }
+    }
+
+
+
 }

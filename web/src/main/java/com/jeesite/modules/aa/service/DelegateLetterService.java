@@ -132,6 +132,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
     /**
      * 查询单个委托书信息
      */
+    @Transactional(readOnly = false)
     public CommonResult findDelegateLetter(ExamUser examUser) {
         DelegateLetterVO delegateLetterVO = new DelegateLetterVO();
         DelegateLetter delegateLetter = new DelegateLetter();
@@ -180,7 +181,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         pictureUser.setPictureTypeId("1143436249238634496");
         pictureUser = pictureUserService.getByEntity(pictureUser);
         delegateLetterVO.setPictureUser(pictureUser);
-
+        pictureUserService.savePictureWorker(examUser,"1152466716125380608","二手车鉴定评估委托书");
         return new CommonResult(delegateLetterVO);
     }
 
@@ -249,6 +250,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
     /**
      * 查询一份鉴定评估报告
      */
+    @Transactional(readOnly = false)
     public AppraisalReportVO findAppraisalReport(ExamUser examUser) {
 
         AppraisalReportVO appraisalReportVO = new AppraisalReportVO();
@@ -367,6 +369,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
     /**
      * 整理报告内容
      */
+    @Transactional(readOnly = false)
     public Map<String, String> appraisalReportInfo(ExamUser examUser) throws ParseException {
 
         Map<String, String> returnMap = new HashMap<>();
@@ -541,6 +544,9 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         returnMap.put("appraiser", appraisalReportVO.getDelegateLetter().getAppraiser());
         returnMap.put("checkName", appraisalReportVO.getDelegateLetter().getCheckName());
 
+        pictureUserService.savePictureWorker(examUser,"1152467065519292416","二手车鉴定评估作业表");
+        pictureUserService.savePictureWorker(examUser,"1152467158926442434","二手车技术状况表");
+
         return returnMap;
     }
 
@@ -665,6 +671,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
             pictureUser.setExamUserId(examUser.getId());
             pictureUser.setPaperId(examUser.getPaperId());
             pictureUser.setPictureTypeId("1152467158926442496"); //二手车鉴定评估报告
+            pictureUser.setName("二手车鉴定评估报告");
             picture = pictureUserService.getByEntity(pictureUser);
             if (null != picture) {
                 pictureUser = picture;
