@@ -318,14 +318,13 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         vehicleGradeAssess.setPaperId(examUser.getPaperId());
         vehicleGradeAssess = vehicleGradeAssessService.getByEntity(vehicleGradeAssess);
         //设置技术状况
-        if (StringUtils.isNotBlank(vehicleGradeAssess.getTechnicalStatus())) {
+        if (null!=vehicleGradeAssess && StringUtils.isNotBlank(vehicleGradeAssess.getTechnicalStatus())) {
             vehicleGradeAssess.setTechnicalStatus(DictUtils.getDictLabel("aa_technical_status", vehicleGradeAssess.getTechnicalStatus(), ""));
+            appraisalReportVO.setVehicleGradeAssess(vehicleGradeAssess);
+            defectDescription.append(StringUtils.isNotBlank(vehicleGradeAssess.getDescription()) ? "," + vehicleGradeAssess.getDescription() : "");
+            //填入缺陷描述
+            appraisalReportVO.setDefectDescription(defectDescription.toString());
         }
-
-        appraisalReportVO.setVehicleGradeAssess(vehicleGradeAssess);
-        defectDescription.append(StringUtils.isNotBlank(vehicleGradeAssess.getDescription()) ? "," + vehicleGradeAssess.getDescription() : "");
-        //填入缺陷描述
-        appraisalReportVO.setDefectDescription(defectDescription.toString());
 
         //计算车辆价值
         Calculate calculate = new Calculate();
@@ -384,7 +383,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         returnMap.put("organizationName", appraisalReportVO.getDelegateLetter().getOrganizationName());//机构
         returnMap.put("name", appraisalReportVO.getDelegateUser().getName());                  //接受委托\委托方
         returnMap.put("licensePlateNum", appraisalReportVO.getCarInfo().getLicensePlateNum());//牌号
-        appraisalReportVO.getVehicleGradeAssess().getIdentifyDate();
+//        appraisalReportVO.getVehicleGradeAssess().getIdentifyDate();
         //二、委托方
         //委托方 同上name
         returnMap.put("contact", appraisalReportVO.getDelegateUser().getContact());//委托方联系人
@@ -473,8 +472,10 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         if (null != appraisalReportVO.getVehicleInfo()) {
             returnMap.put("chexingmingcheng", appraisalReportVO.getVehicleInfo().getString("chexingmingcheng"));//重要配置及参数信息
         }
-        returnMap.put("technicalStatus", appraisalReportVO.getVehicleGradeAssess().getTechnicalStatus());//技术状况鉴定等级
-        returnMap.put("score", appraisalReportVO.getVehicleGradeAssess().getScore());//等级描述
+        if(null!=appraisalReportVO.getVehicleGradeAssess()){
+            returnMap.put("technicalStatus", appraisalReportVO.getVehicleGradeAssess().getTechnicalStatus());//技术状况鉴定等级
+            returnMap.put("score", appraisalReportVO.getVehicleGradeAssess().getScore());//等级描述
+        }
         // 六、价值评估
         if(null!=appraisalReportVO.getCalculate()){
             returnMap.put("type", appraisalReportVO.getCalculate().getType());//价值估算方法
@@ -522,7 +523,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         Date identifyAfterDate;
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            if (StringUtils.isNotBlank(appraisalReportVO.getVehicleGradeAssess().getIdentifyDate())) {
+            if (null!=appraisalReportVO.getVehicleGradeAssess() && StringUtils.isNotBlank(appraisalReportVO.getVehicleGradeAssess().getIdentifyDate())) {
                 identifyDate = formatter.parse(appraisalReportVO.getVehicleGradeAssess().getIdentifyDate());
                 Calendar calendar = new GregorianCalendar();
                 calendar.setTime(identifyDate);
