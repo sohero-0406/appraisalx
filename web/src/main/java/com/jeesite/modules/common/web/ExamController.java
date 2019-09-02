@@ -210,7 +210,7 @@ public class ExamController extends BaseController {
     }
 
     /**
-     * @description: 结束考试 - 分为学生端和教师端
+     * @description: 提交考试 - 分为学生端和教师端
      * @param: []
      * @return: com.jeesite.modules.common.entity.CommonResult
      * @author: Jiangyf
@@ -223,10 +223,8 @@ public class ExamController extends BaseController {
         ExamUser examUser = UserUtils.getExamUser();
         if (StringUtils.isNotBlank(examUser.getId())) {
             // 学生 添加结束时间
-            Exam exam = new Exam();
-            exam.setId(examUser.getExamId());
-            exam.setEndTime(new Date());
-            examService.save(exam);
+            examUser.setEndTime(new Date());
+            examService.saveExamUser(examUser);
             // 清除缓存
             CacheUtils.remove("examUser", examUser.getUserId());
         } else {

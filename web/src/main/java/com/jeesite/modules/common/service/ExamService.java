@@ -591,4 +591,8 @@ public class ExamService extends CrudService<ExamDao, Exam> {
         map.put("majorName", majorName);
         return httpClientService.post(ServiceConstant.COMMONUSER_LOAD_CLASS_LIST, map);
     }
+
+    public void saveExamUser(ExamUser examUser) {
+        examUserService.save(examUser);
+    }
 }

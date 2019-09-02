@@ -1,6 +1,5 @@
 package com.jeesite.modules.aa.service;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -11,8 +10,8 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.jeesite.common.cache.CacheUtils;
 import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.constant.ServiceConstant;
+import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.utils.jwt.JwtUtils;
-import com.jeesite.common.web.http.ServletUtils;
 import com.jeesite.modules.aa.vo.LoginVO;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.ExamUser;
@@ -20,7 +19,6 @@ import com.jeesite.modules.common.service.ExamUserService;
 import com.jeesite.modules.common.service.HttpClientService;
 import com.jeesite.modules.common.service.OperationLogService;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,13 +45,13 @@ public class SignInService {
     private HttpClientService httpClientService;
 
     /**
-     * 考生端登录
+     * 登录
      *
      * @param vo
      * @return
      */
     @Transactional
-    public CommonResult stuLogin(LoginVO vo) {
+    public CommonResult login(LoginVO vo) {
         String userName = vo.getUserName();
         String password = vo.getPassword();
         Map<String, String> map = new HashMap<>();
@@ -64,28 +62,48 @@ public class SignInService {
             return result;
         }
         JSONObject data = JSONObject.parseObject(result.getData().toString());
+        if (StringUtils.isBlank(data.toString())) {
+            return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "用户不存在!");
+        }
         String userId = data.getString("id");
         String roleType = data.getString("roleId");
+        String token = JwtUtils.generateToken(userId);
         ExamUser examUser = new ExamUser();
-        examUser.setUserId(userId);
-        examUser = examUserService.getAllowLogin(examUser);
-        if (null == examUser) {
-            return new CommonResult(CodeConstant.EXAM_NO_ONGOING, "不存在正在进行的考试");
-        }
-        ExamUser sessionUser = new ExamUser();
-        sessionUser.setId(examUser.getId());
-        sessionUser.setUserId(examUser.getUserId());
-        sessionUser.setExamId(examUser.getExamId());
-        sessionUser.setStartTime(examUser.getStartTime());
-        sessionUser.setRoleType(roleType);
-        sessionUser.setUserNum(userName);
-        String token = JwtUtils.generateToken(examUser.getUserId());
-        sessionUser.setToken(token);
-        CacheUtils.put("examUser", examUser.getUserId(), sessionUser);
-        operationLogService.saveObj(sessionUser, "登录成功");
         Map<String, Object> returnMap = new HashMap<>();
-        returnMap.put("token", token);
-        return new CommonResult(returnMap);
+        //教师
+        if ("2".equals(roleType)) {
+            examUser.setUserId(data.getString("id"));
+            examUser.setRoleType(data.getString("roleId"));
+            examUser.setUserNum(userName);
+            examUser.setToken(token);
+            CacheUtils.put("examUser", examUser.getUserId(), examUser);
+            returnMap.put("roleType", data.getString("isExamRight"));
+            returnMap.put("token", token);
+            returnMap.put("role", "2");
+            return new CommonResult(returnMap);
+        }
+        //学生
+        if ("3".equals(roleType)) {
+            examUser.setUserId(userId);
+            examUser = examUserService.getAllowLogin(examUser);
+            if (null == examUser) {
+                return new CommonResult(CodeConstant.EXAM_NO_ONGOING, "不存在正在进行的考试");
+            }
+            ExamUser sessionUser = new ExamUser();
+            sessionUser.setId(examUser.getId());
+            sessionUser.setUserId(examUser.getUserId());
+            sessionUser.setExamId(examUser.getExamId());
+            sessionUser.setStartTime(examUser.getStartTime());
+            sessionUser.setRoleType(roleType);
+            sessionUser.setUserNum(userName);
+            sessionUser.setToken(token);
+            CacheUtils.put("examUser", examUser.getUserId(), sessionUser);
+            operationLogService.saveObj(sessionUser, "登录成功");
+            returnMap.put("token", token);
+            returnMap.put("role", "1");
+            return new CommonResult(returnMap);
+        }
+        return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "角色未识别，不允许登录!");
     }
 
 
@@ -170,8 +188,8 @@ public class SignInService {
 
     //判断考生是否存在 type 判断学生、老师
     public CommonResult judgmentExist(String userId) {
-        Map<String,String> map = new HashMap<>();
-        map.put("id",userId);
+        Map<String, String> map = new HashMap<>();
+        map.put("id", userId);
         CommonResult result = httpClientService.post(ServiceConstant.DERIVE_STUDENT_LOADCOMMONUSER, map);
         return result;
     }

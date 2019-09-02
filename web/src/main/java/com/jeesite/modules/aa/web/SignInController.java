@@ -1,28 +1,20 @@
 package com.jeesite.modules.aa.web;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.cache.CacheUtils;
 import com.jeesite.common.constant.CodeConstant;
-import com.jeesite.common.constant.ServiceConstant;
 import com.jeesite.common.lang.StringUtils;
-import com.jeesite.common.utils.jwt.JwtUtils;
-import com.jeesite.common.web.http.ServletUtils;
 import com.jeesite.modules.aa.service.SignInService;
 import com.jeesite.modules.aa.vo.BaseVO;
 import com.jeesite.modules.aa.vo.LoginVO;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.ExamUser;
-import com.jeesite.modules.common.service.HttpClientService;
 import com.jeesite.modules.common.utils.UserUtils;
-import com.sun.javafx.collections.MappingChange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -41,12 +33,12 @@ public class SignInController {
     private SignInService signInService;
 
     /**
-     * 考生端登录
+     * 考生/教师登录
      */
-    @RequestMapping(value = "stulogin")
+    @RequestMapping(value = "login")
     @ResponseBody
-    public CommonResult stulogin(LoginVO vo) {
-        return signInService.stuLogin(vo);
+    public CommonResult login(LoginVO vo) {
+        return signInService.login(vo);
     }
 
     /**
@@ -135,51 +127,6 @@ public class SignInController {
         return comRes;
 
     }
-
-
-    /**
-     * 教师端登陆
-     *
-     * @param userName
-     * @param password
-     * @return
-     */
-    @RequestMapping(value = "teacherlogin")
-    @ResponseBody
-    public CommonResult login(String userName, String password) {
-        CommonResult comRes = new CommonResult();
-        Map<String, String> map = new HashMap<>();
-        map.put("userName", userName);
-        map.put("password", password);
-        CommonResult teacherSide = signInService.commonuserTeacherSideLogin(ServiceConstant.COMMONUSER_TEACHER_SIDE_LOGIN, map);
-        if (!CodeConstant.REQUEST_SUCCESSFUL.equals(teacherSide.getCode())) {
-            return teacherSide;
-        }
-        ExamUser examUser = new ExamUser();
-        JSONObject json = JSONObject.parseObject(teacherSide.getData().toString());
-        if (StringUtils.isBlank(json.toString())) {
-            comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
-            comRes.setMsg("用户不存在!");
-            return comRes;
-        }
-        if ("3".equals(json.getString("roleId"))) {
-            comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
-            comRes.setMsg("考生不允许登录!");
-            return comRes;
-        }
-        examUser.setUserId(json.getString("id"));
-        examUser.setRoleType(json.getString("roleId"));
-        examUser.setUserNum(userName);
-        String token = JwtUtils.generateToken(examUser.getUserId());
-        examUser.setToken(token);
-        CacheUtils.put("examUser", examUser.getUserId(), examUser);
-        Map<String, Object> returnMap = new HashMap<>();
-        returnMap.put("roleType", json.getString("isExamRight"));
-        returnMap.put("token", token);
-        comRes.setData(returnMap);
-        return comRes;
-    }
-
 
     /**
      * 注销登录
