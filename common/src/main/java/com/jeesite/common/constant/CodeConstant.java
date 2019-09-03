@@ -21,6 +21,8 @@ public class CodeConstant {
     public static final String FAILED_TO_IDENTIFY_REFLECTIVE_OR_OVEREXPOSED_ON_IMAGE = "1006";
     //识别失败，未知状态
     public static final String FAILED_TO_IDENTIFY_UNKNOWN_STATE = "1007";
+    //识别失败，原因未知
+    public static final String FAILED_TO_IDENTIFY = "1008";
     //请求失败
     public static final String REQUEST_FAILED = "1010";
     //考试结束

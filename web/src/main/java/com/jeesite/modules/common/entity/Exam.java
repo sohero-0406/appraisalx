@@ -58,8 +58,8 @@ public class Exam extends PreEntity<Exam> {
 	public Exam(String id){
 		super(id);
 	}
-	
-	@Length(min=0, max=64, message="评分表id长度不能超过 64 个字符")
+
+    @Length(min=0, max=64, message="评分表id长度不能超过 64 个字符")
 	public String getScoreId() {
 		return scoreId;
 	}
