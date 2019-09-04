@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.constant.ServiceConstant;
 import com.jeesite.common.entity.Page;
+import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.service.CrudService;
 import com.jeesite.modules.aa.dao.CalculateDao;
 import com.jeesite.modules.aa.entity.*;
@@ -120,7 +121,7 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
         carInfo.setExamUserId(examUser.getId());
         carInfo.setPaperId(examUser.getPaperId());
         carInfo = carInfoService.getByEntity(carInfo);
-        if (null != carInfo) {
+        if (null != carInfo && StringUtils.isNotBlank(carInfo.getModel())) {
             Map<String, String> map = new HashMap<>();
             map.put("chexingId", carInfo.getModel());
             CommonResult result = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_CAR_MODEL, map);
