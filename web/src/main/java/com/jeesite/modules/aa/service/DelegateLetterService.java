@@ -206,6 +206,11 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         letter.setAppraiser(delegateLetter.getAppraiser());  //二手车鉴定评估师
         letter.setAppraiserDate(delegateLetter.getAppraiserDate()); //二手车鉴定评估机构盖章日期
         super.save(letter);
+        try {
+            delegateLetterService.generateLetter(examUser);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         return comRes;
     }
 
@@ -380,7 +385,20 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         returnMap.put("appraisalDate", appraisalReportVO.getDelegateUser().getAppraisalDate());//评报字-时间
 
         //一、绪言
-        returnMap.put("organizationName", appraisalReportVO.getDelegateLetter().getOrganizationName());//机构
+        if(null!=appraisalReportVO.getDelegateLetter()){
+            returnMap.put("organizationName", appraisalReportVO.getDelegateLetter().getOrganizationName());//机构
+            //九 复核人
+            returnMap.put("appraiser", appraisalReportVO.getDelegateLetter().getAppraiser());
+            returnMap.put("checkName", appraisalReportVO.getDelegateLetter().getCheckName());
+            if (StringUtils.isNotBlank(appraisalReportVO.getDelegateLetter().getAppraiserDate())) {
+                String[] dateArray = appraisalReportVO.getDelegateLetter().getAppraiserDate().substring(0, 10).split("-");
+                returnMap.replace("appraiserDateYear", dateArray[0]);
+                returnMap.replace("appraiserDateMonth", dateArray[1]);
+                returnMap.replace("appraiserDateDay", dateArray[2]);
+            }
+        }
+
+
         returnMap.put("name", appraisalReportVO.getDelegateUser().getName());                  //接受委托\委托方
         returnMap.put("licensePlateNum", appraisalReportVO.getCarInfo().getLicensePlateNum());//牌号
 //        appraisalReportVO.getVehicleGradeAssess().getIdentifyDate();
@@ -502,12 +520,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         returnMap.put("appraiserDateMonth", "");
         returnMap.put("appraiserDateDay", "");
 
-        if (StringUtils.isNotBlank(appraisalReportVO.getDelegateLetter().getAppraiserDate())) {
-            String[] dateArray = appraisalReportVO.getDelegateLetter().getAppraiserDate().substring(0, 10).split("-");
-            returnMap.replace("appraiserDateYear", dateArray[0]);
-            returnMap.replace("appraiserDateMonth", dateArray[1]);
-            returnMap.replace("appraiserDateDay", dateArray[2]);
-        }
+
         //鉴定评估基准日
         returnMap.put("identifyYear", "");
         returnMap.put("identifyMonth", "");
@@ -541,9 +554,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
             logger.warn("时间转换异常!--用户id为" + examUser.getUserId() + "--，生成鉴定报告异常");
         }
 
-        //九 复核人
-        returnMap.put("appraiser", appraisalReportVO.getDelegateLetter().getAppraiser());
-        returnMap.put("checkName", appraisalReportVO.getDelegateLetter().getCheckName());
+
 
         pictureUserService.savePictureWorker(examUser,"1152467065519292416","二手车鉴定评估作业表");
         pictureUserService.savePictureWorker(examUser,"1152467158926442434","二手车技术状况表");
@@ -696,16 +707,22 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
      * @return
      */
     @Transactional
-    public void getWord(HttpServletRequest request, HttpServletResponse response, ExamUser examUser) {
+    public void getWord(HttpServletRequest request, HttpServletResponse response, ExamUser examUser,DelegateLetter delegateLetter) {
+        //判断老师 在调用之前 调用下保存 鉴定报告
+        if(StringUtils.isNotBlank(examUser.getPaperId())){ //教师
+            this.saveAppraisalReport(delegateLetter,examUser); //保存
+            try {
+                this.generateLetter(examUser); //生成鉴定报告
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
         PictureUser pictureUser = new PictureUser();
         pictureUser.setExamUserId(examUser.getId());
         pictureUser.setPaperId(examUser.getPaperId());
         pictureUser.setPictureTypeId("1152467158926442496"); //二手车鉴定评估报告
         pictureUser = pictureUserService.getByEntity(pictureUser);
-//        DelegateUser delegateUser = new DelegateUser();
-//        delegateUser.setExamUserId(examUser.getId());
-//        delegateUser.setPaperId(examUser.getPaperId());
-//        delegateUser = delegateUserService.getByEntity(delegateUser);
+
         String name = "二手车鉴定评估报告";
         ResourceBundle bundle = PropertyResourceBundle.getBundle("config/picture");
         String prefix = bundle.getString("url");

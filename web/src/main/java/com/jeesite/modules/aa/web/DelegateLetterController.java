@@ -119,7 +119,7 @@ public class DelegateLetterController extends BaseController {
 
 
 	/**
-	 * 保存一份鉴定评估报告
+	 * 保存一份鉴定评估报告 “下一步”功能
 	 */
 	@RequestMapping(value = "saveAppraisalReport")
 	@ResponseBody
@@ -128,8 +128,6 @@ public class DelegateLetterController extends BaseController {
 		ExamUser examUser = UserUtils.getExamUser();
 		//如果paperId 为空，则参数出现异常
 		if(StringUtils.isBlank(examUser.getPaperId())){
-			comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
-			comRes.setMsg("请求参数存在异常!");
 			return comRes;
 		}
 		comRes = delegateLetterService.saveAppraisalReport(delegateLetter,examUser);
@@ -147,22 +145,27 @@ public class DelegateLetterController extends BaseController {
 		ExamUser examUser = UserUtils.getExamUser();
 		CommonResult comRes = new CommonResult();
 		comRes.setData(delegateLetterService.appraisalReportInfo(examUser));
+
+		//判断 学生生成鉴定评估报告文档 老师不生成
+		if(StringUtils.isBlank(examUser.getPaperId())){ //学生
+			delegateLetterService.generateLetter(examUser);//生成鉴定评估报告
+		}
 		return comRes;
 	}
 
 
-	/**
-	 *  生成鉴定评估报告
-	 * @return
-	 */
-	@RequestMapping(value = "generateAppraisalReport")
-	@ResponseBody
-	public CommonResult generateAppraisalReport() throws ParseException {
-		ExamUser examUser = UserUtils.getExamUser();
-		CommonResult comRes = new CommonResult();
-		delegateLetterService.generateLetter(examUser);
-		return comRes;
-	}
+//	/**
+//	 *  生成鉴定评估报告
+//	 * @return
+//	 */
+//	@RequestMapping(value = "generateAppraisalReport")
+//	@ResponseBody
+//	public CommonResult generateAppraisalReport() throws ParseException {
+//		ExamUser examUser = UserUtils.getExamUser();
+//		CommonResult comRes = new CommonResult();
+//		delegateLetterService.generateLetter(examUser);
+//		return comRes;
+//	}
 
 
 	/**
@@ -173,8 +176,8 @@ public class DelegateLetterController extends BaseController {
 	 */
 	@RequestMapping(value = "downloadAppraisalReport")
 	@ResponseBody
-	public void getWord(HttpServletRequest request, HttpServletResponse response) {
+	public void getWord(HttpServletRequest request, HttpServletResponse response,DelegateLetter delegateLetter) {
 		ExamUser examUser = UserUtils.getExamUser();
-		delegateLetterService.getWord(request,response,examUser);
+		delegateLetterService.getWord(request,response,examUser,delegateLetter);
 	}
 }
