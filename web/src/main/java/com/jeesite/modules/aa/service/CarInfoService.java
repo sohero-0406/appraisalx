@@ -159,32 +159,34 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
         carInfo = this.getByEntity(carInfo);
         //品牌 車系
         String pinpaichexi = "";
-        if(StringUtils.isNotBlank(carInfo.getBrand())){
-            Map<String,String> map = new HashMap<>();
-            map.put("pinpaiId",carInfo.getBrand());
-            CommonResult result =  httpClientService.post(ServiceConstant.COMMON_VEHICLE_BRAND_GET_BY_ENTITY,map);
-               if(CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())){
-                   if(null!=result.getData()){
-                       JSONObject o = (JSONObject)result.getData();
-                       String pinpai =  o.getString("pinpai");
-                       pinpaichexi= pinpaichexi+pinpai;
-                   }
-               }
-        }
-        if(StringUtils.isNotBlank(carInfo.getSeries())){
-            Map<String,String> map = new HashMap<>();
-            map.put("chexiId",carInfo.getSeries());
-            CommonResult result =  httpClientService.post(ServiceConstant.COMMON_VEHICLE_SERIES_GET_BY_ENTITY,map);
-            if(CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())){
-                if(null!=result.getData()){
-                    JSONObject o = (JSONObject)result.getData();
-                    String chexi =  o.getString("chexi");
-                    pinpaichexi = pinpaichexi + chexi;
+        if(null!=carInfo){
+            if(StringUtils.isNotBlank(carInfo.getBrand())){
+                Map<String,String> map = new HashMap<>();
+                map.put("pinpaiId",carInfo.getBrand());
+                CommonResult result =  httpClientService.post(ServiceConstant.COMMON_VEHICLE_BRAND_GET_BY_ENTITY,map);
+                if(CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())){
+                    if(null!=result.getData()){
+                        JSONObject o = (JSONObject)result.getData();
+                        String pinpai =  o.getString("pinpai");
+                        pinpaichexi= pinpaichexi+pinpai;
+                    }
                 }
             }
+            if(StringUtils.isNotBlank(carInfo.getSeries())){
+                Map<String,String> map = new HashMap<>();
+                map.put("chexiId",carInfo.getSeries());
+                CommonResult result =  httpClientService.post(ServiceConstant.COMMON_VEHICLE_SERIES_GET_BY_ENTITY,map);
+                if(CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())){
+                    if(null!=result.getData()){
+                        JSONObject o = (JSONObject)result.getData();
+                        String chexi =  o.getString("chexi");
+                        pinpaichexi = pinpaichexi + chexi;
+                    }
+                }
+            }
+            carInfo.setBrandName(pinpaichexi);
+            baseInfoVO.setCarInfo(carInfo);
         }
-        carInfo.setBrandName(pinpaichexi);
-        baseInfoVO.setCarInfo(carInfo);
 
         //加载委托方基本信息
         DelegateUser delegateUser = new DelegateUser();
