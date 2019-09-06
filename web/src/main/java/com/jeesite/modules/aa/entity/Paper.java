@@ -24,6 +24,7 @@ import java.sql.Timestamp;
 		@Column(name="name", attrName="name", label="试卷名称", queryType=QueryType.LIKE),
 		@Column(name="total_score", attrName="totalScore", label="试卷总分"),
 		@Column(name="state", attrName="state", label="启用禁用状态"),
+		@Column(name="status", attrName="status", label="逻辑删除"),
 		@Column(name="create_by", attrName="createBy", label="创建者"),
 		@Column(name="update_date", attrName="createDate", label="创建时间"),
 		@Column(includeEntity=DataEntity.class),
@@ -38,9 +39,14 @@ public class Paper extends PreEntity<Paper> {
 	private String state;		//启用禁用状态
 	private String createBy;		//创建者
 	private Timestamp createDate;		//创建时间
+	private String status;
 
 	// 数据库不存在字段
 	private CarInfo carInfo;
+
+	public static long getSerialVersionUID() {
+		return serialVersionUID;
+	}
 
 	public CarInfo getCarInfo() {
 		return carInfo;
