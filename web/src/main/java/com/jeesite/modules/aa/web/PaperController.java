@@ -198,11 +198,13 @@ public class PaperController extends BaseController {
     @RequestMapping(value = "updatePaperState")
     @ResponseBody
     public CommonResult updatePaperState(String paperId) {
+        ExamUser examUser = UserUtils.getExamUser();
         Paper paper = paperService.get(paperId);
-        String state = paper.getState();
         if (null == paper) {
             return new CommonResult(CodeConstant.DATA_NOT_FOUND, "试卷不存在!");
         }
+        paper.setUserId(examUser.getUserId());
+        String state = paper.getState();
         if ("1".equals(state)) {
             paper.setState("0");
         }
