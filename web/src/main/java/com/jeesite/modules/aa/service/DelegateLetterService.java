@@ -311,10 +311,12 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
             }
         }
         for (int i = 0; i < descrip.size(); i++) {
-            if (i == descrip.size() - 1) {
-                defectDescription.append(descrip.get(i));
-            } else {
-                defectDescription.append(descrip.get(i) + ",");
+            if(StringUtils.isNotBlank(descrip.get(i))){
+                if (i == descrip.size() - 1 || descrip.size()==1) {
+                    defectDescription.append(descrip.get(i));
+                } else {
+                    defectDescription.append(descrip.get(i) + ",");
+                }
             }
         }
         //车辆等级评定

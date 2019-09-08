@@ -1177,7 +1177,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
                     (String) examNameMap.get("1151013343666032641"), "0", (String) examScoreMap.get("1151013343666032641"),
                     carInfoT.getLabelType(), carInfoS == null ? "" : carInfoS.getLabelType(), "1");
         }
-        DictUtils.getDictLabel("aa_usage_type", carInfoT.getUsage(), "");
+//        DictUtils.getDictLabel("aa_usage_type", carInfoT.getUsage(), "");
 
         if (StringUtils.isNotBlank(carInfoT.getUsage()) && (null != carInfoS) && carInfoT.getUsage().equals(carInfoS.getUsage())) {
             delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String) examScoreMap.get("1151013343666728961"))));
