@@ -144,10 +144,10 @@ public class VehicleDangerTotalController extends BaseController {
      */
     @RequestMapping(value = "deleteVehicleDanger")
     @ResponseBody
-    public CommonResult deleteVehicleDanger(@RequestParam(value = "id") String ids) {
-        if (StringUtils.isBlank(ids)) {
+    public CommonResult deleteVehicleDanger(String id) {
+        if (StringUtils.isBlank(id)) {
             return new CommonResult(CodeConstant.REQUEST_FAILED, "参数为空");
         }
-        return vehicleDangerTotalService.deleteVehicleDanger(ids, true);
+        return vehicleDangerTotalService.deleteVehicleDanger(id, true);
     }
 }

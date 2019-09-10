@@ -15,6 +15,7 @@ import com.jeesite.modules.common.entity.VehicleDangerDetail;
 import com.jeesite.modules.common.entity.VehicleDangerTotal;
 import com.jeesite.modules.common.vo.VehicleDangerInfoVO;
 import com.jeesite.modules.common.vo.VehicleDangerRecord;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -113,9 +114,9 @@ public class VehicleDangerTotalService extends CrudService<VehicleDangerTotalDao
         // 获取出险总表List以及其关联对象(列表)
         String[] split = ids.split(",");
         List<VehicleDangerTotal> vehicleDangerTotals = this.findVehicleDangerTotalById(split);
-        if (vehicleDangerTotals.size() <= 0) {
-            commonResult.setCode(CodeConstant.REQUEST_SUCCESSFUL);
-            commonResult.setMsg("空列表");
+        if (CollectionUtils.isEmpty(vehicleDangerTotals)) {
+            commonResult.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+            commonResult.setMsg("请求参数有误");
         }
         try {
             vehicleDangerTotals.forEach(total -> {
@@ -126,10 +127,16 @@ public class VehicleDangerTotalService extends CrudService<VehicleDangerTotalDao
                 List<VehicleDangerDetail> vehicleDangerDetails = vehicleDangerDetailService.findListByVehicleDangers(vehicleDangers);
                 // 依次执行数据删除
                 if (flag) {
-                    dao.phyDelete(vehicleDangerTotal);
+                    if(null!=vehicleDangerTotal){
+                        dao.phyDelete(vehicleDangerTotal);
+                    }
                 }
-                vehicleDangers.forEach(x -> vehicleDangerDao.phyDelete(x));
-                vehicleDangerDetails.forEach(x -> vehicleDangerDetailDao.phyDelete(x));
+                if(CollectionUtils.isNotEmpty(vehicleDangers)){
+                    vehicleDangers.forEach(x -> vehicleDangerDao.phyDelete(x));
+                }
+                if(CollectionUtils.isNotEmpty(vehicleDangerDetails)){
+                    vehicleDangerDetails.forEach(x -> vehicleDangerDetailDao.phyDelete(x));
+                }
             });
         } catch (Exception e) {
             commonResult.setMsg("空对象");

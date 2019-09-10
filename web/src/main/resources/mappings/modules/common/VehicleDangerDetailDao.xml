@@ -32,10 +32,14 @@
             danger_single_money
         FROM
             common_vehicle_danger_detail
-        WHERE
-            common_vehicle_danger_id in 
-            <foreach collection="vehicleDangers" open="(" close=")" separator="," item="vehicleDanger">
-                #{vehicleDanger.id}
-            </foreach>
+        <where>
+            <if test="vehicleDangers != null and vehicleDangers.size > 0">
+                and common_vehicle_danger_id in
+                <foreach collection="vehicleDangers" open="(" close=")" separator="," item="vehicleDanger">
+                    #{vehicleDanger.id}
+                </foreach>
+            </if>
+        </where>
+
     </select>
 </mapper>

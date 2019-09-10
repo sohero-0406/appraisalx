@@ -35,9 +35,14 @@
             create_date
         FROM
             common_vehicle_danger_total
-        where id in
-        <foreach collection="split" item="id" index="index" open="(" close=")" separator=",">
-            #{id}
-        </foreach>
+        <where>
+            <if test="split != null and split.length > 0">
+                and id in
+                <foreach collection="split" item="id" index="index" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+
     </select>
 </mapper>
