@@ -16,6 +16,7 @@ import com.jeesite.modules.common.entity.MaintenanceTotal;
 import com.jeesite.modules.common.entity.MaintenanceType;
 import com.jeesite.modules.common.vo.MaintenanceInfoVO;
 import com.jeesite.modules.common.vo.MaintenanceRecord;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -197,19 +198,19 @@ public class MaintenanceService extends CrudService<MaintenanceDao, Maintenance>
             List<MaintenanceType> componentAnalyzeRepairRecords = maintenanceRecord.getComponentAnalyzeRepairRecords();
             List<MaintenanceType> normalRepairRecords = maintenanceRecord.getNormalRepairRecords();
             // 存入维保类别记录
-            if (outsideAnalyzeRepairRecords.size() > 0) {
+            if (CollectionUtils.isNotEmpty(outsideAnalyzeRepairRecords)) {
                 outsideAnalyzeRepairRecords.forEach(outsideAnalyzeRepairRecord -> {
                     outsideAnalyzeRepairRecord.setMaintenanceId(maintenanceId);
                     maintenanceTypeService.save(outsideAnalyzeRepairRecord);
                 });
             }
-            if (componentAnalyzeRepairRecords.size() > 0) {
+            if (CollectionUtils.isNotEmpty(componentAnalyzeRepairRecords)) {
                 componentAnalyzeRepairRecords.forEach(componentAnalyzeRepairRecord -> {
                     componentAnalyzeRepairRecord.setMaintenanceId(maintenanceId);
                     maintenanceTypeService.save(componentAnalyzeRepairRecord);
                 });
             }
-            if (normalRepairRecords.size() > 0) {
+            if (CollectionUtils.isNotEmpty(normalRepairRecords)) {
                 normalRepairRecords.forEach(normalRepairRecord -> {
                     normalRepairRecord.setMaintenanceId(maintenanceId);
                     maintenanceTypeService.save(normalRepairRecord);
