@@ -16,6 +16,7 @@ import com.jeesite.modules.common.entity.MaintenanceTotal;
 import com.jeesite.modules.common.entity.MaintenanceType;
 import com.jeesite.modules.common.vo.MaintenanceInfoVO;
 import com.jeesite.modules.common.vo.MaintenanceRecord;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -114,8 +115,8 @@ public class MaintenanceTotalService extends CrudService<MaintenanceTotalDao, Ma
         // 根据维保记录总表list获取关联的实体对象(列表)
         String[] split = ids.split(",");
         List<MaintenanceTotal> maintenanceTotals = this.findMaintenanceTotalById(split);
-        if (maintenanceTotals.size() <= 0) {
-            commonResult.setCode(CodeConstant.REQUEST_SUCCESSFUL);
+        if (CollectionUtils.isEmpty(maintenanceTotals)) {
+            commonResult.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
             commonResult.setMsg("空列表");
         }
         try {
@@ -127,10 +128,16 @@ public class MaintenanceTotalService extends CrudService<MaintenanceTotalDao, Ma
                 List<MaintenanceType> maintenanceTypes = maintenanceTypeService.findListByMaintenances(maintenances);
                 // 依次删除数据记录 物理删除
                 if (flag) {
-                    dao.phyDelete(maintenanceTotal);
+                    if(null!=maintenanceTotal){
+                        dao.phyDelete(maintenanceTotal);
+                    }
                 }
-                maintenances.forEach(x -> maintenanceDao.phyDelete(x));
-                maintenanceTypes.forEach(x -> maintenanceTypeDao.phyDelete(x));
+                if(CollectionUtils.isNotEmpty(maintenances)){
+                    maintenances.forEach(x -> maintenanceDao.phyDelete(x));
+                }
+                if(CollectionUtils.isNotEmpty(maintenanceTypes)){
+                    maintenanceTypes.forEach(x -> maintenanceTypeDao.phyDelete(x));
+                }
             });
         } catch (Exception e) {
             commonResult.setMsg("空对象");

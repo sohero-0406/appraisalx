@@ -39,10 +39,15 @@
             maintenance_type
         FROM
             common_maintenance_type
-        WHERE
-            maintenance_id in
-            <foreach collection="maintenances" open="(" close=")" separator="," item="maintenance">
-                #{maintenance.id}
-            </foreach>
+        <where>
+            <if test="maintenances != null and maintenances.size > 0">
+                and maintenance_id in
+                <foreach collection="maintenances" open="(" close=")" separator="," item="maintenance">
+                    #{maintenance.id}
+                </foreach>
+            </if>
+
+        </where>
+
     </select>
 </mapper>

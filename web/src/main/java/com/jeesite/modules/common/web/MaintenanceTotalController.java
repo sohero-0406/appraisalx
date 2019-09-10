@@ -147,10 +147,10 @@ public class MaintenanceTotalController extends BaseController {
     */ 
     @RequestMapping(value = "deleteMaintenance")
     @ResponseBody
-    public CommonResult deleteMaintenance(@RequestParam(value = "id") String ids) {
-        if (StringUtils.isBlank(ids)) {
-            return new CommonResult(CodeConstant.REQUEST_FAILED, "参数为空");
+    public CommonResult deleteMaintenance(String id) {
+        if (StringUtils.isBlank(id)) {
+            return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "参数为空");
         }
-        return maintenanceTotalService.deleteMaintenance(ids, true);
+        return maintenanceTotalService.deleteMaintenance(id,true);
     }
 }
