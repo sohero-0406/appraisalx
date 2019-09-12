@@ -31,7 +31,6 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 		@Column(name="contact", attrName="contact", label="联系人"),
 		@Column(name="phone", attrName="phone", label="电话"),
 		@Column(name="entrust_type", attrName="entrustType", label="委托书类型"),
-		@Column(name="apply_reason", attrName="applyReason", label="申请缘由"),
 		@Column(name="complete_date", attrName="completeDate", label="完成日期"),
 		@Column(name="appraisal_date", attrName="appraisalDate", label="评报字-时间"),
 		@Column(name="appraisal_num", attrName="appraisalNum", label="评报字-数字（8位）"),
@@ -54,7 +53,6 @@ public class DelegateUser extends PreEntity<DelegateUser> {
 	private String contact;		// 联系人
 	private String phone;		// 电话
 	private String entrustType;		// 委托书类型
-	private String applyReason;		// 申请缘由
 	private String completeDate;		// 完成日期
 
 	private String appraisalDate;		// 评报字-时间
@@ -184,15 +182,7 @@ public class DelegateUser extends PreEntity<DelegateUser> {
 	public void setEntrustType(String entrustType) {
 		this.entrustType = entrustType;
 	}
-	
-	@Length(min=0, max=256, message="申请缘由长度不能超过 256 个字符")
-	public String getApplyReason() {
-		return applyReason;
-	}
 
-	public void setApplyReason(String applyReason) {
-		this.applyReason = applyReason;
-	}
 	
 	@Length(min=0, max=32, message="完成日期长度不能超过 32 个字符")
 	public String getCompleteDate() {

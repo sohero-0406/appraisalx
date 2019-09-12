@@ -108,9 +108,6 @@ public class OperationLogController extends BaseController {
     public CommonResult getOperationLog(String keyword) {
         CommonResult comRes = new CommonResult();
         //判断数据是否为空
-        if (StringUtils.isNotBlank(keyword)) {
-            keyword = keyword.replace(".", "-");
-        }
         comRes.setData(operationLogService.getOperationLog(keyword, null));
         return comRes;
     }
@@ -127,10 +124,6 @@ public class OperationLogController extends BaseController {
             return;
         }
         String[] idList = operationLogIds.split(",");
-        //判断数据是否为空
-        if (StringUtils.isNotBlank(keyword)) {
-            keyword = keyword.replace(".", "-");
-        }
         List<OperationLog> list = operationLogService.getOperationLog(keyword, idList);
         String fileName = "操作日志" + DateUtils.getDate("yyyyMMddHHmmss") + ".xlsx";
         try (ExcelExport ee = new ExcelExport("操作日志", OperationLog.class)) {

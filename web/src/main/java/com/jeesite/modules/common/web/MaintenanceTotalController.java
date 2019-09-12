@@ -149,7 +149,7 @@ public class MaintenanceTotalController extends BaseController {
     @ResponseBody
     public CommonResult deleteMaintenance(String id) {
         if (StringUtils.isBlank(id)) {
-            return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "参数为空");
+            return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "请求参数有误!");
         }
         return maintenanceTotalService.deleteMaintenance(id,true);
     }

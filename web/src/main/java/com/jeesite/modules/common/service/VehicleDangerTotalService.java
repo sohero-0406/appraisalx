@@ -183,8 +183,8 @@ public class VehicleDangerTotalService extends CrudService<VehicleDangerTotalDao
         VehicleDanger vehicleDanger = new VehicleDanger();
         vehicleDanger.setCommonVehicleDangerTotalId(total.getId());
         List<VehicleDanger> vehicleDangers = vehicleDangerService.findList(vehicleDanger);
-        if (vehicleDangers.size() <= 0) {
-            return new CommonResult(CodeConstant.REQUEST_FAILED, "空列表");
+        if (CollectionUtils.isEmpty(vehicleDangers)) {
+            return new CommonResult(CodeConstant.REQUEST_FAILED, "请求参数有误");
         }
         // 获取并填充理赔内容数据
         vehicleDangers.forEach(v -> {

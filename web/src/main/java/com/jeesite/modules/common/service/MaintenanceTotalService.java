@@ -184,8 +184,8 @@ public class MaintenanceTotalService extends CrudService<MaintenanceTotalDao, Ma
         Maintenance maintenance = new Maintenance();
         maintenance.setMaintenanceTotalId(total.getId());
         List<Maintenance> maintenances = maintenanceService.findList(maintenance);
-        if (maintenances.size() <= 0) {
-            return new CommonResult(CodeConstant.REQUEST_FAILED, "空列表");
+        if (CollectionUtils.isEmpty(maintenances)) {
+            return new CommonResult(CodeConstant.REQUEST_FAILED, "请求参数有误");
         }
         // 获取并填充维修内容数据
         maintenances.forEach(m -> {

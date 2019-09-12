@@ -1115,15 +1115,20 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
                     (String) examNameMap.get("1151013343664988161"), "0", (String) examScoreMap.get("1151013343664988161"),
                     delegateUserT.getPhone(), delegateUserS == null ? "" : delegateUserS.getPhone(), "1");
         }
-        if (StringUtils.isNotBlank(delegateUserT.getApplyReason()) && (null != delegateUserS) && delegateUserT.getApplyReason().equals(delegateUserS.getApplyReason())) {
+        //aa_entrust_file_type
+        if (StringUtils.isNotBlank(delegateUserT.getEntrustType()) && (null != delegateUserS) && delegateUserT.getEntrustType().equals(delegateUserS.getEntrustType())) {
             delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String) examScoreMap.get("1151013343663902721"))));
             saveExamDetail(user.getId(), user.getExamId(), "1151028180617777153",
                     (String) examNameMap.get("1151013343663902721"), (String) examScoreMap.get("1151013343663902721"), (String) examScoreMap.get("1151013343663902721"),
-                    delegateUserT.getApplyReason(), delegateUserS.getApplyReason(), "0");
+                    getDic("aa_entrust_file_type", delegateUserT.getEntrustType()),
+                    getDic("aa_entrust_file_type", delegateUserS.getEntrustType()),
+                    "0");
         } else {
             saveExamDetail(user.getId(), user.getExamId(), "1151028180617777153",
                     (String) examNameMap.get("1151013343663902721"), "0", (String) examScoreMap.get("1151013343663902721"),
-                    delegateUserT.getApplyReason(), delegateUserS == null ? "" : delegateUserS.getApplyReason(), "1");
+                    getDic("aa_entrust_file_type", delegateUserT.getEntrustType()),
+                    delegateUserS == null ? "" :  getDic("aa_entrust_file_type", delegateUserS.getEntrustType()) ,
+                    "1");
         }
         if (StringUtils.isNotBlank(delegateUserT.getCompleteDate()) && (null != delegateUserS) && delegateUserT.getCompleteDate().equals(delegateUserS.getCompleteDate())) {
             delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String) examScoreMap.get("1151013343665516545"))));
@@ -1375,6 +1380,8 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
             case "aa_vehicle_level":   //级别
                 return DictUtils.getDictLabel(dicCode, code, "");
             case "aa_environmental_standard":  //环保标准
+                return DictUtils.getDictLabel(dicCode, code, "");
+            case "aa_entrust_file_type":  //环保标准
                 return DictUtils.getDictLabel(dicCode, code, "");
             default:
         }
