@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -140,11 +141,8 @@ public class ExamUserController extends BaseController {
      */
     @RequestMapping(value = "exportResults")
     @ResponseBody
-    public void exportOperationLog(HttpServletResponse response, String examId) {
-        if (StringUtils.isBlank(examId)) {
-            logger.warn("考试id未传!");
-            return;
-        }
+    public void exportOperationLog(HttpServletResponse response, @NotBlank String examId) {
+
         Exam exam = new Exam();
         exam.setId(examId);
         ExamUser examUser = new ExamUser();
@@ -172,7 +170,7 @@ public class ExamUserController extends BaseController {
             try (ExcelExport ee = new ExcelExport(null, ExamUser.class)) {
                 ee.setDataList(list).write(response, fileName);
             } catch (Exception e) {
-                logger.warn("考试成绩导出异常!");
+                throw new RuntimeException("导出成绩异常!");
             }
         }
 

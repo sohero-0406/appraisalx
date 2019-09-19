@@ -6,7 +6,9 @@ package com.jeesite.modules.common.web;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotBlank;
 
+import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.lang.DateUtils;
 import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.utils.excel.ExcelExport;
@@ -117,19 +119,14 @@ public class OperationLogController extends BaseController {
      */
     @RequestMapping(value = "exportOperationLog")
     @ResponseBody
-    public void exportOperationLog(String keyword, String operationLogIds, HttpServletResponse response) {
-        CommonResult comRes = new CommonResult();
-        if (StringUtils.isBlank(operationLogIds)) {
-            comRes.setMsg("请先在左侧选择需要导出的日志!");
-            return;
-        }
+    public void exportOperationLog(String keyword, @NotBlank String operationLogIds, HttpServletResponse response) {
         String[] idList = operationLogIds.split(",");
         List<OperationLog> list = operationLogService.getOperationLog(keyword, idList);
         String fileName = "操作日志" + DateUtils.getDate("yyyyMMddHHmmss") + ".xlsx";
         try (ExcelExport ee = new ExcelExport("操作日志", OperationLog.class)) {
             ee.setDataList(list).write(response, fileName);
         } catch (Exception e) {
-            logger.warn("教师端日志导出异常!");
+            throw new RuntimeException("导出日志异常!");
         }
     }
 
