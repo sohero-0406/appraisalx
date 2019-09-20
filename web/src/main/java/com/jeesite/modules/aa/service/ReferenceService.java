@@ -129,9 +129,7 @@ public class ReferenceService extends CrudService<ReferenceDao, Reference> {
     * @date: 2019/8/12
     * @time: 10:41
     */
-    public List<Reference> findReferenceList(String keyword) {
-        Reference reference = new Reference();
-        reference.setModel(keyword);
-        return dao.findReferenceListByKeyword(reference);
+    public List<Reference> findReferenceList(Reference reference) {
+        return dao.findReferenceList(reference);
     }
 }

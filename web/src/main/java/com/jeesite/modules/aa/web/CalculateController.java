@@ -116,9 +116,8 @@ public class CalculateController extends BaseController {
 	@ResponseBody
 	public CommonResult saveCalculate(CalculateVO vo){
 		ExamUser examUser = UserUtils.getExamUser();
-		calculateService.saveCalculate(vo,examUser);
-		
-		return new CommonResult();
+        CommonResult commonResult = calculateService.saveCalculate(vo, examUser);
+        return commonResult;
 	}
 
 	/**

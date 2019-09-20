@@ -20,7 +20,6 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 		@Column(name="id", attrName="id", label="主键", isPK=true),
 		@Column(name="exam_user_id", attrName="examUserId", label="外键id"),
 		@Column(name="paper_id", attrName="paperId", label="试卷id"),
-		@Column(name="car_owner_id", attrName="carOwnerId", label="外键id"),
 		@Column(name="license_plate_num", attrName="licensePlateNum", label="车牌号"),
 		@Column(name="vin_code", attrName="vinCode", label="vin码"),
 		@Column(name="brand", attrName="brand", label="品牌"),
@@ -68,7 +67,6 @@ public class CarInfo extends PreEntity<CarInfo> {
 	private static final long serialVersionUID = 1L;
 	private String examUserId;		// 外键id
 	private String paperId;		// 试卷id
-	private String carOwnerId;		// 外键id
 	private String licensePlateNum;		// 车牌号
 	private String vinCode;		// vin码
 	private String brand;		// 品牌
@@ -137,17 +135,8 @@ public class CarInfo extends PreEntity<CarInfo> {
 	public void setPaperId(String paperId) {
 		this.paperId = paperId;
 	}
-	
-	@Length(min=0, max=256, message="外键id长度不能超过 256 个字符")
-	public String getCarOwnerId() {
-		return carOwnerId;
-	}
 
-	public void setCarOwnerId(String carOwnerId) {
-		this.carOwnerId = carOwnerId;
-	}
-	
-	@Length(min=0, max=32, message="车牌号长度不能超过 32 个字符")
+    @Length(min=0, max=32, message="车牌号长度不能超过 32 个字符")
 	public String getLicensePlateNum() {
 		return licensePlateNum;
 	}

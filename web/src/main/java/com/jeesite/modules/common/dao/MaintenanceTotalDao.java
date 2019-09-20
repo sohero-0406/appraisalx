@@ -18,7 +18,7 @@ import java.util.List;
 @MyBatisDao
 public interface MaintenanceTotalDao extends CrudDao<MaintenanceTotal> {
 
-    List<MaintenanceTotal> findMaintenanceTotalList(@Param("keyword") String keyword);
+    List<MaintenanceTotal> findMaintenanceTotalList(MaintenanceTotal maintenanceTotal);
 
     List<MaintenanceTotal> findMaintenanceTotalById(@Param(value = "split") String[] split);
 }

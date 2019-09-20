@@ -93,9 +93,9 @@ public class VehicleDangerTotalController extends BaseController {
 
     @RequestMapping(value = "findVehicleDangerTotalList")
     @ResponseBody
-    public CommonResult findVehicleDangerTotalList1(HttpServletRequest request, String keyword) {
-        Class<?>[] classes = {String.class};
-        Object[] obs = {keyword};
+    public CommonResult findVehicleDangerTotalList1(HttpServletRequest request, VehicleDangerTotal vehicleDangerTotal) {
+        Class<?>[] classes = {VehicleDangerTotal.class};
+        Object[] obs = {vehicleDangerTotal};
         CommonResult result = UrlDecrypt.test2("findVehicleDangerTotalList", this, VehicleDangerTotalController.class, request, classes, obs);
         if (result == null) {
             return new CommonResult(CodeConstant.REGISTE_INFO_ERROR, "您未注册或者系统没有检测到硬件信息，或者您破坏了注册信息！");
@@ -110,10 +110,10 @@ public class VehicleDangerTotalController extends BaseController {
     * @author: Jiangyf
     * @date: 2019/8/12 
     * @time: 11:55
-    */ 
-    public CommonResult findVehicleDangerTotalList(String keyword) {
+    */
+    public CommonResult findVehicleDangerTotalList(VehicleDangerTotal vehicleDangerTotal) {
         CommonResult comRes = new CommonResult();
-        comRes.setData(vehicleDangerTotalService.findVehicleDangerTotalList(keyword));
+        comRes.setData(vehicleDangerTotalService.findVehicleDangerTotalList(vehicleDangerTotal));
         return comRes;
     }
 

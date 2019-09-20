@@ -40,6 +40,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping(value = "${adminPath}/common/operationLog")
+@Validated
 public class OperationLogController extends BaseController {
 
     @Autowired
@@ -118,7 +119,6 @@ public class OperationLogController extends BaseController {
      * 日志搜索查询导出
      */
     @RequestMapping(value = "exportOperationLog")
-    @ResponseBody
     public void exportOperationLog(String keyword, @NotBlank String operationLogIds, HttpServletResponse response) {
         String[] idList = operationLogIds.split(",");
         List<OperationLog> list = operationLogService.getOperationLog(keyword, idList);

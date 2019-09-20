@@ -25,7 +25,7 @@
 
 
 	</delete>
-    <select id="findReferenceListByKeyword" resultType="com.jeesite.modules.aa.entity.Reference">
+    <select id="findReferenceList" resultType="com.jeesite.modules.aa.entity.Reference">
 		SELECT
 			id,
 			model,

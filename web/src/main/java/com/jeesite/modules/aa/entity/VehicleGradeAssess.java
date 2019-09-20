@@ -11,6 +11,8 @@ import com.jeesite.common.mybatis.annotation.Column;
 import com.jeesite.common.mybatis.annotation.Table;
 import com.jeesite.common.mybatis.mapper.query.QueryType;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * 车辆等级评定Entity
  * @author lvchangwei
@@ -35,13 +37,16 @@ public class VehicleGradeAssess extends PreEntity<VehicleGradeAssess> {
 	private static final long serialVersionUID = 1L;
 	private String examUserId;		// 外键Id
 	private String paperId;		// 试卷id
-	private String score;		// 综合状况分值
-	private String technicalStatus;		// 技术状况
+    @NotBlank
+    private String score;		// 综合状况分值
+    @NotBlank
+    private String technicalStatus;		// 技术状况
 	private String evaluator;		// 评估师
 	private String description;		// 综合评论
 	private String startScore;		// 得分区间开始值
 	private String endScore;		// 得分区间结束值
-	private String identifyDate;		//鉴定日期
+    @NotBlank
+    private String identifyDate;		//鉴定日期
 	
 	public VehicleGradeAssess() {
 		this(null);

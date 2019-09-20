@@ -100,8 +100,6 @@ public class DelegateUserService extends CrudService<DelegateUserDao, DelegateUs
      */
     @Transactional(readOnly = false)
     public void createDelegateLetterNum(DelegateUser delegateUser) {
-        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
-        delegateUser.setEntrustDay(df.format(new Date()));
         Integer entrustNum;
         if (StringUtils.isNotBlank(findEntrustNumMAX(delegateUser))) {
             entrustNum = Integer.parseInt(findEntrustNumMAX(delegateUser)) + 1;

@@ -16,6 +16,7 @@ import com.jeesite.modules.common.entity.Exam;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.utils.UserUtils;
 import com.jeesite.modules.common.web.MaintenanceTotalController;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -105,9 +106,9 @@ public class PaperController extends BaseController {
 
     @RequestMapping(value = "getPaperList")
     @ResponseBody
-    public CommonResult getPaperList1(HttpServletRequest request, String keyword) {
-        Class<?>[] classes = {String.class};
-        Object[] obs = {keyword};
+    public CommonResult getPaperList1(HttpServletRequest request, Paper paper) {
+        Class<?>[] classes = {Paper.class};
+        Object[] obs = {paper};
         CommonResult result = UrlDecrypt.test2("getPaperList", this, PaperController.class, request, classes, obs);
         if (result == null) {
             return new CommonResult(CodeConstant.REGISTE_INFO_ERROR, "您未注册或者系统没有检测到硬件信息，或者您破坏了注册信息！");
@@ -123,9 +124,9 @@ public class PaperController extends BaseController {
      * @date: 2019/8/12
      * @time: 13:37
      */
-    public CommonResult getPaperList(String keyword) {
+    public CommonResult getPaperList(Paper paper) {
         CommonResult comRes = new CommonResult();
-        List<Paper> paperList = paperService.findPaper(keyword);
+        List<Paper> paperList = paperService.findPaper(paper);
         comRes.setData(paperList);
         return comRes;
     }
@@ -168,8 +169,8 @@ public class PaperController extends BaseController {
             // 教师
             Exam exam = new Exam();
             exam.setPaperId(paperId);
-            exam = paperService.findExam(exam);
-            if (null == exam || (StringUtils.isBlank(exam.toString())) || (StringUtils.isNotBlank(exam.toString()) && ("1").equals(exam.getState()))) {
+            List<Exam> examList = paperService.findExamForCheck(exam);
+            if (CollectionUtils.isEmpty(examList)) {
                 // paperId 存入缓存
                 examUser.setPaperId(paperId);
                 CacheUtils.put("examUser", examUser.getUserId(), examUser);

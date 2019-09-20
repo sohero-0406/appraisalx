@@ -27,7 +27,6 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 		@Column(name="address", attrName="address", label="委托方地址"),
 		@Column(name="gender", attrName="gender", label="性别"),
 		@Column(name="entrust_num", attrName="entrustNum", label="委托书编号"),
-		@Column(name="entrust_day", attrName="entrustDay", label="委托书日期"),
 		@Column(name="contact", attrName="contact", label="联系人"),
 		@Column(name="phone", attrName="phone", label="电话"),
 		@Column(name="entrust_type", attrName="entrustType", label="委托书类型"),
@@ -49,7 +48,6 @@ public class DelegateUser extends PreEntity<DelegateUser> {
 	private String address;		// 委托方地址
 	private String gender;		// 性别
 	private String entrustNum;		// 委托书编号
-	private String entrustDay;		//委托书日期
 	private String contact;		// 联系人
 	private String phone;		// 电话
 	private String entrustType;		// 委托书类型
@@ -147,15 +145,6 @@ public class DelegateUser extends PreEntity<DelegateUser> {
 		this.entrustNum = entrustNum;
 	}
 
-	@Length(min=0, max=32, message="委托书日期长度不能超过 32 个字符")
-	public String getEntrustDay() {
-		return entrustDay;
-	}
-
-	public void setEntrustDay(String entrustDay) {
-		this.entrustDay = entrustDay;
-	}
-
 	@Length(min=0, max=32, message="联系人长度不能超过 32 个字符")
 	public String getContact() {
 		return contact;
@@ -183,7 +172,6 @@ public class DelegateUser extends PreEntity<DelegateUser> {
 		this.entrustType = entrustType;
 	}
 
-	
 	@Length(min=0, max=32, message="完成日期长度不能超过 32 个字符")
 	public String getCompleteDate() {
 		return completeDate;
@@ -192,9 +180,6 @@ public class DelegateUser extends PreEntity<DelegateUser> {
 	public void setCompleteDate(String completeDate) {
 		this.completeDate = completeDate;
 	}
-
-
-
 
 	@Length(min=0, max=32, message="评报字-时间长度不能超过 16 个字符")
 	public String getAppraisalDate() {

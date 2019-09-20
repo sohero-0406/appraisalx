@@ -42,7 +42,9 @@
 		where user.exam_id = #{examId} and  exam.status = '0';
 	</select>
 
-
-
+    <select id="findExamForCheck" resultType="Exam">
+		SELECT * FROM `common_exam`
+		where paper_id = #{paperId} and state != '1'
+	</select>
 
 </mapper>

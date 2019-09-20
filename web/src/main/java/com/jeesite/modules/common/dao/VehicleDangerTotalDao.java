@@ -18,7 +18,7 @@ import java.util.List;
 @MyBatisDao
 public interface VehicleDangerTotalDao extends CrudDao<VehicleDangerTotal> {
 
-    List<VehicleDangerTotal> findVehicleDangerTotalList(@Param(value = "keyword") String keyword);
+    List<VehicleDangerTotal> findVehicleDangerTotalList(VehicleDangerTotal vehicleDangerTotal);
 
     List<VehicleDangerTotal> findVehicleDangerTotalById(@Param(value = "split") String[] split);
 }

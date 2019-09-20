@@ -213,8 +213,8 @@ public class MaintenanceTotalService extends CrudService<MaintenanceTotalDao, Ma
     * @author: Jiangyf
     * @date: 2019/8/12 
     * @time: 11:28
-    */ 
-    public List<MaintenanceTotal> findMaintenanceTotalList(String keyword) {
-        return dao.findMaintenanceTotalList(keyword);
+    */
+    public List<MaintenanceTotal> findMaintenanceTotalList(MaintenanceTotal maintenanceTotal) {
+        return dao.findMaintenanceTotalList(maintenanceTotal);
     }
 }

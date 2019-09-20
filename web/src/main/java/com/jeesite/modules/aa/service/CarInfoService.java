@@ -108,25 +108,27 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
     /**
      * 保存车辆基本信息和委托方基本信息
      *
-     * @param baseInfoVO
+     * @param delegateUser
+     * @param carInfo
      * @param examUser
      */
     @Transactional
-    public void saveBaseInfo(BaseInfoVO baseInfoVO, ExamUser examUser) {
-        DelegateUser delegateUser = baseInfoVO.getDelegateUser();
+    public void saveBaseInfo(DelegateUser delegateUser, CarInfo carInfo, ExamUser examUser) {
         if (null == delegateUser) {
             delegateUser = new DelegateUser();
         }
-        delegateUser.setExamUserId(examUser.getId());
-        delegateUser.setPaperId(examUser.getPaperId());
-        DelegateUser user = delegateUserService.getByEntity(delegateUser);
+        DelegateUser user = new DelegateUser();
+        user.setExamUserId(examUser.getId());
+        user.setPaperId(examUser.getPaperId());
+        user = delegateUserService.getByEntity(user);
         if (null == user) {
             //生成委托书编号
             delegateUserService.createDelegateLetterNum(delegateUser);
         }
+        delegateUser.setExamUserId(examUser.getId());
+        delegateUser.setPaperId(examUser.getPaperId());
         delegateUserService.save(delegateUser);
 
-        CarInfo carInfo = baseInfoVO.getCarInfo();
         if (null == carInfo) {
             carInfo = new CarInfo();
         }

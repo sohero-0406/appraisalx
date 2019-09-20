@@ -21,8 +21,11 @@
         FROM
             common_vehicle_danger_total
         <where>
-            <if test="keyword != null and keyword != ''">
-                vehicle_type LIKE CONCAT('%',#{keyword},'%') OR vin_code LIKE CONCAT('%',#{keyword},'%')
+            <if test="vehicleType != null and vehicleType != ''">
+                and vehicle_type LIKE CONCAT('%',#{vehicleType},'%')
+            </if>
+            <if test="vinCode != null and vinCode != ''">
+                and vin_code LIKE CONCAT('%',#{vinCode},'%')
             </if>
         </where>
     </select>

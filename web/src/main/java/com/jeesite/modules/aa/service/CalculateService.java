@@ -141,7 +141,7 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
         CalculateKm calculateKm = new CalculateKm();
         CalculateReplaceCost calculateReplaceCost = new CalculateReplaceCost();
         CalculateCurrent calculateCurrent = new CalculateCurrent();
-        if(null!=calculate){
+        if (null != calculate) {
             switch (calculate.getType()) {
                 case "1"://折旧率估值法
                     calculateDepreciation.setCalculateId(calculate.getId());
@@ -161,7 +161,7 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
                     break;
             }
         }
-      return vo;
+        return vo;
     }
 
     /**
@@ -171,7 +171,7 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
      * @param examUser
      */
     @Transactional
-    public void saveCalculate(CalculateVO vo, ExamUser examUser) {
+    public CommonResult saveCalculate(CalculateVO vo, ExamUser examUser) {
         Calculate calculate = vo.getCalculate();
         String type = calculate.getType();
         //现行市价法有被评估车辆，不能删除
@@ -180,6 +180,13 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
         }
         calculate.setExamUserId(examUser.getId());
         calculate.setPaperId(examUser.getPaperId());
+        if (StringUtils.isNotBlank(examUser.getPaperId())) {
+            //教师参数校验
+            if (null == calculate.getBeginPrice() || null == calculate.getEndPrice() ||
+                    StringUtils.isBlank(calculate.getSecondCarPrice())) {
+                return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "请求参数有误");
+            }
+        }
         this.save(calculate);
         String calculateId = calculate.getId();
 
@@ -196,6 +203,13 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
                 break;
             case "3"://重置成本法
                 CalculateReplaceCost calculateReplaceCost = vo.getCalculateReplaceCost();
+                if (StringUtils.isNotBlank(examUser.getPaperId())) {
+                    //教师参数校验
+                    if (null == calculateReplaceCost.getLicenseFee() ||
+                            StringUtils.isBlank(calculateReplaceCost.getProvideUseYear())) {
+                        return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "请求参数有误");
+                    }
+                }
                 calculateReplaceCost.setCalculateId(calculateId);
                 calculateReplaceCostService.save(calculateReplaceCost);
                 break;
@@ -206,7 +220,8 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
                 break;
         }
         delegateLetterService.createAppraisalReportNum(examUser);
-        operationLogService.saveObj(examUser,"保存计算车辆价值成功");
+        operationLogService.saveObj(examUser, "保存计算车辆价值成功");
+        return new CommonResult();
     }
 
     public Calculate getByEntity(Calculate calculate) {
@@ -214,8 +229,8 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
     }
 
     //依据学生的估算方式查找对应的估算值
-    public Map<String, String> getEstimateByType(String examUserId,String paperId) {
-        return dao.getEstimateByType(examUserId,paperId);
+    public Map<String, String> getEstimateByType(String examUserId, String paperId) {
+        return dao.getEstimateByType(examUserId, paperId);
     }
 
     /**

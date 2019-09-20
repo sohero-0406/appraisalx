@@ -132,9 +132,9 @@ public class ReferenceController extends BaseController {
 
     @RequestMapping(value = "findReferenceList")
     @ResponseBody
-    public CommonResult findReferenceList1(HttpServletRequest request, String keyword) {
-        Class<?>[] classes = {String.class};
-        Object[] obs = {keyword};
+    public CommonResult findReferenceList1(HttpServletRequest request, Reference reference) {
+        Class<?>[] classes = {Reference.class};
+        Object[] obs = {reference};
         CommonResult result = UrlDecrypt.test2("findReferenceList", this, ReferenceController.class, request, classes, obs);
         if (result == null) {
             return new CommonResult(CodeConstant.REGISTE_INFO_ERROR, "您未注册或者系统没有检测到硬件信息，或者您破坏了注册信息！");
@@ -149,10 +149,10 @@ public class ReferenceController extends BaseController {
 	* @author: Jiangyf
 	* @date: 2019/8/12 
 	* @time: 10:40
-	*/ 
-	public CommonResult findReferenceList(String keyword) {
+	*/
+    public CommonResult findReferenceList(Reference reference) {
 		CommonResult comRes = new CommonResult();
-		comRes.setData(referenceService.findReferenceList(keyword));
+        comRes.setData(referenceService.findReferenceList(reference));
 		return comRes;
 	}
 

@@ -20,7 +20,7 @@ import java.util.Map;
 @MyBatisDao
 public interface PaperDao extends CrudDao<Paper> {
 
-    List<Paper> findPaper(@Param(value = "keyword") String keyword);
+    List<Paper> findPaper(Paper paper);
 
     List<CarInfo> findPaperBySortTea(Map<String,String> hs);
 }

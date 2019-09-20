@@ -45,6 +45,7 @@ public class Paper extends PreEntity<Paper> {
 
     // 数据库不存在字段
     private CarInfo carInfo;
+    private String vinCode;
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
@@ -118,5 +119,13 @@ public class Paper extends PreEntity<Paper> {
 
     public void setCreateDate(Timestamp createDate) {
         this.createDate = createDate;
+    }
+
+    public String getVinCode() {
+        return vinCode;
+    }
+
+    public void setVinCode(String vinCode) {
+        this.vinCode = vinCode;
     }
 }

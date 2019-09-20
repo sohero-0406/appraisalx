@@ -18,11 +18,12 @@ public class MyRunner implements CommandLineRunner {
     public void run(String... strings) {
         String url = MyRunner.class.getResource("").toString().replace("file:/", "");
         if (url.contains("/webapps")) {
-            url = url.substring(0, url.indexOf("/webapps")).split("/")[0];
+            url = url.substring(0, url.indexOf("/webapps"));
+            url = url.substring(0, url.lastIndexOf("/"));
         } else {
             url = "D:";
         }
-        url+="/大平台地址.ini";
+        url += "/server/config.ini";
 
         Wini ini = null;
         try {
@@ -30,8 +31,8 @@ public class MyRunner implements CommandLineRunner {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String ip = ini.get("Server", "Ip");
-        String port = ini.get("Server", "Port");
+        String ip = ini.get("Server", "ServerName");
+        String port = ini.get("Server", "ComID");
         String contextPath = ini.get("Server", "ContextPath");
         CacheUtils.put("platformUrl", "http://" + ip + ":" + port + "/" + contextPath);
     }

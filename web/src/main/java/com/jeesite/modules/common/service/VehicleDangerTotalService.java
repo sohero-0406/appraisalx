@@ -209,8 +209,8 @@ public class VehicleDangerTotalService extends CrudService<VehicleDangerTotalDao
     * @author: Jiangyf
     * @date: 2019/8/12 
     * @time: 11:56
-    */ 
-    public List<VehicleDangerTotal> findVehicleDangerTotalList(String keyword) {
-        return dao.findVehicleDangerTotalList(keyword);
+    */
+    public List<VehicleDangerTotal> findVehicleDangerTotalList(VehicleDangerTotal vehicleDangerTotal) {
+        return dao.findVehicleDangerTotalList(vehicleDangerTotal);
     }
 }

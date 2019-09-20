@@ -95,9 +95,9 @@ public class MaintenanceTotalController extends BaseController {
 
     @RequestMapping(value = "findMaintenanceTotalList")
     @ResponseBody
-    public CommonResult findMaintenanceTotalList1(HttpServletRequest request, String keyword) {
-        Class<?>[] classes = {String.class};
-        Object[] obs = {keyword};
+    public CommonResult findMaintenanceTotalList1(HttpServletRequest request, MaintenanceTotal maintenanceTotal) {
+        Class<?>[] classes = {MaintenanceTotal.class};
+        Object[] obs = {maintenanceTotal};
         CommonResult result = UrlDecrypt.test2("findMaintenanceTotalList", this, MaintenanceTotalController.class, request, classes, obs);
         if (result == null) {
             return new CommonResult(CodeConstant.REGISTE_INFO_ERROR, "您未注册或者系统没有检测到硬件信息，或者您破坏了注册信息！");
@@ -113,9 +113,9 @@ public class MaintenanceTotalController extends BaseController {
     * @date: 2019/8/12 
     * @time: 11:27
     */
-    public CommonResult findMaintenanceTotalList(String keyword) {
+    public CommonResult findMaintenanceTotalList(MaintenanceTotal maintenanceTotal) {
         CommonResult comRes = new CommonResult();
-        List<MaintenanceTotal> maintenanceTotals = maintenanceTotalService.findMaintenanceTotalList(keyword);
+        List<MaintenanceTotal> maintenanceTotals = maintenanceTotalService.findMaintenanceTotalList(maintenanceTotal);
         comRes.setData(maintenanceTotals);
         return comRes;
     }

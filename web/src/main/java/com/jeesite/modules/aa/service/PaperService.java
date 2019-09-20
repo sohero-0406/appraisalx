@@ -88,8 +88,8 @@ public class PaperService extends CrudService<PaperDao, Paper> {
 	 * 查询试卷列表
 	 * @return
 	 */
-	public List<Paper> findPaper(String keyword) {
-		return paperDao.findPaper(keyword);
+    public List<Paper> findPaper(Paper paper) {
+        return paperDao.findPaper(paper);
 	}
 
 	/**
@@ -110,7 +110,7 @@ public class PaperService extends CrudService<PaperDao, Paper> {
 	* @date: 2019/8/10
 	* @time: 16:37
 	*/
-    public Exam findExam(Exam exam) {
-    	return examService.getByEntity(exam);
+    public List<Exam> findExamForCheck(Exam exam) {
+        return examService.findExamForCheck(exam);
     }
 }

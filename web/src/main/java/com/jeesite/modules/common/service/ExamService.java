@@ -595,4 +595,8 @@ public class ExamService extends CrudService<ExamDao, Exam> {
     public void saveExamUser(ExamUser examUser) {
         examUserService.save(examUser);
     }
+
+    public List<Exam> findExamForCheck(Exam exam) {
+        return dao.findExamForCheck(exam);
+    }
 }

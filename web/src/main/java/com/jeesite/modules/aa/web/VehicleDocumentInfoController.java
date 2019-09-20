@@ -105,8 +105,6 @@ public class VehicleDocumentInfoController extends BaseController {
     @RequestMapping(value = "findList")
     @ResponseBody
     public CommonResult findList() {
-
-        HttpClientUtils.post("http://h15g715740.iask.in:8081/appraisal/aa/checkTradableVehicles/getDetail",null);
         ExamUser examUser = UserUtils.getExamUser();
         VehicleDocumentInfoVO vo = vehicleDocumentInfoService.findDocument(examUser);
         CommonResult result = new CommonResult();
