@@ -158,20 +158,6 @@ public class ExamController extends BaseController {
     }
 
     /**
-     * 依据考试删除考试
-     *
-     * @param
-     * @return
-     */
-    @RequestMapping(value = "deleteExam")
-    @ResponseBody
-    public CommonResult deleteExam(Exam exam) {
-        CommonResult comRes = examService.deleteExam(exam);
-        return comRes;
-    }
-
-
-    /**
      * 查看考试详情接口
      */
     @RequestMapping(value = "getExam")
@@ -307,4 +293,10 @@ public class ExamController extends BaseController {
         return examService.findClassList(examUser, vo);
     }
 
+    @RequestMapping(value = "deleteExam")
+    @ResponseBody
+    public CommonResult deleteExam(String id) {
+        CommonResult comRes = examService.deleteExam(id);
+        return comRes;
+    }
 }

@@ -1490,11 +1490,8 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
      * @param examId
      * @return
      */
-    public List<ExamUser> getExamUserListByPlatfrom(JSONArray array, String examId) {
-        Exam exam = new Exam();
-        exam.setId(examId);
-        String examName = examService.getByEntity(exam).getName();
-        List<ExamUser> examUserList = dao.getExamUserListByOrder(examId);
+    public List<ExamUser> getExamUserListByPlatfrom(JSONArray array, String[] examId) {
+        List<ExamUser> examUserList = dao.getExamUserByExamId(examId);
         for (ExamUser examUser : examUserList) {
             for (Object platformExamUser : array) {
                 JSONObject platformUser = (JSONObject) platformExamUser;
@@ -1505,6 +1502,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
                     examUser.setMajorName(platformUser.getString("majorName"));
                     examUser.setClassName(platformUser.getString("className"));
                     examUser.setGender(platformUser.getString("gender"));
+                    Exam exam = new Exam();
+                    exam.setId(examUser.getExamId());
+                    String examName = examService.getByEntity(exam).getName();
                     examUser.setExamName(examName);
                 }
             }
@@ -1608,4 +1608,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
         }
     }
 
+    public List<ExamUser> getExamUserByExamId(String[] examIds) {
+        return dao.getExamUserByExamId(examIds);
+    }
 }

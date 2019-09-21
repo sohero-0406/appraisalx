@@ -36,5 +36,5 @@ public interface ExamUserDao extends CrudDao<ExamUser> {
     List<ExamUser> getExamStateByUserId(@Param("userIdList") List<String> userIdList,@Param("examId") String examId);
 
 
-
+    List<ExamUser> getExamUserByExamId(@Param("examIds") String[] examIds);
 }

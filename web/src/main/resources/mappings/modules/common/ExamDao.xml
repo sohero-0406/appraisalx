@@ -47,4 +47,18 @@
 		where paper_id = #{paperId} and state != '1'
 	</select>
 
+    <select id="selectExamIdList" resultType="Exam">
+        select
+        *
+        from
+        common_exam
+        <where>
+            <if test="examIds != null and examIds.length > 0">
+                and id in
+                <foreach collection="examIds" item="examId" index="index" open="(" close=")" separator=",">
+                    #{examId}
+                </foreach>
+            </if>
+        </where>
+    </select>
 </mapper>

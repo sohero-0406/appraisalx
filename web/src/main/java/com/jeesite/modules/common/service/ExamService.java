@@ -314,43 +314,6 @@ public class ExamService extends CrudService<ExamDao, Exam> {
         return examUserList;
     }
 
-
-    //删除考试 (考试id，考试状态)
-    @Transactional(readOnly = false)
-    public CommonResult deleteExam(Exam exam) {
-        CommonResult comRes = new CommonResult();
-        exam = dao.getByEntity(exam);
-        if (null == exam && StringUtils.isBlank(exam.getId())) {
-            comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
-            comRes.setMsg("请先选择考试!");
-            return comRes;
-        } else if ("".equals(exam.getState()) || null == exam.getState() ) {
-            comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
-            comRes.setMsg("此状态下的考试不能被删除!");
-            return comRes;
-        }
-
-        if ("1".equals(exam.getState())){
-            //删除考试
-            dao.delete(exam);
-        }else if("7".equals(exam.getState()) && "1".equals(exam.getUploadScore())&&"1".equals(exam.getType())){
-            //删除考试
-            dao.delete(exam);
-        }else{
-            comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
-            comRes.setMsg("参数异常");
-            return comRes;
-        }
-
-//        //删除 评分项
-//        examScoreDetailService.deleteExamScoreInfo(exam.getId());
-//        //删除内容模板
-//        examDetailService.deleteExamDetail(exam.getId());
-//        //删除学生
-//        examUserService.deleteByExamUser(exam.getId());
-        return comRes;
-    }
-
     @Transactional(readOnly = false)
     public Exam getByEntity(Exam exam) {
         return dao.getByEntity(exam);
@@ -592,11 +555,35 @@ public class ExamService extends CrudService<ExamDao, Exam> {
         return httpClientService.post(ServiceConstant.COMMONUSER_LOAD_CLASS_LIST, map);
     }
 
+    @Transactional
     public void saveExamUser(ExamUser examUser) {
         examUserService.save(examUser);
     }
 
     public List<Exam> findExamForCheck(Exam exam) {
         return dao.findExamForCheck(exam);
+    }
+
+    //删除考试 (考试id，考试状态)
+    @Transactional(readOnly = false)
+    public CommonResult deleteExam(String id) {
+        CommonResult comRes = new CommonResult();
+        String[] examIds = id.split(",");
+        List<Exam> examList = dao.selectExamIdList(examIds);
+        for (Exam exam : examList) {
+            exam = dao.getByEntity(exam);
+            if ("1".equals(exam.getState())) {
+                //删除考试
+                dao.delete(exam);
+            } else if ("7".equals(exam.getState()) && "1".equals(exam.getUploadScore()) && "1".equals(exam.getType())) {
+                //删除考试
+                dao.delete(exam);
+            } else {
+                comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
+                comRes.setMsg("存在不可删除的考试状态!");
+                return comRes;
+            }
+        }
+        return comRes;
     }
 }

@@ -142,12 +142,8 @@ public class ExamUserController extends BaseController {
     @RequestMapping(value = "exportResults")
     @ResponseBody
     public void exportOperationLog(HttpServletResponse response, @NotBlank String examId) {
-
-        Exam exam = new Exam();
-        exam.setId(examId);
-        ExamUser examUser = new ExamUser();
-        examUser.setExamId(examId);
-        List<ExamUser> examUserList = examUserService.findList(examUser);
+        String[] examIds = examId.split(",");
+        List<ExamUser> examUserList = examUserService.getExamUserByExamId(examIds);
         StringBuilder stringBuilder = new StringBuilder();
         int len = examUserList.size();
         for (int i = 0; i < len; i++) {
@@ -165,7 +161,7 @@ public class ExamUserController extends BaseController {
         }
         JSONArray array = JSONArray.parseArray(loadStuListComRes.getData().toString());
         if (array.size() > 0) {
-            List list = examUserService.getExamUserListByPlatfrom(array, examId);
+            List list = examUserService.getExamUserListByPlatfrom(array, examIds);
             String fileName = "学生成绩列表" + DateUtils.getDate("yyyyMMddHHmmss") + ".xlsx";
             try (ExcelExport ee = new ExcelExport(null, ExamUser.class)) {
                 ee.setDataList(list).write(response, fileName);
@@ -173,7 +169,6 @@ public class ExamUserController extends BaseController {
                 throw new RuntimeException("导出成绩异常!");
             }
         }
-
     }
 
     /**

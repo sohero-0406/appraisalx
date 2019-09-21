@@ -3,7 +3,6 @@
  */
 package com.jeesite.modules.aa.entity;
 
-import com.jeesite.common.entity.DataEntity;
 import com.jeesite.common.mybatis.annotation.Column;
 import com.jeesite.common.mybatis.annotation.Table;
 import com.jeesite.common.mybatis.mapper.query.QueryType;
@@ -45,7 +44,24 @@ public class Paper extends PreEntity<Paper> {
 
     // 数据库不存在字段
     private CarInfo carInfo;
+    private String licensePlateNum;
     private String vinCode;
+
+    public String getLicensePlateNum() {
+        return licensePlateNum;
+    }
+
+    public void setLicensePlateNum(String licensePlateNum) {
+        this.licensePlateNum = licensePlateNum;
+    }
+
+    public String getVinCode() {
+        return vinCode;
+    }
+
+    public void setVinCode(String vinCode) {
+        this.vinCode = vinCode;
+    }
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
@@ -119,13 +135,5 @@ public class Paper extends PreEntity<Paper> {
 
     public void setCreateDate(Timestamp createDate) {
         this.createDate = createDate;
-    }
-
-    public String getVinCode() {
-        return vinCode;
-    }
-
-    public void setVinCode(String vinCode) {
-        this.vinCode = vinCode;
     }
 }

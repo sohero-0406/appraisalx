@@ -90,5 +90,22 @@
 		</where>
 	</select>
 
+	<select id="getExamUserByExamId" resultType="ExamUser">
+		select
+		*
+		from
+		common_exam_user user
+		<where>
+			<if test="examIds != null and examIds.length> 0">
+				user.exam_id in
+				<foreach collection="examIds" item="examId" index="index" open="(" close=")" separator=",">
+					#{examId}
+				</foreach>
+			</if>
+		</where>
+		ORDER BY
+		score DESC,(end_time-start_time)
+
+	</select>
 </mapper>
 

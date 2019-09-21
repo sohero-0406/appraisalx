@@ -61,5 +61,21 @@
 			</if>
 		</if>
 	</select>
-	
+
+    <!-- 查询试卷列表 -->
+    <select id="selectExamPaperList" resultType="Paper">
+        SELECT
+        a.*,
+        b.license_plate_num,
+        b.vin_code
+        FROM
+        aa_paper AS a
+        LEFT JOIN aa_car_info AS b ON a.id = b.paper_id
+        WHERE
+        a.STATUS = '0'
+        and a.state = '0'
+        <if test="name != null and name != ''">
+            AND a.name LIKE CONCAT ('%', #{name}, '%')
+        </if>
+    </select>
 </mapper>

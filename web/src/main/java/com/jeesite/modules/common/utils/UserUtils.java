@@ -39,6 +39,9 @@ public class UserUtils {
             return null;
         }
         Claims claims = JwtUtils.getClaimByToken(token);
+        if (null == claims) {
+            return null;
+        }
         String userId = claims.getSubject();
         return CacheUtils.get("examUser", userId);
     }

@@ -113,4 +113,8 @@ public class PaperService extends CrudService<PaperDao, Paper> {
     public List<Exam> findExamForCheck(Exam exam) {
         return examService.findExamForCheck(exam);
     }
+
+    public List<Paper> selectExamPaperList(String name) {
+        return dao.selectExamPaperList(name);
+    }
 }

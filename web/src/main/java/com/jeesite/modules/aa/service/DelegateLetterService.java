@@ -379,6 +379,10 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
     public Map<String, String> appraisalReportInfo(ExamUser examUser) throws ParseException {
 
         Map<String, String> returnMap = new HashMap<>();
+        //二手车鉴定评估机构盖章日期
+        returnMap.put("appraiserDateYear", "");
+        returnMap.put("appraiserDateMonth", "");
+        returnMap.put("appraiserDateDay", "");
         AppraisalReportVO appraisalReportVO = this.findAppraisalReport(examUser);
 //        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 //        SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy年MM月dd日");
@@ -516,12 +520,6 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
             returnMap.replace("yearCheckDueYear", dateArray[0]);
             returnMap.replace("yearCheckDueMonth", dateArray[1]);
         }
-
-        //二手车鉴定评估机构盖章日期
-        returnMap.put("appraiserDateYear", "");
-        returnMap.put("appraiserDateMonth", "");
-        returnMap.put("appraiserDateDay", "");
-
 
         //鉴定评估基准日
         returnMap.put("identifyYear", "");
