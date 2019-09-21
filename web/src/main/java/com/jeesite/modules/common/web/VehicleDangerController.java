@@ -12,6 +12,7 @@ import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.VehicleDangerTotal;
 import com.jeesite.modules.common.service.VehicleDangerTotalService;
 import com.jeesite.modules.common.vo.VehicleDangerInfoVO;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -126,8 +127,12 @@ public class VehicleDangerController extends BaseController {
     @ResponseBody
     public CommonResult saveVehicleDanger(@RequestBody(required = true) VehicleDangerInfoVO vehicleDangerInfoVO) {
         if (StringUtils.isBlank(vehicleDangerInfoVO.getVin()) || StringUtils.isBlank(vehicleDangerInfoVO.getCarModel())) {
-            return new CommonResult(CodeConstant.REQUEST_FAILED, "车型参数或VIN码为空");
+            return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "车型参数或VIN码不能为空!");
         }
+        if(CollectionUtils.isEmpty(vehicleDangerInfoVO.getVehicleDangerRecords())){
+            return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "出险记录不能为空!");
+        }
+
         if (StringUtils.isNotBlank(vehicleDangerInfoVO.getId())) {
             // 编辑
             VehicleDangerTotal vehicleDangerTotal = new VehicleDangerTotal();

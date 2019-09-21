@@ -52,7 +52,7 @@ public class HomePageService {
         }
         ExamUser examUser = UserUtils.getExamUser();
         CarInfo carInfo = new CarInfo();
-        carInfo.setExamUserId(examUser.getExamId());
+        carInfo.setExamUserId(examUser.getId());
         homePageVO.setCarInfo(carInfo);
         carInfo = carInfoService.findCarInfoBySortStu(homePageVO);
         if (carInfo != null) {
@@ -64,13 +64,13 @@ public class HomePageService {
             }
             homePageVO.setCarInfo(carInfo);
             PictureUser pictureUser = new PictureUser();
-            pictureUser.setExamUserId(examUser.getExamId());
+            pictureUser.setExamUserId(examUser.getId());
             pictureUser.setPictureTypeId("1143439344920567808");
             pictureUser = pictureUserService.getByEntity(pictureUser);
             homePageVO.setPictureUser(pictureUser);
 
             VehicleGradeAssess vehicleGradeAssess = new VehicleGradeAssess();
-            vehicleGradeAssess.setExamUserId(examUser.getExamId());
+            vehicleGradeAssess.setExamUserId(examUser.getId());
             vehicleGradeAssess = vehicleGradeAssessService.getByEntity(vehicleGradeAssess);
             homePageVO.setVehicleGradeAssess(vehicleGradeAssess);
 

@@ -58,7 +58,7 @@ public class AppraislJobTableService {
 
         //委托车辆信息
         CarInfo carInfo = new CarInfo();
-        carInfo.setExamUserId(examUser.getExamId());
+        carInfo.setExamUserId(examUser.getId());
         carInfo.setPaperId(examUser.getPaperId());
         carInfo = carInforService.getByEntity(carInfo);
         //设置级别
@@ -90,7 +90,7 @@ public class AppraislJobTableService {
 
         //车辆加装信息
         VehicleInstallInfo vehicleInstallInfo = new VehicleInstallInfo();
-        vehicleInstallInfo.setExamUserId(examUser.getExamId());
+        vehicleInstallInfo.setExamUserId(examUser.getId());
         vehicleInstallInfo.setPaperId(examUser.getPaperId());
         List<VehicleInstallInfo> vehicleInstallInfoList = vehicleInstallInfoService.findList(vehicleInstallInfo);
         //设置加装信息
@@ -101,7 +101,7 @@ public class AppraislJobTableService {
 
         //车辆单证信息
         VehicleDocumentInfo vehicleDocumentInfo = new VehicleDocumentInfo();
-        vehicleDocumentInfo.setExamUserId(examUser.getExamId());
+        vehicleDocumentInfo.setExamUserId(examUser.getId());
         vehicleDocumentInfo.setPaperId(examUser.getPaperId());
         List<VehicleDocumentInfo> vehicleDocumentInfoList = vehicleDocumentInfoService.findList(vehicleDocumentInfo);
         for(VehicleDocumentInfo vdi: vehicleDocumentInfoList){
@@ -143,7 +143,7 @@ public class AppraislJobTableService {
 
         //检查车体骨架
         CheckBodySkeleton checkBodySkeleton = new CheckBodySkeleton();
-        checkBodySkeleton.setExamUserId(examUser.getExamId());
+        checkBodySkeleton.setExamUserId(examUser.getId());
         checkBodySkeleton.setPaperId(examUser.getPaperId());
         List<CheckBodySkeleton> checkBodySkeletonList = checkBodySkeletonService.findList(checkBodySkeleton);
         //设置鉴定项
@@ -154,7 +154,7 @@ public class AppraislJobTableService {
 
         //检查可交易车辆
         CheckTradableVehicles checkTradableVehicles = new CheckTradableVehicles();
-        checkTradableVehicles.setExamUserId(examUser.getExamId());
+        checkTradableVehicles.setExamUserId(examUser.getId());
         checkTradableVehicles.setPaperId(examUser.getPaperId());
         checkTradableVehicles = checkTradableVehiclesService.getByEntity(checkTradableVehicles);
         //设置事故车判定
@@ -168,14 +168,14 @@ public class AppraislJobTableService {
 
         //鉴定技术状况
         IdentifyTec identifyTec = new IdentifyTec();
-        identifyTec.setExamUserId(examUser.getExamId());
+        identifyTec.setExamUserId(examUser.getId());
         identifyTec.setPaperId(examUser.getPaperId());
         List<IdentifyTec> identifyTecDetailList =  identifyTecDetailService.findIdentityTecCondition(identifyTec);
         appraisalJobTableVO.setIdentifyTecList(identifyTecDetailList);
 
         //车辆等级评定
         VehicleGradeAssess vehicleGradeAssess = new VehicleGradeAssess();
-        vehicleGradeAssess.setExamUserId(examUser.getExamId());
+        vehicleGradeAssess.setExamUserId(examUser.getId());
         vehicleGradeAssess.setPaperId(examUser.getPaperId());
         vehicleGradeAssess = vehicleGradeAssessService.getByEntity(vehicleGradeAssess);
         //设置技术状况

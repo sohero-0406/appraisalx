@@ -13,6 +13,7 @@ import com.jeesite.modules.common.entity.MaintenanceTotal;
 import com.jeesite.modules.common.service.MaintenanceTotalService;
 import com.jeesite.modules.common.vo.MaintenanceInfoVO;
 import com.jeesite.modules.sys.utils.DictUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -151,8 +152,12 @@ public class MaintenanceController extends BaseController {
     @ResponseBody
     public CommonResult saveMaintenance(@RequestBody(required = true) MaintenanceInfoVO maintenanceInfoVO) {
         if (StringUtils.isBlank(maintenanceInfoVO.getVin()) || StringUtils.isBlank(maintenanceInfoVO.getCarModel())) {
-            return new CommonResult(CodeConstant.REQUEST_FAILED, "车型参数或VIN码为空");
+            return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "车型参数或VIN码不能为空!");
         }
+        if(CollectionUtils.isEmpty(maintenanceInfoVO.getMaintenanceRecords())){
+            return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER,"维保记录不能为空!");
+        }
+
         if (StringUtils.isNotBlank(maintenanceInfoVO.getId())) {
             // 编辑
             MaintenanceTotal maintenanceTotal = new MaintenanceTotal();

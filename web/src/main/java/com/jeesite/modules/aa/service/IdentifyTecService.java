@@ -180,7 +180,7 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
         VehicleBasicInfo vehicleBasicInfo = new VehicleBasicInfo();
         // 数据查询
         CarInfo carInfo = new CarInfo();
-        carInfo.setExamUserId(examUser.getExamId());
+        carInfo.setExamUserId(examUser.getId());
         carInfo.setPaperId(examUser.getPaperId());
         carInfo = carInfoService.getByEntity(carInfo);
         if (null == carInfo) {
@@ -198,7 +198,7 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
             vehicleInfo = JSONObject.parseObject(result.getData().toString());
         }
         VehicleDocumentInfo vehicleDocumentInfo = new VehicleDocumentInfo();
-        vehicleDocumentInfo.setExamUserId(examUser.getExamId());
+        vehicleDocumentInfo.setExamUserId(examUser.getId());
         vehicleDocumentInfo.setPaperId(examUser.getPaperId());
         List<VehicleDocumentInfo> vehicleDocumentInfos = vehicleDocumentInfoService.findExistedDocuments(vehicleDocumentInfo);
         if (vehicleDocumentInfos.size() <= 0) {
@@ -209,7 +209,7 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
             return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "车辆其他单证信息列表为空");
         }
         DelegateUser delegateUser = new DelegateUser();
-        delegateUser.setExamUserId(examUser.getExamId());
+        delegateUser.setExamUserId(examUser.getId());
         delegateUser.setPaperId(examUser.getPaperId());
         delegateUser = delegateUserService.getByEntity(delegateUser);
         if (null == delegateUser) {
@@ -292,14 +292,14 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
         IsAccidentInfo isAccidentInfo = new IsAccidentInfo();
         // 数据查询
         CheckTradableVehicles checkTradableVehicles = new CheckTradableVehicles();
-        checkTradableVehicles.setExamUserId(examUser.getExamId());
+        checkTradableVehicles.setExamUserId(examUser.getId());
         checkTradableVehicles.setPaperId(examUser.getPaperId());
         checkTradableVehicles = checkTradableVehiclesService.getByEntity(checkTradableVehicles);
         if (null == checkTradableVehicles) {
             return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "可交易车辆信息为空");
         }
         CheckBodySkeleton checkBodySkeleton = new CheckBodySkeleton();
-        checkBodySkeleton.setExamUserId(examUser.getExamId());
+        checkBodySkeleton.setExamUserId(examUser.getId());
         checkBodySkeleton.setPaperId(examUser.getPaperId());
         // 查询事故车辆核查项目结果
         List<CheckBodySkeleton> checkProjectResults = checkBodySkeletonService.findCheckProjectResults(checkBodySkeleton);
@@ -316,7 +316,7 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
 
         // 4. 鉴定结果
         VehicleGradeAssess vehicleGradeAssess = new VehicleGradeAssess();
-        vehicleGradeAssess.setExamUserId(examUser.getExamId());
+        vehicleGradeAssess.setExamUserId(examUser.getId());
         vehicleGradeAssess.setPaperId(examUser.getPaperId());
         vehicleGradeAssess = vehicleGradeAssessService.getByEntity(vehicleGradeAssess);
         if (null == vehicleGradeAssess) {
@@ -328,7 +328,7 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
         // 5. 车辆技术状况鉴定缺陷描述 无需处理
         List<IdentifyTec> identifyTecList = new ArrayList<>();
         IdentifyTec identifyTec = new IdentifyTec();
-        identifyTec.setExamUserId(examUser.getExamId());
+        identifyTec.setExamUserId(examUser.getId());
         identifyTec.setPaperId(examUser.getPaperId());
         identifyTecList = this.findVehicleTecStatusResult(identifyTec);
         if (identifyTecList.size() <= 0) {

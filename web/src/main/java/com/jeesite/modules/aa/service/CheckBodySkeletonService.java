@@ -158,10 +158,6 @@ public class CheckBodySkeletonService extends CrudService<CheckBodySkeletonDao, 
 
         checkTradableVehicles = checkTradableVehiclesService.getByEntity(checkTradableVehicles);
         vo.setCheckTradableVehicles(checkTradableVehicles);
-//        //查询启用项
-//        ExamDetail examDetail = new ExamDetail();
-//        examDetail.setExamId(examUser.getExamId());
-//        vo.setExamDetail(examDetailService.getByEntity(examDetail));
         return vo;
     }
 
