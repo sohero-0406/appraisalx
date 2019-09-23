@@ -181,12 +181,15 @@ public class ExamService extends CrudService<ExamDao, Exam> {
         //判断新建/修改
         if (StringUtils.isNotBlank(examId)) {
             //修改
-            if (StringUtils.isBlank(exam.getState())) { //判断考试状态不能为空
-                comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);//请求参数有误
-                comRes.setMsg("考试状态不能为空");
-                return comRes;
-            }
-            if (!"1".equals(exam.getState())) { //除新建状态下的数据 其余不可修改
+//            if (StringUtils.isBlank(exam.getState())) { //判断考试状态不能为空
+//                comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);//请求参数有误
+//                comRes.setMsg("考试状态不能为空");
+//                return comRes;
+//            }
+            Exam examData = new Exam();
+            examData.setId(examId);
+            examData = dao.getByEntity(examData);
+            if (!"1".equals(examData.getState())) { //除新建状态下的数据 其余不可修改
                 comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);//请求参数有误
                 comRes.setMsg("此状态下的考试不能修改");
                 return comRes;

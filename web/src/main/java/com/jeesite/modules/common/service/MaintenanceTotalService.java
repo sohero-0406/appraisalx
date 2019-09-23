@@ -192,7 +192,7 @@ public class MaintenanceTotalService extends CrudService<MaintenanceTotalDao, Ma
             MaintenanceRecord maintenanceRecord = new MaintenanceRecord();
             MaintenanceType maintenanceType = new MaintenanceType();
             maintenanceType.setMaintenanceId(m.getId());
-            maintenanceRecord.setMaintenance(maintenanceDao.findMaintenanceDetail(m));
+            maintenanceRecord.setMaintenance(m);
             maintenanceRecord.setOutsideAnalyzeRepairRecords(maintenanceTypeDao.findRepairRecords(maintenanceType, "1"));
             maintenanceRecord.setComponentAnalyzeRepairRecords(maintenanceTypeDao.findRepairRecords(maintenanceType, "2"));
             maintenanceRecord.setNormalRepairRecords(maintenanceTypeDao.findRepairRecords(maintenanceType, "3"));
