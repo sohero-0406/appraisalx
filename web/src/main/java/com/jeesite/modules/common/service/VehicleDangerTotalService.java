@@ -191,7 +191,9 @@ public class VehicleDangerTotalService extends CrudService<VehicleDangerTotalDao
             VehicleDangerRecord vehicleDangerRecord = new VehicleDangerRecord();
             vehicleDangerRecord.setDangerDate(v.getDangerDate());
             vehicleDangerRecord.setServiceMoney(v.getServiceMoney());
-            vehicleDangerRecord.setVehicleDangerDetails(vehicleDangerDetailService.findVehicleDangerDetail(v));
+            VehicleDangerDetail vehicleDangerDetail = new VehicleDangerDetail();
+            vehicleDangerDetail.setCommonVehicleDangerId(v.getId());
+            vehicleDangerRecord.setVehicleDangerDetails(vehicleDangerDetailService.findList(vehicleDangerDetail));
             vehicleDangerRecords.add(vehicleDangerRecord);
         });
         // 填充VO对象数据
