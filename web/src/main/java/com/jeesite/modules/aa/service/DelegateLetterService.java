@@ -165,6 +165,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         carInfo = carInfoService.getByEntity(carInfo);
         carInfo.setColor(DictUtils.getDictLabel("aa_vehicle_color", carInfo.getColor(), ""));
         carInfo.setFuelType(DictUtils.getDictLabel("aa_fuel_type", carInfo.getFuelType(), ""));
+        carInfo.setUsage(DictUtils.getDictLabel("aa_usage_type",carInfo.getUsage(),""));
         if (StringUtils.isNotBlank(carInfo.getRegisterDate())) {
             String[] registerDate = carInfo.getRegisterDate().split("-");
             carInfo.setRegisterDate(registerDate[0] + "年" + registerDate[1] + "月" + registerDate[2] + "日");
