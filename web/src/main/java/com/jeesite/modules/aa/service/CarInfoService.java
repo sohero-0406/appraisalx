@@ -189,6 +189,23 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
             carInfo.setBrandName(pinpaichexi);
             baseInfoVO.setCarInfo(carInfo);
         }
+        //年款型号
+        if(null!=carInfo){
+            if(StringUtils.isNotBlank(carInfo.getModel())){
+                Map<String, String> map = new HashMap<>();
+                map.put("chexingId", carInfo.getModel());
+                CommonResult result = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_CAR_MODEL, map);
+                if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
+                    if(null!=result.getData()){
+                        JSONObject o = (JSONObject)result.getData();
+                        String chexingmingcheng = o.getString("chexingmingcheng");
+                        carInfo.setModelName(chexingmingcheng);
+                        baseInfoVO.setCarInfo(carInfo);
+                    }
+                }
+            }
+        }
+
 
         //加载委托方基本信息
         DelegateUser delegateUser = new DelegateUser();

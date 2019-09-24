@@ -109,6 +109,15 @@ public class CarInfo extends PreEntity<CarInfo> {
 
 	//非数据库字段
 	private String brandName;
+	private String modelName;//年款型号
+
+	public String getModelName() {
+		return modelName;
+	}
+
+	public void setModelName(String modelName) {
+		this.modelName = modelName;
+	}
 
 	public CarInfo() {
 		this(null);
