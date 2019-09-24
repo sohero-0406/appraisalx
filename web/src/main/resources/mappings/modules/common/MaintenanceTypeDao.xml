@@ -21,7 +21,7 @@
             content,
             material,
             type,
-            ( SELECT dict_label FROM js_sys_dict_data jsdd WHERE dict_type = 'aa_repairRecord_type' AND jsdd.dict_value = cmt.maintenance_type ) AS maintenance_type
+            maintenance_type
         FROM
             common_maintenance_type cmt
         where maintenance_id =  #{maintenanceType.maintenanceId} and maintenance_type = #{dictValue}

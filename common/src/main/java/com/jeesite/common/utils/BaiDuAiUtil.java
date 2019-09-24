@@ -126,7 +126,7 @@ public class BaiDuAiUtil {
         JSONObject result = new JSONObject();
         switch (jsonObj.optString("image_status")) {
             case "normal"://识别正常
-                result.put("code", CodeConstant.WRONG_REQUEST_PARAMETER);
+                result.put("code", CodeConstant.IDENTIFY_THE_SUCCESSFUL);
                 result.put("msg", "识别成功");
                 result.put("name", jsonObj.optJSONObject("words_result").optJSONObject("姓名").optString("words"));
                 result.put("national", jsonObj.optJSONObject("words_result").optJSONObject("民族").optString("words"));
