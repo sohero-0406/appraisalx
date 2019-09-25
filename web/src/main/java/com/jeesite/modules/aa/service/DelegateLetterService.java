@@ -313,7 +313,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         }
         for (int i = 0; i < descrip.size(); i++) {
             if(StringUtils.isNotBlank(descrip.get(i))){
-                if (i == descrip.size() - 1 || descrip.size()==1) {
+                if (i == descrip.size() - 1 ) {
                     defectDescription.append(descrip.get(i));
                 } else {
                     defectDescription.append(descrip.get(i) + ",");
@@ -329,7 +329,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         if (null!=vehicleGradeAssess && StringUtils.isNotBlank(vehicleGradeAssess.getTechnicalStatus())) {
             vehicleGradeAssess.setTechnicalStatus(DictUtils.getDictLabel("aa_technical_status", vehicleGradeAssess.getTechnicalStatus(), ""));
             appraisalReportVO.setVehicleGradeAssess(vehicleGradeAssess);
-            defectDescription.append(StringUtils.isNotBlank(vehicleGradeAssess.getDescription()) ? "," + vehicleGradeAssess.getDescription() : "");
+            defectDescription.append(StringUtils.isNotBlank(vehicleGradeAssess.getDescription()) ? ((StringUtils.isNotBlank(defectDescription))?"," + vehicleGradeAssess.getDescription():  vehicleGradeAssess.getDescription()): "");
             //填入缺陷描述
             appraisalReportVO.setDefectDescription(defectDescription.toString());
         }
@@ -418,7 +418,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         // //鉴定评估基准日 见下
         //四、鉴定评估车辆信息
         CarInfo carInfo = appraisalReportVO.getCarInfo();
-        returnMap.put("labelType", carInfo.getLevel());//厂牌型号
+        returnMap.put("labelType", carInfo.getLabelType());//厂牌型号
         //拍照号码同上
         returnMap.put("engineNum", carInfo.getEngineNum());//发动机号码
         returnMap.put("vinCode", carInfo.getVinCode()); //车辆识别代号／车架号
