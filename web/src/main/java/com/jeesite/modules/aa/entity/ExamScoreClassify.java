@@ -36,7 +36,16 @@ public class ExamScoreClassify extends PreEntity<ExamScoreClassify> {
 	private List<ExamScoreDetail> itemList;
 	private List<ExamResultsDetail> examResultsDetailList;
 	private String name;
-	
+	private String totalScore;
+
+	public String getTotalScore() {
+		return totalScore;
+	}
+
+	public void setTotalScore(String totalScore) {
+		this.totalScore = totalScore;
+	}
+
 	public ExamScoreClassify() {
 		this(null);
 	}

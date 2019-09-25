@@ -106,11 +106,13 @@
 		<id property="id" column="id"></id>
 		<result property="examScoreInfoId" column="exam_score_info_id"></result>
 		<result property="name" column="name"></result>
+		<result property="totalScore" column="totalScore"></result>
 		<collection property="examResultsDetailList" ofType="ExamResultsDetail">
 			<id property="id" column="detailId"></id>
 			<result property="examUserId" column="exam_user_id"></result>
 			<result property="scorePoints" column="score_points"></result>
 			<result property="score" column="score"></result>
+
 			<result property="studentAnswer" column="student_answer"></result>
 			<result property="teacherAnswer" column="teacher_answer"></result>
 			<result property="rightOrWrong" column="right_or_wrong"></result>
@@ -122,6 +124,7 @@
         class.id,
         class.exam_score_info_id,
 		info.name as name,
+		(select sum(score) from aa_exam_results_detail where score_classify_id = class.id GROUP BY score_classify_id) totalScore,
         detail.id as detailId,
         detail.exam_user_id,
         detail.score_points,
