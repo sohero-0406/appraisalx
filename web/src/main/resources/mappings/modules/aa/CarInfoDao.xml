@@ -28,4 +28,33 @@
 			</if>
 		</if>
 	</select>
+
+
+	<select id="findLeftInfor" resultType="CarInfo">
+			select
+	        car.register_date,
+			car.license_plate_num,
+			car.vin_code,
+			car.brand_name,
+			car.model_name,
+			car.mileage,
+		    car.fa_dong_ji_xing_hao,
+		    car.displacement,
+			(select dict.dict_label from js_sys_dict_data  dict where dict.dict_type = 'aa_environmental_standard' and  dict.dict_value = '1') as environmental_standard
+			from
+			aa_car_info car
+			<where>
+				<if test="examUser.id!= null and examUser.id!= ''">
+					and car.exam_user_Id = #{examUser.id}
+				</if>
+
+				<if test="examUser.paperId != null and examUser.paperId!= ''">
+					and car.paper_id = #{examUser.paperId}
+				</if>
+			</where>
+
+
+	</select>
+
+
 </mapper>

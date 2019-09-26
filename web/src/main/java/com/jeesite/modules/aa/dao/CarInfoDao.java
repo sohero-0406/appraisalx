@@ -6,6 +6,8 @@ package com.jeesite.modules.aa.dao;
 import com.jeesite.common.dao.CrudDao;
 import com.jeesite.common.mybatis.annotation.MyBatisDao;
 import com.jeesite.modules.aa.entity.CarInfo;
+import com.jeesite.modules.common.entity.ExamUser;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Map;
 
@@ -18,4 +20,7 @@ import java.util.Map;
 public interface CarInfoDao extends CrudDao<CarInfo> {
 
     CarInfo findCarInfoBySortStu(Map<String,String> hs);
+
+    CarInfo findLeftInfor(@Param("examUser")ExamUser examUser);
+
 }

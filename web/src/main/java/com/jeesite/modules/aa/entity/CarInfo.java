@@ -59,6 +59,9 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 		@Column(name="vehicle_warranty", attrName="vehicleWarranty", label="整车质保"),
 		@Column(name="engine_power", attrName="enginePower", label="发动机功率"),
 		@Column(name="vehicle_brand", attrName="vehicleBrand", label="品牌名称"),
+		@Column(name="brand_name", attrName="brandName", label="发动机功率"),
+		@Column(name="model_name", attrName="modelName", label="品牌名称"),
+		@Column(name="fa_dong_ji_xing_hao", attrName="fadongjixinghao", label="发动机型号"),
 		@Column(includeEntity=DataEntity.class),
 	}, orderBy="a.update_date DESC"
 )
@@ -107,9 +110,31 @@ public class CarInfo extends PreEntity<CarInfo> {
 	private String enginePower;         // 发动机功率
 	private String vehicleBrand;        //品牌名称
 
-	//非数据库字段
+
 	private String brandName;
 	private String modelName;//年款型号
+	private String fadongjixinghao;
+
+
+
+	//非数据库字段
+	private  String evaluator;
+
+	public String getFadongjixinghao() {
+		return fadongjixinghao;
+	}
+
+	public void setFadongjixinghao(String fadongjixinghao) {
+		this.fadongjixinghao = fadongjixinghao;
+	}
+
+	public String getEvaluator() {
+		return evaluator;
+	}
+
+	public void setEvaluator(String evaluator) {
+		this.evaluator = evaluator;
+	}
 
 	public String getModelName() {
 		return modelName;

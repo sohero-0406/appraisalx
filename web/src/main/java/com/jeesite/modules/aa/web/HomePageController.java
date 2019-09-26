@@ -1,8 +1,12 @@
 package com.jeesite.modules.aa.web;
 
+import com.jeesite.common.constant.CodeConstant;
+import com.jeesite.modules.aa.entity.CarInfo;
 import com.jeesite.modules.aa.service.HomePageService;
 import com.jeesite.modules.aa.vo.HomePageVO;
 import com.jeesite.modules.common.entity.CommonResult;
+import com.jeesite.modules.common.entity.ExamUser;
+import com.jeesite.modules.common.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,4 +57,20 @@ public class HomePageController {
         homePageService.newPaper();
         return comRes;
     }
+
+    /**
+     * 左侧列表
+     */
+    @PostMapping(value = "findLeftInfor")
+    @ResponseBody
+    public CommonResult findLeftInfor(){
+        ExamUser examUser = UserUtils.getExamUser();
+        CommonResult comRes = new CommonResult();
+        comRes.setData(homePageService.findLeftInfor(examUser));
+        return comRes;
+    }
+
+
+
+
 }

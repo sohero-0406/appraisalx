@@ -152,8 +152,10 @@ public class HomePageService {
                     map.put("chexingId", carInfo.getModel());
                     CommonResult result = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_CAR_MODEL, map);
                     if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
-                        JSONObject vehicleInfo = JSONObject.parseObject(result.getData().toString());
-                        temp.setVehicleInfo(vehicleInfo);
+                        if(null!=result.getData()){
+                            JSONObject vehicleInfo = JSONObject.parseObject(result.getData().toString());
+                            temp.setVehicleInfo(vehicleInfo);
+                        }
                     }
                 }
                 list.add(temp);
@@ -190,4 +192,25 @@ public class HomePageService {
             CacheUtils.put("examUser", examUser.getUserId(), examUser);
         }
     }
+
+
+    /**
+     * 左侧列表数据展示
+     */
+    public CarInfo findLeftInfor(ExamUser examUser){
+        CarInfo carInfo = carInfoService.findLeftInfor(examUser);
+        if(null!=carInfo){
+            VehicleGradeAssess vehicleGradeAssess = new VehicleGradeAssess();
+            vehicleGradeAssess.setExamUserId(examUser.getId());
+            vehicleGradeAssess.setPaperId(examUser.getPaperId());
+            vehicleGradeAssess = vehicleGradeAssessService.getByEntity(vehicleGradeAssess);
+            if(null!=vehicleGradeAssess){
+                carInfo.setEvaluator(vehicleGradeAssess.getEvaluator());//评估师
+            }
+        }
+        return carInfo;
+    }
+
+
+
 }

@@ -22,10 +22,12 @@ import com.jeesite.modules.common.service.HttpClientService;
 import com.jeesite.modules.common.service.OperationLogService;
 import com.jeesite.modules.sys.entity.DictData;
 import com.jeesite.modules.sys.utils.DictUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -137,6 +139,64 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
         }
         carInfo.setExamUserId(examUser.getId());
         carInfo.setPaperId(examUser.getPaperId());
+
+        //品牌 車系
+        String pinpaichexi = "";
+        if (null != carInfo) {
+            if (StringUtils.isNotBlank(carInfo.getBrand())) {
+                Map<String, String> map = new HashMap<>();
+                map.put("pinpaiId", carInfo.getBrand());
+                CommonResult result = httpClientService.post(ServiceConstant.COMMON_VEHICLE_BRAND_GET_BY_ENTITY, map);
+                if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
+                    if (null != result.getData()) {
+                        JSONObject o = (JSONObject) result.getData();
+                        String pinpai = o.getString("pinpai");
+                        pinpaichexi = pinpaichexi + pinpai;
+                    }
+                }
+            }
+            if (StringUtils.isNotBlank(carInfo.getSeries())) {
+                Map<String, String> map = new HashMap<>();
+                map.put("chexiId", carInfo.getSeries());
+                CommonResult result = httpClientService.post(ServiceConstant.COMMON_VEHICLE_SERIES_GET_BY_ENTITY, map);
+                if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
+                    if (null != result.getData()) {
+                        JSONObject o = (JSONObject) result.getData();
+                        String chexi = o.getString("chexi");
+                        pinpaichexi = pinpaichexi + chexi;
+                    }
+                }
+            }
+            carInfo.setBrandName(pinpaichexi);
+        }
+        //年款型号
+        if(null!=carInfo){
+            if(StringUtils.isNotBlank(carInfo.getModel())){
+                Map<String, String> map = new HashMap<>();
+                map.put("chexingId", carInfo.getModel());
+                CommonResult result = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_CAR_MODEL, map);
+                if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
+                    if(null!=result.getData()){
+                        JSONObject o = (JSONObject)result.getData();
+                        String chexingmingcheng = o.getString("chexingmingcheng");
+                        carInfo.setModelName(chexingmingcheng);
+
+                    }
+                }
+                CommonResult comRes = this.getVehicleFunctionalInfo(carInfo.getModel());
+                if(CodeConstant.REQUEST_SUCCESSFUL.equals(comRes.getCode())){
+                    if(null!=comRes.getData()){
+                        JSONObject o = (JSONObject)comRes.getData();
+                        String fadongji = o.getString("fadongji");
+                        String [] fadongjiT = fadongji.split(" ");
+                        if(fadongjiT.length>0){
+                            carInfo.setFadongjixinghao(fadongjiT[0]);
+                        }
+                    }
+                }
+            }
+        }
+
         this.save(carInfo);
         //证明是记录车辆基本信息保存，额外存储试卷名称
         if (flag) {
@@ -180,53 +240,8 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
         carInfo.setExamUserId(examUserId);
         carInfo.setPaperId(paperId);
         carInfo = this.getByEntity(carInfo);
-        //品牌 車系
-        String pinpaichexi = "";
-        if (null != carInfo) {
-            if (StringUtils.isNotBlank(carInfo.getBrand())) {
-                Map<String, String> map = new HashMap<>();
-                map.put("pinpaiId", carInfo.getBrand());
-                CommonResult result = httpClientService.post(ServiceConstant.COMMON_VEHICLE_BRAND_GET_BY_ENTITY, map);
-                if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
-                    if (null != result.getData()) {
-                        JSONObject o = (JSONObject) result.getData();
-                        String pinpai = o.getString("pinpai");
-                        pinpaichexi = pinpaichexi + pinpai;
-                    }
-                }
-            }
-            if (StringUtils.isNotBlank(carInfo.getSeries())) {
-                Map<String, String> map = new HashMap<>();
-                map.put("chexiId", carInfo.getSeries());
-                CommonResult result = httpClientService.post(ServiceConstant.COMMON_VEHICLE_SERIES_GET_BY_ENTITY, map);
-                if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
-                    if (null != result.getData()) {
-                        JSONObject o = (JSONObject) result.getData();
-                        String chexi = o.getString("chexi");
-                        pinpaichexi = pinpaichexi + chexi;
-                    }
-                }
-            }
-            carInfo.setBrandName(pinpaichexi);
-            baseInfoVO.setCarInfo(carInfo);
-        }
-        //年款型号
-        if(null!=carInfo){
-            if(StringUtils.isNotBlank(carInfo.getModel())){
-                Map<String, String> map = new HashMap<>();
-                map.put("chexingId", carInfo.getModel());
-                CommonResult result = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_CAR_MODEL, map);
-                if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
-                    if(null!=result.getData()){
-                        JSONObject o = (JSONObject)result.getData();
-                        String chexingmingcheng = o.getString("chexingmingcheng");
-                        carInfo.setModelName(chexingmingcheng);
-                        baseInfoVO.setCarInfo(carInfo);
-                    }
-                }
-            }
-        }
 
+        baseInfoVO.setCarInfo(carInfo);
 
         //加载委托方基本信息
         DelegateUser delegateUser = new DelegateUser();
@@ -290,4 +305,40 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
         map.put("chexingId", model);
         return httpClientService.post(ServiceConstant.VEHICLEINFO_GET_BY_ENTITY, map);
     }
+
+    /**
+     *   学生端左侧数据显示
+     */
+    public CarInfo findLeftInfor(ExamUser examUser){
+        CarInfo carInfo = dao.findLeftInfor(examUser);
+        if(null!=carInfo){
+            if(StringUtils.isNotEmpty(carInfo.getRegisterDate())){
+                carInfo.setRegisterDate(carInfo.getRegisterDate().substring(0,7));
+            }
+            //排量
+            if(StringUtils.isNotEmpty(carInfo.getFadongjixinghao())){
+                carInfo.setDisplacement(carInfo.getFadongjixinghao());
+            }
+            if(StringUtils.isEmpty(carInfo.getFadongjixinghao())){
+                if(StringUtils.isNotEmpty(carInfo.getDisplacement())){
+                    BigDecimal displacement = new BigDecimal(carInfo.getDisplacement());
+                    BigDecimal a = new BigDecimal("1000");
+                    displacement = displacement.divide(a);
+                    displacement = (displacement).setScale(1,BigDecimal.ROUND_HALF_UP);
+                    carInfo.setDisplacement(String.valueOf(displacement));
+                }
+            }
+            //公里数
+            if(StringUtils.isNotEmpty(carInfo.getMileage())){
+                BigDecimal mileage = new BigDecimal(carInfo.getMileage());
+                BigDecimal a = new BigDecimal("10000");
+                mileage = mileage.divide(a);
+                mileage = (mileage).setScale(1,BigDecimal.ROUND_HALF_UP);
+                carInfo.setMileage(String.valueOf(mileage));
+            }
+        }
+
+        return carInfo;
+    }
+
 }
