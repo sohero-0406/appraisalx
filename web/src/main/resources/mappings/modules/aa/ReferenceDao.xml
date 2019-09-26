@@ -22,9 +22,8 @@
 				#{referenceId}
 			</foreach>
 		</where>
-
-
 	</delete>
+
     <select id="findReferenceList" resultType="com.jeesite.modules.aa.entity.Reference">
 		SELECT
 			id,

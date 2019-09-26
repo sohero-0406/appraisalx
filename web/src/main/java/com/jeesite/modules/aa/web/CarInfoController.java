@@ -11,6 +11,7 @@ import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.aa.entity.CarInfo;
 import com.jeesite.modules.aa.entity.DelegateUser;
 import com.jeesite.modules.aa.service.CarInfoService;
+import com.jeesite.modules.aa.service.PaperService;
 import com.jeesite.modules.aa.vo.*;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.ExamUser;
@@ -112,7 +113,7 @@ public class CarInfoController extends BaseController {
             e.printStackTrace();
         }
         ExamUser examUser = UserUtils.getExamUser();
-        carInfoService.saveBaseInfo(delegateUser, carInfo, examUser);
+        carInfoService.saveBaseInfo(delegateUser, carInfo, examUser, false);
         return new CommonResult();
     }
 
@@ -133,7 +134,7 @@ public class CarInfoController extends BaseController {
             e.printStackTrace();
         }
         ExamUser examUser = UserUtils.getExamUser();
-        carInfoService.saveBaseInfo(delegateUser, carInfo, examUser);
+        carInfoService.saveBaseInfo(delegateUser, carInfo, examUser, false);
         return new CommonResult();
     }
 
@@ -154,7 +155,8 @@ public class CarInfoController extends BaseController {
             e.printStackTrace();
         }
         ExamUser examUser = UserUtils.getExamUser();
-        carInfoService.saveBaseInfo(delegateUser, carInfo, examUser);
+        carInfoService.saveBaseInfo(delegateUser, carInfo, examUser, true);
+
         return new CommonResult();
     }
 

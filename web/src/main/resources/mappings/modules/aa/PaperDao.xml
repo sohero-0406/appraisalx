@@ -78,4 +78,14 @@
             AND a.name LIKE CONCAT ('%', #{name}, '%')
         </if>
     </select>
+
+    <delete id="deletePaper">
+        delete from aa_paper
+        <where>
+            id in
+            <foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </where>
+    </delete>
 </mapper>

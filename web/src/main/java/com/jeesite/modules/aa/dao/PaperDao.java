@@ -25,4 +25,6 @@ public interface PaperDao extends CrudDao<Paper> {
     List<CarInfo> findPaperBySortTea(Map<String,String> hs);
 
     List<Paper> selectExamPaperList(@Param(value = "name") String name);
+
+    void deletePaper(@Param("idList") String[] idList);
 }

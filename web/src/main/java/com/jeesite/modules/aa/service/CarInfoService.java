@@ -12,6 +12,7 @@ import com.jeesite.common.service.CrudService;
 import com.jeesite.modules.aa.dao.CarInfoDao;
 import com.jeesite.modules.aa.entity.CarInfo;
 import com.jeesite.modules.aa.entity.DelegateUser;
+import com.jeesite.modules.aa.entity.Paper;
 import com.jeesite.modules.aa.entity.PictureUser;
 import com.jeesite.modules.aa.vo.BaseInfoVO;
 import com.jeesite.modules.aa.vo.HomePageVO;
@@ -49,6 +50,8 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
     private OperationLogService operationLogService;
     @Autowired
     private HttpClientService httpClientService;
+    @Autowired
+    private PaperService paperService;
 
     /**
      * 获取单条数据
@@ -113,7 +116,7 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
      * @param examUser
      */
     @Transactional
-    public void saveBaseInfo(DelegateUser delegateUser, CarInfo carInfo, ExamUser examUser) {
+    public void saveBaseInfo(DelegateUser delegateUser, CarInfo carInfo, ExamUser examUser, Boolean flag) {
         if (null == delegateUser) {
             delegateUser = new DelegateUser();
         }
@@ -135,7 +138,25 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
         carInfo.setExamUserId(examUser.getId());
         carInfo.setPaperId(examUser.getPaperId());
         this.save(carInfo);
-        operationLogService.saveObj(examUser,"保存委托书及车辆基本信息成功");
+        //证明是记录车辆基本信息保存，额外存储试卷名称
+        if (flag) {
+            //是教师
+            if (StringUtils.isNotBlank(examUser.getPaperId())) {
+                Map<String, String> map = new HashMap<>();
+                map.put("chexingId", carInfo.getModel());
+                CommonResult result = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_CAR_MODEL, map);
+                if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
+                    if (null != result.getData()) {
+                        JSONObject vehicleInfo = JSONObject.parseObject(result.getData().toString());
+                        Paper paper = new Paper();
+                        paper.setId(examUser.getPaperId());
+                        paper.setName(vehicleInfo.getString("chexingmingcheng"));
+                        paperService.save(paper);
+                    }
+                }
+            }
+        }
+        operationLogService.saveObj(examUser, "保存委托书及车辆基本信息成功");
     }
 
     /**
@@ -161,27 +182,27 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
         carInfo = this.getByEntity(carInfo);
         //品牌 車系
         String pinpaichexi = "";
-        if(null!=carInfo){
-            if(StringUtils.isNotBlank(carInfo.getBrand())){
-                Map<String,String> map = new HashMap<>();
-                map.put("pinpaiId",carInfo.getBrand());
-                CommonResult result =  httpClientService.post(ServiceConstant.COMMON_VEHICLE_BRAND_GET_BY_ENTITY,map);
-                if(CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())){
-                    if(null!=result.getData()){
-                        JSONObject o = (JSONObject)result.getData();
-                        String pinpai =  o.getString("pinpai");
-                        pinpaichexi= pinpaichexi+pinpai;
+        if (null != carInfo) {
+            if (StringUtils.isNotBlank(carInfo.getBrand())) {
+                Map<String, String> map = new HashMap<>();
+                map.put("pinpaiId", carInfo.getBrand());
+                CommonResult result = httpClientService.post(ServiceConstant.COMMON_VEHICLE_BRAND_GET_BY_ENTITY, map);
+                if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
+                    if (null != result.getData()) {
+                        JSONObject o = (JSONObject) result.getData();
+                        String pinpai = o.getString("pinpai");
+                        pinpaichexi = pinpaichexi + pinpai;
                     }
                 }
             }
-            if(StringUtils.isNotBlank(carInfo.getSeries())){
-                Map<String,String> map = new HashMap<>();
-                map.put("chexiId",carInfo.getSeries());
-                CommonResult result =  httpClientService.post(ServiceConstant.COMMON_VEHICLE_SERIES_GET_BY_ENTITY,map);
-                if(CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())){
-                    if(null!=result.getData()){
-                        JSONObject o = (JSONObject)result.getData();
-                        String chexi =  o.getString("chexi");
+            if (StringUtils.isNotBlank(carInfo.getSeries())) {
+                Map<String, String> map = new HashMap<>();
+                map.put("chexiId", carInfo.getSeries());
+                CommonResult result = httpClientService.post(ServiceConstant.COMMON_VEHICLE_SERIES_GET_BY_ENTITY, map);
+                if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
+                    if (null != result.getData()) {
+                        JSONObject o = (JSONObject) result.getData();
+                        String chexi = o.getString("chexi");
                         pinpaichexi = pinpaichexi + chexi;
                     }
                 }
@@ -264,9 +285,9 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
     /**
      * 根据车型id获取车型数据
      */
-    public CommonResult getVehicleFunctionalInfo(String model){
+    public CommonResult getVehicleFunctionalInfo(String model) {
         Map<String, String> map = new HashMap<>();
-        map.put("chexingId",model);
-        return httpClientService.post(ServiceConstant.VEHICLEINFO_GET_BY_ENTITY,map);
+        map.put("chexingId", model);
+        return httpClientService.post(ServiceConstant.VEHICLEINFO_GET_BY_ENTITY, map);
     }
 }

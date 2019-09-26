@@ -117,4 +117,10 @@ public class PaperService extends CrudService<PaperDao, Paper> {
     public List<Paper> selectExamPaperList(String name) {
         return dao.selectExamPaperList(name);
     }
+
+	@Transactional
+	public void deletePaper(String id) {
+		String[] idList = id.split(",");
+		dao.deletePaper(idList);
+	}
 }

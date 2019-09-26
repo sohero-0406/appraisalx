@@ -137,14 +137,14 @@ public class PaperController extends BaseController {
      */
     @RequestMapping(value = "deletePaper")
     @ResponseBody
-    public CommonResult deletePaper(Paper paper) {
-        if (paper.getId().isEmpty()) {
+    public CommonResult deletePaper(String id) {
+        if (StringUtils.isBlank(id)) {
             CommonResult comRes = new CommonResult();
             comRes.setCode("1010");
             comRes.setMsg("未传入ID");
             return comRes;
         }
-        paperService.delete(paper);
+        paperService.deletePaper(id);
         return new CommonResult();
     }
 
