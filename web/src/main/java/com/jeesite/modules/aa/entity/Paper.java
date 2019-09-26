@@ -3,6 +3,7 @@
  */
 package com.jeesite.modules.aa.entity;
 
+import com.jeesite.common.entity.DataEntity;
 import com.jeesite.common.mybatis.annotation.Column;
 import com.jeesite.common.mybatis.annotation.Table;
 import com.jeesite.common.mybatis.mapper.query.QueryType;
@@ -22,14 +23,9 @@ import java.sql.Timestamp;
         @Column(name = "id", attrName = "id", label = "主键", isPK = true),
         @Column(name = "user_id", attrName = "userId", label = "用户id"),
         @Column(name = "name", attrName = "name", label = "试卷名称", queryType = QueryType.LIKE),
-        @Column(name = "total_score", attrName = "totalScore", label = "试卷总分"),
         @Column(name = "state", attrName = "state", label = "启用禁用状态"),
-        @Column(name = "status", attrName = "status", label = "状态"),
-        @Column(name = "create_by", attrName = "createBy", label = "创建者", isUpdate = false),
-        @Column(name = "create_date", attrName = "createDate", label = "创建时间", isUpdate = false, isQuery = false),
-        @Column(name = "update_by", attrName = "updateBy", label = "更新者"),
-        @Column(name = "update_date", attrName = "updateDate", label = "更新时间", isQuery = false),
-        @Column(name = "remarks", attrName = "remarks", label = "备注信息", queryType = QueryType.LIKE),
+        @Column(name = "true_name", attrName = "trueName", label = "真实姓名"),
+        @Column(includeEntity = DataEntity.class),
 }, orderBy = "a.update_date DESC"
 )
 public class Paper extends PreEntity<Paper> {
@@ -37,10 +33,8 @@ public class Paper extends PreEntity<Paper> {
     private static final long serialVersionUID = 1L;
     private String userId;        // 用户id
     private String name;        // 试卷名称
-    private BigDecimal totalScore;        // 试卷总分
     private String state;        //启用禁用状态
-    private String createBy;        //创建者
-    private Timestamp createDate;        //创建时间
+    private String trueName;        //真实姓名
 
     // 数据库不存在字段
     private CarInfo carInfo;
@@ -101,14 +95,6 @@ public class Paper extends PreEntity<Paper> {
         this.name = name;
     }
 
-    public BigDecimal getTotalScore() {
-        return totalScore;
-    }
-
-    public void setTotalScore(BigDecimal totalScore) {
-        this.totalScore = totalScore;
-    }
-
     @Length(min = 0, max = 16, message = "启用禁用状态长度不能超过 16 个字符")
     public String getState() {
         return state;
@@ -118,22 +104,12 @@ public class Paper extends PreEntity<Paper> {
         this.state = state;
     }
 
-    @Override
-    public String getCreateBy() {
-        return createBy;
+    @Length(min = 0, max = 64, message = "真实姓名长度不能超过 16 个字符")
+    public String getTrueName() {
+        return trueName;
     }
 
-    @Override
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy;
-    }
-
-    @Override
-    public Timestamp getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Timestamp createDate) {
-        this.createDate = createDate;
+    public void setTrueName(String trueName) {
+        this.trueName = trueName;
     }
 }

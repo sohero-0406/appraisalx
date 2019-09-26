@@ -74,6 +74,7 @@ public class SignInService {
         if ("2".equals(roleType)) {
             examUser.setUserId(data.getString("id"));
             examUser.setRoleType(data.getString("roleId"));
+            examUser.setTrueName(data.getString("trueName"));
             examUser.setUserNum(userName);
             examUser.setToken(token);
             CacheUtils.put("examUser", examUser.getUserId(), examUser);

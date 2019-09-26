@@ -187,6 +187,7 @@ public class HomePageService {
             Paper paper = new Paper();
             paper.setStatus("1");
             paper.setState("1");
+            paper.setTrueName(examUser.getTrueName());
             paperService.save(paper);
             examUser.setPaperId(paper.getId());
             CacheUtils.put("examUser", examUser.getUserId(), examUser);
