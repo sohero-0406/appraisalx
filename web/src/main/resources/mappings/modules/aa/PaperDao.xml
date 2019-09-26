@@ -14,7 +14,7 @@
 
 	<resultMap id="paperResultMap" type="com.jeesite.modules.aa.entity.Paper">
 		<id property="id" column="id"/>
-		<result property="createBy" column="create_by"/>
+		<result property="createBy" column="true_name"/>
 		<result property="createDate" column="create_date"/>
 		<result property="name" column="name"/>
 		<result property="state" column="state"/>
@@ -27,7 +27,7 @@
 	<!-- 查询试卷列表 -->
 	<select id="findPaper" resultMap="paperResultMap">
 		SELECT
-			a.*,
+		a.id,a.name,a.state,a.true_name,a.create_date,
 			b.license_plate_num,
 			b.vin_code
 			FROM
