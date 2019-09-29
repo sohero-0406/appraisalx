@@ -112,7 +112,7 @@
 			<result property="examUserId" column="exam_user_id"></result>
 			<result property="scorePoints" column="score_points"></result>
 			<result property="score" column="score"></result>
-
+			<result property="scoreInfo" column="score_info"></result>
 			<result property="studentAnswer" column="student_answer"></result>
 			<result property="teacherAnswer" column="teacher_answer"></result>
 			<result property="rightOrWrong" column="right_or_wrong"></result>
@@ -129,6 +129,7 @@
         detail.exam_user_id,
         detail.score_points,
         detail.score,
+        detail.score_info,
         detail.student_answer,
         detail.teacher_answer,
         detail.right_or_wrong
