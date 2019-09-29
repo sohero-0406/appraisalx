@@ -29,13 +29,11 @@ import java.util.Map;
 public class AppraislJobTableService {
 
     @Autowired
-    private CarInfoService carInforService;
+    private CarInfoService carInfoService;
     @Autowired
     private VehicleDocumentInfoService vehicleDocumentInfoService;
     @Autowired
     private VehicleInstallInfoService vehicleInstallInfoService;
-    @Autowired
-    private IdentifyTecService identifyTecService;
     @Autowired
     private IdentifyTecDetailService identifyTecDetailService;
     @Autowired
@@ -60,7 +58,7 @@ public class AppraislJobTableService {
         CarInfo carInfo = new CarInfo();
         carInfo.setExamUserId(examUser.getId());
         carInfo.setPaperId(examUser.getPaperId());
-        carInfo = carInforService.getByEntity(carInfo);
+        carInfo = carInfoService.getByEntity(carInfo);
         //设置级别
         carInfo.setLevel(DictUtils.getDictLabel("aa_vehicle_level",carInfo.getLevel(),""));
         //设置初登日期

@@ -40,8 +40,8 @@ jdbc:
   #  username: root
   #  password:
   url: jdbc:mysql://192.168.0.66:3306/appraisal?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull
-    username: root
-    password: root
+  username: root
+  password: root
   testSql: SELECT 1
 
 #  # Oracle 数据库配置
