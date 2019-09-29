@@ -38,6 +38,10 @@ public class SignInController {
     @RequestMapping(value = "login")
     @ResponseBody
     public CommonResult login(LoginVO vo) {
+//        String msg = RegisterUtil.isAllowLogin(ServletUtils.getRequest());
+//        if (StringUtils.isNotBlank(msg)) {
+//            return new CommonResult(CodeConstant.REGISTE_INFO_ERROR, msg);
+//        }
         return signInService.login(vo);
     }
 

@@ -25,7 +25,12 @@ import java.sql.Timestamp;
         @Column(name = "name", attrName = "name", label = "试卷名称", queryType = QueryType.LIKE),
         @Column(name = "state", attrName = "state", label = "启用禁用状态"),
         @Column(name = "true_name", attrName = "trueName", label = "真实姓名"),
-        @Column(includeEntity = DataEntity.class),
+        @Column(name = "status", attrName = "status", label = "状态"),
+        @Column(name = "create_by", attrName = "createBy", label = "创建者", isUpdate = false),
+        @Column(name = "create_date", attrName = "createDate", label = "创建时间", isUpdate = false, isQuery = false),
+        @Column(name = "update_by", attrName = "updateBy", label = "更新者"),
+        @Column(name = "update_date", attrName = "updateDate", label = "更新时间", isQuery = false),
+        @Column(name = "remarks", attrName = "remarks", label = "备注信息", queryType = QueryType.LIKE),
 }, orderBy = "a.update_date DESC"
 )
 public class Paper extends PreEntity<Paper> {

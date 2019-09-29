@@ -1,7 +1,5 @@
 package com.jeesite.modules.common.vo;
 
-import com.alibaba.fastjson.JSONArray;
-
 public class ExamUserVO {
 
     private String examId;

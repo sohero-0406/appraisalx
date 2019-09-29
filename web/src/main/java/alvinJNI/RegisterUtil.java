@@ -27,7 +27,7 @@ import alvinJNI.util.RegWriteEx;
 public class RegisterUtil {
 
     // 运华科技：汽车智能化设备安装调试虚拟训练平台
-    public static String outsideProductSerialNumber = "YHKJ1974D19V1.0";// 外部产品序列号(明文)-程序打包之前公司服务器端提供
+    public static String outsideProductSerialNumber = "TJSHA9AD422V1.0";// 外部产品序列号(明文)-程序打包之前公司服务器端提供
     public static String insideProductSerialNumber = "D3F80AEDF21848DF0373A538A4DA7F3A54804731BDA233BC21540286BE865E3F";// 内部产品序列号(密文)-程序打包之前公司服务器端提供
     public static String insideKey = "RLM4XS1X";// 内部序列号解密密钥-程序打包之前公司服务器端提供
     public static Integer DevID = 1497912136;// 加密锁开发商ID
@@ -538,7 +538,14 @@ public class RegisterUtil {
         if (fx.exists()) {
             //	System.out.println(999888);
         }
-        re.writeIniDll("C:\\Windows\\" + path + ".ini", outsideProductSerialNumber, regCiphertext);
+        try {
+            RegisterUtil.setProfileString("C:\\Windows\\" + path + ".ini",
+                    outsideProductSerialNumber, outsideProductSerialNumber,
+                    regCiphertext);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        re.writeIniDll("C:\\Windows\\" + path + ".ini", outsideProductSerialNumber, regCiphertext);
     }
 
     /**
