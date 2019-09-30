@@ -41,7 +41,7 @@ public class CarInfoThreeVO {
     @NotBlank
     private String environmentalStandard;        // 环保标准
     @NotBlank
-    private String usage;        // 使用用途
+    private String usingNature;        // 使用用途
     @NotBlank
     private String bodyStructure;        // 车身结构
     @NotBlank

@@ -276,6 +276,11 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
         //加载环保标准
         List<DictData> environmentalStandardList = DictUtils.getDictList("aa_environmental_standard");
         baseInfoVO.setEnvironmentalStandardList(environmentalStandardList);
+
+        //使用性质2
+        List<DictData> usingNatureList = DictUtils.getDictList("aa_using_nature_type");
+        baseInfoVO.setUsingNatureList(usingNatureList);
+
         return baseInfoVO;
     }
 

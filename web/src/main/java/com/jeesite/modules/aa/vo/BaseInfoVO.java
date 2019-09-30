@@ -31,6 +31,16 @@ public class BaseInfoVO {
     private List<DictData> levelList;
     //环保标准
     private List<DictData> environmentalStandardList;
+    //使用性质2
+    private List<DictData> usingNatureList;
+
+    public List<DictData> getUsingNatureList() {
+        return usingNatureList;
+    }
+
+    public void setUsingNatureList(List<DictData> usingNatureList) {
+        this.usingNatureList = usingNatureList;
+    }
 
     public CarInfo getCarInfo() {
         return carInfo;

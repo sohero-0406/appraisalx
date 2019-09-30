@@ -61,6 +61,7 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 		@Column(name="vehicle_brand", attrName="vehicleBrand", label="品牌名称"),
 		@Column(name="brand_name", attrName="brandName", label="发动机功率"),
 		@Column(name="model_name", attrName="modelName", label="品牌名称"),
+		@Column(name="using_nature", attrName="usingNature", label="使用性质2"),
 		@Column(name="fa_dong_ji_xing_hao", attrName="fadongjixinghao", label="发动机型号"),
 		@Column(includeEntity=DataEntity.class),
 	}, orderBy="a.update_date DESC"
@@ -109,6 +110,7 @@ public class CarInfo extends PreEntity<CarInfo> {
 	private String vehicleWarranty;		// 整车质保
 	private String enginePower;         // 发动机功率
 	private String vehicleBrand;        //品牌名称
+	private String usingNature;  //使用性质2
 
 
 	private String brandName;
@@ -119,6 +121,14 @@ public class CarInfo extends PreEntity<CarInfo> {
 
 	//非数据库字段
 	private  String evaluator;
+
+	public String getUsingNature() {
+		return usingNature;
+	}
+
+	public void setUsingNature(String usingNature) {
+		this.usingNature = usingNature;
+	}
 
 	public String getFadongjixinghao() {
 		return fadongjixinghao;
