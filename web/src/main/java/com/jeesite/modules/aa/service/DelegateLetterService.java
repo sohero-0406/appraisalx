@@ -491,7 +491,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         }
 
         //使用性质
-        returnMap.put("usage", appraisalReportVO.getCarInfo().getUsage());
+        returnMap.put("usingNature", appraisalReportVO.getCarInfo().getUsingNature());
         //五、技术鉴定结果
         returnMap.put("defectDescription", appraisalReportVO.getDefectDescription());//技术状况缺陷描述
         if (null != appraisalReportVO.getVehicleInfo()) {
@@ -632,7 +632,8 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
                     StringUtils.isBlank(reportMap.get("vehicleLicense")) ? "" : ("1".equals(reportMap.get("vehicleLicense")) ? "有" : "无"));
             content.put("trafficIllegalRecord",
                     StringUtils.isBlank(reportMap.get("trafficIllegalRecord")) ? "" : ("1".equals(reportMap.get("trafficIllegalRecord")) ? "有" : "无"));
-            content.put("usage", reportMap.get("usage"));
+            String usingNature = DictUtils.getDictLabel("aa_using_nature_type", reportMap.get("usingNature"),"");
+            content.put("usingNature", usingNature);
 
             //五、技术鉴定结果process
             content.put("defectDescription", reportMap.get("defectDescription"));
