@@ -18,4 +18,20 @@
 		where dict_value = #{technicalStatus} and dict_type = 'aa_technical_status'
 	</select>
 
+
+	<select id="sumTotalDeduct" resultType="String">
+		select
+		IFNULL(sum(total_deduct),'0')
+		from aa_identify_tec
+		<where>
+			<if test="examUser.id!= null and examUser.id!= ''">
+				and exam_user_Id = #{examUser.id}
+			</if>
+
+			<if test="examUser.paperId != null and examUser.paperId!= ''">
+				and paper_id = #{examUser.paperId}
+			</if>
+		</where>
+	</select>
+
 </mapper>

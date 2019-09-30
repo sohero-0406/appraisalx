@@ -6,6 +6,8 @@ package com.jeesite.modules.aa.dao;
 import com.jeesite.common.dao.CrudDao;
 import com.jeesite.common.mybatis.annotation.MyBatisDao;
 import com.jeesite.modules.aa.entity.VehicleGradeAssess;
+import com.jeesite.modules.common.entity.ExamUser;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 车辆等级评定DAO接口
@@ -21,5 +23,10 @@ public interface VehicleGradeAssessDao extends CrudDao<VehicleGradeAssess> {
      * @return
      */
     String getTechnicalStatus(VehicleGradeAssess vehicleGradeAssess);
+
+    /**
+     *  统计扣分项
+     */
+    String sumTotalDeduct(@Param("examUser")ExamUser examUser);
 
 }

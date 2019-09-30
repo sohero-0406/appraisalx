@@ -340,10 +340,11 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         calculate.setPaperId(examUser.getPaperId());
         calculate = calculateService.getByEntity(calculate);
         //设置算法类型
-        if (calculate != null) {
-            calculate.setType(calculateService.getType(calculate));
-            appraisalReportVO.setCalculate(calculate);
-        }
+//        if (calculate != null) {
+//            calculate.setType(calculateService.getType(calculate));
+//
+//        }
+        appraisalReportVO.setCalculate(calculate);
         appraisalReportVO.setPriceCapital(priceCapital);
 
         //教师手动输入数据
@@ -642,7 +643,9 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
             content.put("score", StringUtils.isNotBlank(reportMap.get("score")) ? reportMap.get("score") + "分" : "");
 
             // 六、价值评估
-            content.put("type", reportMap.get("type"));
+            content.put("type",DictUtils.getDictLabel("aa_calculate_type", reportMap.get("type"),"" ));
+
+
             content.put("process", reportMap.get("process"));//计算过程
             content.put("price", reportMap.get("price"));
             content.put("bigPrice", reportMap.get("bigPrice"));

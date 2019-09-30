@@ -13,9 +13,22 @@ public class VehicleGradeAssessVO {
     private VehicleGradeAssess vehicleGradeAssess;
 
     /**
+     * 综合分数
+     */
+    private String score;
+
+    /**
      * 技术状况
      */
     private List<DictData> technicalStatusList;
+
+    public String getScore() {
+        return score;
+    }
+
+    public void setScore(String score) {
+        this.score = score;
+    }
 
     public VehicleGradeAssess getVehicleGradeAssess() {
         return vehicleGradeAssess;

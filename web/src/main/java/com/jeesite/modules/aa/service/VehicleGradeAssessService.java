@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -103,6 +104,11 @@ public class VehicleGradeAssessService extends CrudService<VehicleGradeAssessDao
         vehicleGradeAssess.setExamUserId(examUser.getId());
         vehicleGradeAssess.setPaperId(examUser.getPaperId());
         vehicleGradeAssess = this.getByEntity(vehicleGradeAssess);
+        BigDecimal pointsTotal = new BigDecimal(dao.sumTotalDeduct(examUser));
+        BigDecimal totalScore = new BigDecimal("100");
+        totalScore = totalScore.subtract(pointsTotal);
+        vo.setScore(totalScore.toString());
+
         vo.setVehicleGradeAssess(vehicleGradeAssess);
 
         //加载技术状况
