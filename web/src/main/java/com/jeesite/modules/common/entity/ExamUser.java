@@ -43,7 +43,7 @@ public class ExamUser extends PreEntity<ExamUser> {
 	private String paperId;		//试卷id
 	private String duration;  //考试时长
     //大平台--成绩批量导出
-	private String 	trueName;    //真名
+    private String trueName;    //真名
 	private String schoolName;  //学校名
 	private String majorName;   //专业
 	private String className;   //班级
