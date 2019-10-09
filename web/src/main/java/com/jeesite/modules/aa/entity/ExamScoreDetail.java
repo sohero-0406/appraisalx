@@ -31,6 +31,17 @@ public class ExamScoreDetail extends PreEntity<ExamScoreDetail> {
 	private String scoreInfoId;		// 考试评分项id
 	private String score;		// 分值
 	private String infoName;
+
+	private String name;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public ExamScoreDetail() {
 		this(null);
 	}

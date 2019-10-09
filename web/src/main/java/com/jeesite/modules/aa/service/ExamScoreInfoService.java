@@ -86,7 +86,7 @@ public class ExamScoreInfoService extends CrudService<ExamScoreInfoDao, ExamScor
 		//获取考试得分项列表
 		//判断有无考试id（examId）如果不为空，调取试卷保存的分值项
 		if(StringUtils.isNotBlank(examId)){
-			return examScoreDetailService.findData(examId);
+			return dao.getExamScoreInfoExist(examId);
 		}else{
 			//如果为空，则取默认分值项分数
 			return dao.getExamScoreInfo();

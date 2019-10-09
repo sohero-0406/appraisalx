@@ -18,6 +18,7 @@
 		<result property="score" column="score"></result>
 		<collection property="itemList" ofType="ExamScoreDetail">
 			<id property="scoreInfoId" column="sonId"></id>
+			<result property="name" column="sonName"></result>
 			<result property="score" column="sonScore"></result>
 		</collection>
 	</resultMap>
@@ -34,6 +35,27 @@
 		LEFT JOIN aa_exam_score_info  bExam on aExam.id = bExam.parent_id
 		where  aExam.parent_id = '0'
 		ORDER BY aExam.sort,bExam.sort;
+
+	</select>
+
+	<select id="getExamScoreInfoExist" resultMap="findDataMap">
+		select
+			class.id,
+			class.score,
+			info.name,
+			detail.id as sonId,
+			detail.score as sonScore,
+			detailInfo.name as sonName
+			from
+			aa_exam_score_classify class
+			left join aa_exam_score_info info on info.id = class.exam_score_info_id
+			left join aa_exam_score_detail detail on detail.score_classify_id = class.id
+			left join aa_exam_score_info detailInfo on detailInfo.id = detail.score_info_id
+		<where>
+			<if test="examId != null and examId != ''">
+				AND class.exam_id = #{examId}
+			</if>
+		</where>
 
 	</select>
 	
