@@ -57,7 +57,7 @@ public class CalculateReplaceCostService extends CrudService<CalculateReplaceCos
     /**
      * 查询分页数据
      *
-     * @param calculateReplaceCost      查询条件
+     * @param calculateReplaceCost 查询条件
      * @return
      */
     @Override
@@ -169,6 +169,8 @@ public class CalculateReplaceCostService extends CrudService<CalculateReplaceCos
         }
         //年限成新率系数
         BigDecimal yearNewRateCoefficient = new BigDecimal(1).subtract(tecNewRateCoefficient);
+        cost.setYearNewRateCoefficient(yearNewRateCoefficient.multiply(new BigDecimal(100))
+                .setScale(2, BigDecimal.ROUND_HALF_UP).toString() + "%");
 
         //查询已使用年限
         CarInfo carInfo = new CarInfo();
