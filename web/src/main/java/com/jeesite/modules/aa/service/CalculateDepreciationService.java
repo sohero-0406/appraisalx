@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.jeesite.common.idgen.IdWorker;
 import com.jeesite.modules.aa.entity.CarInfo;
+import com.jeesite.modules.common.entity.Exam;
 import com.jeesite.modules.common.entity.ExamUser;
 import org.hyperic.sigar.cmd.MemWatch;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,6 +93,31 @@ public class CalculateDepreciationService extends CrudService<CalculateDepreciat
     public CalculateDepreciation getByEntity(CalculateDepreciation calculateDepreciation) {
         return dao.getByEntity(calculateDepreciation);
     }
+
+    public CalculateDepreciation getCalculateDepreciation(CalculateDepreciation calculateDepreciation, ExamUser examUser){
+        calculateDepreciation = dao.getByEntity(calculateDepreciation);
+        CarInfo carInfo = new CarInfo();
+        carInfo.setExamUserId(examUser.getId());
+        carInfo.setPaperId(examUser.getPaperId());
+        carInfo = carInfoService.getByEntity(carInfo);
+        if (null != carInfo) {
+            Integer useYear = carInfo.getUseYear();
+            Integer useMonth = carInfo.getUseMonth();
+            if (useYear == null) {
+                useYear = 0;
+            }
+            if (useMonth == null) {
+                useMonth = 0;
+            }
+            //取上整
+            if (useMonth > 0) {
+                useYear++;
+            }
+            calculateDepreciation.setUseYear(useYear);
+        }
+        return calculateDepreciation;
+    }
+
 
     /**
      * 计算

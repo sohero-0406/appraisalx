@@ -9,6 +9,7 @@ import java.util.List;
 import com.jeesite.common.lang.StringUtils;
 import com.jeesite.modules.aa.entity.CarInfo;
 import com.jeesite.modules.common.entity.ExamUser;
+import com.jeesite.modules.common.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -87,9 +88,25 @@ public class CalculateKmService extends CrudService<CalculateKmDao, CalculateKm>
         super.delete(calculateKm);
     }
 
+
     public CalculateKm getByEntity(CalculateKm calculateKm) {
         return dao.getByEntity(calculateKm);
     }
+
+    public CalculateKm getCalculateKm(CalculateKm calculateKm,ExamUser examUser){
+        calculateKm = dao.getByEntity(calculateKm);
+        CarInfo carInfo = new CarInfo();
+        carInfo.setExamUserId(examUser.getId());
+        carInfo.setPaperId(examUser.getPaperId());
+        carInfo = carInfoService.getByEntity(carInfo);
+        if(null!=carInfo){
+            calculateKm.setMileage(carInfo.getMileage());
+        }
+        return calculateKm;
+    }
+
+
+
 
     /**
      * 计算

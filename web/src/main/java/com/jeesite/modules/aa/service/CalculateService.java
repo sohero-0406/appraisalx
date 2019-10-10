@@ -145,11 +145,11 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
             switch (calculate.getType()) {
                 case "1"://折旧率估值法
                     calculateDepreciation.setCalculateId(calculate.getId());
-                    vo.setCalculateDepreciation(calculateDepreciationService.getByEntity(calculateDepreciation));
+                    vo.setCalculateDepreciation(calculateDepreciationService.getCalculateDepreciation(calculateDepreciation,examUser));
                     break;
                 case "2"://公里数估值法
                     calculateKm.setCalculateId(calculate.getId());
-                    vo.setCalculateKm(calculateKmService.getByEntity(calculateKm));
+                    vo.setCalculateKm(calculateKmService.getCalculateKm(calculateKm,examUser));
                     break;
                 case "3"://重置成本法
                     calculateReplaceCost.setCalculateId(calculate.getId());
@@ -236,7 +236,7 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
     /**
      * 查询算法类型
      *
-     * @param calculate
+     * @param calculategetCalculate
      */
     public String getType(Calculate calculate) {
         return calculateDao.getType(calculate);
