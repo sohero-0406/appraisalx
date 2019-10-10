@@ -51,6 +51,8 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
     private OperationLogService operationLogService;
     @Autowired
     private HttpClientService httpClientService;
+    @Autowired
+    private VehicleGradeAssessService vehicleGradeAssessService;
 
 
     /**
@@ -153,7 +155,15 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
                     break;
                 case "3"://重置成本法
                     calculateReplaceCost.setCalculateId(calculate.getId());
-                    vo.setCalculateReplaceCost(calculateReplaceCostService.getByEntity(calculateReplaceCost));
+                    calculateReplaceCost = calculateReplaceCostService.getByEntity(calculateReplaceCost);
+                    //查询车辆技术状况分值
+                    VehicleGradeAssess assess = new VehicleGradeAssess();
+                    assess.setExamUserId(examUser.getId());
+                    assess.setPaperId(examUser.getPaperId());
+                    assess = vehicleGradeAssessService.getByEntity(assess);
+                    calculateReplaceCost.setScore(assess.getScore());
+                    calculateReplaceCost.setIdentifyDate(assess.getIdentifyDate());
+                    vo.setCalculateReplaceCost(calculateReplaceCost);
                     break;
                 case "4"://现行市价法
                     calculateCurrent.setCalculateId(calculate.getId());
