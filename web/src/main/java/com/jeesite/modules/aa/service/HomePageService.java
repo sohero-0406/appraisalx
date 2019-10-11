@@ -56,8 +56,10 @@ public class HomePageService {
         homePageVO.setCarInfo(carInfo);
         carInfo = carInfoService.findCarInfoBySortStu(homePageVO);
         if (carInfo != null) {
-            BigDecimal mileage = new BigDecimal(carInfo.getMileage());
-            carInfo.setMileage(mileage.divide(new BigDecimal("10000"), 1, BigDecimal.ROUND_HALF_UP) + "万公里");
+            if(StringUtils.isNotBlank(carInfo.getMileage())){
+                BigDecimal mileage = new BigDecimal(carInfo.getMileage());
+                carInfo.setMileage(mileage.divide(new BigDecimal("10000"), 1, BigDecimal.ROUND_HALF_UP) + "万公里");
+            }
             if (StringUtils.isNotBlank(carInfo.getPurchaseDate())) {
                 String[] purchaseDate = carInfo.getPurchaseDate().substring(0, 10).split("-");
                 carInfo.setPurchaseDate(purchaseDate[0] + "年" + purchaseDate[1] + "月");
@@ -74,18 +76,18 @@ public class HomePageService {
             vehicleGradeAssess = vehicleGradeAssessService.getByEntity(vehicleGradeAssess);
             homePageVO.setVehicleGradeAssess(vehicleGradeAssess);
 
-            Map<String, String> map = new HashMap<>();
-            map.put("chexingId", carInfo.getModel());
-            CommonResult result = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_CAR_MODEL, map);
-            if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
-                JSONObject vehicleInfo = JSONObject.parseObject(result.getData().toString());
-                homePageVO.setVehicleInfo(vehicleInfo);
+            if(StringUtils.isNotBlank(carInfo.getModel())){
+                Map<String, String> map = new HashMap<>();
+                map.put("chexingId", carInfo.getModel());
+                CommonResult result = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_CAR_MODEL, map);
+                if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
+                    JSONObject vehicleInfo = JSONObject.parseObject(result.getData().toString());
+                    homePageVO.setVehicleInfo(vehicleInfo);
+                }
             }
-            //添加登录人姓名
-            homePageVO.setTrueName(this.getNameByUserId(examUser.getUserId()));
-
         }
-
+        //添加登录人姓名
+        homePageVO.setTrueName(this.getNameByUserId(examUser.getUserId()));
         return homePageVO;
 
     }
