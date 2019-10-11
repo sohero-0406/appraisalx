@@ -124,7 +124,7 @@ public class CarInfoController extends BaseController {
      */
     @RequestMapping(value = "saveBaseInfoTwo")
     @ResponseBody
-    public CommonResult saveBaseInfoTwo(@Validated BaseInfoTwoVO vo) {
+    public CommonResult saveBaseInfoTwo(BaseInfoTwoVO vo) {
         DelegateUser delegateUser = new DelegateUser();
         CarInfo carInfo = new CarInfo();
         try {

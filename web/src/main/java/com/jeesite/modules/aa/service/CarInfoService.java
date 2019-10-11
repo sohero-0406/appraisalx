@@ -335,11 +335,17 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
             }
             //公里数
             if(StringUtils.isNotEmpty(carInfo.getMileage())){
+                String carInfoMileage = "";
                 BigDecimal mileage = new BigDecimal(carInfo.getMileage());
                 BigDecimal a = new BigDecimal("10000");
-                mileage = mileage.divide(a);
-                mileage = (mileage).setScale(1,BigDecimal.ROUND_HALF_UP);
-                carInfo.setMileage(String.valueOf(mileage));
+                if(mileage.compareTo(a) > -1){
+                    mileage = mileage.divide(a);
+                    mileage = (mileage).setScale(1,BigDecimal.ROUND_HALF_UP);
+                    carInfoMileage = mileage+"万公里";
+                }else{
+                    carInfoMileage = mileage+"公里";
+                }
+                carInfo.setMileage(String.valueOf(carInfoMileage));
             }
         }
 
