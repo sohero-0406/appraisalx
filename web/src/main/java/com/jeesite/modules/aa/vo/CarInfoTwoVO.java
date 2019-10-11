@@ -52,4 +52,6 @@ public class CarInfoTwoVO {
     private String enginePower;         // 发动机功率
     @NotBlank
     private String vehicleBrand;        //品牌名称
+
+    private String engineNum;  //发动机号码
 }

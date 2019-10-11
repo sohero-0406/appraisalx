@@ -168,11 +168,10 @@ public class BaiDuAiUtil {
     private JSONObject vehicleLicense(String imagePath) {
         JSONObject jsonObj = client.vehicleLicense(imagePath, new HashMap<String, String>());
         JSONObject result = new JSONObject();
-        if (null != jsonObj.optJSONArray("words_result")) {
+        if (null != jsonObj.optJSONObject("words_result")) {
             result.put("code", CodeConstant.IDENTIFY_THE_SUCCESSFUL);
             result.put("msg", "识别成功");
-            result.put("usage", jsonObj.optJSONObject("data").optJSONObject("words_result").optJSONObject("使用性质").optString("words"));
-            result.put("vehicleType", jsonObj.optJSONObject("data").optJSONObject("words_result").optJSONObject("车辆类型").optString("words"));
+            result.put("engineNum", jsonObj.optJSONObject("words_result").optJSONObject("发动机号码").optString("words"));
         } else {
             result.put("code", CodeConstant.FAILED_TO_IDENTIFY_UNKNOWN_STATE);
             result.put("msg", "未知状态");
