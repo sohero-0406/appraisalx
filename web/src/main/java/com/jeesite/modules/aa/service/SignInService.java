@@ -67,20 +67,22 @@ public class SignInService {
         }
         String userId = data.getString("id");
         String roleType = data.getString("roleId");
+        String trueName = data.getString("trueName");
         String token = JwtUtils.generateToken(userId);
         ExamUser examUser = new ExamUser();
         Map<String, Object> returnMap = new HashMap<>();
         //教师
         if ("2".equals(roleType)) {
-            examUser.setUserId(data.getString("id"));
-            examUser.setRoleType(data.getString("roleId"));
-            examUser.setTrueName(data.getString("trueName"));
+            examUser.setUserId(userId);
+            examUser.setRoleType(roleType);
+            examUser.setTrueName(trueName);
             examUser.setUserNum(userName);
             examUser.setToken(token);
             CacheUtils.put("examUser", examUser.getUserId(), examUser);
             returnMap.put("roleType", data.getString("isExamRight"));
             returnMap.put("token", token);
             returnMap.put("role", "2");
+            returnMap.put("trueName", trueName);
             return new CommonResult(returnMap);
         }
         //学生
@@ -96,12 +98,14 @@ public class SignInService {
             sessionUser.setExamId(examUser.getExamId());
             sessionUser.setStartTime(examUser.getStartTime());
             sessionUser.setRoleType(roleType);
+            sessionUser.setTrueName(trueName);
             sessionUser.setUserNum(userName);
             sessionUser.setToken(token);
             CacheUtils.put("examUser", examUser.getUserId(), sessionUser);
             operationLogService.saveObj(sessionUser, "登录成功");
             returnMap.put("token", token);
             returnMap.put("role", "1");
+            returnMap.put("trueName", trueName);
             return new CommonResult(returnMap);
         }
         return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "角色未识别，不允许登录!");

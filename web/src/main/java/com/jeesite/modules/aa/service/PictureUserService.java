@@ -6,6 +6,7 @@ package com.jeesite.modules.aa.service;
 import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.idgen.IdWorker;
+import com.jeesite.common.io.FileUtils;
 import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.service.CrudService;
 import com.jeesite.common.utils.BaiDuAiUtil;
@@ -93,6 +94,13 @@ public class PictureUserService extends CrudService<PictureUserDao, PictureUser>
         }
         //执行上传
         picFile.transferTo(destFile);
+
+        //删除原图片
+        if (StringUtils.isNotBlank(id)) {
+            PictureUser pictureUser = this.get(id);
+            String picUrl = pictureUser.getUrl();
+            FileUtils.deleteFile(prefix + picUrl);
+        }
 
         //保存图片信息
         PictureUser pictureUser = new PictureUser();
@@ -241,8 +249,21 @@ public class PictureUserService extends CrudService<PictureUserDao, PictureUser>
      * 批量删除
      */
     @Transactional(readOnly = false)
-    public CommonResult deletePictureUseIds(String ids){
-        String [] pictureIds = ids.split(",");
+    public CommonResult deletePictureUseIds(String ids) {
+        String[] pictureIds = ids.split(",");
+        //删除文件
+        ResourceBundle bundle = PropertyResourceBundle.getBundle("config/picture");
+        String prefix = bundle.getString("url");
+        PictureUser pictureUser = new PictureUser();
+        pictureUser.setId_in(pictureIds);
+        List<PictureUser> list = this.findList(pictureUser);
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (PictureUser user : list) {
+                String url = user.getUrl();
+                FileUtils.deleteFile(prefix + url);
+            }
+        }
+        //删除数据库
         dao.deletePictureUseIds(pictureIds);
         return new CommonResult();
     }
@@ -257,7 +278,15 @@ public class PictureUserService extends CrudService<PictureUserDao, PictureUser>
         if (StringUtils.isBlank(id)) {
             return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "请求参数不全！");
         }
-        PictureUser pictureUser = new PictureUser();
+        //删除文件
+        ResourceBundle bundle = PropertyResourceBundle.getBundle("config/picture");
+        String prefix = bundle.getString("url");
+        PictureUser pictureUser = this.get(id);
+        String url = pictureUser.getUrl();
+        FileUtils.deleteFile(prefix + url);
+
+        //删除数据库
+        pictureUser = new PictureUser();
         pictureUser.setId(id);
         dao.phyDelete(pictureUser);
         return new CommonResult();
@@ -267,13 +296,13 @@ public class PictureUserService extends CrudService<PictureUserDao, PictureUser>
      * 保存报告类型
      */
     @Transactional
-    public void savePictureWorker(ExamUser examUser,String pictureTypeId,String name){
+    public void savePictureWorker(ExamUser examUser, String pictureTypeId, String name) {
         PictureUser pictureUser = new PictureUser();
         pictureUser.setPaperId(examUser.getPaperId());
         pictureUser.setExamUserId(examUser.getId());
         pictureUser.setPictureTypeId(pictureTypeId);
         pictureUser.setName(name);
-        if(null==super.dao.getByEntity(pictureUser)){
+        if (null == super.dao.getByEntity(pictureUser)) {
             this.save(pictureUser);
         }
     }

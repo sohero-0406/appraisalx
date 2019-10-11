@@ -69,7 +69,7 @@ public class OperationLog extends PreEntity<OperationLog> {
 	}
 	
 	@Length(min=0, max=64, message="请求ip长度不能超过 64 个字符")
-    @ExcelField(title="请求IP长度", align=ExcelField.Align.CENTER, sort=2)
+    @ExcelField(title = "请求IP", align = ExcelField.Align.CENTER, sort = 2)
 	public String getRequestIp() {
 		return requestIp;
 	}
