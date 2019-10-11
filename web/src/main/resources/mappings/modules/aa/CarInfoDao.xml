@@ -40,7 +40,7 @@
 			car.mileage,
 		    car.fa_dong_ji_xing_hao,
 		    car.displacement,
-			(select dict.dict_label from js_sys_dict_data  dict where dict.dict_type = 'aa_environmental_standard' and  dict.dict_value = '1') as environmental_standard
+			(select dict.dict_label from js_sys_dict_data  dict where dict.dict_type = 'aa_environmental_standard' and  dict.dict_value = car.environmental_standard) as environmental_standard
 			from
 			aa_car_info car
 			<where>
