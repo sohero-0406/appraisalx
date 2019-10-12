@@ -13,7 +13,10 @@ import com.jeesite.modules.aa.dao.CalculateDao;
 import com.jeesite.modules.aa.entity.*;
 import com.jeesite.modules.aa.vo.CalculateVO;
 import com.jeesite.modules.common.entity.CommonResult;
+import com.jeesite.modules.common.entity.Exam;
 import com.jeesite.modules.common.entity.ExamUser;
+import com.jeesite.modules.common.service.ExamService;
+import com.jeesite.modules.common.service.ExamUserService;
 import com.jeesite.modules.common.service.HttpClientService;
 import com.jeesite.modules.common.service.OperationLogService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +56,10 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
     private HttpClientService httpClientService;
     @Autowired
     private VehicleGradeAssessService vehicleGradeAssessService;
+    @Autowired
+    private ExamUserService examUserService;
+    @Autowired
+    private ExamService examService;
 
 
     /**
@@ -137,13 +144,30 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
         calculate.setExamUserId(examUser.getId());
         calculate.setPaperId(examUser.getPaperId());
         calculate = this.getByEntity(calculate);
+
+        //学生
+        if(StringUtils.isNotBlank(examUser.getId())){
+            ExamUser user = new ExamUser();
+            user.setId(examUser.getId());
+            user = examUserService.get(user);
+            Exam exam = new Exam();
+            exam.setId(user.getExamId());
+            exam = examService.get(exam);
+            Calculate cal = new Calculate();
+            cal.setPaperId(exam.getPaperId());
+            cal = dao.getByEntity(cal);
+            if(null==calculate){
+                calculate = new Calculate();
+            }
+            calculate.setSecondCarPrice(cal.getSecondCarPrice());
+        }
         vo.setCalculate(calculate);
 
         CalculateDepreciation calculateDepreciation = new CalculateDepreciation();
         CalculateKm calculateKm = new CalculateKm();
         CalculateReplaceCost calculateReplaceCost = new CalculateReplaceCost();
         CalculateCurrent calculateCurrent = new CalculateCurrent();
-        if (null != calculate) {
+        if (null != calculate && StringUtils.isNotBlank(calculate.getType())) {
             switch (calculate.getType()) {
                 case "1"://折旧率估值法
                     calculateDepreciation.setCalculateId(calculate.getId());
