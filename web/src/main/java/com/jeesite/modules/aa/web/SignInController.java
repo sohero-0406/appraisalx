@@ -125,6 +125,7 @@ public class SignInController {
         returnMap.put("token", examUser.getToken());
         returnMap.put("roleType",((JSONObject)result.getData()).getString("isExamRight")); //教师登录才有
         returnMap.put("roleId",((JSONObject)result.getData()).getString("roleId")); //教师登录才有
+        returnMap.put("trueName",examUser.getTrueName());
         comRes.setData(returnMap);
         CacheUtils.remove("uuid",uuid);
 
