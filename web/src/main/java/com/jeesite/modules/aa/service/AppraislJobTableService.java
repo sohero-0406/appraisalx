@@ -76,8 +76,8 @@ public class AppraislJobTableService {
                 carInfo.getEnvironmentalStandard(),""));
         //设置年检到期
         if (StringUtils.isNotBlank(carInfo.getYearCheckDue())) {
-            String[] yearCheckDueArr = carInfo.getYearCheckDue().substring(0, 10).split("-");
-            carInfo.setYearCheckDue(yearCheckDueArr[0] + "年" + yearCheckDueArr[1] + "月" + yearCheckDueArr[2] + "日");
+            String[] yearCheckDueArr = carInfo.getYearCheckDue().split("-");
+            carInfo.setYearCheckDue(yearCheckDueArr[0] + "年" + yearCheckDueArr[1] + "月" );
         }
         //设置保险到期
         if (StringUtils.isNotBlank(carInfo.getInsuranceDue())) {
