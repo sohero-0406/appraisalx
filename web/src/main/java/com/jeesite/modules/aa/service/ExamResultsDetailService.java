@@ -168,10 +168,10 @@ public class ExamResultsDetailService extends CrudService<ExamResultsDetailDao, 
 			for(IdentifyTecDetail identifyTecDetail:technologyInfo.getItemList()){
 				//如果内容不为空 并且等于paperid 则为老师所填写内容
 				if(StringUtils.isNotBlank(identifyTecDetail.getStuOrTec()) && exam.getPaperId().equals(identifyTecDetail.getStuOrTec())){
-					if("0".equals(identifyTecDetail.getDeductNum()) && StringUtils.isNotBlank(identifyTecDetail.getCode())){
-						examResultsDetail.setTeacherAnswer(identifyTecDetail.getCode()+",不扣分");
+					if("".equals(identifyTecDetail.getDeductNum()) && StringUtils.isNotBlank(identifyTecDetail.getCode())){
+						examResultsDetail.setTeacherAnswer(identifyTecDetail.getCode());
 					}else if(!"".equals(identifyTecDetail.getDeductNum()) && null!=identifyTecDetail.getDeductNum() && StringUtils.isNotBlank(identifyTecDetail.getCode())){
-						examResultsDetail.setTeacherAnswer(identifyTecDetail.getCode()+"，扣"+identifyTecDetail.getDeductNum()+"分");
+						examResultsDetail.setTeacherAnswer(identifyTecDetail.getCode()+"，"+identifyTecDetail.getDeductNum());
 					}
 					//老师没填项是否显示
 					else{
@@ -179,10 +179,10 @@ public class ExamResultsDetailService extends CrudService<ExamResultsDetailDao, 
 					}
 					//如果内容不为空 并且等于examUserId 则为老师所填写内容
 				}else if(StringUtils.isNotBlank(identifyTecDetail.getStuOrTec()) && examUserId.equals(identifyTecDetail.getStuOrTec())){
-					if("0".equals(identifyTecDetail.getDeductNum()) && StringUtils.isNotBlank(identifyTecDetail.getCode())){
-						examResultsDetail.setStudentAnswer(identifyTecDetail.getCode()+",不扣分");
+					if("".equals(identifyTecDetail.getDeductNum()) && StringUtils.isNotBlank(identifyTecDetail.getCode())){
+						examResultsDetail.setStudentAnswer(identifyTecDetail.getCode());
 					}else if(!"".equals(identifyTecDetail.getDeductNum()) && null!=identifyTecDetail.getDeductNum() && StringUtils.isNotBlank(identifyTecDetail.getCode())){
-						examResultsDetail.setStudentAnswer(identifyTecDetail.getCode()+"，扣"+identifyTecDetail.getDeductNum()+"分");
+						examResultsDetail.setStudentAnswer(identifyTecDetail.getCode()+"，"+identifyTecDetail.getDeductNum());
 					}
 //					//老师没填项是否显示
 					else{
