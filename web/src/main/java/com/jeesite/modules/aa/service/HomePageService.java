@@ -85,6 +85,12 @@ public class HomePageService {
                     homePageVO.setVehicleInfo(vehicleInfo);
                 }
             }
+            homePageVO.setIsNew("1");
+        }
+        PictureUser pictureUser = new PictureUser();
+        pictureUser.setExamUserId(examUser.getId());
+        if(CollectionUtils.isNotEmpty(pictureUserService.findList(pictureUser))){
+            homePageVO.setIsNew("1");
         }
         //添加登录人姓名
         homePageVO.setTrueName(this.getNameByUserId(examUser.getUserId()));

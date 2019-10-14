@@ -14,6 +14,15 @@ public class HomePageVO {
     private String sort;        //排序方式
     private String queryCriteria;       //查询条件
     private String trueName;
+    private String isNew; //学生答案是否新建 ( 1已新建)
+
+    public String getIsNew() {
+        return isNew;
+    }
+
+    public void setIsNew(String isNew) {
+        this.isNew = isNew;
+    }
 
     public CarInfo getCarInfo() {
         return carInfo;
