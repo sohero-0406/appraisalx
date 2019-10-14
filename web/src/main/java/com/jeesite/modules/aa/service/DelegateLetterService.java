@@ -518,7 +518,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         returnMap.put("yearCheckDueMonth", "");
         //年检
         if (StringUtils.isNotBlank(carInfo.getYearCheckDue())) {
-            String[] dateArray = carInfo.getYearCheckDue().substring(0, 10).split("-");
+            String[] dateArray = carInfo.getYearCheckDue().split("-");
             returnMap.replace("yearCheckDueYear", dateArray[0]);
             returnMap.replace("yearCheckDueMonth", dateArray[1]);
         }
