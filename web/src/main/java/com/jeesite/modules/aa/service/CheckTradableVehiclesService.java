@@ -27,8 +27,6 @@ import com.jeesite.modules.aa.dao.CheckTradableVehiclesDao;
 public class CheckTradableVehiclesService extends CrudService<CheckTradableVehiclesDao, CheckTradableVehicles> {
 
     @Autowired
-    private CheckTradableVehiclesDao checkTradableVehiclesDao;
-    @Autowired
     private OperationLogService operationLogService;
 
     /**
@@ -87,7 +85,7 @@ public class CheckTradableVehiclesService extends CrudService<CheckTradableVehic
     }
 
     public CheckTradableVehicles getByEntity(CheckTradableVehicles checkTradableVehicles) {
-        return checkTradableVehiclesDao.getByEntity(checkTradableVehicles);
+        return dao.getByEntity(checkTradableVehicles);
     }
 
     /**
@@ -99,7 +97,7 @@ public class CheckTradableVehiclesService extends CrudService<CheckTradableVehic
     public void saveIsAccident(ExamUser examUser, CheckTradableVehicles checkTradableVehicles) {
         checkTradableVehicles.setExamUserId(examUser.getId());
         checkTradableVehicles.setPaperId(examUser.getPaperId());
-        checkTradableVehiclesDao.saveIsAccident(checkTradableVehicles);
+        dao.saveIsAccident(checkTradableVehicles);
         operationLogService.saveObj(examUser,"保存判定事故车数据成功");
     }
 
