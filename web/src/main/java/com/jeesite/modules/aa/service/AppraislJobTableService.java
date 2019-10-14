@@ -7,7 +7,9 @@ import com.jeesite.common.constant.ServiceConstant;
 import com.jeesite.modules.aa.entity.*;
 import com.jeesite.modules.aa.vo.AppraisalJobTableVO;
 import com.jeesite.modules.common.entity.CommonResult;
+import com.jeesite.modules.common.entity.Exam;
 import com.jeesite.modules.common.entity.ExamUser;
+import com.jeesite.modules.common.service.ExamService;
 import com.jeesite.modules.common.service.HttpClientService;
 import com.jeesite.modules.sys.utils.DictUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -46,6 +48,8 @@ public class AppraislJobTableService {
     private CheckTradableVehiclesService checkTradableVehiclesService;
     @Autowired
     private HttpClientService httpClientService;
+    @Autowired
+    private ExamService examService;
 
     /**
      * 生成鉴定评估作业表
@@ -183,6 +187,12 @@ public class AppraislJobTableService {
         // 作业表尾部信息
         DelegateLetter delegateLetter = new DelegateLetter();
         delegateLetter.setPaperId(examUser.getPaperId());
+        if(StringUtils.isBlank(examUser.getPaperId())){
+            Exam exam = new Exam();
+            exam.setId(examUser.getExamId());
+            exam = examService.get(exam);
+            delegateLetter.setPaperId(exam.getPaperId());
+        }
         appraisalJobTableVO.setDelegateLetter(delegateLetterService.getByEntity(delegateLetter));
         return appraisalJobTableVO;
     }

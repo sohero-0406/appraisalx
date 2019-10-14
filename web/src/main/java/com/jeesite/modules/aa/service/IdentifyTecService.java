@@ -13,7 +13,9 @@ import com.jeesite.modules.aa.dao.IdentifyTecDao;
 import com.jeesite.modules.aa.entity.*;
 import com.jeesite.modules.aa.vo.*;
 import com.jeesite.modules.common.entity.CommonResult;
+import com.jeesite.modules.common.entity.Exam;
 import com.jeesite.modules.common.entity.ExamUser;
+import com.jeesite.modules.common.service.ExamService;
 import com.jeesite.modules.common.service.HttpClientService;
 import com.jeesite.modules.sys.utils.DictUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -70,6 +72,9 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
 
     @Autowired
     private HttpClientService httpClientService;
+
+    @Autowired
+    private ExamService examService;
 
     /**
      * 获取单条数据
@@ -340,6 +345,12 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
         // 7. 鉴定单位
         DelegateLetter delegateLetter = new DelegateLetter();
         delegateLetter.setPaperId(examUser.getPaperId());
+        if(StringUtils.isBlank(examUser.getPaperId())){
+            Exam exam = new Exam();
+            exam.setId(examUser.getExamId());
+            exam = examService.get(exam);
+            delegateLetter.setPaperId(exam.getPaperId());
+        }
         delegateLetter = delegateLetterService.getByEntity(delegateLetter);
         if (null == delegateLetter) {
             return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "委托书信对象为空");

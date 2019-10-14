@@ -240,7 +240,10 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
         carInfo.setExamUserId(examUserId);
         carInfo.setPaperId(paperId);
         carInfo = this.getByEntity(carInfo);
-
+        if(null==carInfo){
+            carInfo = new CarInfo();
+            carInfo.setExamUserId(examUser.getId());
+        }
         baseInfoVO.setCarInfo(carInfo);
 
         //加载委托方基本信息
