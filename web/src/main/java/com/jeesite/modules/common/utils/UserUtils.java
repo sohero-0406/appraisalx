@@ -26,9 +26,9 @@ public class UserUtils {
         if (StringUtils.isEmpty(token)) {
 //            //学生
 //            ExamUser examUser = new ExamUser();
-//            examUser.setId("1");
-//            examUser.setUserId("667");
-//            examUser.setExamId("1");
+//            examUser.setId("1183555282950410240");
+//            examUser.setUserId("1182532557589159936");
+//            examUser.setExamId("1183555113399865344");
 //            //教师
 //            ExamUser examUser = new ExamUser();
 //            examUser.setPaperId("1182492457622978560");

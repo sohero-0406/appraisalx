@@ -101,9 +101,7 @@ public class CalculateReplaceCostController extends BaseController {
 	@ResponseBody
 	public CommonResult calculate(CalculateReplaceCost cost) {
 		ExamUser examUser = UserUtils.getExamUser();
-		cost = calculateReplaceCostService.calculate(cost, examUser);
-		CommonResult result = new CommonResult();
-		result.setData(cost);
+        CommonResult result = calculateReplaceCostService.calculate(cost, examUser);
 		return result;
 	}
 }
