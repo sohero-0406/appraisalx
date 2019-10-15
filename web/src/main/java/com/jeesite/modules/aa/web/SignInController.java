@@ -1,9 +1,11 @@
 package com.jeesite.modules.aa.web;
 
+import alvinJNI.RegisterUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.cache.CacheUtils;
 import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.lang.StringUtils;
+import com.jeesite.common.web.http.ServletUtils;
 import com.jeesite.modules.aa.service.SignInService;
 import com.jeesite.modules.aa.vo.BaseVO;
 import com.jeesite.modules.aa.vo.LoginVO;

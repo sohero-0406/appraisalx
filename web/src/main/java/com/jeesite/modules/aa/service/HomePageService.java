@@ -93,28 +93,10 @@ public class HomePageService {
             homePageVO.setIsNew("1");
         }
         //添加登录人姓名
-        homePageVO.setTrueName(this.getNameByUserId(examUser.getUserId()));
+        homePageVO.setTrueName(examUser.getTrueName());
         return homePageVO;
 
     }
-
-    /**
-     *  根据userId查询人员姓名
-     */
-    public String getNameByUserId(String userId){
-        Map<String,String> stuMap = new HashMap<>();
-        stuMap.put("ids",userId);
-        CommonResult resultStuName = httpClientService.post(ServiceConstant.DERIVE_STUDENT_ACHIEVEMENT, stuMap);
-        if(CodeConstant.REQUEST_SUCCESSFUL.equals(resultStuName.getCode())){
-            JSONArray array = (JSONArray)resultStuName.getData();
-            if(CollectionUtils.isNotEmpty(array) && array.size()==1){
-                //返回学生信息
-                return ((JSONObject)array.get(0)).getString("trueName");
-            }
-        }
-        return "";
-    }
-
 
     /**
      * 加载首页界面(教师)
@@ -171,8 +153,8 @@ public class HomePageService {
                 //添加登录人姓名
             }
             returnMap.put("homePagelist",list);
-            returnMap.put("trueName",this.getNameByUserId(examUser.getUserId()));
         }
+        returnMap.put("trueName", examUser.getTrueName());
         return returnMap;
     }
 

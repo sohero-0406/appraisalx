@@ -26,20 +26,19 @@
     </select>
     <select id="findMaintenanceDetail" resultType="com.jeesite.modules.common.entity.Maintenance">
         SELECT
-            id,
-            result_code,
-            result_msg,
-            maintenance_total_id,
+            cm.id,
+            cm.result_code,
+            cm.result_msg,
+            cm.maintenance_total_id,
             ( SELECT dict_label FROM js_sys_dict_data jsdd WHERE dict_type = 'aa_maintenance_type' AND jsdd.dict_value = cm.service_type ) AS service_type,
-            service_date,
-            brand,
-            model_name,
-            series_name,
-            vin,
-            manufacturer,
-            make_date,
-            transmission_type,
-            displacement,
+            cm.service_date,
+            cm.brand,
+            cm.model_name,
+            cm.series_name,
+            cm.manufacturer,
+            cm.make_date,
+            cm.transmission_type,
+            cm.displacement,
             ( SELECT dict_label FROM js_sys_dict_data jsdd WHERE dict_type = 'aa_environmental_standard' AND jsdd.dict_value = cm.effluent_standard ) AS effluent_standard,
             ( SELECT dict_label FROM js_sys_dict_data jsdd WHERE dict_type = 'sys_yes_no' AND jsdd.dict_value = cm.car_fire_flag ) AS car_fire_flag,
             ( SELECT dict_label FROM js_sys_dict_data jsdd WHERE dict_type = 'sys_yes_no' AND jsdd.dict_value = cm.car_water_flag ) AS car_water_flag,
@@ -47,13 +46,15 @@
             ( SELECT dict_label FROM js_sys_dict_data jsdd WHERE dict_type = 'sys_yes_no' AND jsdd.dict_value = cm.car_construct_records_flag ) AS car_construct_records_flag,
             ( SELECT dict_label FROM js_sys_dict_data jsdd WHERE dict_type = 'sys_yes_no' AND jsdd.dict_value = cm.car_outside_records_flag ) AS car_outside_records_flag,
             ( SELECT dict_label FROM js_sys_dict_data jsdd WHERE dict_type = 'sys_yes_no' AND jsdd.dict_value = cm.mileage_is_normal_flag ) AS mileage_is_normal_flag,
-            mileage_estimate,
-            last_main_tain_time,
-            main_tain_times,
-            last_repair_time,
-            mileage_every_year
+            cm.mileage_estimate,
+            cm.last_main_tain_time,
+            cm.main_tain_times,
+            cm.last_repair_time,
+            cm.mileage_every_year,
+			cmt.vin_code as vin
         FROM
             common_maintenance cm
+		left join common_maintenance_total cmt on cm.maintenance_total_id = cmt.id
         WHERE
             cm.id = #{maintenance.id}
     </select>
