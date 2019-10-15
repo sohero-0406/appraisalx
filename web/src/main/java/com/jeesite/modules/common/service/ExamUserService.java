@@ -474,7 +474,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
         }
         //归档
         List<String> removeList = new ArrayList<>();
-        //选中三种证书 等分
+        //选中三种证书 等分  1151013343670108156
         // 二手车鉴定评估委托书
         ExamResultsDetail appraisal = saveExamDetail(user.getId(), user.getExamId(), "1151028180615860225",
                 (String) examNameMap.get("1151013343670108155"), "0", (String) examScoreMap.get("1151013343670108155"),
@@ -487,6 +487,9 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
         ExamResultsDetail report = saveExamDetail(user.getId(), user.getExamId(), "1151028180615860225",
                 (String) examNameMap.get("1151013343670108787"), "0", (String) examScoreMap.get("1151013343670108787"),
                 "二手车鉴定评估报告", "", "1");
+        ExamResultsDetail technical = saveExamDetail(user.getId(), user.getExamId(), "1151028180615860225",
+                (String) examNameMap.get("1151013343670108156"), "0", (String) examScoreMap.get("1151013343670108156"),
+                "二手车技术状况表", "", "1");
 
         for (String pictureTypeS : placeFileListS) {
             //判断 二手车鉴定评估委托书
@@ -510,11 +513,18 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
                 report.setScore((String) examScoreMap.get("1151013343670108787"));
                 report.setRightOrWrong("0");
                 examResultsDetailService.update(report);
+            }else if ("1152467158926442434".equals(pictureTypeS)) {
+                calculateCount = calculateCount.add(BigDecimal.valueOf(Integer.valueOf((String) examScoreMap.get("1151013343670108156"))));
+                technical.setStudentAnswer("二手车技术状况表");
+                technical.setScore((String) examScoreMap.get("1151013343670108156"));
+                technical.setRightOrWrong("0");
+                examResultsDetailService.update(technical);
             }
         }
         removeList.add("1152466716125380608");
         removeList.add("1152467065519292416");
         removeList.add("1152467158926442496");
+        removeList.add("1152467158926442434");
 
         //学生所选择的 机动车行驶证页面
         if (placeFileListS.containsAll(movingPictureTec) && (CollectionUtils.isNotEmpty(movingPictureTec))) {

@@ -41,6 +41,7 @@
         <if test="vinCode != null and vinCode != ''">
             and vin_code LIKE CONCAT('%',#{vinCode},'%')
 		</if>
+		order by aa_paper.create_date desc
 	</select>
 
 	<!-- 加载首页界面(教师端) -->

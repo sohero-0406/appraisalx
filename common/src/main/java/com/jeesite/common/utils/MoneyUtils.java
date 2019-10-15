@@ -8,7 +8,7 @@ public class MoneyUtils {
 
     public static String change(double v) {
 
-        String UNIT = "万千佰拾亿千佰拾万千佰拾元角分";
+        String UNIT = "万仟佰拾亿仟佰拾万仟佰拾元角分";
         String DIGIT = "零壹贰叁肆伍陆柒捌玖";
         double MAX_VALUE = 9999999999999.99D;
         if (v < 0 || v > MAX_VALUE){
