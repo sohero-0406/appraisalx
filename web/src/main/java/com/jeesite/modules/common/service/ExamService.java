@@ -332,38 +332,27 @@ public class ExamService extends CrudService<ExamDao, Exam> {
     public CommonResult updateExamSate(Exam exam) {
         //考试状态 state '状态（1:未开始;3:考试中;5:未统计;7:已出分）
         CommonResult comRes = new CommonResult();
-        Exam examUpdate = dao.getByEntity(exam);
-        if (null == examUpdate) {
-            comRes.setCode(CodeConstant.DATA_NOT_FOUND);
-            comRes.setMsg("您所查询的考试不存在!");
-            return comRes;
-        }
-        switch (examUpdate.getState()) {
+        switch (exam.getState()) {
             case "1"://未开始
-                List<String> userIdList = dao.getUserByExamId(examUpdate.getId());
-                comRes = examUserService.getExamStateByUserId(userIdList, examUpdate);
+                List<String> userIdList = dao.getUserByExamId(exam.getId());
+                comRes = examUserService.getExamStateByUserId(userIdList, exam);
                 if (CodeConstant.REQUEST_SUCCESSFUL.equals(comRes.getCode())) {
-                    examUpdate.setState("3");
-                    examUpdate.setStartTime(new Date());  //记录考试结束时
-                    super.save(examUpdate);
+                    exam.setState("3");
+                    exam.setStartTime(new Date());  //记录考试结束时
+                    super.save(exam);
                 }
                 break;
             case "3"://考试中
-                examUpdate.setState("5");
-                examUpdate.setEndTime(new Date());  //记录考试结束时
-                super.save(examUpdate);
-                examUserService.saveExamEndTime(examUpdate.getId());
+                exam.setState("5");
+                exam.setEndTime(new Date());  //记录考试结束时
+                super.save(exam);
+                examUserService.saveExamEndTime(exam.getId());
                 break;
-            case "5"://未统计
-                examUpdate.setState("7");
-                examUserService.gradePapers(examUpdate);
-                super.save(examUpdate);
+            case "6"://统计成绩中
+                examUserService.gradePapers(exam);
+                exam.setState("7");
+                super.save(exam);
                 break;
-            case "7"://已出分
-                comRes.setMsg("考试结果已出！");
-                break;
-            default:
-                comRes.setMsg("未查询到此时卷！");
         }
         return comRes;
     }

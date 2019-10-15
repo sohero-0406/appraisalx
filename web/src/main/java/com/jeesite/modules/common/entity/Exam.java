@@ -27,7 +27,7 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 		@Column(name="duration", attrName="duration", label="考试时长", comment="考试时长(分钟)"),
 		@Column(name="start_time", attrName="startTime", label="开始时间"),
 		@Column(name="end_time", attrName="endTime", label="结束时间"),
-		@Column(name = "state", attrName = "state", label = "状态（1:未开始;3:考试中;5:未统计;7:已出分）"),
+		@Column(name = "state", attrName = "state", label = "状态（1:未开始;3:考试中;5:未统计;6:统计成绩中;7:已出分）"),
 		@Column(name = "upload_score", attrName = "uploadScore", label = "上传成绩（0-未上传 1-已上传）"),
 		@Column(name="type", attrName="type", label="考试类型"),
 		@Column(name="exam_type", attrName="examType", label="考试计时", comment="考试计时（1、倒计时 2、倒计时）"),
@@ -43,7 +43,7 @@ public class Exam extends PreEntity<Exam> {
 	private Integer duration;		// 考试时长(分钟)
 	private Date startTime;		// 开始时间
 	private Date endTime;		// 结束时间
-	private String state;        // 状态（1:未开始;3:考试中;5:未统计;7:已出分）
+	private String state;        // 状态（1:未开始;3:考试中;5:未统计;6:统计成绩中;7:已出分）
 	private String uploadScore;        //（0-未上传 1-已上传）
 	private String type;		// 考试类型
 	private String examType;		// 考试计时（1、倒计时 2、倒计时）

@@ -175,8 +175,19 @@ public class ExamController extends BaseController {
     @RequestMapping(value = "operationExam")
     @ResponseBody
     public CommonResult operationExam(Exam exam) {
+        CommonResult comRes = new CommonResult();
+        exam = examService.getByEntity(exam);
+        if (null == exam) {
+            comRes.setCode(CodeConstant.DATA_NOT_FOUND);
+            comRes.setMsg("您所查询的考试不存在!");
+            return comRes;
+        }
+        if ("5".equals(exam.getState())) {
+            exam.setState("6");
+            examService.save(exam);
+        }
         //修改考生状态
-        CommonResult comRes = examService.updateExamSate(exam);
+        comRes = examService.updateExamSate(exam);
         return comRes;
     }
 
