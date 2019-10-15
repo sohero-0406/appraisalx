@@ -147,12 +147,16 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
         identifyTec.setDescription(object.getString("description"));
         super.save(identifyTec);
         JSONArray itemList = JSONObject.parseArray(object.getString("itemList"));
+
         if (!CollectionUtils.isEmpty(itemList)) {
             for (Object o : itemList) {
                 JSONObject item = (JSONObject) o;
                 IdentifyTecDetail detail = new IdentifyTecDetail();
                 detail.setId(item.getString("id"));
                 detail.setTechnologyInfoId(item.getString("technologyInfoId"));
+                if(StringUtils.isBlank(detail.getTechnologyInfoId())){
+                     throw new RuntimeException("technologyInfoId 不能为空！");
+                }
                 detail.setCode(item.getString("code"));
                 detail.setDeductNum(item.getString("deductNum"));
                 detail.setDegree(item.getString("degree"));

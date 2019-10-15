@@ -107,6 +107,7 @@
 		<result property="examScoreInfoId" column="exam_score_info_id"></result>
 		<result property="name" column="name"></result>
 		<result property="totalScore" column="totalScore"></result>
+		<result property="score" column="classTotalScore"></result>
 		<collection property="examResultsDetailList" ofType="ExamResultsDetail">
 			<id property="id" column="detailId"></id>
 			<result property="examUserId" column="exam_user_id"></result>
@@ -123,6 +124,7 @@
 		select
         class.id,
         class.exam_score_info_id,
+        class.score  as classTotalScore,
 		info.name as name,
 		(select sum(score) from aa_exam_results_detail where score_classify_id = class.id GROUP BY score_classify_id) totalScore,
         detail.id as detailId,

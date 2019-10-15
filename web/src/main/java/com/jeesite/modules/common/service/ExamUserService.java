@@ -79,6 +79,8 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
     private HttpClientService httpClientService;
     @Autowired
     private PictureUserService pictureUserService;
+    @Autowired
+    private DelegateLetterService delegateLetterService;
 
 
     /**
@@ -609,7 +611,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
             saveExamDetail(user.getId(), user.getExamId(), "1151028180616400897",
                     (String) examNameMap.get("1151013343662993409"), "0", (String) examScoreMap.get("1151013343662993409"),
                     vehicleGradeAssessT.getStartScore() + "-" + vehicleGradeAssessT.getEndScore() + "分",
-                    vehicleGradeAssessS == null ? "" : (vehicleGradeAssessS.getStartScore() == null ? "" : vehicleGradeAssessS.getStartScore() + "分"), "1");
+                    vehicleGradeAssessS == null ? "" : (vehicleGradeAssessS.getScore() == null ? "" : vehicleGradeAssessS.getScore() + "分"), "1");
 
         }
         //鉴定日期
@@ -755,7 +757,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
         BigDecimal carInfoCount = new BigDecimal(0);
         //品牌加车系
         if (StringUtils.isNotBlank(carInfoT.getBrand()) && StringUtils.isNotBlank(carInfoT.getSeries()) && (null != carInfoS) &&
-                carInfoT.getBrand().equals(carInfoS.getBrand()) && carInfoT.equals(carInfoS.getSeries())) {
+                carInfoT.getBrand().equals(carInfoS.getBrand()) && carInfoT.getSeries().equals(carInfoS.getSeries())) {
             carInfoCount = carInfoCount.add(BigDecimal.valueOf(Integer.valueOf((String) examScoreMap.get("1151013343664197633")))); //品牌
             saveExamDetail(user.getId(), user.getExamId(), "1151028180617760769",
                     (String) examNameMap.get("1151013343664197633"), (String) examScoreMap.get("1151013343664197633"), (String) examScoreMap.get("1151013343664197633"),
@@ -1344,6 +1346,10 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
         }
 
         //盖章
+        DelegateLetter delegateLetter = new DelegateLetter();
+        delegateLetter.setPaperId(paperId);
+        delegateLetter = delegateLetterService.getByEntity(delegateLetter);
+
         PictureUser pictureUserS = new PictureUser();
         pictureUserS.setExamUserId(user.getId());
         pictureUserS.setPictureTypeId("1143436249238634496");  //手动签字
@@ -1353,7 +1359,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
         pictureUserT.setPaperId(paperId);
         pictureUserT.setPictureTypeId("1143436249238634496");  //手动签字
         pictureUserT = pictureUserService.getByEntity(pictureUserT);
-        if (null != pictureUserT && null != pictureUserS) {
+        if ( (null != pictureUserT||null!=delegateLetter) && null != pictureUserS) {
             delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String) examScoreMap.get("1151013343666032621"))));
             saveExamDetail(user.getId(), user.getExamId(), "1151028180617777153",
                     (String) examNameMap.get("1151013343666032621"), (String) examScoreMap.get("1151013343666032621"), (String) examScoreMap.get("1151013343666032621"),
@@ -1361,7 +1367,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
         } else {
             saveExamDetail(user.getId(), user.getExamId(), "1151028180617777153",
                     (String) examNameMap.get("1151013343666032621"), "0", (String) examScoreMap.get("1151013343666032621"),
-                    null == pictureUserT ? "未签" : "已签", pictureUserS == null ? "未签" : "已签", "1");
+                    (null != pictureUserT||null!=delegateLetter) ? "已签" : "未签", pictureUserS == null ? "未签" : "已签", "1");
         }
 
         return delegateCount;
@@ -1577,6 +1583,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
         CommonResult comRes = new CommonResult();
         examUserJson = examUserJson.replace("\n", "");
         examUserJson = examUserJson.replace(" ", "");
+
         //判断该考试、练习是否存在考试生
         if (StringUtils.isNotBlank(examId)) {
             ExamUser examUser = new ExamUser();

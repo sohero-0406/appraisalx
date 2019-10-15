@@ -38,12 +38,27 @@
 
 	</select>
 
-	<select id="getExamScoreInfoExist" resultMap="findDataMap">
+	<resultMap id="findDataMapTwo" type="ExamScoreClassify">
+		<id property="id" column="id"></id>
+		<result property="examScoreInfoId" column="exam_score_info_id"></result>
+		<result property="name" column="name"></result>
+		<result property="score" column="score"></result>
+		<collection property="itemList" ofType="ExamScoreDetail">
+			<id property="id" column="sonId"></id>
+			<result property="scoreInfoId" column="sonInfoId"></result>
+			<result property="name" column="sonName"></result>
+			<result property="score" column="sonScore"></result>
+		</collection>
+	</resultMap>
+
+	<select id="getExamScoreInfoExist" resultMap="findDataMapTwo">
 		select
 			class.id,
+		    class.exam_score_info_id,
 			class.score,
 			info.name,
 			detail.id as sonId,
+		    detail.score_info_id as sonInfoId,
 			detail.score as sonScore,
 			detailInfo.name as sonName
 			from
