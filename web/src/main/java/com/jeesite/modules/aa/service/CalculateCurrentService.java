@@ -365,10 +365,14 @@ public class CalculateCurrentService extends CrudService<CalculateCurrentDao, Ca
         String p1Id = calculateCurrent.getParam1Id();
         String p2Id = calculateCurrent.getParam2Id();
         if (StringUtils.isNotBlank(p1Id)) {
-            vo.setReference1(referenceService.get(p1Id));
+            Reference reference = referenceService.get(p1Id);
+            reference.setExhaustEmissionStandard(DictUtils.getDictLabel("exhaust_emission_standard",reference.getExhaustEmissionStandard(),""));
+            vo.setReference1(reference); //
         }
         if (StringUtils.isNotBlank(p2Id)) {
-            vo.setReference2(referenceService.get(p2Id));
+            Reference reference = referenceService.get(p2Id);
+            reference.setExhaustEmissionStandard(DictUtils.getDictLabel("exhaust_emission_standard",reference.getExhaustEmissionStandard(),""));
+            vo.setReference2(reference);
         }
         vo.setReferenceList(referenceService.findList(new Reference()));
         //车辆配置类型
