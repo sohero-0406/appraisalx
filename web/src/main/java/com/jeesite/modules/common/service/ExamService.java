@@ -235,6 +235,12 @@ public class ExamService extends CrudService<ExamDao, Exam> {
         if (StringUtils.isNotBlank(examId)) {
             exam.setId(examId);
             exam = dao.getByEntity(exam);
+            Paper paper = new Paper();
+            paper.setId(exam.getPaperId());
+            paper = paperService.get(paper);
+            if(null!=paper){
+                exam.setPaperName(paper.getName());
+            }
             //查询已选考生信息
             ExamUser examUser = new ExamUser();
             examUser.setExamId(exam.getId());
