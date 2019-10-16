@@ -126,7 +126,7 @@
         class.exam_score_info_id,
         class.score  as classTotalScore,
 		info.name as name,
-		(select sum(score) from aa_exam_results_detail where score_classify_id = class.id GROUP BY score_classify_id) totalScore,
+		(select sum(score) from aa_exam_results_detail where score_classify_id = class.id and exam_user_id = detail.exam_user_id GROUP BY score_classify_id) totalScore,
         detail.id as detailId,
         detail.exam_user_id,
         detail.score_points,
