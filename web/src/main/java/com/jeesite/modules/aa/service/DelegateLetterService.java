@@ -204,7 +204,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
             return comRes;
         }
         letter.setCheckName(delegateLetter.getCheckName());
-        letter.setAppraiser(delegateLetter.getAppraiser());  //二手车鉴定评估师
+//        letter.setAppraiser(delegateLetter.getAppraiser());  //二手车鉴定评估师
         letter.setAppraiserDate(delegateLetter.getAppraiserDate()); //二手车鉴定评估机构盖章日期
         super.save(letter);
         try {
@@ -328,11 +328,11 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         //设置技术状况
         if (null!=vehicleGradeAssess && StringUtils.isNotBlank(vehicleGradeAssess.getTechnicalStatus())) {
             vehicleGradeAssess.setTechnicalStatus(DictUtils.getDictLabel("aa_technical_status", vehicleGradeAssess.getTechnicalStatus(), ""));
-            appraisalReportVO.setVehicleGradeAssess(vehicleGradeAssess);
             defectDescription.append(StringUtils.isNotBlank(vehicleGradeAssess.getDescription()) ? ((StringUtils.isNotBlank(defectDescription))?"," + vehicleGradeAssess.getDescription():  vehicleGradeAssess.getDescription()): "");
             //填入缺陷描述
             appraisalReportVO.setDefectDescription(defectDescription.toString());
         }
+        appraisalReportVO.setVehicleGradeAssess(vehicleGradeAssess);
 
         //计算车辆价值
         Calculate calculate = new Calculate();
@@ -396,7 +396,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         if(null!=appraisalReportVO.getDelegateLetter()){
             returnMap.put("organizationName", appraisalReportVO.getDelegateLetter().getOrganizationName());//机构
             //九 复核人
-            returnMap.put("appraiser", appraisalReportVO.getDelegateLetter().getAppraiser());
+
             returnMap.put("checkName", appraisalReportVO.getDelegateLetter().getCheckName());
             if (StringUtils.isNotBlank(appraisalReportVO.getDelegateLetter().getAppraiserDate())) {
                 String[] dateArray = appraisalReportVO.getDelegateLetter().getAppraiserDate().substring(0, 10).split("-");
@@ -406,6 +406,10 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
             }
         }
 
+        if(null!=appraisalReportVO.getVehicleGradeAssess()){
+            //评估师
+            returnMap.put("appraiser", appraisalReportVO.getVehicleGradeAssess().getEvaluator());
+        }
 
         returnMap.put("name", appraisalReportVO.getDelegateUser().getName());                  //接受委托\委托方
         returnMap.put("licensePlateNum", appraisalReportVO.getCarInfo().getLicensePlateNum());//牌号

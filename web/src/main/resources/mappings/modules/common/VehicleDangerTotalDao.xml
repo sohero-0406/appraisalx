@@ -28,6 +28,7 @@
                 and vin_code LIKE CONCAT('%',#{vinCode},'%')
             </if>
         </where>
+        order by create_date desc
     </select>
     <select id="findVehicleDangerTotalById" resultType="com.jeesite.modules.common.entity.VehicleDangerTotal">
         SELECT
