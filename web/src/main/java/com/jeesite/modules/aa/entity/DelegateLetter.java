@@ -19,6 +19,7 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 @Table(name="aa_delegate_letter", alias="a", columns={
 		@Column(name="id", attrName="id", label="主键", isPK=true),
 		@Column(name="paper_id", attrName="paperId", label="试卷id"),
+		@Column(name="exam_user_id", attrName="examUserId", label="外键Id"),
 		@Column(name="organization_name", attrName="organizationName", label="鉴定评估机构名称", queryType=QueryType.LIKE),
 		@Column(name="id_num", attrName="idNum", label="法人代码证"),
 		@Column(name="organization_address", attrName="organizationAddress", label="鉴定评估机构地址"),
@@ -35,6 +36,7 @@ public class DelegateLetter extends PreEntity<DelegateLetter> {
 	
 	private static final long serialVersionUID = 1L;
 	private String paperId;		// 试卷id
+	private String examUserId;
 	private String organizationName;		// 鉴定评估机构名称
 	private String idNum;
 	private String organizationAddress;		// 鉴定评估机构地址
@@ -44,7 +46,15 @@ public class DelegateLetter extends PreEntity<DelegateLetter> {
     private String appraiser;
     private String appraiserDate;
 	private String checkName;		// 复核人姓名
-	
+
+	public String getExamUserId() {
+		return examUserId;
+	}
+
+	public void setExamUserId(String examUserId) {
+		this.examUserId = examUserId;
+	}
+
 	public DelegateLetter() {
 		this(null);
 	}

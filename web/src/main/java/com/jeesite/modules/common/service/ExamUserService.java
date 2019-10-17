@@ -347,7 +347,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
             //三、记录车辆基本信息
             vehicleInstallInfoStu.setExamUserId(user.getId());
             List<VehicleInstallInfo> vehicleInstallInfoListS = vehicleInstallInfoService.findList(vehicleInstallInfoStu);
-            BigDecimal carInfoCount = getCarInfo(carInfoT, carInfoS, examScoreMap, vehicleInstallInfoListT, vehicleInstallInfoListS, user, examNameMap, paperId);
+             BigDecimal carInfoCount = getCarInfo(carInfoT, carInfoS, examScoreMap, vehicleInstallInfoListT, vehicleInstallInfoListS, user, examNameMap, paperId);
 
 //			//四、判别事故车
             BigDecimal accidentCount = getAccidentVehicles(checkTradableVehiclesT, checkTradableVehiclesS, examScoreMap, user, examNameMap);
@@ -562,8 +562,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
                     (String) examNameMap.get("1151013343670102898"), "0", (String) examScoreMap.get("1151013343670102898"),
                     getPictureName(registrationPictureTec), getPictureName(registrationListS), "1");
         }
-        removeList.add("1143435514869673984");
-        removeList.add("1143435674886193152");
+
         placeFileListS.removeAll(removeList);
         //判断 鉴定评估二手车照片  如果正确 则学生所选全部包含老师所选的
         if (placeFileListS.containsAll(idenPictureTec) && (CollectionUtils.isNotEmpty(idenPictureTec))) {
@@ -627,6 +626,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
         //鉴定日期
         if (StringUtils.isNotBlank(vehicleGradeAssessT.getIdentifyDate()) && (null != vehicleGradeAssessS) && vehicleGradeAssessT.getIdentifyDate().equals(vehicleGradeAssessS.getIdentifyDate())) {
             identificationCount = identificationCount.add(BigDecimal.valueOf(Integer.valueOf((String) examScoreMap.get("1151028180615864562")))); //鉴定日期
+            identificationCount = identificationCount.add(BigDecimal.valueOf(Integer.valueOf((String) examScoreMap.get("1151028180615864562")))); //第六部分
             saveExamDetail(user.getId(), user.getExamId(), "1151028180616400897",
                     (String) examNameMap.get("1151028180615864562"), (String) examScoreMap.get("1151028180615864562"), (String) examScoreMap.get("1151028180615864562"),
                     vehicleGradeAssessT.getIdentifyDate(), vehicleGradeAssessS.getIdentifyDate(), "0");
@@ -1314,26 +1314,57 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
                     (String) examNameMap.get("1151013343664455681"), "0", (String) examScoreMap.get("1151013343664455681"),
                     carInfoT.getCarOverhaulTimes(), carInfoS == null ? "" : carInfoS.getCarOverhaulTimes(), "1");
         }
-        if (StringUtils.isNotBlank(carInfoT.getMaintenanceSituation()) && (null != carInfoS) && carInfoT.getMaintenanceSituation().equals(carInfoS.getMaintenanceSituation())) {
-            delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String) examScoreMap.get("1151013343665635329"))));
-            saveExamDetail(user.getId(), user.getExamId(), "1151028180617777153",
-                    (String) examNameMap.get("1151013343665635329"), (String) examScoreMap.get("1151013343665635329"), (String) examScoreMap.get("1151013343665635329"),
-                    carInfoT.getMaintenanceSituation(), carInfoS.getMaintenanceSituation(), "0");
+        //维修情况
+        Boolean flag = true;
+        if (StringUtils.isNotBlank(carInfoT.getMaintenanceSituation()) && (null != carInfoS) && StringUtils.isNotBlank(carInfoS.getMaintenanceSituation())) {
+            String[] maintenanceMarry = carInfoT.getMaintenanceSituation().split("，");
+            for(String maintenance:maintenanceMarry){
+                if(!carInfoS.getMaintenanceSituation().contains(maintenance)){
+                    flag = false;
+                    break;
+                }
+            }
+            if(flag){
+                delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String) examScoreMap.get("1151013343665635329"))));
+                saveExamDetail(user.getId(), user.getExamId(), "1151028180617777153",
+                        (String) examNameMap.get("1151013343665635329"), (String) examScoreMap.get("1151013343665635329"), (String) examScoreMap.get("1151013343665635329"),
+                        carInfoT.getMaintenanceSituation(), carInfoS.getMaintenanceSituation(), "0");
+            }else {
+                saveExamDetail(user.getId(), user.getExamId(), "1151028180617777153",
+                        (String) examNameMap.get("1151013343665635329"), "0", (String) examScoreMap.get("1151013343665635329"),
+                        carInfoT.getMaintenanceSituation(), carInfoS.getMaintenanceSituation(), "1");
+            }
         } else {
             saveExamDetail(user.getId(), user.getExamId(), "1151028180617777153",
                     (String) examNameMap.get("1151013343665635329"), "0", (String) examScoreMap.get("1151013343665635329"),
                     carInfoT.getMaintenanceSituation(), carInfoS == null ? "" : carInfoS.getMaintenanceSituation(), "1");
         }
-        if (StringUtils.isNotBlank(carInfoT.getAccident()) && (null != carInfoS) && carInfoT.getAccident().equals(carInfoS.getAccident())) {
-            delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String) examScoreMap.get("1151013343665983489"))));
-            saveExamDetail(user.getId(), user.getExamId(), "1151028180617777153",
-                    (String) examNameMap.get("1151013343665983489"), (String) examScoreMap.get("1151013343665983489"), (String) examScoreMap.get("1151013343665983489"),
-                    carInfoT.getAccident(), carInfoS.getAccident(), "0");
+        //事故情况
+        Boolean flagAccident = true;
+        if (StringUtils.isNotBlank(carInfoT.getAccident()) && (null != carInfoS) && StringUtils.isNotBlank(carInfoS.getAccident())) {
+            String[] accidentMarray = carInfoT.getAccident().split("，");
+            for (String accident : accidentMarray) {
+                if (!carInfoS.getAccident().contains(accident)) {
+                    flagAccident = false;
+                    break;
+                }
+            }
+            if(flagAccident){
+                delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String) examScoreMap.get("1151013343665983489"))));
+                saveExamDetail(user.getId(), user.getExamId(), "1151028180617777153",
+                        (String) examNameMap.get("1151013343665983489"), (String) examScoreMap.get("1151013343665983489"), (String) examScoreMap.get("1151013343665983489"),
+                        carInfoT.getAccident(), carInfoS.getAccident(), "0");
+            }else{
+                saveExamDetail(user.getId(), user.getExamId(), "1151028180617777153",
+                        (String) examNameMap.get("1151013343665983489"), "0", (String) examScoreMap.get("1151013343665983489"),
+                        carInfoT.getAccident(), carInfoS.getAccident(), "1");
+            }
         } else {
             saveExamDetail(user.getId(), user.getExamId(), "1151028180617777153",
                     (String) examNameMap.get("1151013343665983489"), "0", (String) examScoreMap.get("1151013343665983489"),
                     carInfoT.getAccident(), carInfoS == null ? "" : carInfoS.getAccident(), "1");
         }
+
         if (StringUtils.isNotBlank(carInfoT.getPurchaseDate()) && (null != carInfoS) && carInfoT.getPurchaseDate().equals(carInfoS.getPurchaseDate())) {
             delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String) examScoreMap.get("1151013343666704385"))));
             saveExamDetail(user.getId(), user.getExamId(), "1151028180617777153",
@@ -1360,6 +1391,10 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
         delegateLetter.setPaperId(paperId);
         delegateLetter = delegateLetterService.getByEntity(delegateLetter);
 
+        DelegateLetter delegateLetterStu = new DelegateLetter();
+        delegateLetterStu.setExamUserId(user.getId());
+        delegateLetterStu = delegateLetterService.getByEntity(delegateLetterStu);
+
         PictureUser pictureUserS = new PictureUser();
         pictureUserS.setExamUserId(user.getId());
         pictureUserS.setPictureTypeId("1143436249238634496");  //手动签字
@@ -1369,17 +1404,18 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
         pictureUserT.setPaperId(paperId);
         pictureUserT.setPictureTypeId("1143436249238634496");  //手动签字
         pictureUserT = pictureUserService.getByEntity(pictureUserT);
-        if ( (null != pictureUserT||null!=delegateLetter) && null != pictureUserS) {
+
+        //教师签字 手输必填
+        if((null!=delegateLetterStu && delegateLetter.getName().equals(delegateLetterStu.getName())) || null!=pictureUserS){
             delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String) examScoreMap.get("1151013343666032621"))));
             saveExamDetail(user.getId(), user.getExamId(), "1151028180617777153",
                     (String) examNameMap.get("1151013343666032621"), (String) examScoreMap.get("1151013343666032621"), (String) examScoreMap.get("1151013343666032621"),
                     "已签", "已签", "0");
-        } else {
+        }else {
             saveExamDetail(user.getId(), user.getExamId(), "1151028180617777153",
                     (String) examNameMap.get("1151013343666032621"), "0", (String) examScoreMap.get("1151013343666032621"),
-                    (null != pictureUserT||null!=delegateLetter) ? "已签" : "未签", pictureUserS == null ? "未签" : "已签", "1");
+                    "已签", "未签或错签", "1");
         }
-
         return delegateCount;
     }
 

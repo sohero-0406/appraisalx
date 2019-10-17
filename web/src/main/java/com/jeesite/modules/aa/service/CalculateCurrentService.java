@@ -365,14 +365,10 @@ public class CalculateCurrentService extends CrudService<CalculateCurrentDao, Ca
         String p1Id = calculateCurrent.getParam1Id();
         String p2Id = calculateCurrent.getParam2Id();
         if (StringUtils.isNotBlank(p1Id)) {
-            Reference reference = referenceService.get(p1Id);
-            reference.setExhaustEmissionStandard(DictUtils.getDictLabel("exhaust_emission_standard",reference.getExhaustEmissionStandard(),""));
-            vo.setReference1(reference); //
+            vo.setReference1(referenceService.get(p1Id));
         }
         if (StringUtils.isNotBlank(p2Id)) {
-            Reference reference = referenceService.get(p2Id);
-            reference.setExhaustEmissionStandard(DictUtils.getDictLabel("exhaust_emission_standard",reference.getExhaustEmissionStandard(),""));
-            vo.setReference2(reference);
+           vo.setReference2(referenceService.get(p2Id));
         }
         vo.setReferenceList(referenceService.findList(new Reference()));
         //车辆配置类型
@@ -387,6 +383,9 @@ public class CalculateCurrentService extends CrudService<CalculateCurrentDao, Ca
         //付款方式
         List<DictData> paymentMethodList = DictUtils.getDictList("aa_payment_method");
         vo.setPaymentMethodList(paymentMethodList);
+        //尾气排放标准
+        List<DictData> exhaustEmissionStandardList = DictUtils.getDictList("aa_environmental_standard");
+        vo.setExhaustEmissionStandardList(exhaustEmissionStandardList);
         return vo;
     }
 }

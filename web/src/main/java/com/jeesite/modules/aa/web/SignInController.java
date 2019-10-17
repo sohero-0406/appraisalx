@@ -115,12 +115,9 @@ public class SignInController {
         }
 
         CommonResult result = signInService.judgmentExist(examUser.getUserId());
-        if(!CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())){
-            return result;
-        }
-        if(null==result.getData()){
+        if(null==result || !CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode()) || null==result.getData()){
             comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
-            comRes.setMsg("请求用户不存在!");
+            comRes.setMsg("请求异常!");
             return comRes;
         }
         Map<String, Object> returnMap = new HashMap<>();

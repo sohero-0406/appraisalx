@@ -117,6 +117,18 @@ public class DelegateLetterController extends BaseController {
 		return new CommonResult();
 	}
 
+	/**
+	 * 保存委托书信息(学生)
+	 */
+	@RequestMapping(value = "saveDelegateLetterStu")
+	@ResponseBody
+	public CommonResult saveDelegateLetterStu(DelegateLetter delegateLetter) {
+		ExamUser examUser = UserUtils.getExamUser();
+		delegateLetter.setExamUserId(examUser.getId());
+		delegateLetterService.save(delegateLetter);
+		return new CommonResult();
+	}
+
 
 	/**
 	 * 保存一份鉴定评估报告 “下一步”功能
@@ -133,6 +145,8 @@ public class DelegateLetterController extends BaseController {
 		comRes = delegateLetterService.saveAppraisalReport(delegateLetter,examUser);
 		return comRes;
 	}
+
+
 
 
 

@@ -16,6 +16,15 @@ public class CalculateCurrentVO {
     private List<DictData> engineTypeList;       //发动机类别列表
     private List<DictData> gearboxTypeList;       //变速箱类型列表
     private List<DictData> paymentMethodList;       //付款方式列表
+    private List<DictData> exhaustEmissionStandardList; //尾气排放标准
+
+    public List<DictData> getExhaustEmissionStandardList() {
+        return exhaustEmissionStandardList;
+    }
+
+    public void setExhaustEmissionStandardList(List<DictData> exhaustEmissionStandardList) {
+        this.exhaustEmissionStandardList = exhaustEmissionStandardList;
+    }
 
     public Reference getReference1() {
         return reference1;

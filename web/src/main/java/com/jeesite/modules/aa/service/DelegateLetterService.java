@@ -136,17 +136,25 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
     public CommonResult findDelegateLetter(ExamUser examUser) {
         DelegateLetterVO delegateLetterVO = new DelegateLetterVO();
         DelegateLetter delegateLetter = new DelegateLetter();
-        //考生
-        if (StringUtils.isNotBlank(examUser.getExamId())) {
+
+        if (StringUtils.isNotBlank(examUser.getId())) {
+            //考生
             Exam exam = examService.get(examUser.getExamId());
             if (null == exam) {
                 return new CommonResult(CodeConstant.DATA_NOT_FOUND, "您所查询的考试不存在!");
             }
             delegateLetter.setPaperId(exam.getPaperId());
+            delegateLetter = this.getByEntity(delegateLetter);
+            DelegateLetter letter = new DelegateLetter();
+            letter.setExamUserId(examUser.getId());
+            letter = delegateLetterService.getByEntity(letter);
+            delegateLetter.setName(letter.getName());
         } else {
+            //教师
             delegateLetter.setPaperId(examUser.getPaperId());
+            delegateLetter = this.getByEntity(delegateLetter);
         }
-        delegateLetter = this.getByEntity(delegateLetter);
+
         delegateLetterVO.setDelegateLetter(delegateLetter);
 
         DelegateUser delegateUser = new DelegateUser();
