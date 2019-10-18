@@ -148,7 +148,11 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
             DelegateLetter letter = new DelegateLetter();
             letter.setExamUserId(examUser.getId());
             letter = delegateLetterService.getByEntity(letter);
-            delegateLetter.setName(letter.getName());
+            if(null!=letter){
+                delegateLetter.setName(letter.getName());
+            }else{
+                delegateLetter.setName(null);
+            }
         } else {
             //教师
             delegateLetter.setPaperId(examUser.getPaperId());

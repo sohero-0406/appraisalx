@@ -564,6 +564,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
         }
 
         placeFileListS.removeAll(removeList);
+        idenPictureTec.removeAll(removeList);
         //判断 鉴定评估二手车照片  如果正确 则学生所选全部包含老师所选的
         if (placeFileListS.containsAll(idenPictureTec) && (CollectionUtils.isNotEmpty(idenPictureTec))) {
             calculateCount = calculateCount.add(BigDecimal.valueOf(Integer.valueOf((String) examScoreMap.get("1151013343670108678"))));
@@ -1317,7 +1318,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
         //维修情况
         Boolean flag = true;
         if (StringUtils.isNotBlank(carInfoT.getMaintenanceSituation()) && (null != carInfoS) && StringUtils.isNotBlank(carInfoS.getMaintenanceSituation())) {
-            String[] maintenanceMarry = carInfoT.getMaintenanceSituation().split("，");
+            String[] maintenanceMarry = carInfoT.getMaintenanceSituation().split(",");
             for(String maintenance:maintenanceMarry){
                 if(!carInfoS.getMaintenanceSituation().contains(maintenance)){
                     flag = false;
@@ -1342,7 +1343,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
         //事故情况
         Boolean flagAccident = true;
         if (StringUtils.isNotBlank(carInfoT.getAccident()) && (null != carInfoS) && StringUtils.isNotBlank(carInfoS.getAccident())) {
-            String[] accidentMarray = carInfoT.getAccident().split("，");
+            String[] accidentMarray = carInfoT.getAccident().split(",");
             for (String accident : accidentMarray) {
                 if (!carInfoS.getAccident().contains(accident)) {
                     flagAccident = false;
