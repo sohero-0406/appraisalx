@@ -1318,7 +1318,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
         //维修情况
         Boolean flag = true;
         if (StringUtils.isNotBlank(carInfoT.getMaintenanceSituation()) && (null != carInfoS) && StringUtils.isNotBlank(carInfoS.getMaintenanceSituation())) {
-            String[] maintenanceMarry = carInfoT.getMaintenanceSituation().split(",");
+            String[] maintenanceMarry = carInfoT.getMaintenanceSituation().split("，");
             for(String maintenance:maintenanceMarry){
                 if(!carInfoS.getMaintenanceSituation().contains(maintenance)){
                     flag = false;
@@ -1343,7 +1343,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
         //事故情况
         Boolean flagAccident = true;
         if (StringUtils.isNotBlank(carInfoT.getAccident()) && (null != carInfoS) && StringUtils.isNotBlank(carInfoS.getAccident())) {
-            String[] accidentMarray = carInfoT.getAccident().split(",");
+            String[] accidentMarray = carInfoT.getAccident().split("，");
             for (String accident : accidentMarray) {
                 if (!carInfoS.getAccident().contains(accident)) {
                     flagAccident = false;
