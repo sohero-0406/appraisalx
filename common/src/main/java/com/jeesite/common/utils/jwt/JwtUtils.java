@@ -33,7 +33,7 @@ public class JwtUtils {
         Date nowDate = new Date();
         return Jwts.builder().setHeaderParam("type", "JWT")
                 .setSubject(commonUserId).setIssuedAt(nowDate)
-                .setExpiration(DateUtils.addHours(nowDate, expire))
+                .setExpiration(DateUtils.addDays(nowDate, expire))
                 .signWith(SignatureAlgorithm.HS512, secret).compact();
     }
 

@@ -116,7 +116,7 @@ public class CalculateCurrentController extends BaseController {
         CommonResult result = new CommonResult();
         ExamUser examUser = UserUtils.getExamUser();
         calculateCurrentService.saveVehiclesAssess(calculateCurrent, examUser);
-        result.setData(calculateCurrent.getId());
+        result.setData(calculateCurrent);
         return result;
     }
 

@@ -14,7 +14,9 @@ import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.utils.jwt.JwtUtils;
 import com.jeesite.modules.aa.vo.LoginVO;
 import com.jeesite.modules.common.entity.CommonResult;
+import com.jeesite.modules.common.entity.Exam;
 import com.jeesite.modules.common.entity.ExamUser;
+import com.jeesite.modules.common.service.ExamService;
 import com.jeesite.modules.common.service.ExamUserService;
 import com.jeesite.modules.common.service.HttpClientService;
 import com.jeesite.modules.common.service.OperationLogService;
@@ -29,9 +31,8 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -43,6 +44,8 @@ public class SignInService {
     private OperationLogService operationLogService;
     @Autowired
     private HttpClientService httpClientService;
+    @Autowired
+    private ExamService examService;
 
     /**
      * 登录
@@ -66,38 +69,59 @@ public class SignInService {
             return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "用户不存在!");
         }
         String userId = data.getString("id");
-        String roleType = data.getString("roleId");
+        String roleId = data.getString("roleId");
         String trueName = data.getString("trueName");
         String token = JwtUtils.generateToken(userId);
+        String isExamRight = data.getString("isExamRight");
         ExamUser examUser = new ExamUser();
         Map<String, Object> returnMap = new HashMap<>();
         //教师
-        if ("2".equals(roleType)) {
+        if ("2".equals(roleId)) {
             examUser.setUserId(userId);
-            examUser.setRoleType(roleType);
+            examUser.setRoleType(roleId);
             examUser.setTrueName(trueName);
             examUser.setUserNum(userName);
             examUser.setToken(token);
+            examUser.setIsExamRight(isExamRight);
             CacheUtils.put("examUser", examUser.getUserId(), examUser);
-            returnMap.put("roleType", data.getString("isExamRight"));
+            returnMap.put("roleType", isExamRight);
             returnMap.put("token", token);
             returnMap.put("role", "2");
             returnMap.put("trueName", trueName);
             return new CommonResult(returnMap);
         }
         //学生
-        if ("3".equals(roleType)) {
+        if ("3".equals(roleId)) {
             examUser.setUserId(userId);
             examUser = examUserService.getAllowLogin(examUser);
             if (null == examUser) {
                 return new CommonResult(CodeConstant.EXAM_NO_ONGOING, "不存在正在进行的考试");
             }
+            if (null != examUser.getEndTime()) {
+                return new CommonResult(CodeConstant.EXAM_END, "考试已结束");
+            }
+            //判断考试是否已结束
+            Exam exam = examService.get(examUser.getExamId());
+            if ("1".equals(exam.getExamType())) {
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(exam.getStartTime());
+                calendar.add(Calendar.MINUTE, exam.getDuration());
+                //考试已结束
+                Date nowDate = new Date();
+                if (calendar.getTime().compareTo(nowDate) < 0) {
+                    examUser.setEndTime(nowDate);
+                    examService.saveExamUser(examUser);
+                    return new CommonResult(CodeConstant.EXAM_END, "考试已结束");
+                }
+            }
+
             ExamUser sessionUser = new ExamUser();
             sessionUser.setId(examUser.getId());
             sessionUser.setUserId(examUser.getUserId());
             sessionUser.setExamId(examUser.getExamId());
             sessionUser.setStartTime(examUser.getStartTime());
-            sessionUser.setRoleType(roleType);
+            sessionUser.setRoleType(roleId);
             sessionUser.setTrueName(trueName);
             sessionUser.setUserNum(userName);
             sessionUser.setToken(token);
@@ -110,7 +134,6 @@ public class SignInService {
         }
         return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "角色未识别，不允许登录!");
     }
-
 
     /**
      * 生成登陆二维码

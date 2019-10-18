@@ -44,7 +44,6 @@
 	where
 	 b.state = '3'
 	and a.user_id = #{userId}
-	and a.end_time is null
 	and b.status = '0'
 	</select>
 

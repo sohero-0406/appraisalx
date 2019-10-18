@@ -362,7 +362,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
                     , placeFileListS, examNameMap, movingPictureTec, registrationPictureTec, idenPictureTec);
 
 
-            BigDecimal count = delegateCount.add(vehicleDocumentCount.add(carInfoCount.add(accidentCount.add(identificationCount.add(calculateCount)))));
+            BigDecimal count = delegateCount.add(vehicleDocumentCount).add(carInfoCount).add(accidentCount).add(identificationCount).add(calculateCount);
             user.setScore(String.valueOf(count));
             super.save(user);
         }

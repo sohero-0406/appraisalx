@@ -50,9 +50,9 @@ public class ExamUser extends PreEntity<ExamUser> {
 	private String gender;      //性别
 	private String examName;    //考试名称
 	private Boolean isSelect;    //是否选中
-	//大平台--教师角色
-	private String roleType;
+	private String roleType;    //大平台--教师角色
 	private String token;        //token
+	private String isExamRight;        //是否有考试管理权限
 
 
 	public ExamUser() {
@@ -217,5 +217,13 @@ public class ExamUser extends PreEntity<ExamUser> {
 
 	public void setToken(String token) {
 		this.token = token;
+	}
+
+	public String getIsExamRight() {
+		return isExamRight;
+	}
+
+	public void setIsExamRight(String isExamRight) {
+		this.isExamRight = isExamRight;
 	}
 }

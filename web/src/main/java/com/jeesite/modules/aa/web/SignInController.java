@@ -114,16 +114,10 @@ public class SignInController {
             return comRes;
         }
 
-        CommonResult result = signInService.judgmentExist(examUser.getUserId());
-        if(null==result || !CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode()) || null==result.getData()){
-            comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
-            comRes.setMsg("请求异常!");
-            return comRes;
-        }
         Map<String, Object> returnMap = new HashMap<>();
         returnMap.put("token", examUser.getToken());
-        returnMap.put("roleType",((JSONObject)result.getData()).getString("isExamRight")); //教师登录才有
-        returnMap.put("roleId",((JSONObject)result.getData()).getString("roleId")); //教师登录才有
+        returnMap.put("roleType", examUser.getIsExamRight()); //教师登录才有
+        returnMap.put("roleId", examUser.getRoleType()); //教师登录才有
         returnMap.put("trueName",examUser.getTrueName());
         comRes.setData(returnMap);
         CacheUtils.remove("uuid",uuid);
