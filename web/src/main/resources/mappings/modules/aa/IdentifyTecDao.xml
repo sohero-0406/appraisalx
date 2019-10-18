@@ -15,7 +15,7 @@
     <select id="findVehicleTecStatusResult" resultType="com.jeesite.modules.aa.entity.IdentifyTec">
         SELECT
             ( SELECT dict_label FROM js_sys_dict_data jsdd WHERE jsdd.dict_type = 'aa_module_type' AND jsdd.dict_value = ait.type ) AS type,
-            total_deduct,
+            IFNULL(total_deduct,'0') as total_deduct,
             description
         FROM
             aa_identify_tec ait

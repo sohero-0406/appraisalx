@@ -4,11 +4,11 @@ import java.util.List;
 
 /**
  * @author by Jiangyf
- * @classname VehicleBasicInfo
+ * @classname VehicleBasicInfoVO
  * @description 车辆基本信息 - 技术状况表使用
  * @date 2019/8/8 17:20
  */
-public class VehicleBasicInfo {
+public class VehicleBasicInfoVO {
 
     /**
      * 厂牌型号 - labelType
@@ -88,7 +88,7 @@ public class VehicleBasicInfo {
     /**
      * 其他法定凭证、证明
      */
-    private List<String> otherDocuments;
+    private String otherDocuments;
 
     /**
      * 车主名称/姓名 - 来自DelegateUser
@@ -100,7 +100,7 @@ public class VehicleBasicInfo {
      */
     private String idNum;
 
-    public VehicleBasicInfo() {
+    public VehicleBasicInfoVO() {
     }
 
     public String getLabelType() {
@@ -215,11 +215,11 @@ public class VehicleBasicInfo {
         this.usage = usage;
     }
 
-    public List<String> getOtherDocuments() {
+    public String getOtherDocuments() {
         return otherDocuments;
     }
 
-    public void setOtherDocuments(List<String> otherDocuments) {
+    public void setOtherDocuments(String otherDocuments) {
         this.otherDocuments = otherDocuments;
     }
 
@@ -241,7 +241,7 @@ public class VehicleBasicInfo {
 
     @Override
     public String toString() {
-        return "VehicleBasicInfo{" +
+        return "VehicleBasicInfoVO{" +
                 "labelType='" + labelType + '\'' +
                 ", licensePlateNum='" + licensePlateNum + '\'' +
                 ", engineNum='" + engineNum + '\'' +

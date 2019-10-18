@@ -63,30 +63,42 @@ public class AppraislJobTableService {
         carInfo.setExamUserId(examUser.getId());
         carInfo.setPaperId(examUser.getPaperId());
         carInfo = carInfoService.getByEntity(carInfo);
-        //设置级别
-        carInfo.setLevel(DictUtils.getDictLabel("aa_vehicle_level",carInfo.getLevel(),""));
-        //设置初登日期
-        if (StringUtils.isNotBlank(carInfo.getRegisterDate())) {
-            String[] registerDateArr = carInfo.getRegisterDate().substring(0, 10).split("-");
-            carInfo.setRegisterDate(registerDateArr[0] + "年" + registerDateArr[1] + "月" + registerDateArr[2] + "日");
-        }
-        //设置出厂日期
-        if (StringUtils.isNotBlank(carInfo.getManufactureDate())) {
-            String[] manufactureDate = carInfo.getManufactureDate().substring(0, 10).split("-");
-            carInfo.setManufactureDate(manufactureDate[0] + "年" + manufactureDate[1] + "月" + manufactureDate[2] + "日");
-        }
-        //设置环保标准
-        carInfo.setEnvironmentalStandard(DictUtils.getDictLabel("aa_environmental_standard",
-                carInfo.getEnvironmentalStandard(),""));
-        //设置年检到期
-        if (StringUtils.isNotBlank(carInfo.getYearCheckDue())) {
-            String[] yearCheckDueArr = carInfo.getYearCheckDue().split("-");
-            carInfo.setYearCheckDue(yearCheckDueArr[0] + "年" + yearCheckDueArr[1] + "月" );
-        }
-        //设置保险到期
-        if (StringUtils.isNotBlank(carInfo.getInsuranceDue())) {
-            String[] insuranceDue = carInfo.getInsuranceDue().substring(0, 10).split("-");
-            carInfo.setInsuranceDue(insuranceDue[0] + "年" + insuranceDue[1] + "月" + insuranceDue[2] + "日");
+        if(null!=carInfo){
+            //设置级别
+            carInfo.setLevel(DictUtils.getDictLabel("aa_vehicle_level",carInfo.getLevel(),""));
+            //设置初登日期
+            if (StringUtils.isNotBlank(carInfo.getRegisterDate())) {
+                String[] registerDateArr = carInfo.getRegisterDate().substring(0, 10).split("-");
+                carInfo.setRegisterDate(registerDateArr[0] + "年" + registerDateArr[1] + "月" + registerDateArr[2] + "日");
+            }
+            //设置出厂日期
+            if (StringUtils.isNotBlank(carInfo.getManufactureDate())) {
+                String[] manufactureDate = carInfo.getManufactureDate().substring(0, 10).split("-");
+                carInfo.setManufactureDate(manufactureDate[0] + "年" + manufactureDate[1] + "月" + manufactureDate[2] + "日");
+            }
+            //设置环保标准
+            carInfo.setEnvironmentalStandard(DictUtils.getDictLabel("aa_environmental_standard",
+                    carInfo.getEnvironmentalStandard(),""));
+            //车身颜色
+            carInfo.setColor(DictUtils.getDictLabel("aa_vehicle_color",
+                    carInfo.getColor(),""));
+            //使用性质2
+            carInfo.setUsage(DictUtils.getDictLabel("aa_using_nature_type",carInfo.getUsingNature(),""));
+            //燃料类型
+            carInfo.setFuelType(DictUtils.getDictLabel("aa_fuel_type",carInfo.getFuelType(),""));
+
+
+
+            //设置年检到期
+            if (StringUtils.isNotBlank(carInfo.getYearCheckDue())) {
+                String[] yearCheckDueArr = carInfo.getYearCheckDue().split("-");
+                carInfo.setYearCheckDue(yearCheckDueArr[0] + "年" + yearCheckDueArr[1] + "月" );
+            }
+            //设置保险到期
+            if (StringUtils.isNotBlank(carInfo.getInsuranceDue())) {
+                String[] insuranceDue = carInfo.getInsuranceDue().substring(0, 10).split("-");
+                carInfo.setInsuranceDue(insuranceDue[0] + "年" + insuranceDue[1] + "月" + insuranceDue[2] + "日");
+            }
         }
         appraisalJobTableVO.setCarInfo(carInfo);
 

@@ -16,7 +16,7 @@ public class TechnicalStatusTableVO {
     /**
      * 车辆基本信息
      */
-    private VehicleBasicInfo vehicleBasicInfo;
+    private VehicleBasicInfoVO vehicleBasicInfo;
 
     /**
      * 重要配置
@@ -57,11 +57,11 @@ public class TechnicalStatusTableVO {
 
     }
 
-    public VehicleBasicInfo getVehicleBasicInfo() {
+    public VehicleBasicInfoVO getVehicleBasicInfo() {
         return vehicleBasicInfo;
     }
 
-    public void setVehicleBasicInfo(VehicleBasicInfo vehicleBasicInfo) {
+    public void setVehicleBasicInfo(VehicleBasicInfoVO vehicleBasicInfo) {
         this.vehicleBasicInfo = vehicleBasicInfo;
     }
 

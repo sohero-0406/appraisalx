@@ -186,36 +186,41 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
         TechnicalStatusTableVO technicalStatusTableVO = new TechnicalStatusTableVO();
 
         // 1. 车辆基本信息
-        VehicleBasicInfo vehicleBasicInfo = new VehicleBasicInfo();
+        VehicleBasicInfoVO vehicleBasicInfo = new VehicleBasicInfoVO();
         // 数据查询
         CarInfo carInfo = new CarInfo();
         carInfo.setExamUserId(examUser.getId());
         carInfo.setPaperId(examUser.getPaperId());
         carInfo = carInfoService.getByEntity(carInfo);
-        if (null == carInfo) {
-            return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "车辆信息对象为空");
-        }
+//        if (null == carInfo) {
+//            return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "车辆信息对象为空");
+//        }
         // 车辆配置信息
-        Map<String, String> map = new HashMap<>();
-        map.put("chexingId", carInfo.getModel());
-        CommonResult result = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_CAR_MODEL, map);
         JSONObject vehicleInfo = new JSONObject();
-        if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
-            if (StringUtils.isBlank(result.getData().toString())) {
-                return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "车辆配置信息为空");
+        if(null != carInfo){
+            Map<String, String> map = new HashMap<>();
+            map.put("chexingId", carInfo.getModel());
+            CommonResult result = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_CAR_MODEL, map);
+            if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
+                if(null!=result.getData()){
+                    vehicleInfo = JSONObject.parseObject(result.getData().toString());
+                }
             }
-            vehicleInfo = JSONObject.parseObject(result.getData().toString());
         }
+
         VehicleDocumentInfo vehicleDocumentInfo = new VehicleDocumentInfo();
         vehicleDocumentInfo.setExamUserId(examUser.getId());
         vehicleDocumentInfo.setPaperId(examUser.getPaperId());
         List<VehicleDocumentInfo> vehicleDocumentInfos = vehicleDocumentInfoService.findExistedDocuments(vehicleDocumentInfo);
-        if (vehicleDocumentInfos.size() <= 0) {
-            return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "车辆单证信息列表为空");
-        }
         List<String> otherDocuments = vehicleDocumentInfoService.findOtherDocuments(vehicleDocumentInfo);
-        if (otherDocuments.size() <= 0) {
-            return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "车辆其他单证信息列表为空");
+        StringBuilder otherDocumentName = new StringBuilder();
+        int len = otherDocuments.size();
+        for(int i=0;i<otherDocuments.size();i++){
+            if(i==len-1){
+                otherDocumentName.append(otherDocuments.get(i));
+            }else{
+                otherDocumentName.append(otherDocuments.get(i)+"、");
+            }
         }
         DelegateUser delegateUser = new DelegateUser();
         delegateUser.setExamUserId(examUser.getId());
@@ -265,9 +270,13 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
         // 结合字典表，单证信息(state = 1)进行dict_label返回 上述设置过的除外(不包括强制保险单 project = 4)
         if (StringUtils.isNotBlank(carInfo.getLicensePlateNum())) {
             // 额外单证信息 机动车号牌
-            otherDocuments.add("机动车号牌");
+            if(StringUtils.isNotBlank(otherDocumentName)){
+                otherDocumentName.append("、机动车号牌");
+            }else{
+                otherDocumentName.append("机动车号牌");
+            }
         }
-        vehicleBasicInfo.setOtherDocuments(otherDocuments);
+        vehicleBasicInfo.setOtherDocuments(otherDocumentName.toString());
         vehicleBasicInfo.setName(delegateUser.getName());
         vehicleBasicInfo.setIdNum(delegateUser.getIdNum());
 
