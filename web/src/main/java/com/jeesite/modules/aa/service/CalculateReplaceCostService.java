@@ -238,7 +238,7 @@ public class CalculateReplaceCostService extends CrudService<CalculateReplaceCos
         //评估价格
         BigDecimal price = updateRepeatCost.multiply(allNewRate).setScale(2, BigDecimal.ROUND_HALF_UP);
         cost.setPrice(price);
-        process.append("评估价格=更新重置成本×综合成新率=" + updateRepeatCost + "×" + allNewRate + "=" + price + "元;");
+        process.append("评估价格=更新重置成本×综合成新率=" + updateRepeatCost + "×" + allNewRate + "=" + price + "元");
         cost.setProcess(process.toString());
         return new CommonResult(cost);
     }
