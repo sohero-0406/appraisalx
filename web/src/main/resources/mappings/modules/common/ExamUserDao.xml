@@ -27,7 +27,7 @@
 	  exam_id,
 	  user_id,
       score,
-      CEILING((( UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(start_time) )/60)) as duration
+		round(IFNULL((( UNIX_TIMESTAMP(end_time)-UNIX_TIMESTAMP(start_time) )/60),0)) as duration
       from common_exam_user
 		<where>
 			<if test="examId != null and examId != ''">
