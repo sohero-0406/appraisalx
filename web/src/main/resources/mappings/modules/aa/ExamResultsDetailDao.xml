@@ -117,6 +117,7 @@
 			<result property="studentAnswer" column="student_answer"></result>
 			<result property="teacherAnswer" column="teacher_answer"></result>
 			<result property="rightOrWrong" column="right_or_wrong"></result>
+			<result property="pictureTypeId" column="pictureTypeId"></result>
 		</collection>
 	</resultMap>
 
@@ -134,11 +135,13 @@
         detail.score_info,
         detail.student_answer,
         detail.teacher_answer,
-        detail.right_or_wrong
+        detail.right_or_wrong,
+        pictureType.id as pictureTypeId
 		from
 		aa_exam_results_detail detail
 		left join aa_exam_score_classify class on class.id = detail.score_classify_id
 		left join aa_exam_score_info info on class.exam_score_info_id = info.id
+		left join aa_picture_type pictureType on pictureType.name = detail.score_points
 		where detail.exam_user_id = #{id}
 		and class.exam_id = #{examId}
 

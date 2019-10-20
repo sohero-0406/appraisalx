@@ -40,7 +40,18 @@ public class ExamResultsDetail extends PreEntity<ExamResultsDetail> {
 	private String studentAnswer;		// 学生答案
 	private String teacherAnswer;		// 老师答案
 	private String rightOrWrong;		// 学生回答是否正确（0正确 1错误 2未答）
-	
+
+	//图片类型id
+	private String pictureTypeId;
+
+	public String getPictureTypeId() {
+		return pictureTypeId;
+	}
+
+	public void setPictureTypeId(String pictureTypeId) {
+		this.pictureTypeId = pictureTypeId;
+	}
+
 	public ExamResultsDetail() {
 		this(null);
 	}

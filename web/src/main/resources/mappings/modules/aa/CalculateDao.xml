@@ -24,7 +24,7 @@
 		when calculate.type = '1' THEN calculateDepreciation.process
 		when calculate.type = '2' THEN calculateKm.process
 		when calculate.type = '3' THEN calculateReplaceCost.process
-		when calculate.type = '4' THEN calculateCurrent.process
+		when calculate.type = '4' THEN CONCAT(calculateCurrent.p1_process,';',calculateCurrent.p2_process,';'calculateCurrent.process)
 		ELSE ' ' END AS process
 
 		from aa_calculate calculate

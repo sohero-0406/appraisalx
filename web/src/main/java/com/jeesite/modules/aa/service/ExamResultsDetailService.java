@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.jeesite.common.lang.StringUtils;
 import com.jeesite.modules.aa.entity.*;
+import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.Exam;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.service.ExamService;
@@ -36,6 +37,9 @@ public class ExamResultsDetailService extends CrudService<ExamResultsDetailDao, 
 	private ExamService examService;
 	@Autowired
 	private CheckBodySkeletonService checkBodySkeletonService;
+	@Autowired
+	private PictureUserService pictureUserService;
+
 
 	/**
 	 * 获取单条数据
@@ -218,5 +222,45 @@ public class ExamResultsDetailService extends CrudService<ExamResultsDetailDao, 
 		return  dao.getExamResultsDetail(examUser);
 	}
 
+	public Map<String,Object> getExamResultsVehiclePicture(ExamUser examUser){
+        Map<String,Object> returnMap = new HashMap<String,Object>();
+		//学生
+		String[] parentTypeIds = new String[]{"1143439093974253568"};//记录车辆基本信息
+		List<PictureUser> pictureUserListStu = pictureUserService.findChildPicture(examUser, parentTypeIds);
+		//老师
+		ExamUser tecUser = new ExamUser();
+		examUser = examUserService.get(examUser);
+		Exam exam = new Exam();
+		exam.setId(examUser.getExamId());
+		exam = examService.get(exam);
+		tecUser.setPaperId(exam.getPaperId());
+		List<PictureUser> pictureUserListTec = pictureUserService.findChildPicture(tecUser, parentTypeIds);
+		returnMap.put("pictureUserListStu",pictureUserListStu);
+		returnMap.put("pictureUserListTec",pictureUserListTec);
+		return returnMap;
+	}
+
+	public Object getExamResultsPictureByType(String examUserId,String pictureTypeId){
+		Map<String,Object> returnMap = new HashMap<String,Object>();
+		//学生
+		PictureUser pictureUserStu = new PictureUser();
+		pictureUserStu.setExamUserId(examUserId);
+		pictureUserStu.setPictureTypeId(pictureTypeId);
+		List<PictureUser> pictureUserListStu = pictureUserService.findList(pictureUserStu);
+		//老师
+		ExamUser examUser = new ExamUser();
+		examUser.setId(examUserId);
+		examUser = examUserService.get(examUser);
+		Exam exam = new Exam();
+		exam.setId(examUser.getExamId());
+		exam = examService.getByEntity(exam);
+		PictureUser pictureUserTec = new PictureUser();
+		pictureUserTec.setPictureTypeId(pictureTypeId);
+		pictureUserTec.setPaperId(exam.getPaperId());
+		List<PictureUser> pictureUserListTec = pictureUserService.findList(pictureUserTec);
+		returnMap.put("pictureUserListStu",pictureUserListStu);
+		returnMap.put("pictureUserListTec",pictureUserListTec);
+		return returnMap;
+	}
 
 }

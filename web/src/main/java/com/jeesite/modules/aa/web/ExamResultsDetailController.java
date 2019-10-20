@@ -120,5 +120,27 @@ public class ExamResultsDetailController extends BaseController {
 		}
 		return comRes;
 	}
-	
+
+	//加载成绩详情图片
+	@RequestMapping(value = "getExamResultsVehiclePicture")
+	@ResponseBody
+	public CommonResult getExamResultsVehiclePicture(ExamUser examUser) {
+		if(StringUtils.isBlank(examUser.getId())){
+			return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER,"请求参数有误!");
+		}
+		return new CommonResult(examResultsDetailService.getExamResultsVehiclePicture(examUser));
+	}
+
+
+	//根据图片类型id 查询第四五模块学生与教师上传图片
+	@RequestMapping(value = "getExamResultsPictureByType")
+	@ResponseBody
+	public CommonResult getExamResultsPictureByType(String examUserId,String pictureTypeId) {
+		if(StringUtils.isBlank(examUserId) || StringUtils.isBlank(pictureTypeId)){
+			return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER,"请求参数有误!");
+		}
+		return new CommonResult(examResultsDetailService.getExamResultsPictureByType(examUserId,pictureTypeId));
+	}
+
+
 }
