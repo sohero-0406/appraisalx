@@ -48,6 +48,7 @@
 			<if test="checkBodySkeleton.paperId != null and checkBodySkeleton.paperId != ''">
 				AND paper_id = #{checkBodySkeleton.paperId}
 			</if>
+			and state not in ('正常','') and state is not null
 		</where>
 	</select>
 

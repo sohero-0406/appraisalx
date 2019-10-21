@@ -6,6 +6,7 @@ package com.jeesite.modules.aa.dao;
 import com.jeesite.common.dao.CrudDao;
 import com.jeesite.common.mybatis.annotation.MyBatisDao;
 import com.jeesite.modules.aa.entity.VehicleInstallInfo;
+import com.jeesite.modules.common.entity.ExamUser;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -34,4 +35,6 @@ public interface VehicleInstallInfoDao extends CrudDao<VehicleInstallInfo> {
      * @param vehicleInstallInfo
      */
     void deleteEntity(VehicleInstallInfo vehicleInstallInfo);
+
+    List<String> getVehicleInstallProject(@Param("examUserId") String examUserId, @Param("paperId") String paperId);
 }

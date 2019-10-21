@@ -60,7 +60,7 @@ public class ImportantConfig {
     /**
      * 其他重要配置 - 加装项目
      */
-    private List<VehicleInstallVO> vehicleInstallInfos;
+    private List<String> vehicleInstallInfos;
 
     public ImportantConfig() {
     }
@@ -137,11 +137,11 @@ public class ImportantConfig {
         this.abs = abs;
     }
 
-    public List<VehicleInstallVO> getVehicleInstallInfos() {
+    public List<String> getVehicleInstallInfos() {
         return vehicleInstallInfos;
     }
 
-    public void setVehicleInstallInfos(List<VehicleInstallVO> vehicleInstallInfos) {
+    public void setVehicleInstallInfos(List<String> vehicleInstallInfos) {
         this.vehicleInstallInfos = vehicleInstallInfos;
     }
 

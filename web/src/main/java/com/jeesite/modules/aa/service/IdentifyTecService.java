@@ -284,10 +284,6 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
         ImportantConfig importantConfig = new ImportantConfig();
         // 数据查询
 
-        List<VehicleInstallVO> vehicleInstallInfoList = vehicleInstallInfoService.findList(examUser);
-        if (null == vehicleInstallInfoList) {
-            return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "车辆加装配置信息为空");
-        }
         // 数据处理填充
         importantConfig.setFuelLabel(vehicleInfo.getString("ranyoubiaohao"));
         importantConfig.setDisplacement(carInfo.getDisplacement());
@@ -304,7 +300,7 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
             importantConfig.setAbs("有");
         }
         // 车辆加装信息 返回全部加装配置信息进行返回 用户选定的加装配置 selected = true
-        importantConfig.setVehicleInstallInfos(vehicleInstallInfoList);
+        importantConfig.setVehicleInstallInfos(vehicleInstallInfoService.getVehicleInstallProject(examUser));
 
         // 3. 是否为事故车
         IsAccidentInfo isAccidentInfo = new IsAccidentInfo();
@@ -313,17 +309,13 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
         checkTradableVehicles.setExamUserId(examUser.getId());
         checkTradableVehicles.setPaperId(examUser.getPaperId());
         checkTradableVehicles = checkTradableVehiclesService.getByEntity(checkTradableVehicles);
-        if (null == checkTradableVehicles) {
-            return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "可交易车辆信息为空");
-        }
+
         CheckBodySkeleton checkBodySkeleton = new CheckBodySkeleton();
         checkBodySkeleton.setExamUserId(examUser.getId());
         checkBodySkeleton.setPaperId(examUser.getPaperId());
         // 查询事故车辆核查项目结果
         List<CheckBodySkeleton> checkProjectResults = checkBodySkeletonService.findCheckProjectResults(checkBodySkeleton);
-        if (checkProjectResults.size() <= 0) {
-            return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "事故车辆核查项目列表为空");
-        }
+
         // 数据处理填充
         if ("0".equals(checkTradableVehicles.getIsAccident())) {
             isAccidentInfo.setIsAccident("是");
@@ -337,9 +329,7 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
         vehicleGradeAssess.setExamUserId(examUser.getId());
         vehicleGradeAssess.setPaperId(examUser.getPaperId());
         vehicleGradeAssess = vehicleGradeAssessService.getByEntity(vehicleGradeAssess);
-        if (null == vehicleGradeAssess) {
-            return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "鉴定结果对象为空");
-        }
+
         // 技术状况登记
         vehicleGradeAssess.setTechnicalStatus(DictUtils.getDictLabel("aa_technical_status", vehicleGradeAssess.getTechnicalStatus(), ""));
 
@@ -349,9 +339,7 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
         identifyTec.setExamUserId(examUser.getId());
         identifyTec.setPaperId(examUser.getPaperId());
         identifyTecList = this.findVehicleTecStatusResult(identifyTec);
-        if (identifyTecList.size() <= 0) {
-            return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "车辆技术状况列表为空");
-        }
+
 
         // 6. 评估师
         technicalStatusTableVO.setEvaluator(vehicleGradeAssess.getEvaluator());
@@ -365,9 +353,7 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
             delegateLetter.setPaperId(exam.getPaperId());
         }
         delegateLetter = delegateLetterService.getByEntity(delegateLetter);
-        if (null == delegateLetter) {
-            return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "委托书信对象为空");
-        }
+
         technicalStatusTableVO.setOrganizationName(delegateLetter.getOrganizationName());
         // 8. 鉴定日期
         technicalStatusTableVO.setIdentifyDate(vehicleGradeAssess.getIdentifyDate());

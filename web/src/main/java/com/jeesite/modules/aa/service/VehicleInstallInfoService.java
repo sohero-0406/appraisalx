@@ -75,6 +75,10 @@ public class VehicleInstallInfoService extends CrudService<VehicleInstallInfoDao
 		return vehicleInstallVOList;
 	}
 
+	List<String> getVehicleInstallProject(ExamUser examUser){
+		return dao.getVehicleInstallProject(examUser.getId(),examUser.getPaperId());
+	}
+
     /**
      * 保存加装信息
      *
