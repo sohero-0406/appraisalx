@@ -215,4 +215,8 @@ public class VehicleDangerTotalService extends CrudService<VehicleDangerTotalDao
     public List<VehicleDangerTotal> findVehicleDangerTotalList(VehicleDangerTotal vehicleDangerTotal) {
         return dao.findVehicleDangerTotalList(vehicleDangerTotal);
     }
+
+    public VehicleDangerTotal getByEntity(VehicleDangerTotal vehicleDangerTotal){
+        return dao.getByEntity(vehicleDangerTotal);
+    }
 }

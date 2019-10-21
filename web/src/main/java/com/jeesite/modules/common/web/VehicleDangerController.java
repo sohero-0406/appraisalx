@@ -132,6 +132,14 @@ public class VehicleDangerController extends BaseController {
         if(CollectionUtils.isEmpty(vehicleDangerInfoVO.getVehicleDangerRecords())){
             return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "出险记录不能为空!");
         }
+        VehicleDangerTotal total = new VehicleDangerTotal();
+        total.setVinCode(vehicleDangerInfoVO.getVin());
+        total = vehicleDangerTotalService.getByEntity(total);
+        if(null!=total){
+            if(StringUtils.isBlank(vehicleDangerInfoVO.getId()) || !vehicleDangerInfoVO.getId().equals(total.getId())){
+                return  new CommonResult(CodeConstant.REQUEST_FAILED, "该VIN记录已存在!");
+            }
+        }
 
         if (StringUtils.isNotBlank(vehicleDangerInfoVO.getId())) {
             // 编辑

@@ -218,4 +218,9 @@ public class MaintenanceTotalService extends CrudService<MaintenanceTotalDao, Ma
     public List<MaintenanceTotal> findMaintenanceTotalList(MaintenanceTotal maintenanceTotal) {
         return dao.findMaintenanceTotalList(maintenanceTotal);
     }
+
+    public MaintenanceTotal getByEntity(MaintenanceTotal maintenanceTotal){
+        return dao.getByEntity(maintenanceTotal);
+    }
+
 }

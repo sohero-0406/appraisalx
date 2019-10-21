@@ -158,6 +158,16 @@ public class MaintenanceController extends BaseController {
             return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER,"维保记录不能为空!");
         }
 
+        MaintenanceTotal total = new MaintenanceTotal();
+        total.setVinCode(maintenanceInfoVO.getVin());
+        total = maintenanceTotalService.getByEntity(total);
+        if(null!=total){
+            if(StringUtils.isBlank(maintenanceInfoVO.getId()) || !maintenanceInfoVO.getId().equals(total.getId())){
+                return new CommonResult(CodeConstant.REQUEST_FAILED, "该VIN记录已存在!");
+            }
+        }
+
+
         if (StringUtils.isNotBlank(maintenanceInfoVO.getId())) {
             // 编辑
             MaintenanceTotal maintenanceTotal = new MaintenanceTotal();
