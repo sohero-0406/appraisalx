@@ -144,6 +144,7 @@
 		left join aa_picture_type pictureType on pictureType.name = detail.score_points
 		where detail.exam_user_id = #{id}
 		and class.exam_id = #{examId}
+		order by info.sort
 
 	</select>
 
