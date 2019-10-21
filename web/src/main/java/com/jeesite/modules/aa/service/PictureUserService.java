@@ -87,7 +87,9 @@ public class PictureUserService extends CrudService<PictureUserDao, PictureUser>
         PictureType pictureType = pictureTypeService.get(pictureTypeId);
         String fileName = new IdWorker(-1, -1).nextId() + "";
         String originFileName = picFile.getOriginalFilename();
-        String fileType = "." + originFileName.split("\\.")[1];
+        String [] originFileNameArray = originFileName.split("\\.");
+        int bigSize = originFileNameArray.length-1;
+        String fileType = "." + originFileNameArray[bigSize];
         File destFile = new File(filePath + fileName + fileType);
         if (!destFile.getParentFile().exists()) {
             destFile.getParentFile().mkdirs();
