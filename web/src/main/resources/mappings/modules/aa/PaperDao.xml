@@ -80,6 +80,12 @@
         <if test="name != null and name != ''">
             AND a.name LIKE CONCAT ('%', #{name}, '%')
         </if>
+		<if test="licensePlateNum != null and licensePlateNum != ''">
+			and b.license_plate_num LIKE CONCAT('%',#{licensePlateNum},'%')
+		</if>
+		<if test="vinCode != null and vinCode != ''">
+			and b.vin_code LIKE CONCAT('%',#{vinCode},'%')
+		</if>
 		ORDER BY  a.create_date desc
     </select>
 

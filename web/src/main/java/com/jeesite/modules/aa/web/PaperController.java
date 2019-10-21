@@ -209,8 +209,8 @@ public class PaperController extends BaseController {
      */
     @RequestMapping(value = "selectExamPaperList")
     @ResponseBody
-    public CommonResult selectExamPaperList(String name) {
-        List<Paper> paperList = paperService.selectExamPaperList(name);
+    public CommonResult selectExamPaperList(Paper paper) {
+        List<Paper> paperList = paperService.selectExamPaperList(paper);
         return new CommonResult(paperList);
     }
 }
