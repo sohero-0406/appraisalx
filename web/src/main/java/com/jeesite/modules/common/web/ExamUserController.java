@@ -181,7 +181,23 @@ public class ExamUserController extends BaseController {
         return examUserService.examTiming(examUser);
     }
 
+    /**
+     * 更新作答位置
+     */
+    @RequestMapping(value = "updatePosition")
+    @ResponseBody
+    public CommonResult updatePosition(Integer position) {
+        return examUserService.updatePosition(position);
+    }
 
+    /**
+     * 查看作答位置
+     */
+    @RequestMapping(value = "getPosition")
+    @ResponseBody
+    public CommonResult getPosition() {
+        return examUserService.getPosition();
+    }
 
 }
 

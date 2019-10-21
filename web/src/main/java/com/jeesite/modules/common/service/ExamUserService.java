@@ -15,6 +15,7 @@ import com.jeesite.modules.common.dao.ExamUserDao;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.Exam;
 import com.jeesite.modules.common.entity.ExamUser;
+import com.jeesite.modules.common.utils.UserUtils;
 import com.jeesite.modules.common.vo.TimingVO;
 import com.jeesite.modules.sys.utils.DictUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -347,7 +348,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
             //三、记录车辆基本信息
             vehicleInstallInfoStu.setExamUserId(user.getId());
             List<VehicleInstallInfo> vehicleInstallInfoListS = vehicleInstallInfoService.findList(vehicleInstallInfoStu);
-             BigDecimal carInfoCount = getCarInfo(carInfoT, carInfoS, examScoreMap, vehicleInstallInfoListT, vehicleInstallInfoListS, user, examNameMap, paperId);
+            BigDecimal carInfoCount = getCarInfo(carInfoT, carInfoS, examScoreMap, vehicleInstallInfoListT, vehicleInstallInfoListS, user, examNameMap, paperId);
 
 //			//四、判别事故车
             BigDecimal accidentCount = getAccidentVehicles(checkTradableVehiclesT, checkTradableVehiclesS, examScoreMap, user, examNameMap);
@@ -513,7 +514,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
                 report.setScore((String) examScoreMap.get("1151013343670108787"));
                 report.setRightOrWrong("0");
                 examResultsDetailService.update(report);
-            }else if ("1152467158926442434".equals(pictureTypeS)) {
+            } else if ("1152467158926442434".equals(pictureTypeS)) {
                 calculateCount = calculateCount.add(BigDecimal.valueOf(Integer.valueOf((String) examScoreMap.get("1151013343670108156"))));
                 technical.setStudentAnswer("二手车技术状况表");
                 technical.setScore((String) examScoreMap.get("1151013343670108156"));
@@ -1140,7 +1141,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
             saveExamDetail(user.getId(), user.getExamId(), "1151028180617777153",
                     (String) examNameMap.get("1151013343663902721"), "0", (String) examScoreMap.get("1151013343663902721"),
                     getDic("aa_entrust_file_type", delegateUserT.getEntrustType()),
-                    delegateUserS == null ? "" :  getDic("aa_entrust_file_type", delegateUserS.getEntrustType()) ,
+                    delegateUserS == null ? "" : getDic("aa_entrust_file_type", delegateUserS.getEntrustType()),
                     "1");
         }
         if (StringUtils.isNotBlank(delegateUserT.getCompleteDate()) && (null != delegateUserS) && delegateUserT.getCompleteDate().equals(delegateUserS.getCompleteDate())) {
@@ -1319,18 +1320,18 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
         Boolean flag = true;
         if (StringUtils.isNotBlank(carInfoT.getMaintenanceSituation()) && (null != carInfoS) && StringUtils.isNotBlank(carInfoS.getMaintenanceSituation())) {
             String[] maintenanceMarry = carInfoT.getMaintenanceSituation().split("，");
-            for(String maintenance:maintenanceMarry){
-                if(!carInfoS.getMaintenanceSituation().contains(maintenance)){
+            for (String maintenance : maintenanceMarry) {
+                if (!carInfoS.getMaintenanceSituation().contains(maintenance)) {
                     flag = false;
                     break;
                 }
             }
-            if(flag){
+            if (flag) {
                 delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String) examScoreMap.get("1151013343665635329"))));
                 saveExamDetail(user.getId(), user.getExamId(), "1151028180617777153",
                         (String) examNameMap.get("1151013343665635329"), (String) examScoreMap.get("1151013343665635329"), (String) examScoreMap.get("1151013343665635329"),
                         carInfoT.getMaintenanceSituation(), carInfoS.getMaintenanceSituation(), "0");
-            }else {
+            } else {
                 saveExamDetail(user.getId(), user.getExamId(), "1151028180617777153",
                         (String) examNameMap.get("1151013343665635329"), "0", (String) examScoreMap.get("1151013343665635329"),
                         carInfoT.getMaintenanceSituation(), carInfoS.getMaintenanceSituation(), "1");
@@ -1350,12 +1351,12 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
                     break;
                 }
             }
-            if(flagAccident){
+            if (flagAccident) {
                 delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String) examScoreMap.get("1151013343665983489"))));
                 saveExamDetail(user.getId(), user.getExamId(), "1151028180617777153",
                         (String) examNameMap.get("1151013343665983489"), (String) examScoreMap.get("1151013343665983489"), (String) examScoreMap.get("1151013343665983489"),
                         carInfoT.getAccident(), carInfoS.getAccident(), "0");
-            }else{
+            } else {
                 saveExamDetail(user.getId(), user.getExamId(), "1151028180617777153",
                         (String) examNameMap.get("1151013343665983489"), "0", (String) examScoreMap.get("1151013343665983489"),
                         carInfoT.getAccident(), carInfoS.getAccident(), "1");
@@ -1407,12 +1408,12 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
         pictureUserT = pictureUserService.getByEntity(pictureUserT);
 
         //教师签字 手输必填
-        if((null!=delegateLetterStu && delegateLetter.getName().equals(delegateLetterStu.getName())) || null!=pictureUserS){
+        if ((null != delegateLetterStu && delegateLetter.getName().equals(delegateLetterStu.getName())) || null != pictureUserS) {
             delegateCount = delegateCount.add(BigDecimal.valueOf(Integer.valueOf((String) examScoreMap.get("1151013343666032621"))));
             saveExamDetail(user.getId(), user.getExamId(), "1151028180617777153",
                     (String) examNameMap.get("1151013343666032621"), (String) examScoreMap.get("1151013343666032621"), (String) examScoreMap.get("1151013343666032621"),
                     "已签", "已签", "0");
-        }else {
+        } else {
             saveExamDetail(user.getId(), user.getExamId(), "1151028180617777153",
                     (String) examNameMap.get("1151013343666032621"), "0", (String) examScoreMap.get("1151013343666032621"),
                     "已签", "未签或错签", "1");
@@ -1664,5 +1665,26 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
 
     public List<ExamUser> getExamUserByExamId(String[] examIds) {
         return dao.getExamUserByExamId(examIds);
+    }
+
+    /**
+     * 更新作答位置
+     */
+    @Transactional
+    public CommonResult updatePosition(Integer position) {
+        ExamUser examUser = UserUtils.getExamUser();
+        examUser = this.get(examUser.getId());
+        examUser.setPosition(position);
+        this.save(examUser);
+        return new CommonResult();
+    }
+
+    /**
+     * 查看作答位置
+     */
+    public CommonResult getPosition() {
+        ExamUser examUser = UserUtils.getExamUser();
+        examUser = this.get(examUser.getId());
+        return new CommonResult(examUser.getPosition());
     }
 }

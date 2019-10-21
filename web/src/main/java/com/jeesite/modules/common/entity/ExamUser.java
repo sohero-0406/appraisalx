@@ -25,6 +25,7 @@ import java.util.Date;
 		@Column(name="start_time", attrName="startTime", label="考试开始时间"),
 		@Column(name="end_time", attrName="endTime", label="考试结束时间"),
 		@Column(name="server_exam_user_id", attrName="serverExamUserId", label="大平台考生id（上传成绩用）"),
+        @Column(name = "position", attrName = "position", label = "作答位置"),
 		@Column(includeEntity=DataEntity.class),
 	}, orderBy="a.update_date DESC"
 )
@@ -37,6 +38,7 @@ public class ExamUser extends PreEntity<ExamUser> {
 	private Date startTime;		//考试开始时间
 	private Date endTime;		//考试结束时间
 	private String serverExamUserId;		//大平台考生id（上传成绩用）
+    private Integer position;        //作答位置
 
 	//非数据库字段
     private String userNum;        // 用户名
@@ -138,6 +140,15 @@ public class ExamUser extends PreEntity<ExamUser> {
 	public void setServerExamUserId(String serverExamUserId) {
 		this.serverExamUserId = serverExamUserId;
 	}
+
+    public Integer getPosition() {
+        return position;
+    }
+
+    public void setPosition(Integer position) {
+        this.position = position;
+    }
+
 	@ExcelField(title="姓名", align=ExcelField.Align.CENTER, sort=2,width = 25*256)
 	public String getTrueName() {
 		return trueName;
