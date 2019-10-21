@@ -288,7 +288,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         carInfo.setExamUserId(examUser.getId());
         carInfo.setPaperId(examUser.getPaperId());
         carInfo = carInfoService.getByEntity(carInfo);
-        if (StringUtils.isNotBlank(carInfo.getLevel())) {
+        if (StringUtils.isNotBlank(carInfo.getColor())) {
             carInfo.setColor(DictUtils.getDictLabel("aa_vehicle_color", carInfo.getColor(), ""));
         }
         if (StringUtils.isNotBlank(carInfo.getUsage())) {
