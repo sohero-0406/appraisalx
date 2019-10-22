@@ -149,15 +149,14 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
             DelegateLetter letterStu = new DelegateLetter();
             letterStu.setExamUserId(examUser.getId());
             letterStu = delegateLetterService.getByEntity(letterStu);
-            if(null!=letterStu){
-                letterStu.setOrganizationName(delegateLetter.getOrganizationName());
-                letterStu.setIdNum(delegateLetter.getIdNum());
-                letterStu.setOrganizationAddress(delegateLetter.getOrganizationAddress());
-                letterStu.setContact(delegateLetter.getContact());
-                letterStu.setPhone(delegateLetter.getPhone());
-            }else{
+            if(null==letterStu){
                 letterStu = new DelegateLetter();
             }
+            letterStu.setOrganizationName(delegateLetter.getOrganizationName());
+            letterStu.setIdNum(delegateLetter.getIdNum());
+            letterStu.setOrganizationAddress(delegateLetter.getOrganizationAddress());
+            letterStu.setContact(delegateLetter.getContact());
+            letterStu.setPhone(delegateLetter.getPhone());
             delegateLetterVO.setDelegateLetter(letterStu);
         } else {
             //教师
