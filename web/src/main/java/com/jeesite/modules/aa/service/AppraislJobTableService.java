@@ -175,8 +175,10 @@ public class AppraislJobTableService {
         if("0".equals(checkTradableVehicles.getIsAccident())){
             //正常车
             checkTradableVehicles.setIsAccident("正常车");
-        }else{
+        }else if("1".equals(checkTradableVehicles.getIsAccident())){
             checkTradableVehicles.setIsAccident("事故车");
+        }else{
+            checkTradableVehicles.setIsAccident("");
         }
         appraisalJobTableVO.setCheckTradableVehicles(checkTradableVehicles);
 
