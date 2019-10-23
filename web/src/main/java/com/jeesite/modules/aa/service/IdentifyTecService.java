@@ -318,10 +318,10 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
 
         // 数据处理填充
         if ("0".equals(checkTradableVehicles.getIsAccident())) {
-            isAccidentInfo.setIsAccident("是");
+            isAccidentInfo.setIsAccident("否");
         }else if("1".equals(checkTradableVehicles.getIsAccident()))
         {
-            isAccidentInfo.setIsAccident("否");
+            isAccidentInfo.setIsAccident("是");
         }else{
             isAccidentInfo.setIsAccident("");
         }
