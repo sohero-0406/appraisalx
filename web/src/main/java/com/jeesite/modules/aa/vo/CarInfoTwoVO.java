@@ -46,7 +46,7 @@ public class CarInfoTwoVO {
     private String purchaseDate;        // 购置日期
     @NotBlank
     private String originalPrice;        // 原始价格
-    @NotBlank
+    
     private String note;        // 备注
     @NotBlank
     private String enginePower;         // 发动机功率
