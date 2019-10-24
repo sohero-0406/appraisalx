@@ -23,8 +23,11 @@ public class MyRunner implements CommandLineRunner {
         } else {
             url = "D:";
         }
-        url += "/server/config.ini";
+        //图片上传路径
+        String picUrl = url + "/soHero/appraisalPic/";
+        CacheUtils.put("picUrl", picUrl);
 
+        url += "/server/config.ini";
         Wini ini = null;
         try {
             ini = new Wini(new File(url));

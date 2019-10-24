@@ -4,6 +4,7 @@
 package com.jeesite.modules.aa.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.jeesite.common.cache.CacheUtils;
 import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.constant.ServiceConstant;
 import com.jeesite.common.entity.Page;
@@ -686,8 +687,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
             url = paperId;
         }
         //图片默认存储路径，读取picture.properties
-        ResourceBundle bundle = PropertyResourceBundle.getBundle("config/picture");
-        String prefix = bundle.getString("url");
+        String prefix = CacheUtils.get("picUrl");
         String filePath = prefix + "exam/" + url + "/";
         String generateUrl = filePath + "二手车鉴定评估报告.docx";
         File destFile = new File(generateUrl);
@@ -738,8 +738,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         pictureUser = pictureUserService.getByEntity(pictureUser);
 
         String name = "二手车鉴定评估报告";
-        ResourceBundle bundle = PropertyResourceBundle.getBundle("config/picture");
-        String prefix = bundle.getString("url");
+        String prefix = CacheUtils.get("picUrl");
         String url = prefix + pictureUser.getUrl();
         DownloadWordUtils.downloadWord(request, response, url, name, "docx");
 

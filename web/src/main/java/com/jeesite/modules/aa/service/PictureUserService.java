@@ -3,6 +3,7 @@
  */
 package com.jeesite.modules.aa.service;
 
+import com.jeesite.common.cache.CacheUtils;
 import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.idgen.IdWorker;
@@ -81,8 +82,7 @@ public class PictureUserService extends CrudService<PictureUserDao, PictureUser>
             return new CommonResult("1003", "上传失败，请选择文件！");
         }
         //图片默认存储路径，读取picture.properties
-        ResourceBundle bundle = PropertyResourceBundle.getBundle("config/picture");
-        String prefix = bundle.getString("url");
+        String prefix = CacheUtils.get("picUrl");
         String filePath = prefix + "exam/" + url + "/";
         PictureType pictureType = pictureTypeService.get(pictureTypeId);
         String fileName = new IdWorker(-1, -1).nextId() + "";
@@ -254,8 +254,7 @@ public class PictureUserService extends CrudService<PictureUserDao, PictureUser>
     public CommonResult deletePictureUseIds(String ids) {
         String[] pictureIds = ids.split(",");
         //删除文件
-        ResourceBundle bundle = PropertyResourceBundle.getBundle("config/picture");
-        String prefix = bundle.getString("url");
+        String prefix = CacheUtils.get("picUrl");
         PictureUser pictureUser = new PictureUser();
         pictureUser.setId_in(pictureIds);
         List<PictureUser> list = this.findList(pictureUser);
@@ -281,8 +280,7 @@ public class PictureUserService extends CrudService<PictureUserDao, PictureUser>
             return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, "请求参数不全！");
         }
         //删除文件
-        ResourceBundle bundle = PropertyResourceBundle.getBundle("config/picture");
-        String prefix = bundle.getString("url");
+        String prefix = CacheUtils.get("picUrl");
         PictureUser pictureUser = this.get(id);
         String url = pictureUser.getUrl();
         FileUtils.deleteFile(prefix + url);

@@ -19,9 +19,9 @@ import java.util.HashMap;
  */
 public class BaiDuAiUtil {
     /**
-     * 身份证正面类型id
+     * 身份证人像面类型id
      */
-    private static final String PICTURE_TYPE_ID_ID_FRONT = "1143431602191151104";
+    private static final String PICTURE_TYPE_ID_ID_FRONT = "1143431700863209472";
     /**
      * 车牌照类型id
      */
@@ -77,7 +77,7 @@ public class BaiDuAiUtil {
      */
     public String discern(String pictureTypeId, String imagePath) {
         switch (pictureTypeId) {
-            case PICTURE_TYPE_ID_ID_FRONT://身份证正面识别
+            case PICTURE_TYPE_ID_ID_FRONT://身份证人像面识别
                 return idCard(imagePath, true).toString();
             case PICTURE_TYPE_ID_VIN://vin识别
                 return vinCode(imagePath).toString();

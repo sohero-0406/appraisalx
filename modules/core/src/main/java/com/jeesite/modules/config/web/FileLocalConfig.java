@@ -8,11 +8,20 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class FileLocalConfig implements WebMvcConfigurer {
 
-    static final String ORIGINS[] = new String[] { "GET", "POST", "PUT", "DELETE" };
+    static final String ORIGINS[] = new String[]{"GET", "POST", "PUT", "DELETE"};
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/**").addResourceLocations("file:D:/appraisalPic/");
+        String url = FileLocalConfig.class.getResource("").toString().replace("jar:file:/", "");
+        if (url.contains("/webapps")) {
+            url = url.substring(0, url.indexOf("/webapps"));
+            url = url.substring(0, url.lastIndexOf("/"));
+        } else {
+            url = "D:";
+        }
+        //图片上传路径
+        String picUrl = url + "/soHero/appraisalPic/";
+        registry.addResourceHandler("/**").addResourceLocations("file:" + picUrl);
     }
 
     @Override
