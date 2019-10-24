@@ -243,27 +243,19 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
         vehicleDocumentInfos.forEach(v -> {
             // 车险证明
             if ("6".equals(v.getProject())) {
-                vehicleBasicInfo.setProject6Validity(v.getValidity());
-            } else {
-                vehicleBasicInfo.setProject6Validity("无");
+                vehicleBasicInfo.setProject6Validity("1".equals(v.getState())?"有":"无");
             }
             // 购置税证书 无有效期 返回"有"
             if ("8".equals(v.getProject())) {
-                vehicleBasicInfo.setProject8("有");
-            } else {
-                vehicleBasicInfo.setProject8("无");
+                vehicleBasicInfo.setProject8("1".equals(v.getState())?"有":"无");
             }
             // 车船税证明
             if ("3".equals(v.getProject())) {
-                vehicleBasicInfo.setProject3Validity(v.getValidity());
-            } else {
-                vehicleBasicInfo.setProject3Validity("无");
+                vehicleBasicInfo.setProject3Validity("1".equals(v.getState())?"有":"无");
             }
             // 交强险
             if ("4".equals(v.getProject())) {
-                vehicleBasicInfo.setProject4Validity(v.getValidity());
-            } else {
-                vehicleBasicInfo.setProject4Validity("无");
+                vehicleBasicInfo.setProject4Validity("1".equals(v.getState())?"有":"无");
             }
         });
         vehicleBasicInfo.setUsage(DictUtils.getDictLabel("aa_usage_type", carInfo.getUsage(), ""));

@@ -35,7 +35,8 @@
             exam_user_id,
             paper_id,
             project,
-            validity
+            validity,
+            state
         FROM
             aa_vehicle_document_info
         <where>
@@ -45,7 +46,6 @@
             <if test="vehicleDocumentInfo.paperId != null and vehicleDocumentInfo.paperId != ''">
                 AND paper_id = #{vehicleDocumentInfo.paperId}
             </if>
-            AND state = 1
             AND project IN (3, 4, 6, 8)
         </where>
     </select>
