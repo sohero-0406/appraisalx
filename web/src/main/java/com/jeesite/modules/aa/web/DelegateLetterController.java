@@ -28,6 +28,7 @@ import java.text.ParseException;
 
 /**
  * 委托书信息Controller
+ *
  * @author lvchangwei
  * @version 2019-07-18
  */
@@ -35,137 +36,142 @@ import java.text.ParseException;
 @RequestMapping(value = "${adminPath}/aa/delegateLetter")
 public class DelegateLetterController extends BaseController {
 
-	@Autowired
-	private DelegateLetterService delegateLetterService;
-	
-	/**
-	 * 获取数据
-	 */
-	@ModelAttribute
-	public DelegateLetter get(String id, boolean isNewRecord) {
-		return delegateLetterService.get(id, isNewRecord);
-	}
-	
-	/**
-	 * 查询列表
-	 */
-	@RequestMapping(value = {"list", ""})
-	public String list(DelegateLetter delegateLetter, Model model) {
-		model.addAttribute("delegateLetter", delegateLetter);
-		return "modules/aa/delegateLetterList";
-	}
-	
-	/**
-	 * 查询列表数据
-	 */
-	@RequestMapping(value = "listData")
-	@ResponseBody
-	public Page<DelegateLetter> listData(DelegateLetter delegateLetter, HttpServletRequest request, HttpServletResponse response) {
-		delegateLetter.setPage(new Page<>(request, response));
-		Page<DelegateLetter> page = delegateLetterService.findPage(delegateLetter);
-		return page;
-	}
+    @Autowired
+    private DelegateLetterService delegateLetterService;
 
-	/**
-	 * 查看编辑表单
-	 */
-	@RequestMapping(value = "form")
-	public String form(DelegateLetter delegateLetter, Model model) {
-		model.addAttribute("delegateLetter", delegateLetter);
-		return "modules/aa/delegateLetterForm";
-	}
+    /**
+     * 获取数据
+     */
+    @ModelAttribute
+    public DelegateLetter get(String id, boolean isNewRecord) {
+        return delegateLetterService.get(id, isNewRecord);
+    }
 
-	/**
-	 * 保存委托书信息
-	 */
-	@PostMapping(value = "save")
-	@ResponseBody
-	public String save(@Validated DelegateLetter delegateLetter) {
-		delegateLetterService.save(delegateLetter);
-		return renderResult(Global.TRUE, text("保存委托书信息成功！"));
-	}
-	
-	/**
-	 * 删除委托书信息
-	 */
-	@RequestMapping(value = "delete")
-	@ResponseBody
-	public String delete(DelegateLetter delegateLetter) {
-		delegateLetterService.delete(delegateLetter);
-		return renderResult(Global.TRUE, text("删除委托书信息成功！"));
-	}
+    /**
+     * 查询列表
+     */
+    @RequestMapping(value = {"list", ""})
+    public String list(DelegateLetter delegateLetter, Model model) {
+        model.addAttribute("delegateLetter", delegateLetter);
+        return "modules/aa/delegateLetterList";
+    }
 
-	/**
-	 * 查询单个委托书信息
-	 */
-	@RequestMapping(value = "findDelegateLetter")
-	@ResponseBody
-	public CommonResult findDelegateLetter() {
-		ExamUser examUser = UserUtils.getExamUser();
-		return new CommonResult(delegateLetterService.findDelegateLetter(examUser));
-	}
+    /**
+     * 查询列表数据
+     */
+    @RequestMapping(value = "listData")
+    @ResponseBody
+    public Page<DelegateLetter> listData(DelegateLetter delegateLetter, HttpServletRequest request, HttpServletResponse response) {
+        delegateLetter.setPage(new Page<>(request, response));
+        Page<DelegateLetter> page = delegateLetterService.findPage(delegateLetter);
+        return page;
+    }
 
-	/**
-	 * 保存委托书信息
-	 */
-	@RequestMapping(value = "saveDelegateLetter")
-	@ResponseBody
-	public CommonResult saveDelegateLetter(DelegateLetter delegateLetter) {
-		ExamUser examUser = UserUtils.getExamUser();
-		delegateLetter.setPaperId(examUser.getPaperId());
-		delegateLetterService.save(delegateLetter);
-		return new CommonResult();
-	}
+    /**
+     * 查看编辑表单
+     */
+    @RequestMapping(value = "form")
+    public String form(DelegateLetter delegateLetter, Model model) {
+        model.addAttribute("delegateLetter", delegateLetter);
+        return "modules/aa/delegateLetterForm";
+    }
 
-	/**
-	 * 保存委托书信息(学生)
-	 */
-	@RequestMapping(value = "saveDelegateLetterStu")
-	@ResponseBody
-	public CommonResult saveDelegateLetterStu(DelegateLetter delegateLetter) {
-		ExamUser examUser = UserUtils.getExamUser();
-		delegateLetter.setExamUserId(examUser.getId());
-		delegateLetterService.save(delegateLetter);
-		return new CommonResult();
-	}
+    /**
+     * 保存委托书信息
+     */
+    @PostMapping(value = "save")
+    @ResponseBody
+    public String save(@Validated DelegateLetter delegateLetter) {
+        delegateLetterService.save(delegateLetter);
+        return renderResult(Global.TRUE, text("保存委托书信息成功！"));
+    }
 
+    /**
+     * 删除委托书信息
+     */
+    @RequestMapping(value = "delete")
+    @ResponseBody
+    public String delete(DelegateLetter delegateLetter) {
+        delegateLetterService.delete(delegateLetter);
+        return renderResult(Global.TRUE, text("删除委托书信息成功！"));
+    }
 
-	/**
-	 * 保存一份鉴定评估报告 “下一步”功能
-	 */
-	@RequestMapping(value = "saveAppraisalReport")
-	@ResponseBody
-	public CommonResult saveAppraisalReport(DelegateLetter delegateLetter) {
-		CommonResult comRes = new CommonResult();
-		ExamUser examUser = UserUtils.getExamUser();
-		//如果paperId 为空，则参数出现异常
-		if(StringUtils.isBlank(examUser.getPaperId())){
-			return comRes;
-		}
-		comRes = delegateLetterService.saveAppraisalReport(delegateLetter,examUser);
-		return comRes;
-	}
+    /**
+     * 查询单个委托书信息
+     */
+    @RequestMapping(value = "findDelegateLetter")
+    @ResponseBody
+    public CommonResult findDelegateLetter() {
+        ExamUser examUser = UserUtils.getExamUser();
+        return new CommonResult(delegateLetterService.findDelegateLetter(examUser));
+    }
+
+    /**
+     * 保存委托书信息
+     */
+    @RequestMapping(value = "saveDelegateLetter")
+    @ResponseBody
+    public CommonResult saveDelegateLetter(DelegateLetter delegateLetter) {
+        ExamUser examUser = UserUtils.getExamUser();
+        delegateLetter.setPaperId(examUser.getPaperId());
+        delegateLetterService.save(delegateLetter);
+        return new CommonResult();
+    }
+
+    /**
+     * 保存委托书信息(学生)
+     */
+    @RequestMapping(value = "saveDelegateLetterStu")
+    @ResponseBody
+    public CommonResult saveDelegateLetterStu(DelegateLetter delegateLetter) {
+        ExamUser examUser = UserUtils.getExamUser();
+        delegateLetter.setExamUserId(examUser.getId());
+        delegateLetterService.save(delegateLetter);
+        return new CommonResult();
+    }
 
 
+    /**
+     * 保存一份鉴定评估报告 “下一步”功能
+     */
+    @RequestMapping(value = "saveAppraisalReport")
+    @ResponseBody
+    public CommonResult saveAppraisalReport(DelegateLetter delegateLetter) {
+        CommonResult comRes = new CommonResult();
+        ExamUser examUser = UserUtils.getExamUser();
+        //如果paperId 为空，则参数出现异常
+        if (StringUtils.isBlank(examUser.getPaperId())) {
+            return comRes;
+        }
+        try {
+            comRes = delegateLetterService.saveAppraisalReport(delegateLetter, examUser);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return comRes;
+    }
 
 
+    /**
+     * 鉴定评估报告预览
+     */
+    @RequestMapping(value = "findAppraisalReport")
+    @ResponseBody
+    public CommonResult findAppraisalReport() {
+        ExamUser examUser = UserUtils.getExamUser();
+        CommonResult comRes = new CommonResult();
+        comRes.setData(delegateLetterService.appraisalReportInfo(examUser));
 
-	/**
-	 * 鉴定评估报告预览
-	 */
-	@RequestMapping(value = "findAppraisalReport")
-	@ResponseBody
-	public CommonResult findAppraisalReport() throws ParseException {
-		ExamUser examUser = UserUtils.getExamUser();
-		CommonResult comRes = new CommonResult();
-		comRes.setData(delegateLetterService.appraisalReportInfo(examUser));
-
-		//判断 学生生成鉴定评估报告文档 老师不生成
-		if(StringUtils.isBlank(examUser.getPaperId())){ //学生
-			delegateLetterService.generateLetter(examUser);//生成鉴定评估报告
-		}
-		return comRes;
-	}
+        //判断 学生生成鉴定评估报告文档 老师不生成
+        if (StringUtils.isBlank(examUser.getPaperId())) { //学生
+            try {
+                delegateLetterService.generateLetter(examUser);//生成鉴定评估报告
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return comRes;
+    }
 
 
 //	/**
@@ -182,16 +188,21 @@ public class DelegateLetterController extends BaseController {
 //	}
 
 
-	/**
-	 *  下载鉴定报告
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	@RequestMapping(value = "downloadAppraisalReport")
-	@ResponseBody
-	public void getWord(HttpServletRequest request, HttpServletResponse response,DelegateLetter delegateLetter) {
-		ExamUser examUser = UserUtils.getExamUser();
-		delegateLetterService.getWord(request,response,examUser,delegateLetter);
-	}
+    /**
+     * 下载鉴定报告
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "downloadAppraisalReport")
+    @ResponseBody
+    public void getWord(HttpServletRequest request, HttpServletResponse response, DelegateLetter delegateLetter) {
+        ExamUser examUser = UserUtils.getExamUser();
+        try {
+            delegateLetterService.getWord(request, response, examUser, delegateLetter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

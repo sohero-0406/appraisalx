@@ -341,6 +341,11 @@ public class ExamService extends CrudService<ExamDao, Exam> {
         switch (exam.getState()) {
             case "1"://未开始
                 List<String> userIdList = dao.getUserByExamId(exam.getId());
+                if(CollectionUtils.isEmpty(userIdList)){
+                    comRes.setCode(CodeConstant.REQUEST_FAILED);
+                    comRes.setMsg("不存在考生!");
+                    return comRes;
+                }
                 comRes = examUserService.getExamStateByUserId(userIdList, exam);
                 if (CodeConstant.REQUEST_SUCCESSFUL.equals(comRes.getCode())) {
                     exam.setState("3");
@@ -360,6 +365,7 @@ public class ExamService extends CrudService<ExamDao, Exam> {
                 super.save(exam);
                 break;
         }
+        comRes.setData(exam);
         return comRes;
     }
 
