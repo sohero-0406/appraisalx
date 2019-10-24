@@ -50,6 +50,7 @@
 			</if>
 			and state not in ('正常','') and state is not null
 		</where>
+		order by acbs.technology_info_id
 	</select>
 
 </mapper>
