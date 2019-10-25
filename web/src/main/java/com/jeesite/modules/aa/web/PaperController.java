@@ -167,17 +167,13 @@ public class PaperController extends BaseController {
             return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "试卷编辑校验通过");
         } else {
             // 教师
-            Exam exam = new Exam();
-            exam.setPaperId(paperId);
-            List<Exam> examList = paperService.findExamForCheck(exam);
-            if (CollectionUtils.isEmpty(examList)) {
-                // paperId 存入缓存
-                examUser.setPaperId(paperId);
-                CacheUtils.put("examUser", examUser.getUserId(), examUser);
-                // 该试卷未添加进考试、该试卷添加进考试 但其状态为 1   以上两种情况均可以通过编辑校验
-                return new CommonResult(CodeConstant.REQUEST_SUCCESSFUL, "试卷编辑校验通过");
+            Paper paper = paperService.get(paperId);
+            if ("1".equals(paper.getState())) {
+                return new CommonResult(CodeConstant.PAPER_ENABLED, "当前试卷已被启用，不可进行编辑");
             }
-            return new CommonResult(CodeConstant.REQUEST_FAILED, "当前试卷被占用，不可进行编辑");
+            examUser.setPaperId(paperId);
+            CacheUtils.put("examUser", examUser.getUserId(), examUser);
+            return new CommonResult();
         }
     }
 
@@ -195,6 +191,13 @@ public class PaperController extends BaseController {
         paper.setUserId(examUser.getUserId());
         String state = paper.getState();
         if ("1".equals(state)) {
+            // 教师
+            Exam exam = new Exam();
+            exam.setPaperId(paperId);
+            List<Exam> examList = paperService.findExamForCheck(exam);
+            if (CollectionUtils.isNotEmpty(examList)) {
+                return new CommonResult(CodeConstant.REQUEST_FAILED, "当前试卷被占用，不可进行编辑");
+            }
             paper.setState("0");
         }
         if ("0".equals(state)) {

@@ -39,6 +39,8 @@ public class CodeConstant {
     public static final String DATA_NOT_FOUND = "1016";
     //上传失败，图片不可多于三张
     public static final String UPLOAD_FAIL_THREE = "1017";
+    //当前试卷已被启用
+    public static final String PAPER_ENABLED = "1018";
     //请求参数有误
     public static final String WRONG_REQUEST_PARAMETER = "1020";
     //登录超时

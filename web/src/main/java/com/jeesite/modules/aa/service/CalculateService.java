@@ -146,17 +146,15 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
         calculate = this.getByEntity(calculate);
 
         //学生
-        if(StringUtils.isNotBlank(examUser.getId())){
+        if (StringUtils.isNotBlank(examUser.getId())) {
             ExamUser user = new ExamUser();
             user.setId(examUser.getId());
             user = examUserService.get(user);
-            Exam exam = new Exam();
-            exam.setId(user.getExamId());
-            exam = examService.get(exam);
+            Exam exam = examService.get(user.getExamId());
             Calculate cal = new Calculate();
             cal.setPaperId(exam.getPaperId());
             cal = dao.getByEntity(cal);
-            if(null==calculate){
+            if (null == calculate) {
                 calculate = new Calculate();
             }
             calculate.setSecondCarPrice(cal.getSecondCarPrice());
@@ -171,11 +169,11 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
             switch (calculate.getType()) {
                 case "1"://折旧率估值法
                     calculateDepreciation.setCalculateId(calculate.getId());
-                    vo.setCalculateDepreciation(calculateDepreciationService.getCalculateDepreciation(calculateDepreciation,examUser));
+                    vo.setCalculateDepreciation(calculateDepreciationService.getCalculateDepreciation(calculateDepreciation, examUser));
                     break;
                 case "2"://公里数估值法
                     calculateKm.setCalculateId(calculate.getId());
-                    vo.setCalculateKm(calculateKmService.getCalculateKm(calculateKm,examUser));
+                    vo.setCalculateKm(calculateKmService.getCalculateKm(calculateKm, examUser));
                     break;
                 case "3"://重置成本法
                     calculateReplaceCost.setCalculateId(calculate.getId());
@@ -194,6 +192,15 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
                     vo.setCalculateCurrent(calculateCurrentService.getByEntity(calculateCurrent));
                     break;
             }
+        }
+        //查找教师算法
+        if (StringUtils.isNotBlank(examUser.getId())) {
+            Exam exam = examService.get(examUser.getExamId());
+            String paperId = exam.getPaperId();
+            calculate = new Calculate();
+            calculate.setPaperId(paperId);
+            calculate = this.getByEntity(calculate);
+            vo.setTeacherType(calculate.getType());
         }
         return vo;
     }
@@ -270,7 +277,7 @@ public class CalculateService extends CrudService<CalculateDao, Calculate> {
     /**
      * 查询算法类型
      *
-     * @param calculategetCalculate
+     * @param calculate
      */
     public String getType(Calculate calculate) {
         return calculateDao.getType(calculate);

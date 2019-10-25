@@ -45,7 +45,7 @@
 
     <select id="findExamForCheck" resultType="Exam">
 		SELECT * FROM `common_exam`
-		where paper_id = #{paperId} and state != '1'
+		where paper_id = #{paperId}
 	</select>
 
     <select id="selectExamIdList" resultType="Exam">
