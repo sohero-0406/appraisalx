@@ -234,11 +234,11 @@ public class BaiDuAiUtil {
         JSONObject jsonObj = client.custom(imagePath, options);
         JSONObject result = new JSONObject();
 
-        JSONArray jsonArr = jsonObj.optJSONObject("data").optJSONArray("ret");
-        if (null == jsonArr) {
+        if (null == jsonObj.optJSONObject("data") || null==jsonObj.optJSONObject("data").optJSONArray("ret")) {
             result.put("code", CodeConstant.FAILED_TO_IDENTIFY_UNKNOWN_STATE);
             result.put("msg", "未知状态");
         } else {
+            JSONArray jsonArr = jsonObj.optJSONObject("data").optJSONArray("ret");
             JSONObject childJsonObj = null;
             result.put("code", CodeConstant.IDENTIFY_THE_SUCCESSFUL);
             result.put("msg", "识别成功");
@@ -268,11 +268,12 @@ public class BaiDuAiUtil {
         JSONObject jsonObj = client.custom(imagePath, options);
         JSONObject result = new JSONObject();
 
-        JSONArray jsonArr = jsonObj.optJSONObject("data").optJSONArray("ret");
-        if (null == jsonArr) {
+
+        if (null == jsonObj.optJSONObject("data") || null==jsonObj.optJSONObject("data").optJSONArray("ret")) {
             result.put("code", CodeConstant.FAILED_TO_IDENTIFY_UNKNOWN_STATE);
             result.put("msg", "未知状态");
         } else {
+            JSONArray jsonArr = jsonObj.optJSONObject("data").optJSONArray("ret");
             result.put("code", CodeConstant.IDENTIFY_THE_SUCCESSFUL);
             result.put("msg", "识别成功");
             JSONObject childJsonObj = null;
