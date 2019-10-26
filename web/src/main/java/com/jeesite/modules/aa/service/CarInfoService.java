@@ -140,58 +140,51 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
         carInfo.setExamUserId(examUser.getId());
         carInfo.setPaperId(examUser.getPaperId());
 
-        //品牌 車系
-        String pinpaichexi = "";
-        if (null != carInfo) {
-            if (StringUtils.isNotBlank(carInfo.getBrand())) {
-                Map<String, String> map = new HashMap<>();
-                map.put("pinpaiId", carInfo.getBrand());
-                CommonResult result = httpClientService.post(ServiceConstant.COMMON_VEHICLE_BRAND_GET_BY_ENTITY, map);
-                if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
-                    if (null != result.getData()) {
-                        JSONObject o = (JSONObject) result.getData();
-                        String pinpai = o.getString("pinpai");
-                        pinpaichexi = pinpaichexi + pinpai;
-                    }
+        //品牌 车系
+        if (StringUtils.isNotBlank(carInfo.getBrand())) {
+            Map<String, String> map = new HashMap<>();
+            map.put("pinpaiId", carInfo.getBrand());
+            CommonResult result = httpClientService.post(ServiceConstant.COMMON_VEHICLE_BRAND_GET_BY_ENTITY, map);
+            if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
+                if (null != result.getData()) {
+                    JSONObject o = (JSONObject) result.getData();
+                    String pinpai = o.getString("pinpai");
+                    carInfo.setBrandName(pinpai);
                 }
             }
-            if (StringUtils.isNotBlank(carInfo.getSeries())) {
-                Map<String, String> map = new HashMap<>();
-                map.put("chexiId", carInfo.getSeries());
-                CommonResult result = httpClientService.post(ServiceConstant.COMMON_VEHICLE_SERIES_GET_BY_ENTITY, map);
-                if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
-                    if (null != result.getData()) {
-                        JSONObject o = (JSONObject) result.getData();
-                        String chexi = o.getString("chexi");
-                        pinpaichexi = pinpaichexi + chexi;
-                    }
+        }
+        if (StringUtils.isNotBlank(carInfo.getSeries())) {
+            Map<String, String> map = new HashMap<>();
+            map.put("chexiId", carInfo.getSeries());
+            CommonResult result = httpClientService.post(ServiceConstant.COMMON_VEHICLE_SERIES_GET_BY_ENTITY, map);
+            if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
+                if (null != result.getData()) {
+                    JSONObject o = (JSONObject) result.getData();
+                    String chexi = o.getString("chexi");
+                    carInfo.setBrandName(chexi);
                 }
             }
-            carInfo.setBrandName(pinpaichexi);
         }
         //年款型号
-        if(null!=carInfo){
-            if(StringUtils.isNotBlank(carInfo.getModel())){
-                Map<String, String> map = new HashMap<>();
-                map.put("chexingId", carInfo.getModel());
-                CommonResult result = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_CAR_MODEL, map);
-                if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
-                    if(null!=result.getData()){
-                        JSONObject o = (JSONObject)result.getData();
-                        String chexingmingcheng = o.getString("chexingmingcheng");
-                        carInfo.setModelName(chexingmingcheng);
-
-                    }
+        if (StringUtils.isNotBlank(carInfo.getModel())) {
+            Map<String, String> map = new HashMap<>();
+            map.put("chexingId", carInfo.getModel());
+            CommonResult result = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_CAR_MODEL, map);
+            if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
+                if (null != result.getData()) {
+                    JSONObject o = (JSONObject) result.getData();
+                    String chexingmingcheng = o.getString("chexingmingcheng");
+                    carInfo.setModelName(chexingmingcheng);
                 }
-                CommonResult comRes = this.getVehicleFunctionalInfo(carInfo.getModel());
-                if(CodeConstant.REQUEST_SUCCESSFUL.equals(comRes.getCode())){
-                    if(null!=comRes.getData()){
-                        JSONObject o = (JSONObject)comRes.getData();
-                        String fadongji = o.getString("fadongji");
-                        String [] fadongjiT = fadongji.split(" ");
-                        if(fadongjiT.length>0){
-                            carInfo.setFadongjixinghao(fadongjiT[0]);
-                        }
+            }
+            CommonResult comRes = this.getVehicleFunctionalInfo(carInfo.getModel());
+            if (CodeConstant.REQUEST_SUCCESSFUL.equals(comRes.getCode())) {
+                if (null != comRes.getData()) {
+                    JSONObject o = (JSONObject) comRes.getData();
+                    String fadongji = o.getString("fadongji");
+                    String[] fadongjiT = fadongji.split(" ");
+                    if (fadongjiT.length > 0) {
+                        carInfo.setFadongjixinghao(fadongjiT[0]);
                     }
                 }
             }
@@ -240,7 +233,7 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
         carInfo.setExamUserId(examUserId);
         carInfo.setPaperId(paperId);
         carInfo = this.getByEntity(carInfo);
-        if(null==carInfo){
+        if (null == carInfo) {
             carInfo = new CarInfo();
             carInfo.setExamUserId(examUser.getId());
         }
@@ -315,38 +308,38 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
     }
 
     /**
-     *   学生端左侧数据显示
+     * 学生端左侧数据显示
      */
-    public CarInfo findLeftInfor(ExamUser examUser){
+    public CarInfo findLeftInfor(ExamUser examUser) {
         CarInfo carInfo = dao.findLeftInfor(examUser);
-        if(null!=carInfo){
-            if(StringUtils.isNotEmpty(carInfo.getRegisterDate())){
-                carInfo.setRegisterDate(carInfo.getRegisterDate().substring(0,7));
+        if (null != carInfo) {
+            if (StringUtils.isNotEmpty(carInfo.getRegisterDate())) {
+                carInfo.setRegisterDate(carInfo.getRegisterDate().substring(0, 7));
             }
             //排量
-            if(StringUtils.isNotEmpty(carInfo.getFadongjixinghao())){
+            if (StringUtils.isNotEmpty(carInfo.getFadongjixinghao())) {
                 carInfo.setDisplacement(carInfo.getFadongjixinghao());
             }
-            if(StringUtils.isEmpty(carInfo.getFadongjixinghao())){
-                if(StringUtils.isNotEmpty(carInfo.getDisplacement())){
+            if (StringUtils.isEmpty(carInfo.getFadongjixinghao())) {
+                if (StringUtils.isNotEmpty(carInfo.getDisplacement())) {
                     BigDecimal displacement = new BigDecimal(carInfo.getDisplacement());
                     BigDecimal a = new BigDecimal("1000");
                     displacement = displacement.divide(a);
-                    displacement = (displacement).setScale(1,BigDecimal.ROUND_HALF_UP);
+                    displacement = (displacement).setScale(1, BigDecimal.ROUND_HALF_UP);
                     carInfo.setDisplacement(String.valueOf(displacement));
                 }
             }
             //公里数
-            if(StringUtils.isNotEmpty(carInfo.getMileage())){
+            if (StringUtils.isNotEmpty(carInfo.getMileage())) {
                 String carInfoMileage = "";
                 BigDecimal mileage = new BigDecimal(carInfo.getMileage());
                 BigDecimal a = new BigDecimal("10000");
-                if(mileage.compareTo(a) > -1){
+                if (mileage.compareTo(a) > -1) {
                     mileage = mileage.divide(a);
-                    mileage = (mileage).setScale(1,BigDecimal.ROUND_HALF_UP);
-                    carInfoMileage = mileage+"万公里";
-                }else{
-                    carInfoMileage = mileage+"公里";
+                    mileage = (mileage).setScale(1, BigDecimal.ROUND_HALF_UP);
+                    carInfoMileage = mileage + "万公里";
+                } else {
+                    carInfoMileage = mileage + "公里";
                 }
                 carInfo.setMileage(String.valueOf(carInfoMileage));
             }

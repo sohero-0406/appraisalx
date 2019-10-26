@@ -168,8 +168,8 @@ public class PaperController extends BaseController {
         } else {
             // 教师
             Paper paper = paperService.get(paperId);
-            if ("1".equals(paper.getState())) {
-                return new CommonResult(CodeConstant.PAPER_ENABLED, "当前试卷已被启用，不可进行编辑");
+            if ("0".equals(paper.getState())) {
+                return new CommonResult(CodeConstant.REQUEST_FAILED, "当前试卷被占用，不可进行编辑");
             }
             examUser.setPaperId(paperId);
             CacheUtils.put("examUser", examUser.getUserId(), examUser);
@@ -196,7 +196,7 @@ public class PaperController extends BaseController {
             exam.setPaperId(paperId);
             List<Exam> examList = paperService.findExamForCheck(exam);
             if (CollectionUtils.isNotEmpty(examList)) {
-                return new CommonResult(CodeConstant.REQUEST_FAILED, "当前试卷被占用，不可进行编辑");
+                return new CommonResult(CodeConstant.PAPER_ENABLED, "当前试卷已被启用，不可修改状态");
             }
             paper.setState("0");
         }
