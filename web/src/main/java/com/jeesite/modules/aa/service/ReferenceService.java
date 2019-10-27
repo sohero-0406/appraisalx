@@ -134,9 +134,9 @@ public class ReferenceService extends CrudService<ReferenceDao, Reference> {
             int len = referenceList.size();
             for(int i=0;i<len;i++){
                 if(i < len-1){
-                    builder.append(referenceList.get(i).getModel()+"已被占用,");
+                    builder.append(referenceList.get(i).getModel()+"已被试卷占用,");
                 }else if(i == len-1 && i<4){
-                    builder.append(referenceList.get(i).getModel()+"已被占用");
+                    builder.append(referenceList.get(i).getModel()+"已被试卷占用");
                 }else{
                     builder.append("...");
                     break;
