@@ -102,19 +102,25 @@ public class SignInService {
             }
             //判断考试是否已结束
             Exam exam = examService.get(examUser.getExamId());
-            if ("1".equals(exam.getExamType())) {
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(exam.getStartTime());
-                calendar.add(Calendar.MINUTE, exam.getDuration());
+            if(null!= exam.getEndTime()){
                 //考试已结束
-                Date nowDate = new Date();
-                if (calendar.getTime().compareTo(nowDate) < 0) {
-                    examUser.setEndTime(nowDate);
-                    examService.saveExamUser(examUser);
-                    return new CommonResult(CodeConstant.EXAM_END, "考试已结束");
-                }
+                examUser.setEndTime(exam.getEndTime());
+                examService.saveExamUser(examUser);
+                return new CommonResult(CodeConstant.EXAM_END, "考试已结束");
             }
+//            if ("1".equals(exam.getExamType())) {
+//                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//                Calendar calendar = Calendar.getInstance();
+//                calendar.setTime(exam.getStartTime());
+//                calendar.add(Calendar.MINUTE, exam.getDuration());
+//
+//                Date nowDate = new Date();
+//                if (calendar.getTime().compareTo(nowDate) < 0) {
+//                    examUser.setEndTime(nowDate);
+//                    examService.saveExamUser(examUser);
+//                    return new CommonResult(CodeConstant.EXAM_END, "考试已结束");
+//                }
+//            }
 
             ExamUser sessionUser = new ExamUser();
             sessionUser.setId(examUser.getId());

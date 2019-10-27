@@ -1501,6 +1501,8 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
                 vo.setTimer(df.format(new Date(surplusTime.longValue())));
                 comRes.setData(vo);
             } else {
+                //保存考生结束时间
+                examUser.setEndTime(new Date());
                 comRes.setCode(CodeConstant.EXAM_END);
                 comRes.setMsg("考试时间到，考试结束！");
                 return comRes;
