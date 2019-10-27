@@ -5,6 +5,7 @@ package com.jeesite.modules.common.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.jeesite.common.cache.CacheUtils;
 import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.constant.ServiceConstant;
 import com.jeesite.common.entity.Page;
@@ -1506,6 +1507,8 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
                 //保存考生结束时间
                 examUser.setEndTime(new Date());
                 examUserService.save(examUser);
+                //清楚缓存
+                CacheUtils.remove("examUser",examUser.getUserId());
                 comRes.setCode(CodeConstant.EXAM_END);
                 comRes.setMsg("考试时间到，考试结束！");
                 return comRes;
