@@ -105,7 +105,7 @@ public class SignInService {
             if ("1".equals(exam.getExamType())) {
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 Calendar calendar = Calendar.getInstance();
-                calendar.setTime(exam.getStartTime());
+                calendar.setTime(examUser.getStartTime());
                 calendar.add(Calendar.MINUTE, exam.getDuration());
                 //考试已结束
                 Date nowDate = new Date();
