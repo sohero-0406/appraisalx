@@ -82,6 +82,8 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
     private PictureUserService pictureUserService;
     @Autowired
     private DelegateLetterService delegateLetterService;
+    @Autowired
+    private ExamUserService examUserService;
 
 
     /**
@@ -1503,6 +1505,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
             } else {
                 //保存考生结束时间
                 examUser.setEndTime(new Date());
+                examUserService.save(examUser);
                 comRes.setCode(CodeConstant.EXAM_END);
                 comRes.setMsg("考试时间到，考试结束！");
                 return comRes;
