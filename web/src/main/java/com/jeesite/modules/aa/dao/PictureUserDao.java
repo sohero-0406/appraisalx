@@ -33,7 +33,7 @@ public interface PictureUserDao extends CrudDao<PictureUser> {
 	 * @param parentTypeIds
 	 * @return
 	 */
-	List<PictureTypeAndUserVO> findVoListByExamUserIdAndParentTypeId(ExamUser examUser, String[] parentTypeIds);
+	List<PictureTypeAndUserVO> findVoListByExamUserIdAndParentTypeId(@Param("examUser") ExamUser examUser, @Param("parentTypeIds") String[] parentTypeIds);
 
 	/**
 	 * 根据考试id和父图片类型ids加载图片信息

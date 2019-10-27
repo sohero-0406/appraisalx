@@ -3,6 +3,7 @@
  */
 package com.jeesite.modules.aa.service;
 
+import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.entity.Page;
 import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.service.CrudService;
@@ -12,6 +13,7 @@ import com.jeesite.modules.aa.vo.ReferenceVO;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.sys.entity.DictData;
 import com.jeesite.modules.sys.utils.DictUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -85,7 +87,15 @@ public class ReferenceService extends CrudService<ReferenceDao, Reference> {
     /**
      * 初始化参照物
      */
-    public ReferenceVO initReference(Reference reference) {
+    public CommonResult initReference(Reference reference) {
+
+        //判断是否被占用
+        if(StringUtils.isNotBlank(reference.getId())){
+            String [] referenceId = {reference.getId()};
+            if(CollectionUtils.isNotEmpty(dao.selectReferenceExist(referenceId))){
+                return new CommonResult(CodeConstant.REQUEST_FAILED,"当前参照物已经被占用，不可进行编辑!");
+            }
+        }
 
         ReferenceVO referenceVO = new ReferenceVO();
         //加载车辆配置类型
@@ -109,17 +119,35 @@ public class ReferenceService extends CrudService<ReferenceDao, Reference> {
         referenceVO.setPaymentMethodList(paymentMethodList);
 
         referenceVO.setReference(this.get(reference));
-        return referenceVO;
+        return new CommonResult(referenceVO);
     }
 
     /**
      * 删除 真删
      */
     @Transactional(readOnly = false)
-    public void deleteReference(String referenceIdList) {
+    public CommonResult deleteReference(String referenceIdList) {
         String[] idList = referenceIdList.split(",");
+        List<Reference> referenceList = dao.selectReferenceExist(idList);
+        if(CollectionUtils.isNotEmpty(referenceList)){
+            StringBuilder builder = new StringBuilder();
+            int len = referenceList.size();
+            for(int i=0;i<len;i++){
+                if(i < len-1){
+                    builder.append(referenceList.get(i).getModel()+"已被占用,");
+                }else if(i == len-1 && i<4){
+                    builder.append(referenceList.get(i).getModel()+"已被占用");
+                }else{
+                    builder.append("...");
+                    break;
+                }
+            }
+            return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER,builder.toString());
+        }
         dao.deleteReference(idList);
+        return new CommonResult();
     }
+
 
     /**
     * @description: 查询参照物列表

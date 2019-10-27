@@ -20,5 +20,7 @@ public interface ReferenceDao extends CrudDao<Reference> {
 
     void deleteReference(@Param("referenceIdList") String[] referenceIdList);
 
+    List<Reference> selectReferenceExist(@Param("referenceIdList") String[] referenceIdList);
+
     List<Reference> findReferenceList(Reference reference);
 }

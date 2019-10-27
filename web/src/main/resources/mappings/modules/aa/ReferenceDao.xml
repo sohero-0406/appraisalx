@@ -24,6 +24,21 @@
 		</where>
 	</delete>
 
+	<select id="selectReferenceExist" resultType="Reference">
+			select id,model from (
+			select distinct(id),model from (
+			(select re.id,re.model from aa_calculate_current c
+			left join aa_reference re on re.id = c.param1_id)
+				UNION All
+			(select re.id,re.model from aa_calculate_current c
+			left join aa_reference re on re.id = c.param2_id)) as a
+			) b
+			where b.id in
+		<foreach collection="referenceIdList" item="referenceId" index="index" open="(" close=")" separator=",">
+			#{referenceId}
+		</foreach>
+	</select>
+
     <select id="findReferenceList" resultType="com.jeesite.modules.aa.entity.Reference">
 		SELECT
 			id,

@@ -338,6 +338,7 @@ public class CalculateCurrentService extends CrudService<CalculateCurrentDao, Ca
                 calculateCurrent.setModel(vehicleInfo.getString("chexingmingcheng"));
             }
         }
+
         calculateCurrent.setDisplacement(carInfo.getDisplacement());
         calculateCurrent.setEnvironmentalStandard(DictUtils.getDictLabel("aa_environmental_standard",
                 carInfo.getEnvironmentalStandard(), ""));
@@ -359,6 +360,8 @@ public class CalculateCurrentService extends CrudService<CalculateCurrentDao, Ca
         vehicleGradeAssess = vehicleGradeAssessService.getByEntity(vehicleGradeAssess);
         if (null != vehicleGradeAssess) {
             calculateCurrent.setScore(vehicleGradeAssess.getScore());
+            //交易时间 == 鉴定日期
+            calculateCurrent.setTradeTime(vehicleGradeAssess.getIdentifyDate());
         }
 
         vo.setCalculateCurrent(calculateCurrent);

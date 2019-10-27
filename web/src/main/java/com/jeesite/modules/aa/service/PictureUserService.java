@@ -134,10 +134,8 @@ public class PictureUserService extends CrudService<PictureUserDao, PictureUser>
      * @param parentTypeIds 图片父类型ids
      * @return
      */
-    public CommonResult findPictureByParentTypeId(ExamUser examUser, String[] parentTypeIds) {
-        if (parentTypeIds == null || parentTypeIds.length <= 0) {
-            return new CommonResult();
-        }
+    public List<PictureTypeAndUserVO> findPictureByParentTypeId(ExamUser examUser, String[] parentTypeIds) {
+
         List<PictureTypeAndUserVO> picTypeAndUserList = pictureUserDao.findVoListByExamUserIdAndParentTypeId(examUser, parentTypeIds);
         if (picTypeAndUserList == null) {
             picTypeAndUserList = new ArrayList<>();
@@ -163,7 +161,23 @@ public class PictureUserService extends CrudService<PictureUserDao, PictureUser>
         }
         CommonResult comRes = new CommonResult();
         comRes.setData(picTypeAndUserVOs);
-        return comRes;
+        return picTypeAndUserVOs;
+    }
+
+    public PictureTypeAndUserVO findPictureByParentTypeIdTwo(ExamUser examUser, String[] parentTypeIds,String parentTypeId) {
+        List<PictureTypeAndUserVO> picTypeAndUserList = pictureUserDao.findVoListByExamUserIdAndParentTypeId(examUser, parentTypeIds);
+        PictureTypeAndUserVO pictureTypeAndUserVO = new PictureTypeAndUserVO();
+        PictureType picType = new PictureType();
+        picType.setName("鉴定技术状况");
+        picType.setId("1143446339264172032");
+        picType.setSort(50);
+        pictureTypeAndUserVO.setParentPictureType(picType);
+        List<PictureUser> childPicUserList = new ArrayList<>();
+        for (PictureTypeAndUserVO picTypeAndUser : picTypeAndUserList) {
+            childPicUserList.add(picTypeAndUser.getPictureUser());
+        }
+        pictureTypeAndUserVO.setChildren(childPicUserList);
+        return pictureTypeAndUserVO;
     }
 
     /**

@@ -725,11 +725,8 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         //判断老师 在调用之前 调用下保存 鉴定报告
         if (StringUtils.isNotBlank(examUser.getPaperId())) { //教师
             this.saveAppraisalReport(delegateLetter, examUser); //保存
-            try {
-                this.generateLetter(examUser); //生成鉴定报告
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            this.generateLetter(examUser); //生成鉴定报告
+
         }
         PictureUser pictureUser = new PictureUser();
         pictureUser.setExamUserId(examUser.getId());

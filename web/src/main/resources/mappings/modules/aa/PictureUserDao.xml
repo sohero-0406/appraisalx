@@ -51,6 +51,31 @@
 			</if>
 		</where>
 	</select>
+	<select id="findVoListByExamUserIdAndParentTypeId" resultType="com.jeesite.modules.aa.vo.PictureTypeAndUserVO">
+		select pictureUser.id as "pictureUser.id",
+		pictureUser.url as "pictureUser.url",
+		pictureUser.picture_type_id as "pictureUser.pictureTypeId",
+		pictureUser.name as "pictureUser.name",
+		pictureType.id as "pictureType.id",
+		pictureType.parent_id as "pictureType.parentId",
+		pictureType.name as "pictureType.name"
+		from aa_picture_user as pictureUser
+		left join aa_picture_type as pictureType on pictureType.id=pictureUser.picture_type_id
+		<where>
+			<if test="examUser.id != null and examUser.id != ''">
+				and pictureUser.exam_user_id = #{examUser.id}
+			</if>
+			<if test="examUser.paperId != null and examUser.paperId != ''">
+				and pictureUser.paper_id = #{examUser.paperId}
+			</if>
+			<if test="parentTypeIds != null and parentTypeIds.length > 0">
+				and pictureType.parent_id in
+				<foreach collection="parentTypeIds" item="parentTypeId" index="index" open="(" close=")" separator=",">
+					#{parentTypeId}
+				</foreach>
+			</if>
+		</where>
+	</select>
 	<select id="findListByExamUserIdAndParentTypeId" resultType="PictureUser">
 		select pictureUser.id,pictureUser.url,pictureUser.picture_type_id,pictureUser.name
 		from aa_picture_user as pictureUser

@@ -168,7 +168,7 @@ public class PaperController extends BaseController {
         } else {
             // 教师
             Paper paper = paperService.get(paperId);
-            if ("1".equals(paper.getState())) {
+            if ("0".equals(paper.getState())) {
                 return new CommonResult(CodeConstant.PAPER_ENABLED, "当前试卷已被启用，不可进行编辑");
             }
             examUser.setPaperId(paperId);

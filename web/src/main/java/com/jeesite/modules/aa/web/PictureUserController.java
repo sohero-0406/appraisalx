@@ -11,6 +11,7 @@ import com.jeesite.common.utils.BASE64DecodedMultipartFile;
 import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.aa.entity.PictureUser;
 import com.jeesite.modules.aa.service.PictureUserService;
+import com.jeesite.modules.aa.vo.PictureTypeAndUserVO;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.utils.UserUtils;
@@ -28,6 +29,7 @@ import sun.misc.BASE64Decoder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -96,10 +98,14 @@ public class PictureUserController extends BaseController {
     @ResponseBody
     public CommonResult findPictureByParentTypeId() {
         ExamUser examUser = UserUtils.getExamUser();
-        String[] parentTypeIds = new String[]{
-                "1143431479216775168", "1143437059610071040", "1143439093974253568",
-                "1143441175747194880", "1143446339264172032"};
-        return pictureUserService.findPictureByParentTypeId(examUser, parentTypeIds);
+        List<PictureTypeAndUserVO> pictureTypeAndUserVOList= new ArrayList<>();
+        //前四模块
+        String[] parentTypeIds = new String[]{"1143431479216775168", "1143437059610071040", "1143439093974253568", "1143441175747194880"};
+        pictureTypeAndUserVOList.addAll(pictureUserService.findPictureByParentTypeId(examUser, parentTypeIds));
+        //第五模块
+        String[] parentTypeId = new String[]{"1143446511703404544","1143451785957478400","1143459636373086208","1143462343780728832","1143463779482673152","1143465942158221312","1144170652301152256"};
+        pictureTypeAndUserVOList.add(pictureUserService.findPictureByParentTypeIdTwo(examUser,parentTypeId,"1143446339264172032"));
+        return new CommonResult(pictureTypeAndUserVOList);
     }
 
     /**
