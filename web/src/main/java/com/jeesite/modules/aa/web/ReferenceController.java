@@ -159,8 +159,6 @@ public class ReferenceController extends BaseController {
 	@RequestMapping(value = "initReference")
 	@ResponseBody
 	public CommonResult initReference(@Validated Reference reference) {
-		CommonResult comRes = new CommonResult();
-		comRes.setData(referenceService.initReference(reference));
-		return comRes;
+		return referenceService.initReference(reference);
 	}
 }
