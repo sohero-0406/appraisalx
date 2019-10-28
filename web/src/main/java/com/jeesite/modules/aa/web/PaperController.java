@@ -190,7 +190,7 @@ public class PaperController extends BaseController {
         }
         paper.setUserId(examUser.getUserId());
         String state = paper.getState();
-        if ("1".equals(state)) {
+        if ("0".equals(state)) {
             // 教师
             Exam exam = new Exam();
             exam.setPaperId(paperId);
@@ -198,10 +198,10 @@ public class PaperController extends BaseController {
             if (CollectionUtils.isNotEmpty(examList)) {
                 return new CommonResult(CodeConstant.REQUEST_FAILED, "当前试卷被占用，不可进行编辑");
             }
-            paper.setState("0");
-        }
-        if ("0".equals(state)) {
             paper.setState("1");
+        }
+        if ("1".equals(state)) {
+            paper.setState("0");
         }
         paperService.save(paper);
         return new CommonResult(paper.getState());

@@ -56,7 +56,7 @@ public class HomePageService {
         homePageVO.setCarInfo(carInfo);
         carInfo = carInfoService.findCarInfoBySortStu(homePageVO);
         if (carInfo != null) {
-            if(StringUtils.isNotBlank(carInfo.getMileage())){
+            if (StringUtils.isNotBlank(carInfo.getMileage())) {
                 BigDecimal mileage = new BigDecimal(carInfo.getMileage());
                 carInfo.setMileage(mileage.divide(new BigDecimal("10000"), 1, BigDecimal.ROUND_HALF_UP) + "万公里");
             }
@@ -76,7 +76,7 @@ public class HomePageService {
             vehicleGradeAssess = vehicleGradeAssessService.getByEntity(vehicleGradeAssess);
             homePageVO.setVehicleGradeAssess(vehicleGradeAssess);
 
-            if(StringUtils.isNotBlank(carInfo.getModel())){
+            if (StringUtils.isNotBlank(carInfo.getModel())) {
                 Map<String, String> map = new HashMap<>();
                 map.put("chexingId", carInfo.getModel());
                 CommonResult result = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_CAR_MODEL, map);
@@ -89,7 +89,7 @@ public class HomePageService {
         }
         PictureUser pictureUser = new PictureUser();
         pictureUser.setExamUserId(examUser.getId());
-        if(CollectionUtils.isNotEmpty(pictureUserService.findList(pictureUser))){
+        if (CollectionUtils.isNotEmpty(pictureUserService.findList(pictureUser))) {
             homePageVO.setIsNew("1");
         }
         //添加登录人姓名
@@ -101,9 +101,9 @@ public class HomePageService {
     /**
      * 加载首页界面(教师)
      */
-    public Map<String,Object> loadHomePageTea(HomePageVO homePageVO) {
-        Map<String,Object> returnMap = new HashMap<>();
-        ExamUser examUser =  UserUtils.getExamUser();
+    public Map<String, Object> loadHomePageTea(HomePageVO homePageVO) {
+        Map<String, Object> returnMap = new HashMap<>();
+        ExamUser examUser = UserUtils.getExamUser();
         if (StringUtils.isBlank(homePageVO.getSort())) {
             //排序规则为空，默认降序
             homePageVO.setSort("2");
@@ -112,11 +112,11 @@ public class HomePageService {
         List<CarInfo> carInfoList = paperService.loadHomePageTea(homePageVO);
         if (carInfoList != null) {
             for (CarInfo carInfo : carInfoList) {
-                if(null==carInfo){
+                if (null == carInfo) {
                     continue;
                 }
                 HomePageVO temp = new HomePageVO();
-                if(StringUtils.isNotBlank(carInfo.getMileage())){
+                if (StringUtils.isNotBlank(carInfo.getMileage())) {
                     BigDecimal mileage = new BigDecimal(carInfo.getMileage());
                     carInfo.setMileage(mileage.divide(new BigDecimal("10000"), 1, BigDecimal.ROUND_HALF_UP) + "万公里");
                 }
@@ -138,11 +138,11 @@ public class HomePageService {
                 temp.setVehicleGradeAssess(vehicleGradeAssess);
 
                 Map<String, String> map = new HashMap<>();
-                if(StringUtils.isNotBlank(carInfo.getModel())){
+                if (StringUtils.isNotBlank(carInfo.getModel())) {
                     map.put("chexingId", carInfo.getModel());
                     CommonResult result = httpClientService.post(ServiceConstant.VEHICLEINFO_GET_CAR_MODEL, map);
                     if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
-                        if(null!=result.getData()){
+                        if (null != result.getData()) {
                             JSONObject vehicleInfo = JSONObject.parseObject(result.getData().toString());
                             temp.setVehicleInfo(vehicleInfo);
                         }
@@ -152,7 +152,7 @@ public class HomePageService {
 
                 //添加登录人姓名
             }
-            returnMap.put("homePagelist",list);
+            returnMap.put("homePagelist", list);
         }
         returnMap.put("trueName", examUser.getTrueName());
         return returnMap;
@@ -164,15 +164,7 @@ public class HomePageService {
     @Transactional
     public void newPaper() {
         ExamUser examUser = UserUtils.getExamUser();
-        if (StringUtils.isNotBlank(examUser.getId())) {
-            //学生
-            if (null == examUser.getStartTime()) {
-                examUser.setStartTime(new Date());
-                examUserService.save(examUser);
-                //更新缓存
-                CacheUtils.put("examUser", examUser.getUserId(), examUser);
-            }
-        } else {
+        if (StringUtils.isBlank(examUser.getId())) {
             //教师
             Paper paper = new Paper();
             paper.setStatus("1");
@@ -188,20 +180,19 @@ public class HomePageService {
     /**
      * 左侧列表数据展示
      */
-    public CarInfo findLeftInfor(ExamUser examUser){
+    public CarInfo findLeftInfor(ExamUser examUser) {
         CarInfo carInfo = carInfoService.findLeftInfor(examUser);
-        if(null!=carInfo){
+        if (null != carInfo) {
             VehicleGradeAssess vehicleGradeAssess = new VehicleGradeAssess();
             vehicleGradeAssess.setExamUserId(examUser.getId());
             vehicleGradeAssess.setPaperId(examUser.getPaperId());
             vehicleGradeAssess = vehicleGradeAssessService.getByEntity(vehicleGradeAssess);
-            if(null!=vehicleGradeAssess){
+            if (null != vehicleGradeAssess) {
                 carInfo.setEvaluator(vehicleGradeAssess.getEvaluator());//评估师
             }
         }
         return carInfo;
     }
-
 
 
 }

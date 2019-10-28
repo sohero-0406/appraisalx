@@ -103,9 +103,8 @@ public class SignInService {
             //判断考试是否已结束
             Exam exam = examService.get(examUser.getExamId());
             if ("1".equals(exam.getExamType())) {
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 Calendar calendar = Calendar.getInstance();
-                if(null!=examUser.getStartTime()){
+                if (null != examUser.getStartTime()) {
                     calendar.setTime(examUser.getStartTime());
                 }
                 calendar.add(Calendar.MINUTE, exam.getDuration());
@@ -113,16 +112,21 @@ public class SignInService {
                 Date nowDate = new Date();
                 if (calendar.getTime().compareTo(nowDate) < 0) {
                     examUser.setEndTime(nowDate);
-                    examService.saveExamUser(examUser);
+                    examUserService.save(examUser);
                     return new CommonResult(CodeConstant.EXAM_END, "考试已结束");
                 }
             }
-
+            //添加考生开始时间
+            if (null == examUser.getStartTime()) {
+                examUser.setStartTime(new Date());
+            } else {
+                examUser.setStartTime(examUser.getStartTime());
+            }
+            examUserService.save(examUser);
             ExamUser sessionUser = new ExamUser();
             sessionUser.setId(examUser.getId());
             sessionUser.setUserId(examUser.getUserId());
             sessionUser.setExamId(examUser.getExamId());
-            sessionUser.setStartTime(examUser.getStartTime());
             sessionUser.setRoleType(roleId);
             sessionUser.setTrueName(trueName);
             sessionUser.setUserNum(userName);
