@@ -38,7 +38,7 @@ jdbc:
 #  url: jdbc:mysql://localhost:3411/appraisal?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull
 #  username: root
 #  password:
-  url: jdbc:mysql://192.168.0.66:3306/appraisal?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull
+  url: jdbc:mysql://192.168.0.66:3306/appraisalx?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull
   username: root
   password: root
   testSql: SELECT 1
