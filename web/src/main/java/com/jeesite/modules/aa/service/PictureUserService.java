@@ -17,7 +17,9 @@ import com.jeesite.modules.aa.entity.PictureUser;
 import com.jeesite.modules.aa.vo.PictureTypeAndUserVO;
 import com.jeesite.modules.aa.vo.PictureUserVO;
 import com.jeesite.modules.common.entity.CommonResult;
+import com.jeesite.modules.common.entity.Exam;
 import com.jeesite.modules.common.entity.ExamUser;
+import com.jeesite.modules.common.service.ExamService;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,6 +46,8 @@ public class PictureUserService extends CrudService<PictureUserDao, PictureUser>
     private PictureUserDao pictureUserDao;
     @Autowired
     private PictureTypeService pictureTypeService;
+    @Autowired
+    private ExamService examService;
 
     /**
      * 上传图片并保存和识别图片信息
@@ -87,8 +91,8 @@ public class PictureUserService extends CrudService<PictureUserDao, PictureUser>
         PictureType pictureType = pictureTypeService.get(pictureTypeId);
         String fileName = new IdWorker(-1, -1).nextId() + "";
         String originFileName = picFile.getOriginalFilename();
-        String [] originFileNameArray = originFileName.split("\\.");
-        int bigSize = originFileNameArray.length-1;
+        String[] originFileNameArray = originFileName.split("\\.");
+        int bigSize = originFileNameArray.length - 1;
         String fileType = "." + originFileNameArray[bigSize];
         File destFile = new File(filePath + fileName + fileType);
         if (!destFile.getParentFile().exists()) {
@@ -164,7 +168,7 @@ public class PictureUserService extends CrudService<PictureUserDao, PictureUser>
         return picTypeAndUserVOs;
     }
 
-    public PictureTypeAndUserVO findPictureByParentTypeIdTwo(ExamUser examUser, String[] parentTypeIds,String parentTypeId) {
+    public PictureTypeAndUserVO findPictureByParentTypeIdTwo(ExamUser examUser, String[] parentTypeIds, String parentTypeId) {
         List<PictureTypeAndUserVO> picTypeAndUserList = pictureUserDao.findVoListByExamUserIdAndParentTypeId(examUser, parentTypeIds);
         PictureTypeAndUserVO pictureTypeAndUserVO = new PictureTypeAndUserVO();
         PictureType picType = new PictureType();
@@ -319,5 +323,16 @@ public class PictureUserService extends CrudService<PictureUserDao, PictureUser>
         if (null == super.dao.getByEntity(pictureUser)) {
             this.save(pictureUser);
         }
+    }
+
+    /**
+     * 查看照片（学生查看教师答案时专用）
+     */
+    public List<PictureUser> findPictureListTea(ExamUser examUser, String[] pictureTypeIds) {
+        Exam exam = examService.get(examUser.getExamId());
+        String paperId = exam.getPaperId();
+        examUser = new ExamUser();
+        examUser.setPaperId(paperId);
+        return pictureUserDao.findPictureList(examUser, pictureTypeIds);
     }
 }

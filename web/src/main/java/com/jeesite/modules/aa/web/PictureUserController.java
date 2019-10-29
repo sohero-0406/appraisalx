@@ -144,6 +144,26 @@ public class PictureUserController extends BaseController {
         return comRes;
     }
 
+    /**
+     * 查看照片（学生查看教师答案时专用）
+     */
+    @RequestMapping(value = "findPictureTea")
+    @ResponseBody
+    public CommonResult findPictureTea(String pictureTypeId) {
+        ExamUser examUser = UserUtils.getExamUser();
+        CommonResult comRes = new CommonResult();
+        String[] parentTypeIds = new String[]{pictureTypeId};//记录车辆基本信息
+        List<PictureUser> pictureUserList = pictureUserService.findPictureListTea(examUser, parentTypeIds);
+        int i = 1;
+        for (PictureUser pictureUser : pictureUserList) {
+            String name = pictureUser.getName();
+            pictureUser.setName(name + i);
+            i++;
+        }
+        comRes.setData(pictureUserList);
+        return comRes;
+    }
+
     @RequestMapping(value = "getPictureUrlWorker")
     @ResponseBody
     public CommonResult getPictureUrlWorker(){
