@@ -1,5 +1,6 @@
 package com.jeesite.modules.aa.service;
 
+import alvinJNI.RegisterUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -12,6 +13,7 @@ import com.jeesite.common.constant.CodeConstant;
 import com.jeesite.common.constant.ServiceConstant;
 import com.jeesite.common.lang.StringUtils;
 import com.jeesite.common.utils.jwt.JwtUtils;
+import com.jeesite.common.web.http.ServletUtils;
 import com.jeesite.modules.aa.vo.LoginVO;
 import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.Exam;
@@ -77,6 +79,10 @@ public class SignInService {
         Map<String, Object> returnMap = new HashMap<>();
         //教师
         if ("2".equals(roleId)) {
+//            String msg = RegisterUtil.isAllowLogin(ServletUtils.getRequest());
+//            if (StringUtils.isNotBlank(msg)) {
+//                return new CommonResult(CodeConstant.REGISTE_INFO_ERROR, msg);
+//            }
             examUser.setUserId(userId);
             examUser.setRoleType(roleId);
             examUser.setTrueName(trueName);
