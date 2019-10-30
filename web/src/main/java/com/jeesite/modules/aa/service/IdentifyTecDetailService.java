@@ -107,6 +107,7 @@ public class IdentifyTecDetailService extends CrudService<IdentifyTecDetailDao, 
         //查询启用项
         ExamDetail examDetail = new ExamDetail();
         //路试项
+        boolean isDel=false;
         if ("7".equals(type)) {
             //考生
             if (StringUtils.isNotBlank(examUser.getExamId())) {
@@ -132,6 +133,9 @@ public class IdentifyTecDetailService extends CrudService<IdentifyTecDetailDao, 
 
         //查询考生或教师已作答过的题目
         identifyTec = identifyTecDetailDao.findData(identifyTec);
+        if(isDel){
+            identifyTec.setId(null);
+        }
         Map<String, IdentifyTecDetail> map = new HashMap<>();
         if (null != identifyTec) {
             List<IdentifyTecDetail> detailList = identifyTec.getItemList();
