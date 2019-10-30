@@ -146,6 +146,7 @@ public class IdentifyTecDetailService extends CrudService<IdentifyTecDetailDao, 
                 } else {
                     detail.setCheckRes("有缺陷");
                 }
+                //清空查看时的id，为了路试项禁用时使用
                 if (isDel) {
                     detail.setId(null);
                 }
