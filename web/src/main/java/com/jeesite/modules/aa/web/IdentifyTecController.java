@@ -122,7 +122,7 @@ public class IdentifyTecController extends BaseController {
 	/**
 	 * 检查路试项照片保存（学生查看教师答案时专用）
 	 */
-	@RequestMapping(value = "saveBodySkeletonImg")
+	@RequestMapping(value = "saveImg")
 	@ResponseBody
 	public CommonResult saveImg() {
 		return identifyTecService.saveImg();

@@ -266,7 +266,7 @@ public class PictureUserService extends CrudService<PictureUserDao, PictureUser>
     }
 
     /**
-     * 批量删除
+     * 批量删除，并删除文件
      */
     @Transactional(readOnly = false)
     public CommonResult deletePictureUseIds(String ids) {
@@ -341,5 +341,15 @@ public class PictureUserService extends CrudService<PictureUserDao, PictureUser>
      */
     public List<PictureUser> findTeaImg(ExamUser examUser, String parentId) {
         return dao.findTeaImg(examUser, parentId);
+    }
+
+    /**
+     * 删除已经存入的学生拷贝教师答案的图片
+     * @param examUserId
+     * @param parentId
+     */
+    @Transactional
+    public void deleteCopyImg(String examUserId, String parentId) {
+        dao.deleteCopyImg(examUserId,parentId);
     }
 }

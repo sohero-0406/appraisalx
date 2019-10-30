@@ -97,7 +97,7 @@
         </where>
     </select>
 
-    <select id="findBodySkeletonImg" resultType="PictureUser">
+    <select id="findTeaImg" resultType="PictureUser">
 		SELECT a.* FROM `aa_picture_user` a
 		left join aa_picture_type b on a.picture_type_id = b.id
 		where paper_id = #{examUser.paperId} and b.parent_id = #{parentId}
@@ -114,5 +114,11 @@
                 </foreach>
             </if>
         </where>
+    </delete>
+
+    <delete id="deleteCopyImg">
+        delete from aa_picture_user
+        where picture_type_id in (select id from aa_picture_type where parent_id = #{parentId})
+        and exam_user_id = #{examUserId};
     </delete>
 </mapper>

@@ -429,6 +429,7 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
     /**
      * 检查路试项照片保存（学生查看教师答案时专用）
      */
+    @Transactional
     public CommonResult saveImg() {
         ExamUser examUser = UserUtils.getExamUser();
         String examUserId = examUser.getId();
@@ -437,13 +438,16 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
         identifyTec.setType("7");
         List<IdentifyTec> list = this.findList(identifyTec);
         if (CollectionUtils.isEmpty(list)) {
+            //删除已经存入的学生拷贝教师答案的图片
+            pictureUserService.deleteCopyImg(examUserId,"1144170652301152256");
+            //保存新教师图片到学生
             Exam exam = examService.get(examUser.getExamId());
             String paperId = exam.getPaperId();
             examUser = new ExamUser();
             examUser.setPaperId(paperId);
             List<PictureUser> pictureList = pictureUserService.findTeaImg(examUser,"1144170652301152256");
             for (PictureUser pictureUser : pictureList) {
-                pictureUser.setIsNewRecord(true);
+                pictureUser.setId(null);
                 pictureUser.setPaperId(null);
                 pictureUser.setExamUserId(examUserId);
                 pictureUserService.save(pictureUser);

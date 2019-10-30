@@ -220,6 +220,7 @@ public class CheckBodySkeletonService extends CrudService<CheckBodySkeletonDao, 
     /**
      * 车体骨架照片保存（学生查看教师答案时专用）
      */
+    @Transactional
     public CommonResult saveBodySkeletonImg() {
         ExamUser examUser = UserUtils.getExamUser();
         String examUserId = examUser.getId();
@@ -227,13 +228,16 @@ public class CheckBodySkeletonService extends CrudService<CheckBodySkeletonDao, 
         checkBodySkeleton.setExamUserId(examUserId);
         List<CheckBodySkeleton> list = this.findList(checkBodySkeleton);
         if (CollectionUtils.isEmpty(list)) {
+            //删除已经存入的学生拷贝教师答案的图片
+            pictureUserService.deleteCopyImg(examUserId,"1143441175747194880");
+            //保存新教师图片到学生
             Exam exam = examService.get(examUser.getExamId());
             String paperId = exam.getPaperId();
             examUser = new ExamUser();
             examUser.setPaperId(paperId);
             List<PictureUser> pictureList = pictureUserService.findTeaImg(examUser, "1143441175747194880");
             for (PictureUser pictureUser : pictureList) {
-                pictureUser.setIsNewRecord(true);
+                pictureUser.setId(null);
                 pictureUser.setPaperId(null);
                 pictureUser.setExamUserId(examUserId);
                 pictureUserService.save(pictureUser);
