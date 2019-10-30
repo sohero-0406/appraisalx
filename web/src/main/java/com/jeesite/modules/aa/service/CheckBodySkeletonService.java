@@ -133,11 +133,13 @@ public class CheckBodySkeletonService extends CrudService<CheckBodySkeletonDao, 
     public CheckBodySkeletonVO findAccidentVehicle(ExamUser examUser) {
         CheckBodySkeletonVO vo = new CheckBodySkeletonVO();
 
+
         CheckBodySkeleton checkBodySkeleton = new CheckBodySkeleton();
         CheckTradableVehicles checkTradableVehicles = new CheckTradableVehicles();
         //查询启用项
         ExamDetail examDetail = new ExamDetail();
         //考生
+        boolean flag = false;
         if (StringUtils.isNotBlank(examUser.getExamId())) {
             examDetail.setExamId(examUser.getExamId());
             examDetail = examDetailService.getByEntity(examDetail);
@@ -152,6 +154,7 @@ public class CheckBodySkeletonService extends CrudService<CheckBodySkeletonDao, 
                     checkBodySkeleton.setPaperId(exam.getPaperId());
                     checkTradableVehicles.setPaperId(exam.getPaperId());
                 }
+                flag = true;
             }
         } else {
             //教师
@@ -160,8 +163,10 @@ public class CheckBodySkeletonService extends CrudService<CheckBodySkeletonDao, 
         }
         List<CheckBodySkeleton> list = checkBodySkeletonDao.findAccidentVehicle(checkBodySkeleton);
         vo.setSkeletonList(list);
-
         checkTradableVehicles = checkTradableVehiclesService.getByEntity(checkTradableVehicles);
+        if(flag){
+            checkTradableVehicles.setId(null);
+        }
         vo.setCheckTradableVehicles(checkTradableVehicles);
         return vo;
     }

@@ -121,6 +121,7 @@ public class IdentifyTecDetailService extends CrudService<IdentifyTecDetailDao, 
                     if (null != exam) {
                         identifyTec.setPaperId(exam.getPaperId());
                     }
+                    isDel=true;
                 }
             } else {
                 //教师

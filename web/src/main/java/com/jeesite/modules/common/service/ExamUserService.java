@@ -401,7 +401,7 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
         if (calculateT.getBeginPrice() != null && calculateT.getEndPrice() != null) {
             if (judgeStringBetween(String.valueOf(calculateT.getBeginPrice()), String.valueOf(calculateT.getEndPrice()), studentPrice)) {
                 calculateCount = calculateCount.add(BigDecimal.valueOf(Integer.valueOf((String) examScoreMap.get("1151013343665733999"))));
-                calculateCount = calculateCount.add(BigDecimal.valueOf(Integer.valueOf((String) examScoreMap.get("1151013343665739992"))));
+//                calculateCount = calculateCount.add(BigDecimal.valueOf(Integer.valueOf((String) examScoreMap.get("1151013343665739992"))));
                 saveExamDetail(user.getId(), user.getExamId(), "1151028180615860225",
                         (String) examNameMap.get("1151013343665733999"), (String) examScoreMap.get("1151013343665733999"), (String) examScoreMap.get("1151013343665733999"),
                         calculateT.getBeginPrice() + "-" + calculateT.getEndPrice() + "元",
