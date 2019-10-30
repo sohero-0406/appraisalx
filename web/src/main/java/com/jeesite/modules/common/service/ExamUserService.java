@@ -406,19 +406,19 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
                         (String) examNameMap.get("1151013343665733999"), (String) examScoreMap.get("1151013343665733999"), (String) examScoreMap.get("1151013343665733999"),
                         calculateT.getBeginPrice() + "-" + calculateT.getEndPrice() + "元",
                         studentPrice + "元", "0");
-                saveExamDetail(user.getId(), user.getExamId(), "1151028180615860225",
-                        (String) examNameMap.get("1151013343665739992"), (String) examScoreMap.get("1151013343665739992"), (String) examScoreMap.get("1151013343665739992"),
-                        calculateT.getBeginPrice() + "-" + calculateT.getEndPrice() + "元",
-                        studentPrice + "元", "0");
+//                saveExamDetail(user.getId(), user.getExamId(), "1151028180615860225",
+//                        (String) examNameMap.get("1151013343665739992"), (String) examScoreMap.get("1151013343665739992"), (String) examScoreMap.get("1151013343665739992"),
+//                        calculateT.getBeginPrice() + "-" + calculateT.getEndPrice() + "元",
+//                        studentPrice + "元", "0");
             } else {
                 saveExamDetail(user.getId(), user.getExamId(), "1151028180615860225",
                         (String) examNameMap.get("1151013343665733999"), "0", (String) examScoreMap.get("1151013343665733999"),
                         calculateT.getBeginPrice() + "-" + calculateT.getEndPrice() + "元",
                         studentPrice == null ? "" : (studentPrice + "元"), "1");
-                saveExamDetail(user.getId(), user.getExamId(), "1151028180615860225",
-                        (String) examNameMap.get("1151013343665739992"), "0", (String) examScoreMap.get("1151013343665739992"),
-                        calculateT.getBeginPrice() + "-" + calculateT.getEndPrice() + "元",
-                        studentPrice == null ? "" : (studentPrice + "元"), "1");
+//                saveExamDetail(user.getId(), user.getExamId(), "1151028180615860225",
+//                        (String) examNameMap.get("1151013343665739992"), "0", (String) examScoreMap.get("1151013343665739992"),
+//                        calculateT.getBeginPrice() + "-" + calculateT.getEndPrice() + "元",
+//                        studentPrice == null ? "" : (studentPrice + "元"), "1");
             }
         } else {
             saveExamDetail(user.getId(), user.getExamId(), "1151028180615860225",

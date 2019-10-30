@@ -134,8 +134,6 @@ public class ExamResultsDetailService extends CrudService<ExamResultsDetailDao, 
 							break;
 						}
 					}
-				}else{
-					continue;
 				}
 				super.save(examResultsDetail);
 			}
