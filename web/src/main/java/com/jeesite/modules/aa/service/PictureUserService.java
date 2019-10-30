@@ -335,4 +335,11 @@ public class PictureUserService extends CrudService<PictureUserDao, PictureUser>
         examUser.setPaperId(paperId);
         return pictureUserDao.findPictureList(examUser, pictureTypeIds);
     }
+
+    /**
+     * 车体骨架照片保存（学生查看教师答案时专用）
+     */
+    public List<PictureUser> findTeaImg(ExamUser examUser, String parentId) {
+        return dao.findTeaImg(examUser, parentId);
+    }
 }

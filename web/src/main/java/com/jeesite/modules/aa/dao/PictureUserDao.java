@@ -47,4 +47,6 @@ public interface PictureUserDao extends CrudDao<PictureUser> {
 	 * 批量删除
 	 */
 	void deletePictureUseIds(@Param("ids") String[] ids);
+
+	List<PictureUser> findTeaImg(@Param("examUser") ExamUser examUser, @Param("parentId") String parentId);
 }

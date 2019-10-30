@@ -17,6 +17,7 @@ import com.jeesite.modules.common.entity.Exam;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.service.ExamService;
 import com.jeesite.modules.common.service.HttpClientService;
+import com.jeesite.modules.common.utils.UserUtils;
 import com.jeesite.modules.sys.utils.DictUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -75,6 +76,8 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
 
     @Autowired
     private ExamService examService;
+    @Autowired
+    private PictureUserService pictureUserService;
 
     /**
      * 获取单条数据
@@ -421,5 +424,31 @@ public class IdentifyTecService extends CrudService<IdentifyTecDao, IdentifyTec>
             total += 1;
         }
         return String.valueOf(total);
+    }
+
+    /**
+     * 检查路试项照片保存（学生查看教师答案时专用）
+     */
+    public CommonResult saveImg() {
+        ExamUser examUser = UserUtils.getExamUser();
+        String examUserId = examUser.getId();
+        IdentifyTec identifyTec = new IdentifyTec();
+        identifyTec.setExamUserId(examUserId);
+        identifyTec.setType("7");
+        List<IdentifyTec> list = this.findList(identifyTec);
+        if (CollectionUtils.isEmpty(list)) {
+            Exam exam = examService.get(examUser.getExamId());
+            String paperId = exam.getPaperId();
+            examUser = new ExamUser();
+            examUser.setPaperId(paperId);
+            List<PictureUser> pictureList = pictureUserService.findTeaImg(examUser,"1144170652301152256");
+            for (PictureUser pictureUser : pictureList) {
+                pictureUser.setIsNewRecord(true);
+                pictureUser.setPaperId(null);
+                pictureUser.setExamUserId(examUserId);
+                pictureUserService.save(pictureUser);
+            }
+        }
+        return new CommonResult();
     }
 }

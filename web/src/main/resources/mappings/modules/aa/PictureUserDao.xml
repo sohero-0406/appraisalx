@@ -1,110 +1,118 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jeesite.modules.aa.dao.PictureUserDao">
-	
-	<!-- 查询数据
-	<select id="findList" resultType="PictureUser">
-		SELECT ${sqlMap.column.toSql()}
-		FROM ${sqlMap.table.toSql()}
-		<where>
-			${sqlMap.where.toSql()}
-		</where>
-		ORDER BY ${sqlMap.order.toSql()}
-	</select> -->
-	<select id="findPictureList" resultType="PictureUser">
-		select id,url,picture_type_id,name
-		from aa_picture_user
-		<where>
-			<if test="examUser.id != null and examUser.id != ''">
-				and exam_user_id = #{examUser.id}
-			</if>
-			<if test="examUser.paperId != null and examUser.paperId != ''">
-				and paper_id = #{examUser.paperId}
-			</if>
-			<if test="pictureTypeIds != null and pictureTypeIds.length > 0">
-				and picture_type_id in
-			<foreach collection="pictureTypeIds" item="pictureTypeId" index="index" open="(" close=")" separator=",">
-				#{pictureTypeId}
-			</foreach>
-			</if>
-		</where>
+
+    <!-- 查询数据
+    <select id="findList" resultType="PictureUser">
+        SELECT ${sqlMap.column.toSql()}
+        FROM ${sqlMap.table.toSql()}
+        <where>
+            ${sqlMap.where.toSql()}
+        </where>
+        ORDER BY ${sqlMap.order.toSql()}
+    </select> -->
+    <select id="findPictureList" resultType="PictureUser">
+        select id,url,picture_type_id,name
+        from aa_picture_user
+        <where>
+            <if test="examUser.id != null and examUser.id != ''">
+                and exam_user_id = #{examUser.id}
+            </if>
+            <if test="examUser.paperId != null and examUser.paperId != ''">
+                and paper_id = #{examUser.paperId}
+            </if>
+            <if test="pictureTypeIds != null and pictureTypeIds.length > 0">
+                and picture_type_id in
+                <foreach collection="pictureTypeIds" item="pictureTypeId" index="index" open="(" close=")"
+                         separator=",">
+                    #{pictureTypeId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <select id="findVoListByExamUserIdAndParentTypeId" resultType="com.jeesite.modules.aa.vo.PictureTypeAndUserVO">
+        select pictureUser.id as "pictureUser.id",pictureUser.url as "pictureUser.url",
+        pictureUser.picture_type_id as "pictureUser.pictureTypeId",pictureUser.name as "pictureUser.name",
+        pictureType.id as "pictureType.id",pictureType.parent_id as "pictureType.parentId",
+        pictureType.name as "pictureType.name"
+        from aa_picture_user as pictureUser
+        left join aa_picture_type as pictureType on pictureType.id=pictureUser.picture_type_id
+        <where>
+            <if test="examUser.id != null and examUser.id != ''">
+                and pictureUser.exam_user_id = #{examUser.id}
+            </if>
+            <if test="examUser.paperId != null and examUser.paperId != ''">
+                and pictureUser.paper_id = #{examUser.paperId}
+            </if>
+            <if test="parentTypeIds != null and parentTypeIds.length > 0">
+                and pictureType.parent_id in
+                <foreach collection="parentTypeIds" item="parentTypeId" index="index" open="(" close=")" separator=",">
+                    #{parentTypeId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <select id="findVoListByExamUserIdAndParentTypeId" resultType="com.jeesite.modules.aa.vo.PictureTypeAndUserVO">
+        select pictureUser.id as "pictureUser.id",
+        pictureUser.url as "pictureUser.url",
+        pictureUser.picture_type_id as "pictureUser.pictureTypeId",
+        pictureUser.name as "pictureUser.name",
+        pictureType.id as "pictureType.id",
+        pictureType.parent_id as "pictureType.parentId",
+        pictureType.name as "pictureType.name"
+        from aa_picture_user as pictureUser
+        left join aa_picture_type as pictureType on pictureType.id=pictureUser.picture_type_id
+        <where>
+            <if test="examUser.id != null and examUser.id != ''">
+                and pictureUser.exam_user_id = #{examUser.id}
+            </if>
+            <if test="examUser.paperId != null and examUser.paperId != ''">
+                and pictureUser.paper_id = #{examUser.paperId}
+            </if>
+            <if test="parentTypeIds != null and parentTypeIds.length > 0">
+                and pictureType.parent_id in
+                <foreach collection="parentTypeIds" item="parentTypeId" index="index" open="(" close=")" separator=",">
+                    #{parentTypeId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <select id="findListByExamUserIdAndParentTypeId" resultType="PictureUser">
+        select pictureUser.id,pictureUser.url,pictureUser.picture_type_id,pictureUser.name
+        from aa_picture_user as pictureUser
+        left join aa_picture_type as pictureType on pictureType.id=pictureUser.picture_type_id
+        <where>
+            <if test="examUser.id != null and examUser.id != ''">
+                and pictureUser.exam_user_id = #{examUser.id}
+            </if>
+            <if test="examUser.paperId != null and examUser.paperId != ''">
+                and pictureUser.paper_id = #{examUser.paperId}
+            </if>
+            <if test="parentTypeIds != null and parentTypeIds.length > 0">
+                and pictureType.parent_id in
+                <foreach collection="parentTypeIds" item="parentTypeId" index="index" open="(" close=")" separator=",">
+                    #{parentTypeId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="findBodySkeletonImg" resultType="PictureUser">
+		SELECT a.* FROM `aa_picture_user` a
+		left join aa_picture_type b on a.picture_type_id = b.id
+		where paper_id = #{examUser.paperId} and b.parent_id = #{parentId}
 	</select>
-	<select id="findVoListByExamUserIdAndParentTypeId" resultType="com.jeesite.modules.aa.vo.PictureTypeAndUserVO">
-		select pictureUser.id as "pictureUser.id",pictureUser.url as "pictureUser.url",
-		pictureUser.picture_type_id as "pictureUser.pictureTypeId",pictureUser.name as "pictureUser.name",
-		pictureType.id as "pictureType.id",pictureType.parent_id as "pictureType.parentId",
-		pictureType.name as "pictureType.name"
-		from aa_picture_user as pictureUser
-		left join aa_picture_type as pictureType on pictureType.id=pictureUser.picture_type_id
-		<where>
-			<if test="examUser.id != null and examUser.id != ''">
-				and pictureUser.exam_user_id = #{examUser.id}
-			</if>
-			<if test="examUser.paperId != null and examUser.paperId != ''">
-				and pictureUser.paper_id = #{examUser.paperId}
-			</if>
-			<if test="parentTypeIds != null and parentTypeIds.length > 0">
-				and pictureType.parent_id in
-				<foreach collection="parentTypeIds" item="parentTypeId" index="index" open="(" close=")" separator=",">
-					#{parentTypeId}
-				</foreach>
-			</if>
-		</where>
-	</select>
-	<select id="findVoListByExamUserIdAndParentTypeId" resultType="com.jeesite.modules.aa.vo.PictureTypeAndUserVO">
-		select pictureUser.id as "pictureUser.id",
-		pictureUser.url as "pictureUser.url",
-		pictureUser.picture_type_id as "pictureUser.pictureTypeId",
-		pictureUser.name as "pictureUser.name",
-		pictureType.id as "pictureType.id",
-		pictureType.parent_id as "pictureType.parentId",
-		pictureType.name as "pictureType.name"
-		from aa_picture_user as pictureUser
-		left join aa_picture_type as pictureType on pictureType.id=pictureUser.picture_type_id
-		<where>
-			<if test="examUser.id != null and examUser.id != ''">
-				and pictureUser.exam_user_id = #{examUser.id}
-			</if>
-			<if test="examUser.paperId != null and examUser.paperId != ''">
-				and pictureUser.paper_id = #{examUser.paperId}
-			</if>
-			<if test="parentTypeIds != null and parentTypeIds.length > 0">
-				and pictureType.parent_id in
-				<foreach collection="parentTypeIds" item="parentTypeId" index="index" open="(" close=")" separator=",">
-					#{parentTypeId}
-				</foreach>
-			</if>
-		</where>
-	</select>
-	<select id="findListByExamUserIdAndParentTypeId" resultType="PictureUser">
-		select pictureUser.id,pictureUser.url,pictureUser.picture_type_id,pictureUser.name
-		from aa_picture_user as pictureUser
-		left join aa_picture_type as pictureType on pictureType.id=pictureUser.picture_type_id
-		<where>
-			<if test="examUser.id != null and examUser.id != ''">
-				and pictureUser.exam_user_id = #{examUser.id}
-			</if>
-			<if test="examUser.paperId != null and examUser.paperId != ''">
-				and pictureUser.paper_id = #{examUser.paperId}
-			</if>
-			<if test="parentTypeIds != null and parentTypeIds.length > 0">
-				and pictureType.parent_id in
-				<foreach collection="parentTypeIds" item="parentTypeId" index="index" open="(" close=")" separator=",">
-					#{parentTypeId}
-				</foreach>
-			</if>
-		</where>
-	</select>
-	
-	<delete id="deletePictureUseIds">
-		delete from aa_picture_user
-		<where>
-			<if test="ids != null and ids.length > 0">
-				and id in
-				<foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
-					#{id}
-				</foreach>
-			</if>
-		</where>
-	</delete>
+
+
+    <delete id="deletePictureUseIds">
+        delete from aa_picture_user
+        <where>
+            <if test="ids != null and ids.length > 0">
+                and id in
+                <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </delete>
 </mapper>

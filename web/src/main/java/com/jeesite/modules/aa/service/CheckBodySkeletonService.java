@@ -12,11 +12,14 @@ import com.jeesite.modules.aa.dao.CheckBodySkeletonDao;
 import com.jeesite.modules.aa.entity.CheckBodySkeleton;
 import com.jeesite.modules.aa.entity.CheckTradableVehicles;
 import com.jeesite.modules.aa.entity.ExamDetail;
+import com.jeesite.modules.aa.entity.PictureUser;
 import com.jeesite.modules.aa.vo.CheckBodySkeletonVO;
+import com.jeesite.modules.common.entity.CommonResult;
 import com.jeesite.modules.common.entity.Exam;
 import com.jeesite.modules.common.entity.ExamUser;
 import com.jeesite.modules.common.service.ExamService;
 import com.jeesite.modules.common.service.OperationLogService;
+import com.jeesite.modules.common.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +50,8 @@ public class CheckBodySkeletonService extends CrudService<CheckBodySkeletonDao, 
     private ExamService examService;
     @Autowired
     private OperationLogService operationLogService;
+    @Autowired
+    private PictureUserService pictureUserService;
 
     /**
      * 获取单条数据
@@ -62,7 +67,7 @@ public class CheckBodySkeletonService extends CrudService<CheckBodySkeletonDao, 
     /**
      * 查询分页数据
      *
-     * @param checkBodySkeleton      查询条件
+     * @param checkBodySkeleton 查询条件
      * @return
      */
     @Override
@@ -118,7 +123,7 @@ public class CheckBodySkeletonService extends CrudService<CheckBodySkeletonDao, 
                 checkBodySkeleton.setDescription(object.getString("description"));
                 super.save(checkBodySkeleton);
             }
-            operationLogService.saveObj(examUser,"保存检查车体骨架数据成功");
+            operationLogService.saveObj(examUser, "保存检查车体骨架数据成功");
         }
     }
 
@@ -189,7 +194,9 @@ public class CheckBodySkeletonService extends CrudService<CheckBodySkeletonDao, 
         return vo;
     }
 
-    public CheckBodySkeleton getByEntity(CheckBodySkeleton checkBodySkeleton){ return  dao.getByEntity(checkBodySkeleton); }
+    public CheckBodySkeleton getByEntity(CheckBodySkeleton checkBodySkeleton) {
+        return dao.getByEntity(checkBodySkeleton);
+    }
 
     /**
      * 查询鉴定项
@@ -198,15 +205,40 @@ public class CheckBodySkeletonService extends CrudService<CheckBodySkeletonDao, 
         return checkBodySkeletonDao.getTechnologyInfo(checkBodySkeleton);
     }
 
-    /** 
-    * @description: 查询事故车辆核查项目结果
-    * @param: [checkBodySkeleton]
-    * @return: java.util.List<com.jeesite.modules.aa.entity.CheckBodySkeleton>
-    * @author: Jiangyf
-    * @date: 2019/8/9 
-    * @time: 11:18
-    */ 
+    /**
+     * @description: 查询事故车辆核查项目结果
+     * @param: [checkBodySkeleton]
+     * @return: java.util.List<com.jeesite.modules.aa.entity.CheckBodySkeleton>
+     * @author: Jiangyf
+     * @date: 2019/8/9
+     * @time: 11:18
+     */
     public List<CheckBodySkeleton> findCheckProjectResults(CheckBodySkeleton checkBodySkeleton) {
         return dao.findCheckProjectResults(checkBodySkeleton);
+    }
+
+    /**
+     * 车体骨架照片保存（学生查看教师答案时专用）
+     */
+    public CommonResult saveBodySkeletonImg() {
+        ExamUser examUser = UserUtils.getExamUser();
+        String examUserId = examUser.getId();
+        CheckBodySkeleton checkBodySkeleton = new CheckBodySkeleton();
+        checkBodySkeleton.setExamUserId(examUserId);
+        List<CheckBodySkeleton> list = this.findList(checkBodySkeleton);
+        if (CollectionUtils.isEmpty(list)) {
+            Exam exam = examService.get(examUser.getExamId());
+            String paperId = exam.getPaperId();
+            examUser = new ExamUser();
+            examUser.setPaperId(paperId);
+            List<PictureUser> pictureList = pictureUserService.findTeaImg(examUser, "1143441175747194880");
+            for (PictureUser pictureUser : pictureList) {
+                pictureUser.setIsNewRecord(true);
+                pictureUser.setPaperId(null);
+                pictureUser.setExamUserId(examUserId);
+                pictureUserService.save(pictureUser);
+            }
+        }
+        return new CommonResult();
     }
 }

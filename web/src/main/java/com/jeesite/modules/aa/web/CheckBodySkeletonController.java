@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * 检查车体骨架Controller
+ *
  * @author lvchangwei
  * @version 2019-07-02
  */
@@ -33,90 +34,99 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping(value = "${adminPath}/aa/checkBodySkeleton")
 public class CheckBodySkeletonController extends BaseController {
 
-	@Autowired
-	private CheckBodySkeletonService checkBodySkeletonService;
-	
-	/**
-	 * 获取数据
-	 */
-	@ModelAttribute
-	public CheckBodySkeleton get(String id, boolean isNewRecord) {
-		return checkBodySkeletonService.get(id, isNewRecord);
-	}
-	
-	/**
-	 * 查询列表
-	 */
-	@RequestMapping(value = {"list", ""})
-	public String list(CheckBodySkeleton checkBodySkeleton, Model model) {
-		model.addAttribute("checkBodySkeleton", checkBodySkeleton);
-		return "modules/aa/checkBodySkeletonList";
-	}
-	
-	/**
-	 * 查询列表数据
-	 */
-	@RequestMapping(value = "listData")
-	@ResponseBody
-	public Page<CheckBodySkeleton> listData(CheckBodySkeleton checkBodySkeleton, HttpServletRequest request, HttpServletResponse response) {
-		checkBodySkeleton.setPage(new Page<>(request, response));
-		Page<CheckBodySkeleton> page = checkBodySkeletonService.findPage(checkBodySkeleton);
-		return page;
-	}
+    @Autowired
+    private CheckBodySkeletonService checkBodySkeletonService;
 
-	/**
-	 * 查看编辑表单
-	 */
-	@RequestMapping(value = "form")
-	public String form(CheckBodySkeleton checkBodySkeleton, Model model) {
-		model.addAttribute("checkBodySkeleton", checkBodySkeleton);
-		return "modules/aa/checkBodySkeletonForm";
-	}
+    /**
+     * 获取数据
+     */
+    @ModelAttribute
+    public CheckBodySkeleton get(String id, boolean isNewRecord) {
+        return checkBodySkeletonService.get(id, isNewRecord);
+    }
 
-	/**
-	 * 保存检查车体骨架
-	 */
-	@PostMapping(value = "save")
-	@ResponseBody
-	public CommonResult save(@Validated String veliclePicJson) {
-		ExamUser examUser = UserUtils.getExamUser();
-		checkBodySkeletonService.saveBatch(examUser, veliclePicJson);
-		return new CommonResult();
-	}
-	
-	/**
-	 * 删除检查车体骨架
-	 */
-	@RequestMapping(value = "delete")
-	@ResponseBody
-	public String delete(CheckBodySkeleton checkBodySkeleton) {
-		checkBodySkeletonService.delete(checkBodySkeleton);
-		return renderResult(Global.TRUE, text("删除检查车体骨架成功！"));
-	}
+    /**
+     * 查询列表
+     */
+    @RequestMapping(value = {"list", ""})
+    public String list(CheckBodySkeleton checkBodySkeleton, Model model) {
+        model.addAttribute("checkBodySkeleton", checkBodySkeleton);
+        return "modules/aa/checkBodySkeletonList";
+    }
 
-	/**
-	 * 车体骨架信息加载
-	 */
-	@RequestMapping(value = "findList")
-	@ResponseBody
-	public CommonResult findList() {
-		ExamUser examUser = UserUtils.getExamUser();
-		CheckBodySkeletonVO vo = checkBodySkeletonService.findBodySkeleton(examUser);
-		CommonResult result = new CommonResult();
-		result.setData(vo);
-		return result;
-	}
+    /**
+     * 查询列表数据
+     */
+    @RequestMapping(value = "listData")
+    @ResponseBody
+    public Page<CheckBodySkeleton> listData(CheckBodySkeleton checkBodySkeleton, HttpServletRequest request, HttpServletResponse response) {
+        checkBodySkeleton.setPage(new Page<>(request, response));
+        Page<CheckBodySkeleton> page = checkBodySkeletonService.findPage(checkBodySkeleton);
+        return page;
+    }
 
-	/**
-	 * 判定事故车加载
-	 */
-	@RequestMapping(value = "findAccidentVehicle")
-	@ResponseBody
-	public CommonResult findAccidentVehicle() {
-		ExamUser examUser = UserUtils.getExamUser();
-		CheckBodySkeletonVO vo = checkBodySkeletonService.findAccidentVehicle(examUser);
-		CommonResult result = new CommonResult();
-		result.setData(vo);
-		return result;
-	}
+    /**
+     * 查看编辑表单
+     */
+    @RequestMapping(value = "form")
+    public String form(CheckBodySkeleton checkBodySkeleton, Model model) {
+        model.addAttribute("checkBodySkeleton", checkBodySkeleton);
+        return "modules/aa/checkBodySkeletonForm";
+    }
+
+    /**
+     * 保存检查车体骨架
+     */
+    @PostMapping(value = "save")
+    @ResponseBody
+    public CommonResult save(@Validated String veliclePicJson) {
+        ExamUser examUser = UserUtils.getExamUser();
+        checkBodySkeletonService.saveBatch(examUser, veliclePicJson);
+        return new CommonResult();
+    }
+
+    /**
+     * 删除检查车体骨架
+     */
+    @RequestMapping(value = "delete")
+    @ResponseBody
+    public String delete(CheckBodySkeleton checkBodySkeleton) {
+        checkBodySkeletonService.delete(checkBodySkeleton);
+        return renderResult(Global.TRUE, text("删除检查车体骨架成功！"));
+    }
+
+    /**
+     * 车体骨架信息加载
+     */
+    @RequestMapping(value = "findList")
+    @ResponseBody
+    public CommonResult findList() {
+        ExamUser examUser = UserUtils.getExamUser();
+        CheckBodySkeletonVO vo = checkBodySkeletonService.findBodySkeleton(examUser);
+        CommonResult result = new CommonResult();
+        result.setData(vo);
+        return result;
+    }
+
+    /**
+     * 判定事故车加载
+     */
+    @RequestMapping(value = "findAccidentVehicle")
+    @ResponseBody
+    public CommonResult findAccidentVehicle() {
+        ExamUser examUser = UserUtils.getExamUser();
+        CheckBodySkeletonVO vo = checkBodySkeletonService.findAccidentVehicle(examUser);
+        CommonResult result = new CommonResult();
+        result.setData(vo);
+        return result;
+    }
+
+    /**
+     * 车体骨架照片保存（学生查看教师答案时专用）
+     */
+    @RequestMapping(value = "saveBodySkeletonImg")
+    @ResponseBody
+    public CommonResult saveBodySkeletonImg() {
+        return checkBodySkeletonService.saveBodySkeletonImg();
+    }
 }
