@@ -141,27 +141,25 @@ public class CarInfoService extends CrudService<CarInfoDao, CarInfo> {
         carInfo.setPaperId(examUser.getPaperId());
 
         //品牌 车系
-        if (StringUtils.isNotBlank(carInfo.getBrand())) {
+        String pinpai = "";
+        if (StringUtils.isNotBlank(carInfo.getBrand()) && StringUtils.isNotBlank(carInfo.getSeries())) {
             Map<String, String> map = new HashMap<>();
             map.put("pinpaiId", carInfo.getBrand());
             CommonResult result = httpClientService.post(ServiceConstant.COMMON_VEHICLE_BRAND_GET_BY_ENTITY, map);
             if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
                 if (null != result.getData()) {
                     JSONObject o = (JSONObject) result.getData();
-                    String pinpai = o.getString("pinpai");
-                    carInfo.setBrandName(pinpai);
+                    pinpai = o.getString("pinpai");
                 }
             }
-        }
-        if (StringUtils.isNotBlank(carInfo.getSeries())) {
-            Map<String, String> map = new HashMap<>();
+            map = new HashMap<>();
             map.put("chexiId", carInfo.getSeries());
-            CommonResult result = httpClientService.post(ServiceConstant.COMMON_VEHICLE_SERIES_GET_BY_ENTITY, map);
+            result = httpClientService.post(ServiceConstant.COMMON_VEHICLE_SERIES_GET_BY_ENTITY, map);
             if (CodeConstant.REQUEST_SUCCESSFUL.equals(result.getCode())) {
                 if (null != result.getData()) {
                     JSONObject o = (JSONObject) result.getData();
                     String chexi = o.getString("chexi");
-                    carInfo.setBrandName(chexi);
+                    carInfo.setBrandName(pinpai + chexi);
                 }
             }
         }
