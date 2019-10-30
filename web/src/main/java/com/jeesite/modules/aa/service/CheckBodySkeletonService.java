@@ -145,7 +145,7 @@ public class CheckBodySkeletonService extends CrudService<CheckBodySkeletonDao, 
                 Exam exam = examService.get(examUser.getExamId());
                 if (null != exam) {
                     checkBodySkeleton.setPaperId(exam.getPaperId());
-                    checkTradableVehicles.setPaperId(examUser.getPaperId());
+                    checkTradableVehicles.setPaperId(exam.getPaperId());
                 }
             }
         } else {
