@@ -425,10 +425,10 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
                     (String) examNameMap.get("1151013343665733999"), "0", (String) examScoreMap.get("1151013343665733999"),
                     calculateT.getBeginPrice() + "-" + calculateT.getEndPrice() + "元",
                     studentPrice + "元", "1");
-            saveExamDetail(user.getId(), user.getExamId(), "1151028180615860225",
-                    (String) examNameMap.get("1151013343665739992"), "0", (String) examScoreMap.get("1151013343665739992"),
-                    calculateT.getBeginPrice() + "-" + calculateT.getEndPrice() + "元",
-                    studentPrice + "元", "1");
+//            saveExamDetail(user.getId(), user.getExamId(), "1151028180615860225",
+//                    (String) examNameMap.get("1151013343665739992"), "0", (String) examScoreMap.get("1151013343665739992"),
+//                    calculateT.getBeginPrice() + "-" + calculateT.getEndPrice() + "元",
+//                    studentPrice + "元", "1");
         }
 
         //是否查封、抵押车辆
