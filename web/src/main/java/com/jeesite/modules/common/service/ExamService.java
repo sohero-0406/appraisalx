@@ -584,7 +584,7 @@ public class ExamService extends CrudService<ExamDao, Exam> {
                 dao.delete(exam);
             } else {
                 comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);
-                comRes.setMsg("存在不可删除的考试状态!");
+                comRes.setMsg("该状态下不可删除考试!");
                 return comRes;
             }
         }
