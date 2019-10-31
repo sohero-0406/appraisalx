@@ -154,7 +154,7 @@ public class ExamService extends CrudService<ExamDao, Exam> {
         }
         if (StringUtils.isBlank(exam.getExamType())) {
             comRes.setCode(CodeConstant.WRONG_REQUEST_PARAMETER);//请求参数有误
-            comRes.setMsg("练习计时不能为空!");
+            comRes.setMsg("考试计时类型不能为空!");
             return comRes;
         }
         //内容模块选择不能为空

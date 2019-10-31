@@ -515,7 +515,8 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         }
         if (null != appraisalReportVO.getVehicleGradeAssess()) {
             returnMap.put("technicalStatus", appraisalReportVO.getVehicleGradeAssess().getTechnicalStatus());//技术状况鉴定等级
-            returnMap.put("score", appraisalReportVO.getVehicleGradeAssess().getScore());//等级描述
+            returnMap.put("score",
+                    StringUtils.isNotBlank(appraisalReportVO.getVehicleGradeAssess().getScore())?appraisalReportVO.getVehicleGradeAssess().getScore()+"分":"");//等级描述
         }
         // 六、价值评估
         if (null != appraisalReportVO.getCalculate()) {
@@ -653,7 +654,7 @@ public class DelegateLetterService extends CrudService<DelegateLetterDao, Delega
         content.put("defectDescription", reportMap.get("defectDescription"));
         content.put("chexingmingcheng", reportMap.get("chexingmingcheng"));
         content.put("technicalStatus", reportMap.get("technicalStatus"));
-        content.put("score", StringUtils.isNotBlank(reportMap.get("score")) ? reportMap.get("score") + "分" : "");
+        content.put("score", reportMap.get("score"));
 
         // 六、价值评估
         content.put("type", DictUtils.getDictLabel("aa_calculate_type", reportMap.get("type"), ""));
