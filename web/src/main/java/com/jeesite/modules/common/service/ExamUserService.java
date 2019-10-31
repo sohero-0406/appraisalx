@@ -470,11 +470,17 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
             calculateCount = calculateCount.add(BigDecimal.valueOf(Integer.valueOf((String) examScoreMap.get("1151028180617695233"))));
             saveExamDetail(user.getId(), user.getExamId(), "1151028180615860225",
                     (String) examNameMap.get("1151028180617695233"), (String) examScoreMap.get("1151028180617695233"), (String) examScoreMap.get("1151028180617695233"),
-                    checkTradableVehiclesT.getFileDuring(), checkTradableVehiclesS.getFileDuring(), "0");
+
+                    checkTradableVehiclesT.getFileDuring().contains("年")?checkTradableVehiclesT.getFileDuring():checkTradableVehiclesT.getFileDuring()+"年",
+                    checkTradableVehiclesS.getFileDuring().contains("年")?checkTradableVehiclesS.getFileDuring():checkTradableVehiclesS.getFileDuring()+"年",
+                    "0");
         } else {
             saveExamDetail(user.getId(), user.getExamId(), "1151028180615860225",
                     (String) examNameMap.get("1151028180617695233"), "0", (String) examScoreMap.get("1151028180617695233"),
-                    checkTradableVehiclesT.getFileDuring(), checkTradableVehiclesS == null ? "" : checkTradableVehiclesS.getFileDuring(), "1");
+                    checkTradableVehiclesT.getFileDuring().contains("年")?checkTradableVehiclesT.getFileDuring():checkTradableVehiclesT.getFileDuring()+"年",
+                    checkTradableVehiclesS == null ? "" :
+                            checkTradableVehiclesS.getFileDuring().contains("年")?checkTradableVehiclesS.getFileDuring():checkTradableVehiclesS.getFileDuring()+"年",
+                    "1");
         }
         //归档
         List<String> removeList = new ArrayList<>();

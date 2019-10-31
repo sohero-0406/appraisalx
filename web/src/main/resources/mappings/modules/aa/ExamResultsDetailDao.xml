@@ -142,9 +142,10 @@
 		left join aa_exam_score_classify class on class.id = detail.score_classify_id
 		left join aa_exam_score_info info on class.exam_score_info_id = info.id
 		left join aa_picture_type pictureType on pictureType.name = detail.score_points
+		left join  aa_exam_score_info infoa on infoa.name = detail.score_points
 		where detail.exam_user_id = #{id}
 		and class.exam_id = #{examId}
-		order by info.sort
+		order by info.sort,infoa.sort
 
 	</select>
 
