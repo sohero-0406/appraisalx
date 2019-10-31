@@ -86,14 +86,15 @@ public class ReferenceService extends CrudService<ReferenceDao, Reference> {
 
     /**
      * 初始化参照物
+     * flag 1-修改 其他-查看
      */
-    public CommonResult initReference(Reference reference) {
+    public CommonResult initReference(Reference reference, String flag) {
 
-        //判断是否被占用
-        if(StringUtils.isNotBlank(reference.getId())){
-            String [] referenceId = {reference.getId()};
-            if(CollectionUtils.isNotEmpty(dao.selectReferenceExist(referenceId))){
-                return new CommonResult(CodeConstant.REQUEST_FAILED,"当前参照物已经被占用，不可进行编辑!");
+        if("1".equals(flag)){
+            //判断是否被占用
+            String[] referenceId = {reference.getId()};
+            if (CollectionUtils.isNotEmpty(dao.selectReferenceExist(referenceId))) {
+                return new CommonResult(CodeConstant.REQUEST_FAILED, "当前参照物已经被占用，不可进行编辑!");
             }
         }
 
@@ -129,20 +130,20 @@ public class ReferenceService extends CrudService<ReferenceDao, Reference> {
     public CommonResult deleteReference(String referenceIdList) {
         String[] idList = referenceIdList.split(",");
         List<Reference> referenceList = dao.selectReferenceExist(idList);
-        if(CollectionUtils.isNotEmpty(referenceList)){
+        if (CollectionUtils.isNotEmpty(referenceList)) {
             StringBuilder builder = new StringBuilder();
             int len = referenceList.size();
-            for(int i=0;i<len;i++){
-                if(i < len-1){
-                    builder.append(referenceList.get(i).getModel()+"已被试卷占用,");
-                }else if(i == len-1 && i<4){
-                    builder.append(referenceList.get(i).getModel()+"已被试卷占用");
-                }else{
+            for (int i = 0; i < len; i++) {
+                if (i < len - 1) {
+                    builder.append(referenceList.get(i).getModel() + "已被试卷占用,");
+                } else if (i == len - 1 && i < 4) {
+                    builder.append(referenceList.get(i).getModel() + "已被试卷占用");
+                } else {
                     builder.append("...");
                     break;
                 }
             }
-            return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER,builder.toString());
+            return new CommonResult(CodeConstant.WRONG_REQUEST_PARAMETER, builder.toString());
         }
         dao.deleteReference(idList);
         return new CommonResult();
@@ -150,13 +151,13 @@ public class ReferenceService extends CrudService<ReferenceDao, Reference> {
 
 
     /**
-    * @description: 查询参照物列表
-    * @param: [keyword]
-    * @return: java.lang.Object
-    * @author: Jiangyf
-    * @date: 2019/8/12
-    * @time: 10:41
-    */
+     * @description: 查询参照物列表
+     * @param: [keyword]
+     * @return: java.lang.Object
+     * @author: Jiangyf
+     * @date: 2019/8/12
+     * @time: 10:41
+     */
     public List<Reference> findReferenceList(Reference reference) {
         return dao.findReferenceList(reference);
     }
