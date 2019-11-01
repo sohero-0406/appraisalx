@@ -42,7 +42,6 @@ public class VehicleGradeAssess extends PreEntity<VehicleGradeAssess> {
     @NotBlank
     private String technicalStatus;		// 技术状况
 	private String evaluator;		// 评估师
-	@NotBlank
 	private String description;		// 综合评论
 	private String startScore;		// 得分区间开始值
 	private String endScore;		// 得分区间结束值
