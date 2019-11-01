@@ -168,8 +168,8 @@ public class PictureUserService extends CrudService<PictureUserDao, PictureUser>
         return picTypeAndUserVOs;
     }
 
-    public PictureTypeAndUserVO findPictureByParentTypeIdTwo(ExamUser examUser, String[] parentTypeIds, String parentTypeId) {
-        List<PictureTypeAndUserVO> picTypeAndUserList = pictureUserDao.findVoListByExamUserIdAndParentTypeId(examUser, parentTypeIds);
+    public PictureTypeAndUserVO findPictureByParentTypeIdTwo(ExamUser examUser) {
+        List<PictureTypeAndUserVO> picTypeAndUserList = pictureUserDao.findVoListByExamUserIdAndParentTypeIdTwo(examUser, "1143446339264172032");
         PictureTypeAndUserVO pictureTypeAndUserVO = new PictureTypeAndUserVO();
         PictureType picType = new PictureType();
         picType.setName("鉴定技术状况");

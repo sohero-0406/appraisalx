@@ -103,8 +103,7 @@ public class PictureUserController extends BaseController {
         String[] parentTypeIds = new String[]{"1143431479216775168", "1143437059610071040", "1143439093974253568", "1143441175747194880"};
         pictureTypeAndUserVOList.addAll(pictureUserService.findPictureByParentTypeId(examUser, parentTypeIds));
         //第五模块
-        String[] parentTypeId = new String[]{"1143446511703404544","1143451785957478400","1143459636373086208","1143462343780728832","1143463779482673152","1143465942158221312","1144170652301152256"};
-        pictureTypeAndUserVOList.add(pictureUserService.findPictureByParentTypeIdTwo(examUser,parentTypeId,"1143446339264172032"));
+        pictureTypeAndUserVOList.add(pictureUserService.findPictureByParentTypeIdTwo(examUser));
         return new CommonResult(pictureTypeAndUserVOList);
     }
 
