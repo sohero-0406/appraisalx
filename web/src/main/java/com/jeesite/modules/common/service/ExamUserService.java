@@ -477,9 +477,11 @@ public class ExamUserService extends CrudService<ExamUserDao, ExamUser> {
         } else {
             saveExamDetail(user.getId(), user.getExamId(), "1151028180615860225",
                     (String) examNameMap.get("1151028180617695233"), "0", (String) examScoreMap.get("1151028180617695233"),
-                    checkTradableVehiclesT.getFileDuring().contains("年")?checkTradableVehiclesT.getFileDuring():checkTradableVehiclesT.getFileDuring()+"年",
-                    checkTradableVehiclesS == null ? "" :
-                            checkTradableVehiclesS.getFileDuring().contains("年")?checkTradableVehiclesS.getFileDuring():checkTradableVehiclesS.getFileDuring()+"年",
+                    StringUtils.isNotBlank(checkTradableVehiclesT.getFileDuring())?
+                            (checkTradableVehiclesT.getFileDuring().contains("年")?checkTradableVehiclesT.getFileDuring():checkTradableVehiclesT.getFileDuring()+"年"):"",
+                    checkTradableVehiclesS == null ? "" :(StringUtils.isNotBlank(checkTradableVehiclesS.getFileDuring())?
+                            ( checkTradableVehiclesS.getFileDuring().contains("年")?checkTradableVehiclesS.getFileDuring():checkTradableVehiclesS.getFileDuring()+"年"):"")
+                           ,
                     "1");
         }
         //归档
