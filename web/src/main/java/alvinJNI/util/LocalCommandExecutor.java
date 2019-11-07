@@ -1,17 +1,18 @@
 package alvinJNI.util;
 
+import com.jeesite.common.lang.StringUtils;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.apache.commons.lang3.StringUtils;
-
 /**
  * 统一管理REG命令执行
- *
+ * 
  * @author zsl
+ *
  */
-public class LocalCommandExecutor {
+public class LocalCommandExecutor{
 
     public String executeCommand(String command) {
         Process process = null;
@@ -19,14 +20,14 @@ public class LocalCommandExecutor {
             process = Runtime.getRuntime().exec(command);
             InputStreamReader inputStreamReader = new InputStreamReader(process.getInputStream());
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            String result = "";
+            String result="";
             if (bufferedReader.readLine() != null) {
-                String line = null;
-                StringBuilder buf = new StringBuilder();
-                while (StringUtils.isNotBlank((line = bufferedReader.readLine()))) {
-                    buf.append(line + "\n");
-                }
-                result = buf.toString();
+            	String line = null;
+            	StringBuilder buf= new StringBuilder();
+	            while (StringUtils.isNotBlank((line = bufferedReader.readLine()))) {
+	                buf.append(line + "\n");
+	            }
+	            result=buf.toString();
 //	            if(StringUtils.isNotBlank(result)&&command.indexOf("QUERY")==-1){
 //	            	System.out.println(result);
 //	            }
@@ -39,10 +40,10 @@ public class LocalCommandExecutor {
             ex.printStackTrace();
             return null;
         } catch (InterruptedException ex) {
-            System.out.println("The command [" + command + "] did not complete due to an interrupted error.");
+        	System.out.println("The command [" + command + "] did not complete due to an interrupted error.");
             ex.printStackTrace();
             return null;
-        } finally {
+        }finally {
             if (process != null) {
                 process.destroy();
             }
